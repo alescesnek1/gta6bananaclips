@@ -1,6 +1,6 @@
 {
   "_napoveda": "Odkud bereme momenty. twitch/kick = login kanalu (klipy divaku), youtube = @handle (videa a streamy, heatmapa nebo spicky hlasitosti). Neplatny kanal se jen zaloguje. game = regex kategorie streamu (Twitch/Kick) nebo nazvu videa (YouTube).",
-  "game": "Grand Theft Auto|GTA",
+  "game": "Grand Theft Auto VI|GTA ?VI|GTA ?6",
   "twitch": [
     "kaicenat", "adinross", "jynxzi", "caseoh_", "xqc", "lacy", "clix", "jasontheween",
     "stableronaldo", "moistcr1tikal", "summit1g", "zackrawrr", "hasanabi", "sodapoppin",
