@@ -241,7 +241,9 @@ def cmd_den(a):
     now = datetime.now(TZ)
     day = now.date() if a.den == "dnes" else date.fromisoformat(a.den) if a.den else now.date() + timedelta(days=1)
     # slots still ahead of us (+20 min for the deploy and for Buffer to fetch the video)
-    times = [t for t in slot_times(day, len(SLOTS)) if t > now + timedelta(minutes=20)][: a.n]
+    taken = {rec.get("due") for rec in load_json(PUBLISHED, {}).values()}   # an earlier run today
+    times = [t for t in slot_times(day, len(SLOTS))
+             if t > now + timedelta(minutes=20) and t.isoformat() not in taken][: a.n]
     picks = candidates()[: len(times)]
     times = times[: len(picks)]
     chans = load_json(CHANNELS, [])

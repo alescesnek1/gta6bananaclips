@@ -370,6 +370,15 @@ def get_cam(channel, src):
 # COCO classes that can be "the player": person, bicycle, car, motorcycle, airplane, bus, truck, boat
 TARGETS = {0: 1.6, 1: 1.0, 2: 1.2, 3: 1.2, 4: 1.0, 5: 1.0, 7: 1.0, 8: 1.0}
 
+class NotGameplay(Exception):
+    """The clip is in the GTA category but shows no game (e.g. full-screen webcam talk)."""
+
+def talking_head(src):
+    """A big face (over 12 % of the frame width) on at least half of ~8 frames = webcam, not game."""
+    per_frame = faces_on(src, 8)
+    big = sum(any(w > 0.12 * 960 for _, _, w, _ in found) for found in per_frame)
+    return big >= max(2, len(per_frame) // 2)
+
 class Yolox:
     """Minimal YOLOX ONNX runner (official 0.1.1rc0 export: BGR 0-255, pad 114, raw grid output)."""
 
@@ -600,6 +609,8 @@ def render(clip, src=None, clean=False):
 
     dur = duration(src)
     cam = get_cam(clip["channel"], src)
+    if not cam and talking_head(src):
+        raise NotGameplay("streamer's face fills the frame, no gameplay")
     game_h = H - CAM_H if cam else H
     crop_w = round(W * SH / game_h)           # source width that fills the game band at full height
     xs = track_path(src, cam, crop_w, dur)
@@ -696,6 +707,11 @@ def process(clips, clean=False, limit=None):
             render(c, clean=clean)
             mark(c["id"], True)
             n += 1
+        except NotGameplay as e:                 # right category, wrong picture: never again
+            state = load_json(STATE, {"done": {}, "failed": {}})
+            state.setdefault("other_game", {})[c["id"]] = str(e)
+            save_json(STATE, state)
+            log(f"  skip: {e}")
         except Exception as e:  # one broken clip must not stop launch day
             mark(c["id"], False)
             log(f"  FAILED {c['url']}: {e}")
