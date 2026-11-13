@@ -54,6 +54,8 @@ WHISPER_DIR = HERE / "models" / "whisper"
 # open fonts shipped in the repo, so Windows and the Linux runner render the same
 CAP_FONTS = HERE / "fonts" / "cap"                 # libass looks here for the caption font
 CAP_FONT = "Montserrat Black"                      # family name inside fonts/cap/montserrat-900.ttf
+CAP_SIZE = 100                                     # big captions (Aleš: "mnohem větší")
+CAP_CHARS = 14                                     # max letters on a line at that size (2 words max)
 WM_FONT_FILE = HERE / "fonts" / "montserrat-600.ttf"  # watermarks
 
 W, H = 1080, 1920      # output size
@@ -530,13 +532,13 @@ def captions_ass(words, path, y):
         "BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, "
         "Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding\n"
         # no outline: a soft drop shadow only (Aleš: no thick outlined captions)
-        f"Style: Cap,{CAP_FONT},58,&H00FFFFFF,&H00FFFFFF,&H00000000,&H64000000,0,0,0,0,100,100,1,0,1,0,4,5,60,60,0,1\n\n"
+        f"Style: Cap,{CAP_FONT},{CAP_SIZE},&H00FFFFFF,&H00FFFFFF,&H00000000,&H64000000,0,0,0,0,100,100,1,0,1,0,5,5,40,40,0,1\n\n"
         "[Events]\nFormat: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\n"
     )
     clean = lambda s: s.replace("\\", "").replace("{", "(").replace("}", ")").upper()
     chunks, cur = [], []
-    for wd in words:                      # break on 3 words / ~18 letters, a pause, or sentence end
-        if cur and (len(cur) == 3 or sum(len(x[2]) + 1 for x in cur) + len(wd[2]) > 18 or wd[0] - cur[-1][1] > 0.6):
+    for wd in words:                      # break on 2 words / CAP_CHARS letters, a pause, or sentence end
+        if cur and (len(cur) == 2 or sum(len(x[2]) + 1 for x in cur) + len(wd[2]) > CAP_CHARS or wd[0] - cur[-1][1] > 0.6):
             chunks.append(cur)
             cur = []
         cur.append(wd)
@@ -553,7 +555,11 @@ def captions_ass(words, path, y):
         for i, (s, e, _) in enumerate(ch):
             end = ch[i + 1][0] if i + 1 < len(ch) else chunk_end
             text = " ".join((hi + clean(t) + "{\\r}") if j == i else clean(t) for j, (_, _, t) in enumerate(ch))
-            lines.append(f"Dialogue: 0,{ass_time(s)},{ass_time(max(end, s + 0.05))},Cap,,0,0,0,,{{\\blur1.5\\pos(540,{y})}}{text}")
+            # one very long word would run off the screen: shrink just that line
+            n = len(" ".join(t for _, _, t in ch))
+            fs = f"\\fs{int(CAP_SIZE * CAP_CHARS / n)}" if n > CAP_CHARS else ""
+            text = text.replace("{\\r}", "{\\r" + fs + "}") if fs else text
+            lines.append(f"Dialogue: 0,{ass_time(s)},{ass_time(max(end, s + 0.05))},Cap,,0,0,0,,{{\\blur1.5{fs}\\pos(540,{y})}}{text}")
     path.write_text(head + "\n".join(lines) + "\n", encoding="utf-8")
     return len(chunks)
 
@@ -702,7 +708,7 @@ def render(clip, src=None, clean=False):
     if SLUR_RE.search(speech):
         raise NotGameplay("slur in the speech - not worth a strike or a ban")
     ass = d / "captions.ass"
-    n_chunks = captions_ass(words, ass, y=CAM_H + 115 if cam else 600)   # right under the streamer's face
+    n_chunks = captions_ass(words, ass, y=CAM_H + 135 if cam else 600)   # right under the streamer's face
     log(f"  captions: {len(words)} words, {n_chunks} chunks")
     (d / "transcript.txt").write_text(" ".join(t for _, _, t in words), encoding="utf-8")
     (d / "mark.txt").write_text(f"@{clip['channel']}", encoding="utf-8")
