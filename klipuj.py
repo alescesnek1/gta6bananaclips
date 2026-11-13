@@ -566,8 +566,10 @@ def build_filter(cam, cmds_file, x0, crop_w, game_h, ass_file=None, mark_file=No
 
 def encode(cmd_base, out_path):
     """Try NVIDIA NVENC first, fall back to CPU x264."""
-    for venc in (["-c:v", "h264_nvenc", "-preset", "p5", "-rc", "vbr", "-cq", "21", "-b:v", "0"],
-                 ["-c:v", "libx264", "-preset", "veryfast", "-crf", "20"]):
+    # capped at 6 Mb/s: plenty for phones, and every MB is fetched 5x from Netlify by Buffer
+    cap = ["-maxrate", "6M", "-bufsize", "12M"]
+    for venc in (["-c:v", "h264_nvenc", "-preset", "p5", "-rc", "vbr", "-cq", "23", "-b:v", "0"] + cap,
+                 ["-c:v", "libx264", "-preset", "veryfast", "-crf", "22"] + cap):
         try:
             run(cmd_base + venc + ["-c:a", "aac", "-b:a", "160k", "-movflags", "+faststart", str(out_path)], timeout=900)
             return venc[1]
