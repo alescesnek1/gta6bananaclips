@@ -24,8 +24,11 @@ on:
         description: "of which from YouTube (blocked on GitHub servers, keep 0)"
         default: "0"
       url:
-        description: "test: render just this one clip URL (no publishing)"
+        description: "test: render just this one clip URL"
         default: ""
+      publikovat:
+        description: "test: publish that one clip too (ano/ne)"
+        default: "ne"
 
 permissions:
   contents: write
@@ -84,7 +87,7 @@ jobs:
         run: python klipuj.py --whisper small.en batch --max ${{ inputs.max || '12' }} --yt ${{ inputs.yt || '0' }}
 
       - name: publish to Buffer
-        if: inputs.url == '' && env.BUFFER_API_KEY_1 != '' && env.NETLIFY_AUTH_TOKEN != ''
+        if: (inputs.url == '' || inputs.publikovat == 'ano') && env.BUFFER_API_KEY_1 != '' && env.NETLIFY_AUTH_TOKEN != ''
         run: python publikuj.py den --den dnes --n 10 ${{ vars.OSTRE == '1' && '--ostre' || '' }}
 
       - name: keep the shorts for 3 days (download from the run page)
