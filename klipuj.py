@@ -588,7 +588,7 @@ def build_filter(cam, cmds_file, x0, crop_w, game_h, ass_file=None, mark_file=No
     return f + chain
 
 # -----------------------------------------------------------------------------
-# our banana: a small head reacting 1-2x per clip (our own element, so the short is
+# our banana: a small whole-figure reaction 1-2x per clip (our own element, so the short is
 # not a bare re-upload). Two greenscreen videos with 5 reactions each.
 
 BANANA = HERE / "assets" / "banan"
@@ -606,7 +606,7 @@ TRIGGERS = [                        # what was said -> fitting reactions
     (r"\b(fuck(ing)?|shit|bullshit|are you serious)\b", ["rage", "facepalm"]),
     (r"\b(bruh|why|cringe|dude)\b", ["facepalm", "sideeye"]),
 ]
-BANANA_SIZE, BANANA_X = 210, 40     # small, left side of the game band (TikTok's buttons are on the right)
+BANANA_W, BANANA_H, BANANA_X = 200, 356, 30   # whole banana, small; left side (TikTok's buttons are on the right)
 
 def pick_reactions(words, dur, seed):
     """
@@ -639,21 +639,16 @@ def reaction_inputs(reactions):
     return args
 
 def reaction_overlay(f, reactions, cam):
-    """Append overlays of the keyed banana head to a filter graph that ends in [v]."""
+    """Append overlays of the keyed banana (whole figure, full animation, no fades) to a graph ending in [v]."""
     if not reactions:
         return f
     f = f[: -len("[v]")] + "[r_in]"
-    y = (CAM_H if cam else 0) + 520                  # left side, middle of the game band
+    y = (CAM_H if cam else 0) + 520                  # left side of the game band, above TikTok's caption bar
     prev = "r_in"
     for i, (t, name) in enumerate(reactions):
-        v, s, e = REACTIONS[name]
-        d = e - s
-        # setpts moves the reaction to its moment (-itsoffset does not work together with -ss);
-        # the bottom 30 % fades out so the head doesn't end in a hard edge
-        f += (f";[{i + 1}:v]setpts=PTS-STARTPTS+{t:.2f}/TB,crop=600:600:60:10,"
-              f"chromakey={BANANA_KEY}:0.16:0.06,scale={BANANA_SIZE}:{BANANA_SIZE},format=yuva420p,"
-              f"geq=lum='lum(X,Y)':cb='cb(X,Y)':cr='cr(X,Y)':a='alpha(X,Y)*min(1\\,(H-Y)/(0.3*H))',"
-              f"fade=t=in:st={t:.2f}:d=0.12:alpha=1,fade=t=out:st={t + d - 0.18:.2f}:d=0.18:alpha=1[ban{i}];"
+        # setpts moves the reaction to its moment (-itsoffset does not work together with -ss)
+        f += (f";[{i + 1}:v]setpts=PTS-STARTPTS+{t:.2f}/TB,"
+              f"chromakey={BANANA_KEY}:0.16:0.06,scale={BANANA_W}:{BANANA_H},format=yuva420p[ban{i}];"
               f"[{prev}][ban{i}]overlay={BANANA_X}:{y}:eof_action=pass[o{i}]")
         prev = f"o{i}"
     return f + f";[{prev}]null[v]"
