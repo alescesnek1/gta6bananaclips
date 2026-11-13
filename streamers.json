@@ -1,0 +1,21 @@
+{
+  "_napoveda": "cam = facecam v procentech snimku [x, y, sirka, vyska]. \"auto\": true = odhad, overuje se na kazdem klipu; po kontrole smazat. \"no_cam\": true = streamer bez kamery.",
+  "adinross": {
+    "cam": [
+      5.89,
+      22.8,
+      10.94,
+      11.52
+    ],
+    "auto": true
+  },
+  "darkviperau": {
+    "cam": [
+      4.27,
+      20.17,
+      15.16,
+      15.97
+    ],
+    "auto": true
+  }
+}

@@ -1,0 +1,16 @@
+Reading additional input from stdin...
+OpenAI Codex v0.161.0
+--------
+workdir: C:\Users\Ales\AppData\Local\Claude-Data\claude_pzs8sxrjxfjjc\scratch-workspaces\5c788e28-a3da-4398-8904-41ecf8041a31\c2982402-3db5-406c-b6f0-9986668719e7\scratch-2026-11-12-9bbf48
+model: gpt-6-astra
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: high
+reasoning summaries: none
+session id: 01a1d013-b65f-7060-89ab-1aac8d518f4c
+--------
+user
+Postupuj přesně podle instrukcí v souboru .duel/critic-prompt.md
+ERROR: Your workspace is out of credits. Ask your workspace owner to refill in order to continue.
+ERROR: Your workspace is out of credits. Ask your workspace owner to refill in order to continue.

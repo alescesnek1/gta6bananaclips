@@ -1,0 +1,407 @@
+<title>GTA 6 klipy: tvůrci a pipeline</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one reading column with a sticky section index on wide screens; tables scroll inside their own frame. */
+:root {
+  --bg: #f5f6f8;
+  --surface: #ffffff;
+  --ink: #141a26;
+  --muted: #5a6273;
+  --line: #dde1e8;
+  --accent: #b0185a;      /* Vice pink, used sparingly */
+  --accent-soft: #fbe8f0;
+  --teal: #0e6f74;
+  --ok: #1d7a43;   --ok-bg: #e3f3e9;
+  --warn: #9a6200; --warn-bg: #fdf1d8;
+  --bad: #b3261e;  --bad-bg: #fbe4e2;
+  --neutral-bg: #eceef2;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Inter", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", Consolas, "Courier New", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f131b; --surface: #171c26; --ink: #e8ebf1; --muted: #9aa3b4; --line: #2a3140;
+    --accent: #ff6fa6; --accent-soft: #3a1828; --teal: #5cc7cc;
+    --ok: #7fd7a0; --ok-bg: #173323; --warn: #f2c063; --warn-bg: #3a2c10; --bad: #ff8a80; --bad-bg: #3d1a18; --neutral-bg: #232a36;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f131b; --surface: #171c26; --ink: #e8ebf1; --muted: #9aa3b4; --line: #2a3140;
+  --accent: #ff6fa6; --accent-soft: #3a1828; --teal: #5cc7cc;
+  --ok: #7fd7a0; --ok-bg: #173323; --warn: #f2c063; --warn-bg: #3a2c10; --bad: #ff8a80; --bad-bg: #3d1a18; --neutral-bg: #232a36;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15.5px; line-height: 1.6; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 28px 64px; }
+.grid { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 40px; align-items: start; }
+@media (max-width: 900px) { .grid { grid-template-columns: minmax(0, 1fr); } nav.toc { display: none; } }
+nav.toc { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 20px); font-size: 13.5px; display: flex; flex-direction: column; gap: 6px; border-left: 2px solid var(--line); padding-left: 14px; }
+nav.toc a { color: var(--muted); text-decoration: none; }
+nav.toc a:hover, nav.toc a:focus-visible { color: var(--accent); }
+a { color: var(--teal); }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+main { min-width: 0; display: flex; flex-direction: column; gap: 44px; }
+header.top { display: flex; flex-direction: column; gap: 14px; padding-bottom: 26px; border-bottom: 1px solid var(--line); margin-bottom: 30px; }
+.eyebrow { font-family: var(--f-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--f-display); font-weight: 800; font-size: clamp(30px, 5vw, 48px); line-height: 1.05; margin: 0; text-wrap: balance; letter-spacing: -.01em; }
+.lede { max-width: 68ch; color: var(--muted); margin: 0; }
+.facts { display: flex; flex-wrap: wrap; gap: 10px 26px; font-family: var(--f-mono); font-size: 13px; }
+.facts span b { color: var(--ink); font-weight: 600; }
+.facts span { color: var(--muted); }
+.countdown { color: var(--accent) !important; font-weight: 600; }
+h2 { font-family: var(--f-display); font-weight: 800; font-size: 26px; margin: 0 0 14px; text-wrap: balance; }
+h3 { font-family: var(--f-display); font-weight: 600; font-size: 19px; margin: 22px 0 10px; }
+p, li { max-width: 72ch; }
+section > p:first-of-type { margin-top: 0; }
+.verdict { display: grid; gap: 12px; counter-reset: v; padding: 0; margin: 0; list-style: none; }
+.verdict li { max-width: none; display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; counter-increment: v; }
+.verdict li::before { content: counter(v); font-family: var(--f-mono); font-weight: 600; color: var(--accent); font-size: 15px; }
+.verdict li.key { border-color: var(--accent); background: var(--accent-soft); }
+.tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; vertical-align: top; padding: 9px 12px; border-bottom: 1px solid var(--line); }
+th { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 600; background: var(--neutral-bg); white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+td.num { font-family: var(--f-mono); font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+td.name { font-weight: 600; white-space: nowrap; }
+.pill { display: inline-block; font-size: 12px; font-weight: 600; padding: 1px 8px; border-radius: 999px; white-space: nowrap; }
+.p-ok { background: var(--ok-bg); color: var(--ok); }
+.p-warn { background: var(--warn-bg); color: var(--warn); }
+.p-bad { background: var(--bad-bg); color: var(--bad); }
+.p-n { background: var(--neutral-bg); color: var(--muted); }
+.tier { font-family: var(--f-display); font-weight: 800; font-size: 13px; padding: 1px 8px; border-radius: 4px; }
+.tier-s { background: var(--accent); color: var(--surface); }
+.note { font-size: 13.5px; color: var(--muted); }
+.callout { border-left: 3px solid var(--accent); padding: 10px 16px; background: var(--surface); border-radius: 0 8px 8px 0; }
+.steps { padding-left: 22px; display: flex; flex-direction: column; gap: 8px; }
+.steps li::marker { font-family: var(--f-mono); color: var(--accent); font-weight: 600; }
+.time { font-family: var(--f-mono); font-size: 12.5px; color: var(--teal); white-space: nowrap; }
+pre { overflow-x: auto; background: var(--neutral-bg); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; font-family: var(--f-mono); font-size: 12.5px; line-height: 1.5; margin: 8px 0; }
+code { font-family: var(--f-mono); font-size: .9em; background: var(--neutral-bg); padding: 1px 5px; border-radius: 4px; }
+pre code { background: none; padding: 0; }
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; min-width: 0; }
+.card h4 { margin: 0 0 6px; font-family: var(--f-display); font-size: 16px; }
+.card p, .card ul { margin: 0; font-size: 14px; }
+.card ul { padding-left: 18px; }
+.timeline { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+.timeline li { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 14px; max-width: none; }
+.timeline .when { font-family: var(--f-mono); font-size: 13px; color: var(--accent); font-weight: 600; }
+@media (max-width: 520px) { .timeline li { grid-template-columns: minmax(0,1fr); gap: 2px; } }
+.sources { font-size: 13px; columns: 2 320px; column-gap: 28px; padding-left: 18px; }
+.sources li { break-inside: avoid; margin-bottom: 4px; word-break: break-word; }
+footer { font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 18px; }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+html { scroll-behavior: smooth; }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">Analýza pro launch · stav 12. 11. 2026</div>
+    <h1>GTA 6 klipy: tvůrci a pipeline</h1>
+    <p class="lede">Kdo z anglických streamerů a YouTuberů vyrobí v prvních týdnech nejvíc virálního GTA 6 obsahu, jak z něj co nejrychleji dělat 9:16 klipy a co k tomu legálně potřebujete. Včetně verdiktu na SupoClip.</p>
+    <div class="facts">
+      <span>Launch <b>čt 19. 11. 2026</b></span>
+      <span class="countdown">za 7 dní</span>
+      <span>Platformy <b>PS5, Xbox Series X|S</b></span>
+      <span>PC <b>bez data</b></span>
+      <span>Oponentura <b>2 kola</b></span>
+    </div>
+  </header>
+
+  <div class="grid">
+    <nav class="toc" aria-label="Obsah">
+      <a href="#shrnuti">Shrnutí</a>
+      <a href="#pristup">Legální přístup</a>
+      <a href="#tvurci">Tvůrci</a>
+      <a href="#kalendar">Kalendář launche</a>
+      <a href="#pipeline">Pipeline klipů</a>
+      <a href="#supoclip">SupoClip</a>
+      <a href="#prava">Práva a pravidla</a>
+      <a href="#model">Provozní model</a>
+      <a href="#otevrene">Neověřeno</a>
+      <a href="#zdroje">Zdroje</a>
+    </nav>
+
+    <main>
+      <section id="shrnuti">
+        <h2>Shrnutí</h2>
+        <ol class="verdict">
+          <li class="key"><div><b>„Odkaz v popisku = čisté“ neplatí.</b> Uvedení zdroje není licence. Česko nemá americký fair use; citace podle §31 autorského zákona kryje jen přiměřené úryvky ve vlastním díle nebo kritice. YouTube i Meta píšou, že ani svolení autora nebo kredit z přepostu originální obsah nedělá. Úplně čistá cesta neexistuje, jen nejnižší dostupné riziko: oficiální clipping kampaně, písemné svolení a vlastní přidaná hodnota v každém klipu. Kampaň ani svolení streamera <b>nekryjí záběry Rockstaru a hudbu</b>.</div></li>
+          <li><div><b>Obsahově nejcennější:</b> IShowSpeed, Kai Cenat, Adin Ross, parta Lacy/Clix/JasonTheWeen, penguinz0, Jynxzi. Speed a Kai jsou ale nejvíc přeplnění klipaři. <b>Pořadí nasazení určuje legální přístup:</b> ověřený placený program má dnes jen N3on; Adin Ross s ním síť ohlásil, podmínky neověřeny.</div></li>
+          <li><div><b>TikTok v Česku nejspíš přímo nevydělá.</b> Creator Rewards podle všech nalezených seznamů zemí ČR nezahrnuje (ověřit v TikTok Studiu). Příjem z TikToku = jen kampaně.</div></li>
+          <li><div><b>GTA RP na launchi nebude.</b> RP potřebuje PC a mody; RP streameři budou hrát příběh na konzoli. Twitch CEO čeká GTA 6 Online až v roce 2027.</div></li>
+          <li><div><b>SupoClip na herní streamy nestačí.</b> Momenty vybírá hlavně z přepisu řeči, živé streamy odmítá. Hodí se nanejvýš jako renderer pro VOD.</div></li>
+          <li><div><b>Nejrychlejší cesta:</b> na Twitchi divácké klipy přes Helix API + rychlost chatu + hlasitost → ffmpeg šablona 9:16 → kontrola člověkem, <span class="time">5–15 min</span> od momentu. YouTube live a Kick: vlastní záznam + chat + hlasitost, <span class="time">10–25 min</span>.</div></li>
+          <li><div><b>GTA rizika:</b> hudba z rádia ve hře (Content ID), spoilery a cutscény (Rockstar je stahuje), leaky (DMCA už v srpnu 2026). Platí i po launchi.</div></li>
+        </ol>
+      </section>
+
+      <section id="pristup">
+        <h2>Legální přístup rozhoduje o pořadí</h2>
+        <p>Tvůrce jde do výroby, až když k němu vede jedna z cest níže. Tabulky tvůrců v další sekci řadí podle obsahové hodnoty, ne podle přístupu.</p>
+        <div class="tbl"><table>
+          <thead><tr><th>Přístup</th><th>Tvůrci</th><th>Co dělat</th></tr></thead>
+          <tbody>
+            <tr><td><span class="pill p-ok">Ověřený placený program</span></td><td>N3on (vlastní program, 0,40–0,50 USD / 1 000 views)</td><td>Přihlásit se hned, uložit screenshot zadání kampaně.</td></tr>
+            <tr><td><span class="pill p-warn">Ohlášeno, neověřeno</span></td><td>Adin Ross (clipping síť s N3onem, sazba neuvedena)</td><td>Zjistit podmínky; do té doby jako bez programu.</td></tr>
+            <tr><td><span class="pill p-warn">Jen sponzorská kampaň</span></td><td>IShowSpeed: kampaň Expedia na Whop (1 USD / 1 000) kryje jen obsah té kampaně, ne libovolné GTA klipy. Podle médií spolupracuje s agenturou Clipping.</td><td>Ověřit, jestli Clipping bere externí klipaře; jinak žádost o svolení.</td></tr>
+            <tr><td><span class="pill p-bad">Bez programu</span></td><td>Kai Cenat, Lacy/Clix/Jason, penguinz0, Jynxzi, CaseOh, xQc, Summit1g a ostatní</td><td>Poslat žádost o svolení ještě před 19. 11.; do odpovědi nestříhat.</td></tr>
+            <tr><td><span class="pill p-n">Prohledat před launchem</span></td><td>Whop Content Rewards, Vyro, Kick Clipping Program</td><td>Hledat „GTA 6“; nové kampaně se objeví kolem launche.</td></tr>
+          </tbody>
+        </table></div>
+      </section>
+
+      <section id="tvurci">
+        <h2>Tvůrci</h2>
+        <p class="note">YouTube: odběratelé z YouTube data API 12. 11. 2026. Twitch: TwitchTracker, žebříček EN, listopad 2026 (TT), jinak Wikipedie / Social Blade k 2. 8. 2026 (Wiki). Kick: články z roku 2026, jen přibližně. Plán GTA 6: <span class="pill p-ok">potvrzeno</span> sám řekl nebo napsala média, <span class="pill p-warn">pravděpodobně</span> silná historie GTA V, <span class="pill p-n">možná</span> bez signálu.</p>
+
+        <h3><span class="tier tier-s">S</span> Nejvíc virálního materiálu</h3>
+        <div class="tbl"><table>
+          <thead><tr><th>Tvůrce</th><th>Platforma</th><th>Sledující</th><th>Plán GTA 6</th><th>Styl</th><th>Proč a klipování</th></tr></thead>
+          <tbody>
+            <tr><td class="name">IShowSpeed</td><td>YouTube @IShowSpeed, Twitch</td><td class="num">YT 62,3 M<br>Twitch 5,4 M (Wiki)</td><td><span class="pill p-ok">potvrzeno</span><br><span class="note">start na Novém Zélandu jen fáma</span></td><td>chaos, křik</td><td>3. nejsledovanější co-stream GTA 6 showcase (177 887 diváků), top anglicky. Klipy s jeho jménem 1,08 mld. views na YT za 30 dní; největší konkurence klipařů.</td></tr>
+            <tr><td class="name">Kai Cenat</td><td>Twitch kaicenat, YT @KaiCenat</td><td class="num">Twitch 21,98 M (TT)<br>YT 8,26 M</td><td><span class="pill p-ok">potvrzeno</span><br><span class="note">100% maraton; od 5. 11. hraje GTA III–V</span></td><td>hype, emoce</td><td>Nejsledovanější Twitch kanál. Klipy 558 M views YT + 128 M TikTok za 30 dní. Program nenalezen, klipy dělají fan kanály.</td></tr>
+            <tr><td class="name">Adin Ross</td><td>Twitch adinross + Kick</td><td class="num">Twitch 7,12 M (TT)<br>⌀ 141 tis. diváků<br>Kick ~2,1 M</td><td><span class="pill p-ok">potvrzeno</span></td><td>IRL chaos</td><td>Nejvyšší živá sledovanost ze seznamu. S N3onem staví clipping síť. Jeho „GTA 6 RP server“ je bez PC verze sporný.</td></tr>
+            <tr><td class="name">Lacy + Clix + JasonTheWeen + Mar3lg</td><td>Twitch</td><td class="num">Lacy 3,52 M<br>Clix 8,72 M<br>Jason 2,86 M (TT)</td><td><span class="pill p-ok">potvrzeno</span><br><span class="note">datum neuvedeno</span></td><td>skupinový chaos</td><td>Maraton v mansionu v Miami + IRL „mise“: skutečné Vice City vedle hry.</td></tr>
+            <tr><td class="name">penguinz0 / MoistCr1TiKaL</td><td>YT @penguinz0, Twitch</td><td class="num">YT 18,3 M<br>Twitch 6,0 M (Wiki)</td><td><span class="pill p-warn">pravděpodobně</span></td><td>suchý komentář</td><td>Rockstar ho v srpnu začal sledovat. Hlášky se dají citovat. Postoj ke klipům pro 2026 neověřen.</td></tr>
+            <tr><td class="name">Jynxzi</td><td>Twitch jynxzi, YT</td><td class="num">Twitch 11,75 M (TT)<br>YT 7,13 M</td><td><span class="pill p-warn">pravděpodobně</span></td><td>rage, křik</td><td>48h maraton GTA V v červenci. Reakce stavěné na klip, klipaři méně obsazený.</td></tr>
+          </tbody>
+        </table></div>
+
+        <h3>A · Silný druhý sled</h3>
+        <div class="tbl"><table>
+          <thead><tr><th>Tvůrce</th><th>Platforma</th><th>Sledující</th><th>Plán</th><th>Poznámka</th></tr></thead>
+          <tbody>
+            <tr><td class="name">CaseOh</td><td>Twitch caseoh_, YT</td><td class="num">Twitch 9,22 M · YT 11,3 M</td><td><span class="pill p-n">možná</span></td><td>Vtipné reakce, málo klipařů (21,8 M views za 30 dní).</td></tr>
+            <tr><td class="name">xQc</td><td>Twitch xqc + Kick</td><td class="num">Twitch 12,65 M · Kick ~1,1 M</td><td><span class="pill p-warn">pravděpodobně</span></td><td>Twitch mu kázal stáhnout VOD showcase. „xQc povoluje reuploady“ je neověřené, nespoléhat.</td></tr>
+            <tr><td class="name">StableRonaldo</td><td>Twitch</td><td class="num">5,35 M</td><td><span class="pill p-warn">pravděpodobně</span></td><td>Patří k Lacyho partě.</td></tr>
+            <tr><td class="name">N3on</td><td>Kick</td><td class="num">~578 tis. (neověřeno)</td><td><span class="pill p-n">možná</span></td><td><b>Placený clipping program:</b> ~1,4 M USD pro 303 klipařů za 5 týdnů.</td></tr>
+            <tr><td class="name">Hasan</td><td>Twitch hasanabi</td><td class="num">Twitch 3,13 M · YT 2,04 M</td><td><span class="pill p-warn">pravděpodobně</span></td><td>RP historie, komentář.</td></tr>
+            <tr><td class="name">Typical Gamer</td><td>YouTube</td><td class="num">16,1 M</td><td><span class="pill p-warn">pravděpodobně</span></td><td>GTA V stálice.</td></tr>
+            <tr><td class="name">Sidemen / MoreSidemen</td><td>YouTube</td><td class="num">23,4 M / 9,75 M</td><td><span class="pill p-warn">pravděpodobně</span></td><td>UK, editovaná videa; plán nenalezen.</td></tr>
+            <tr><td class="name">Summit1g</td><td>Twitch</td><td class="num">6,42 M</td><td><span class="pill p-warn">pravděpodobně</span></td><td>RP legenda, do příchodu PC hraje příběh.</td></tr>
+            <tr><td class="name">Asmongold</td><td>Twitch zackrawrr</td><td class="num">2,53 M · ⌀ 40 tis.</td><td><span class="pill p-ok">potvrzeno</span></td><td>Na konzoli, rant komentář.</td></tr>
+          </tbody>
+        </table></div>
+
+        <h3>B · Doplněk nebo pozdější fáze</h3>
+        <p>Sodapoppin (9,02 M Twitch), shroud (11,3 M Twitch), LIRIK (3,0 M), TimTheTatman, Valkyrae, Fuslie a BrookeAB (Rockstar je v srpnu začal sledovat), Ludwig (7,1 M YT), AMP (Agent00, Fanum, Duke Dennis), Vanoss crew (VanossGaming 26,0 M, Nogla 7,41 M, Terroriser 3,93 M), DarkViperAU (2,34 M YT, glitche a speedrun od launche), GTA Series Videos (4,14 M) a MrBossFTW (3,19 M) pro „věděli jste“ klipy, Ali-A, SSundee, Kwebbelkop, Sykkuno. RP veteráni Buddha, Ramee, Mr_K a Penta: hlavní GTA 6 obsah přijde až s PC a RP.</p>
+
+        <h3>Co z toho plyne</h3>
+        <div class="cols">
+          <div class="card"><h4>Benchmark</h4><p>Showcase na Netflixu (konec srpna): špička ~3,97 M souběžných diváků přes 9 038 co-streamů; Twitch ~44 % sledovanosti, Kick ~20 % (Streams Charts). Prognóza rekordu na launch zveřejněná není.</p></div>
+          <div class="card"><h4>Konkurence</h4><p>~1 820 klipařských účtů udělalo za 30 dní do 26. 8. ~2 mld. views jen ze šesti největších streamerů (CreatorDB). Top: Nexxo Recaps, deagzzzshorts, Stream Bellz, DaPlug, Stream Vortex.</p></div>
+          <div class="card"><h4>Mezera</h4><p>Méně obsazení streameři (CaseOh, Jynxzi, Lacyho parta, Summit1g) a <b>český úhel</b>: titulky, komentář, kontext pro CZ/SK. Na čistém anglickém přepostu Speeda a Kaie nevyhrajete rychlostí ani objemem.</p></div>
+          <div class="card"><h4>Kick vs Twitch</h4><p>Kick v GTA V předběhl Twitch (červenec: ⌀ 112 tis. vs 69 tis.), ale táhnou to arabští tvůrci a MENA RP servery. Pro anglické klipy je hlavní Twitch a YouTube.</p></div>
+        </div>
+      </section>
+
+      <section id="kalendar">
+        <h2>Kalendář launch týdne</h2>
+        <ul class="timeline">
+          <li><span class="when">teď</span><span>Kai hraje GTA III–V jako sériový maraton.</span></li>
+          <li><span class="when">do 18. 11.</span><span>Poslat žádosti o svolení, přihlásit se do N3on/Adin programu, prohledat Whop, Vyro a Kick na „GTA 6“. Nastavit šablony facecamu pro top tvůrce.</span></li>
+          <li><span class="when">18. 11. ~11:00 UTC</span><span><b>Pokud</b> platí fáma o Speedově startu na Novém Zélandu, první virální klipy padnou tady.</span></li>
+          <li><span class="when">19. 11.</span><span>Launch: Kai 100% maraton, Adin, Asmongold, Lacyho parta (datum neuvedeno). Twitch a Kick slibují dropy a akce bez detailů.</span></li>
+        </ul>
+      </section>
+
+      <section id="pipeline">
+        <h2>Pipeline: od momentu ke klipu</h2>
+        <div class="callout">Herní virál je výkřik, náhlá akce, glitch nebo exploze chatu. AI clippery stavěné na podcasty (SupoClip, Klap, Vizard) čtou hlavně slova. U her je spolehlivější brát signály, které už virálnost změřily.</div>
+
+        <h3>Signály virálnosti</h3>
+        <div class="tbl"><table>
+          <thead><tr><th>Signál</th><th>Co dává</th><th>Přístup</th><th>Poznámka</th></tr></thead>
+          <tbody>
+            <tr><td class="name">Twitch Helix „Get Clips“</td><td>Klipy od diváků se zhlédnutími, <code>vod_offset</code>, délkou</td><td>zdarma, app token</td><td>Nejlepší signál, jen Twitch. <code>vod_offset</code> je u živého vysílání <code>null</code> po neurčitou dobu, u smazaného VOD natrvalo; záloha: <code>created_at</code> klipu − začátek VOD. Řadit podle růstu zhlédnutí.</td></tr>
+            <tr><td class="name">Rychlost chatu</td><td>Špičky zpráv a emotů (KEKW, OMEGALUL, LUL, W, LMAO, ?????)</td><td>Twitch IRC anonymně, VOD přes TwitchDownloaderCLI</td><td>z-skóre proti klouzavé 5min bázi po 10 s.</td></tr>
+            <tr><td class="name">Hlasitost</td><td>Výkřiky, výbuchy</td><td>ffmpeg <code>ebur128</code></td><td>Levné, lokální, jen audio.</td></tr>
+            <tr><td class="name">YouTube „Most replayed“</td><td><code>heatmap</code> přes <code>yt-dlp -J</code> (ověřeno)</td><td>bez klíče</td><td>Jen 100 úseků na video (3h ≈ 108 s), jen u videí s dost zhlédnutími.</td></tr>
+          </tbody>
+        </table></div>
+
+        <h3>A · Živě na Twitchi <span class="time">cíl 5–15 min</span></h3>
+        <ol class="steps">
+          <li>Každých 60 s se zeptat Helix API na nové klipy sledovaných streamerů od začátku streamu; souběžně hlídat rychlost chatu.</li>
+          <li>Když klip rychle roste, stáhnout ho přes yt-dlp. Divácké klipy mají ≤ 60 s a už je ořízl člověk. <span class="time">10–20 s</span></li>
+          <li>Přepis jen toho klipu lokálně: faster-whisper <code>large-v3-turbo</code> int8 na RTX 3050 (paměť 6 GB pravděpodobně stačí, neověřeno). <span class="time">5–15 s</span></li>
+          <li>Render jedním průchodem ffmpeg s NVENC: facecam nahoře, hra dole, vypálené titulky. Vstup se srovná na 1920×1080 (Twitch posílá i 720p, 936p, 1440p); souřadnice facecamu se ukládají v procentech pro každého streamera. Otestováno na tomto stroji včetně 720p vstupu. <span class="time">10–20 s</span>
+<pre><code>ffmpeg -i clip.mp4 -filter_complex "[0:v]scale=1920:1080,split[a][b];[a]crop=480:270:1440:0,scale=1080:608[cam];[b]crop=888:1080:516:0,scale=1080:1312[game];[cam][game]vstack=inputs=2,subtitles=clip.ass[v]" -map "[v]" -map 0:a -c:v h264_nvenc -preset p5 -cq 21 -c:a aac -b:a 160k out.mp4</code></pre></li>
+          <li><b>Kontrola člověkem (povinně):</b> háček v první vteřině, titulek, spoiler, hudba z rádia, právo k použití. <span class="time">1–3 min</span></li>
+          <li>Post ručně nebo naplánovat.</li>
+        </ol>
+        <p class="note">Záloha při výpadku API: vlastní záznam živého HLS (streamlink, yt-dlp) do klouzavého bufferu a střih podle špičky chatu nebo hlasitosti.</p>
+
+        <h3>A2 · Živě na YouTube a Kicku <span class="time">10–25 min</span></h3>
+        <p>IShowSpeed (YouTube), Adin Ross a N3on (Kick) divácké klipy přes API nedávají, signál si musíte vyrobit.</p>
+        <ol class="steps">
+          <li>Nahrávat stream do klouzavého bufferu: <code>yt-dlp --live-from-start</code> (YouTube) nebo streamlink (YouTube i Kick), segmenty po 10 min.</li>
+          <li>Chat: YouTube přes chat-downloader nebo yt-dlp <code>--sub-langs live_chat</code>; Kick přes jejich websocket. Obojí neotestováno.</li>
+          <li>Špička chatu nebo hlasitosti → vyříznout okno ±40 s z bufferu → kroky 3–6 jako na Twitchi. Začátek a konec hledá člověk, protože střih neudělal divák.</li>
+        </ol>
+
+        <h3>B · VOD a YouTube dávka <span class="time">4h VOD → 10–20 kandidátů za ~20–30 min</span></h3>
+        <ol class="steps">
+          <li>Stáhnout jen audio a JSON chatu. <span class="time">2–5 min</span></li>
+          <li>Skóre špičky, výchozí váhy na ladění: 0,4 × chat + 0,3 × divácké klipy (podle <code>vod_offset</code>) + 0,2 × hlasitost + 0,1 × heatmapa. <span class="time">1–3 min</span></li>
+          <li>Top 30 oken ±45 s přepsat na GPU; volitelně LLM vybere střih a háček z krátkého přepisu. <span class="time">2–5 min</span></li>
+          <li>Stáhnout video jen pro ta okna (<code>yt-dlp --download-sections</code>), render jako v A. <span class="time">2–5 min + ~15 s / klip</span></li>
+          <li>Člověk projde kandidáty. <span class="time">10–20 min</span></li>
+        </ol>
+        <p class="note">VOD stahovat hned: Twitch je drží 7 dní (bez statusu), 14 (Affiliate), 60 (Partner) a streamer je může kdykoli smazat. VODy jen pro odběratele bez přihlášení nestáhnete. Časy jsou odhady kromě renderu.</p>
+
+        <h3>Co poběží lokálně (RTX 3050 6 GB)</h3>
+        <p>NVENC kódování (ověřeno), faster-whisper / WhisperX medium či turbo (pravděpodobně), detekce obličeje YuNet na CPU. Lokální LLM 7–8B ve 4 bitech se vejde, ale virálnost hodnotí hůř než levný cloudový model.</p>
+
+        <h3>Nástroje</h3>
+        <div class="tbl"><table>
+          <thead><tr><th>Nástroj</th><th>Na hry</th><th>Twitch</th><th>Facecam nahoře, hra dole</th><th>Cena (ověřit)</th></tr></thead>
+          <tbody>
+            <tr><td class="name">Vlastní skript</td><td><span class="pill p-ok">bere signály</span></td><td>ano, i živě</td><td>šablona na streamera</td><td class="num">~0</td></tr>
+            <tr><td class="name">SupoClip</td><td><span class="pill p-bad">slabý výběr</span></td><td>VOD ano, živě ne</td><td>jen facecam v horním rohu</td><td class="num">AssemblyAI ~0,21 USD/h + LLM</td></tr>
+            <tr><td class="name">OpusClip</td><td><span class="pill p-warn">střední</span></td><td>VOD do 10 h, živě ne</td><td>ano</td><td class="num">Pro ~29 USD/měs.</td></tr>
+            <tr><td class="name">StreamLadder</td><td><span class="pill p-ok">pro streamery</span></td><td>ano</td><td>ano, šablony</td><td class="num">~9–27 USD/měs.</td></tr>
+            <tr><td class="name">Eklipse</td><td><span class="pill p-ok">zvuk + herní události</span></td><td>ano</td><td>ano</td><td class="num">~20–25 USD/měs.</td></tr>
+            <tr><td class="name">zhouxiaoka/autoclip</td><td><span class="pill p-warn">na mluvené slovo</span></td><td>yt-dlp</td><td>ořez řečníka</td><td class="num">zdarma + LLM</td></tr>
+          </tbody>
+        </table></div>
+        <p class="note">OpusClip podle recenze dává na hrách ~60 % použitelných klipů proti 80–85 % na podcastech. Podpora GTA 6 v Eklipse na launchi neznámá. U autoclip nepoužívat <code>cookiesfrombrowser</code>.</p>
+        <p><b>Doporučení na týden:</b> vlastní skript na živý den, Eklipse nebo StreamLadder na zkoušku na VOD jako srovnání. SupoClip až pro podcastový obsah.</p>
+      </section>
+
+      <section id="supoclip">
+        <h2>SupoClip: verdikt</h2>
+        <div class="cols">
+          <div class="card"><h4>Fakta</h4><ul>
+            <li>FujiwaraChoki/supoclip, AGPL-3.0, ~2 900 hvězd, commit 12. 11. 2026</li>
+            <li>Docker Compose: Next.js, FastAPI, Redis workery, Postgres; REST API a MCP server</li>
+            <li>Přepis výchozí AssemblyAI, jinak Whisper nebo YouTube titulky</li>
+            <li>LLM libovolný (Gemini, OpenAI, Anthropic, OpenRouter, Ollama)</li>
+            <li>Max 90 min videa (jde zvýšit); živé streamy a sub-only VODy odmítá</li>
+            <li>Telemetrie při self-hostu vypnutá bez klíčů</li>
+          </ul></div>
+          <div class="card"><h4>Proč na hry nestačí</h4><ul>
+            <li>Přepis v 12min oknech, LLM vybírá 3–5 úseků z textu</li>
+            <li>Jediné nejazykové vodítko: 8 nejsilnějších zvukových špiček za celé video, a jen když padnou do řeči</li>
+            <li>Nečte chat, divácké klipy ani heatmapu</li>
+            <li>Stack facecam nad hrou jen při malém obličeji v horním rohu</li>
+          </ul></div>
+          <div class="card"><h4>Verdikt</h4><p>Dobrý renderer, špatné oko na herní virál, těžký na rozjetí za týden. Převzít nápady (YuNet, stahování jen vybraných úseků, časování titulků), ne celý stack. AGPL: interní použití OK; upravenou verzi nabízenou jiným přes síť musíte zveřejnit. Na klipy se AGPL nevztahuje.</p></div>
+        </div>
+      </section>
+
+      <section id="prava">
+        <h2>Práva a pravidla</h2>
+        <h3>Proč odkaz nestačí</h3>
+        <ul>
+          <li><b>Tři až čtyři vrstvy práv.</b> Streamer vlastní facecam, hlas a komentář; Take-Two/Rockstar herní záběry; vydavatelství hudbu v rádiu. Navíc osobnostní práva: šířit podobu a hlas člověka komerčně lze jen s jeho svolením (§84–90 občanského zákoníku).</li>
+          <li><b>Svolení streamera ani kampaň nekryjí Rockstar a hudbu.</b> Rockstar povoluje videa jen nekomerčně; placená kampaň je komerční užití. Monetizovaná videa streamerů v praxi toleruje, písemně je ale nedovoluje a může je kdykoli stáhnout.</li>
+          <li><b>Česko (zák. 121/2000 Sb.):</b> uzavřený výčet výjimek, žádný fair use. §31 citace: přiměřené úryvky ve vlastním díle nebo kritice, uvedení zdroje je podmínka, ne povolení. §29 třístupňový test: klipy konkurují streamerovým vlastním Shorts. §38g parodie a pastiš je úzká.</li>
+          <li><b>USA fair use:</b> 30–60s virál jen s popiskem je nejslabší případ.</li>
+          <li><b>YouTube „reused content“:</b> klipy bez příběhu či komentáře se nemonetizují, i když máte svolení tvůrce; posuzuje se celý kanál. 3 copyright strikes za 90 dní = zrušení kanálu.</li>
+          <li><b>TikTok Creator Rewards:</b> video ≥ 1 min a originální. Pro český účet program nejspíš vůbec není (nejčastěji uváděné země: USA, UK, Německo, Francie, Japonsko, Jižní Korea, Brazílie, Mexiko).</li>
+          <li><b>Instagram/Meta:</b> 10+ neoriginálních Reels za 30 dní = účet vypadne z doporučování; od 30. 4. 2026 i fotky a karusely. Kredit ani vodoznak nestačí; pomáhá vlastní voiceover, vlastní text, Collab post s tvůrcem.</li>
+          <li><b>Twitch:</b> diváci mají licenci jen pro osobní použití.</li>
+          <li><b>Rockstar</b> (policy z ledna 2025, čteno přes výňatky): stahuje konec hry, kompilace cutscén, samostatné cinematiky a leaky. Licence: <code>copyright@take2games.com</code>.</li>
+        </ul>
+
+        <h3>Matice rizik</h3>
+        <div class="tbl"><table>
+          <thead><tr><th>Co</th><th>Riziko</th><th>Opatření</th></tr></thead>
+          <tbody>
+            <tr><td>Přepost klipu + kredit, monetizovaný</td><td><span class="pill p-bad">vysoké</span></td><td>Jen přes kampaň nebo písemné svolení.</td></tr>
+            <tr><td>Totéž bez monetizace</td><td><span class="pill p-bad">středně vysoké</span></td><td>Totéž.</td></tr>
+            <tr><td>Hraje rádio ve hře</td><td><span class="pill p-bad">vysoké</span></td><td>Střihnout nebo ztlumit hudbu.</td></tr>
+            <tr><td>Cutscény, konec, odhalení misí</td><td><span class="pill p-bad">vysoké</span></td><td>Žádné spoilery jako samostatný klip.</td></tr>
+            <tr><td>Leak, předčasné záběry</td><td><span class="pill p-bad">velmi vysoké</span></td><td>Nikdy.</td></tr>
+            <tr><td>Jméno nebo tvář tvůrce jako název či avatar účtu</td><td><span class="pill p-bad">vysoké</span></td><td>Vlastní značka, tvůrce jen v popisku.</td></tr>
+            <tr><td>Kampaň sponzorovaná kasinem (Stake)</td><td><span class="pill p-bad">vysoké v CZ</span></td><td>Nebrat, nebo právník (zák. 186/2016 Sb.).</td></tr>
+            <tr><td>Zavádějící titulek („Kai DIED“)</td><td><span class="pill p-warn">střední</span></td><td>Titulek musí sedět.</td></tr>
+            <tr><td>Placená kampaň bez označení</td><td><span class="pill p-warn">střední</span></td><td>Přepínač „placené partnerství“ + „reklama“ (zák. 40/1995 Sb.).</td></tr>
+            <tr><td>Kampaň nebo svolení streamera, monetizováno</td><td><span class="pill p-warn">nižší vůči streamerovi</span><br><span class="pill p-bad">nekryté vůči Rockstaru</span></td><td>Bez spoilerů a rádia; pro větší objem licence od Take-Two.</td></tr>
+            <tr><td>Skutečný komentář nebo recenze s krátkými úryvky</td><td><span class="pill p-ok">nižší, ne nulové</span></td><td>Pomáhá s monetizací; autorskoprávně ho kryje jen §31 v přiměřeném rozsahu.</td></tr>
+          </tbody>
+        </table></div>
+      </section>
+
+      <section id="model">
+        <h2>Provozní model</h2>
+        <ol class="steps">
+          <li><b>Firma</b> (s.r.o. nebo IČO), ne soukromá osoba: smlouvy, daně, odpovědnost.</li>
+          <li><b>Nejdřív oficiální kampaně:</b> Whop Content Rewards (tvůrce nastaví sazbu, typicky ~0,5–1,5 USD / 1 000 views, rozpětí 0,2–6), Vyro (MrBeast, hlášeno ~1,5–3 USD / 1 000, strop 1 000 USD na post), Kick Clipping Program, program N3ona, agentura Clipping (hlášeno 300–1 500 USD / 1 M views). Ke každé kampani uložit screenshot zadání. Kampaň, která chce poplatek za vstup, je podvod.</li>
+          <li><b>Kde kampaň není, písemné svolení</b> od tvůrce nebo managementu, odpověď uschovat. Žádost obsahuje: účet a platformy, délku klipů 15–60 s, kredit a odkaz, zda monetizujete, souhlas s užitím podoby a hlasu, stažení na žádost do 24 h, žádné vydávání se za tvůrce, případně podíl z výnosu, výslovné „ano“.</li>
+          <li><b>Vlastní přidaná hodnota v každém klipu:</b> český voiceover nebo komentář, kontext, vlastní titulky.</li>
+          <li><b>GTA checklist u každého klipu:</b> bez rádia, bez konce a velkých cutscén, bez leaků, bez grafického násilí v prvních ~7 s Shorts (YouTube monetizace, hlášeno Dexertem).</li>
+          <li>Vlastní značka účtu; Collab nebo tag jen se souhlasem tvůrce.</li>
+          <li>Placený obsah označit: přepínač platformy + „reklama“ nebo „placená spolupráce“.</li>
+          <li>Hlídat claimy; po prvním strike zastavit a přezkoumat. Nikdy se nepřiblížit ke 3.</li>
+        </ol>
+        <div class="callout"><b>Ekonomika pro představu:</b> při ~1 USD / 1 000 views dělá klip s 500 tis. views ~500 USD, pokud kampaň má rozpočet a klip schválí; klip lze odmítnout i po dosažení views. TikTok českému účtu sám nejspíš neplatí (ověřit), YouTube Shorts a Meta platí jen za originální obsah, takže hlavní příjem jsou kampaně.</div>
+        <p class="note">Toto není právní rada. Český právník na IP a média je potřeba na: rozsah §31 a §38g u komentovaných střihů, licenční smlouvy s tvůrci, komerční užití záběrů Rockstaru, kampaně s hazardním sponzorem, daně a DPH z výplat v USD.</p>
+      </section>
+
+      <section id="otevrene">
+        <h2>Neověřeno</h2>
+        <ul>
+          <li>Fáma o Speedově startu na Novém Zélandu; přesné časy streamů 19. 11.</li>
+          <li>„Gone gold“ stojí na jednom earnings callu a rozhovoru s IGN (Push Square); oficiální oznámení Rockstaru nenalezeno. Přesný čas odemčení nepotvrzen.</li>
+          <li>Čísla YT pro xQc, StableRonaldo, Lacy, TGG, Duke Dennis; Kick čísla N3on, Ramee, Penta.</li>
+          <li>Oficiální seznam zemí TikTok Creator Rewards (ČR nejspíš ne).</li>
+          <li>Zda agentura Clipping (IShowSpeed) bere externí klipaře.</li>
+          <li>Režim pro streamery nebo přepínač licencované hudby v GTA 6.</li>
+          <li>Rychlost a paměť faster-whisper na RTX 3050; přepínače TwitchDownloaderCLI; nástroje na živý chat YouTube a Kick.</li>
+          <li>Ceny OpusClip, StreamLadder, Eklipse; podpora GTA 6 v Eklipse.</li>
+          <li>Zda Stake má českou licenci.</li>
+        </ul>
+      </section>
+
+      <section id="zdroje">
+        <h2>Zdroje</h2>
+        <ul class="sources">
+          <li><a href="https://insider-gaming.com/gta-6-delayed-again-release/">Insider Gaming: GTA 6 delay status</a></li>
+          <li><a href="https://www.pushsquare.com/news/2026/11/gta-6-wont-have-any-last-minute-delays-as-its-officially-gone-gold">Push Square: GTA 6 gone gold</a></li>
+          <li><a href="https://twitchtracker.com/channels/ranking/english">TwitchTracker: English ranking</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/List_of_most-followed_Twitch_channels">Wikipedia: most-followed Twitch channels</a></li>
+          <li><a href="https://win.gg/lacy-plans-gta-6-marathon/">win.gg: Lacy GTA 6 marathon</a></li>
+          <li><a href="https://win.gg/eddie-craven-claims-kick-is-the-home-of-gta-streaming/">win.gg: Kick and GTA streaming</a></li>
+          <li><a href="https://win.gg/gta-livestreaming-viewership-trends-kick-twitch/">win.gg: GTA viewership Kick vs Twitch</a></li>
+          <li><a href="https://streamer.guide/blog/kai-cenat-gta-marathon-2026">streamer.guide: Kai Cenat GTA marathon</a></li>
+          <li><a href="https://sportskeeda.com/us/streamers/news-kai-cenat-hold-gta-6-100-playthrough-marathon-upon-game-s-release">Sportskeeda: Kai Cenat 100% marathon</a></li>
+          <li><a href="https://www.gamingamigos.com/post/ishowspeed-plans-new-zealand-trip-gta-6-stream">Gaming Amigos: IShowSpeed New Zealand rumor</a></li>
+          <li><a href="https://www.gtaboom.com/rockstar-games-quietly-followed-a-small-army-of-streamers-888d">GTA Boom: Rockstar followed streamers</a></li>
+          <li><a href="https://rockstarintel.com/gta-6-gameplay-reveal-had-nearly-4-million-live-viewers-as-it-broke-netflix/">Rockstar Intel: showcase viewership</a></li>
+          <li><a href="https://creatordb.app/creator-news/the-rise-of-the-clip-economy/">CreatorDB: clip economy</a></li>
+          <li><a href="https://www.dexerto.com/gaming/xqc-furious-after-being-forced-to-take-down-gta-6-vod-by-twitch-3403752/">Dexerto: xQc VOD takedown</a></li>
+          <li><a href="https://www.dexerto.com/gta/twitch-ceo-says-gta-6-online-is-launching-next-year-after-speaking-to-rockstar-3409995/">Dexerto: Twitch CEO on GTA 6 Online</a></li>
+          <li><a href="https://www.dexerto.com/gta/youtube-updates-gaming-violence-monetization-rules-ahead-of-gta-6-launch-3405945/">Dexerto: YouTube violence monetization</a></li>
+          <li><a href="https://github.com/FujiwaraChoki/supoclip">GitHub: FujiwaraChoki/supoclip</a></li>
+          <li><a href="https://dev.twitch.tv/docs/api/reference/clips#get-clips">Twitch API: Get Clips</a></li>
+          <li><a href="https://github.com/lay295/TwitchDownloader">GitHub: TwitchDownloader</a></li>
+          <li><a href="https://www.opus.pro/tools/gaming-video-editor">OpusClip: gaming editor</a></li>
+          <li><a href="https://support.rockstargames.com/articles/200153756">Rockstar: copyrighted material policy</a></li>
+          <li><a href="https://support.google.com/youtube/answer/1311392">YouTube: reused content</a></li>
+          <li><a href="https://support.google.com/youtube/answer/2814000">YouTube: copyright strikes</a></li>
+          <li><a href="https://www.tiktok.com/legal/page/global/tiktok-creator-rewards-program-eea/en">TikTok: Creator Rewards EEA terms</a></li>
+          <li><a href="https://www.tubefilter.com/2026/04/30/instagram-removes-algorithm-recommendations-repost-content-aggregator/">Tubefilter: Instagram unoriginal content</a></li>
+          <li><a href="https://about.fb.com/news/2026/03/rewarding-original-creators-on-facebook/">Meta: rewarding original creators</a></li>
+          <li><a href="https://www.zakonyprolidi.cz/cs/2000-121">Zákon 121/2000 Sb. (autorský zákon)</a></li>
+          <li><a href="https://www.epravo.cz/top/clanky/spoluprace-s-influencery-na-co-si-dat-pozor-120427.html">epravo.cz: spolupráce s influencery</a></li>
+          <li><a href="https://docs.whop.com/manage-your-business/growth-marketing/content-rewards">Whop: Content Rewards docs</a></li>
+          <li><a href="https://www.tubefilter.com/2025/10/14/mrbeast-vyro-clipping-platform-viewstats-expansion/">Tubefilter: MrBeast Vyro</a></li>
+          <li><a href="https://www.thewrap.com/media-platforms/tv/creators-rise-of-clipping-explained/">TheWrap: rise of clipping</a></li>
+          <li><a href="https://shortsync.app/resources/tiktok-creator-rewards-program-2026">ShortSync: TikTok Creator Rewards 2026</a></li>
+        </ul>
+      </section>
+
+      <footer>Podklady: tři paralelní rešerše (tvůrci, SupoClip a pipeline, práva) a oponentura ve 2 kolech; Codex neměl kredity, oponenta dělal nezávislý subagent. Čísla mají různé zdroje a data, viz poznámka u tvůrců.</footer>
+    </main>
+  </div>
+</div>

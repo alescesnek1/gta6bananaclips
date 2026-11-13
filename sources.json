@@ -1,0 +1,16 @@
+{
+  "_napoveda": "Odkud bereme momenty. twitch/kick = login kanalu (klipy divaku), youtube = @handle (videa a streamy, heatmapa nebo spicky hlasitosti). Neplatny kanal se jen zaloguje. game = regex kategorie streamu (Twitch/Kick) nebo nazvu videa (YouTube).",
+  "game": "Grand Theft Auto|GTA",
+  "twitch": [
+    "kaicenat", "adinross", "jynxzi", "caseoh_", "xqc", "lacy", "clix", "jasontheween",
+    "stableronaldo", "moistcr1tikal", "summit1g", "zackrawrr", "hasanabi", "sodapoppin",
+    "shroud", "lirik", "timthetatman", "valkyrae", "fuslie", "darkviperau", "sykkuno",
+    "buddha", "ramee", "agent00", "ludwig"
+  ],
+  "kick": ["adinross", "n3on", "xqc", "amouranth", "sneako"],
+  "youtube": [
+    "@IShowSpeed", "@penguinz0", "@TypicalGamer", "@Sidemen", "@MoreSidemen",
+    "@DarkViperAU", "@VanossGaming", "@Nogla", "@CaseOh_", "@Jynxzi",
+    "@KaiCenat", "@ludwig", "@GTASeriesVideos", "@MrBossFTW"
+  ]
+}

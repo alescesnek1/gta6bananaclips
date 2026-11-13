@@ -1,0 +1,98 @@
+# gta6bananaclips: every day on GitHub's servers (no home PC needed)
+#   1. klipuj.py batch   -> render the best fresh moments (Twitch, Kick, YouTube)
+#   2. publikuj.py den   -> upload to R2 + schedule today's slots in Buffer
+#   3. commit state      -> what was rendered / published / which facecam boxes
+# Buffer then publishes on its own during the day.
+#
+# Secrets (Settings -> Secrets and variables -> Actions -> Secrets):
+#   BUFFER_API_KEY_1, BUFFER_API_KEY_2, R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY
+# Variables (same page -> Variables):
+#   R2_BUCKET, MEDIA_BASE_URL, OSTRE (set to 1 to schedule for real; otherwise Buffer drafts)
+
+name: denne-klipy
+
+on:
+  schedule:
+    - cron: "30 4 * * *"          # 05:30 CET / 06:30 CEST, before the first slot at 09:00
+  workflow_dispatch:
+    inputs:
+      max:
+        description: "max shorts to render"
+        default: "12"
+      yt:
+        description: "of which from YouTube (0 = skip YouTube)"
+        default: "3"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: denne
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 150
+    env:
+      BUFFER_API_KEY_1: ${{ secrets.BUFFER_API_KEY_1 }}
+      BUFFER_API_KEY_2: ${{ secrets.BUFFER_API_KEY_2 }}
+      R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+      R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      R2_BUCKET: ${{ vars.R2_BUCKET }}
+      MEDIA_BASE_URL: ${{ vars.MEDIA_BASE_URL }}
+      PYTHONUTF8: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-ci.txt
+
+      - uses: denoland/setup-deno@v2      # yt-dlp solves YouTube's JS challenge with deno
+        with:
+          deno-version: v2.x
+
+      - name: ffmpeg
+        run: sudo apt-get update -q && sudo apt-get install -y -q --no-install-recommends ffmpeg
+
+      - name: python deps (CPU torch, no GPU on the runner)
+        run: |
+          pip install torch --index-url https://download.pytorch.org/whl/cpu
+          pip install -r requirements-ci.txt
+
+      - uses: actions/cache@v4
+        with:
+          path: models/whisper
+          key: whisper-small.en
+
+      - name: Buffer channels (first run only)
+        if: hashFiles('buffer.json') == '' && env.BUFFER_API_KEY_1 != ''
+        run: python publikuj.py kanaly
+
+      - name: render
+        run: python klipuj.py --whisper small.en batch --max ${{ inputs.max || '12' }} --yt ${{ inputs.yt || '3' }}
+
+      - name: publish to Buffer
+        if: env.BUFFER_API_KEY_1 != ''
+        run: python publikuj.py den --den dnes --n 10 ${{ vars.OSTRE == '1' && '--ostre' || '' }}
+
+      - name: keep the shorts for 3 days (download from the run page)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: shorts
+          path: out/*/*/short_9x16.mp4
+          retention-days: 3
+          if-no-files-found: ignore
+
+      - name: save state
+        if: always()
+        run: |
+          git config user.name "gta6bananaclips-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for f in state.json streamers.json publikovano.json buffer.json; do [ -f "$f" ] && git add "$f"; done
+          git diff --cached --quiet || { git commit -q -m "stav: denni beh $(date -u +%F)" && git push -q; }
