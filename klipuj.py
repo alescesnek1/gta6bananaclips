@@ -35,7 +35,7 @@ import re
 import subprocess
 import sys
 import time
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from pathlib import Path
 
 import cv2
@@ -158,7 +158,7 @@ def list_twitch(channel, rng="24hr", limit=100):
     url = f"https://www.twitch.tv/{channel}/clips?filter=clips&range={rng}"
     return entries_to_clips(ytdlp_json(url, flat=True, limit=limit).get("entries"), channel, "twitch")
 
-def list_kick(channel, limit=60):
+def list_kick(channel, limit=100):
     return entries_to_clips(ytdlp_json(f"https://kick.com/{channel}/clips", flat=True, limit=limit).get("entries"),
                             channel, "kick")
 
@@ -355,8 +355,10 @@ def get_cam(channel, src):
         return None
     if cfg.get("cam") and not cfg.get("auto"):
         return cfg["cam"]
-    if cfg.get("cam"):
-        return cfg["cam"] if face_in_box(src, cfg["cam"]) else None
+    if cfg.get("cam") and face_in_box(src, cfg["cam"]):
+        return cfg["cam"]
+    # no box yet, or the auto box has no face on this clip: detect again (a wrong first guess
+    # - a cutscene face, an overlay avatar - must not stick forever)
     cam = detect_cam(src)
     if cam:
         db = load_json(STREAMERS, {})
@@ -370,6 +372,16 @@ def get_cam(channel, src):
 
 # COCO classes that can be "the player": person, bicycle, car, motorcycle, airplane, bus, truck, boat
 TARGETS = {0: 1.6, 1: 1.0, 2: 1.2, 3: 1.2, 4: 1.0, 5: 1.0, 7: 1.0, 8: 1.0}
+
+SLUR_RE = re.compile(r"\bn[i1]gg(a|er)s?\b|\bf[a@]gg?(ot)?s?\b|\bretards?\b|\btr[a@]nn(y|ies)\b", re.I)
+
+def pick_quote(words):
+    """The line for the post text: a short exclamation/question if there is one, else the first full sentence."""
+    text = " ".join(t for _, _, t in words)
+    sents = [s.strip() for s in re.split(r"(?<=[.!?])\s+", text) if 3 <= len(s.split()) <= 14]
+    sents.sort(key=lambda s: (not s.endswith(("!", "?")), 0))
+    q = sents[0] if sents else " ".join(text.split()[:10])
+    return q[:90]
 
 class NotGameplay(Exception):
     """The clip is in the GTA category but shows no game (e.g. full-screen webcam talk)."""
@@ -619,6 +631,9 @@ def render(clip, src=None, clean=False):
     cmds.write_text("".join(f"{i / FPS:.4f} crop@g x {x};\n" for i, x in enumerate(xs)), encoding="utf-8")
 
     words = transcribe(src)
+    speech = " ".join(t for _, _, t in words)
+    if SLUR_RE.search(speech):
+        raise NotGameplay("slur in the speech - not worth a strike or a ban")
     ass = d / "captions.ass"
     n_chunks = captions_ass(words, ass, y=CAM_H + 115 if cam else 600)   # right under the streamer's face
     log(f"  captions: {len(words)} words, {n_chunks} chunks")
@@ -642,7 +657,8 @@ def render(clip, src=None, clean=False):
         "short": str(out),
         "base": str(base) if clean else None,
         "source": str(src),
-        "caption": f"🎮 @{clip['channel']} · {home_url(clip)}\n#gta6 #gtavi #{BRAND} #{clip['channel']}",
+        "quote": pick_quote(words),          # publikuj.py builds a different post text per platform from it
+        "caption": f"🎮 {home_url(clip)}\n#gta6 #{BRAND}",
         "rendered_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "checklist": [
             "titulky sedí na řeč (jména, slang)",
@@ -690,7 +706,7 @@ def is_game(clip):
         return False
     try:
         cats = ytdlp_json(clip["url"], timeout=60).get("categories") or []
-    except RuntimeError as e:
+    except Exception as e:                            # yt-dlp error, bad JSON, timeout ...
         log(f"  skip {clip['channel']} {clip['id']}: category unknown ({str(e)[-80:]})")
         return False
     clip["category"] = " ".join(cats)
@@ -736,13 +752,21 @@ def cmd_batch(a):
     YouTube windows by audience signal, at most `yt` of them.
     """
     src = load_json(SOURCES, {})
+    blocked = {b.lower() for b in src.get("blocklist", [])}   # streamers who asked us to stop
+    if a.max is None:                                          # render only what we will post today
+        ramp = src.get("ramp") or {}
+        today = datetime.now().date().isoformat()
+        past = [k for d, k in sorted(ramp.items()) if d <= today]
+        a.max = past[-1] if past else (min(ramp.values()) if ramp else 10)
     live = []
     for platform, lister in (("twitch", lambda ch: list_twitch(ch, "24hr" if a.days <= 1 else "7d")),
                              ("kick", list_kick)):
         for ch in src.get(platform, []):
+            if ch.lower() in blocked:
+                continue
             try:
                 clips = [c for c in fresh(lister(ch), a.days) if c["views"] >= a.min_views and not skip(c["id"])]
-            except RuntimeError as e:
+            except Exception as e:                             # one dead channel must not stop the day
                 log(f"{platform} {ch}: {str(e)[-150:]}")
                 continue
             live += clips[: a.n]
@@ -750,11 +774,18 @@ def cmd_batch(a):
     yt = []
     if a.yt:
         for handle in src.get("youtube", []):
-            yt += [c for c in youtube_clips(handle, a.days, a.per_video) if not skip(c["id"])]
+            if handle.lstrip("@").lower() in blocked:
+                continue
+            try:
+                yt += [c for c in youtube_clips(handle, a.days, a.per_video) if not skip(c["id"])]
+            except Exception as e:
+                log(f"youtube {handle}: {str(e)[-150:]}")
     log(f"candidates: {len(live)} twitch/kick, {len(yt)} youtube -> rendering up to {a.max}")
     total = process(yt, a.clean, limit=min(a.yt, a.max))
     total += process(live, a.clean, limit=a.max - total)
     log(f"batch done: {total} new shorts")
+    if total == 0 and os.environ.get("GITHUB_ACTIONS") and datetime.now().date() >= date(2026, 11, 19):
+        print("::warning::Dnes se nevyrenderoval zadny GTA 6 klip (zadne cerstve klipy, nebo blokace Twitch/Kick).")
 
 def cmd_top(a):
     for ch in a.channels:
@@ -854,7 +885,7 @@ def main():
     sub = p.add_subparsers(dest="cmd", required=True)
 
     b = sub.add_parser("batch", help="every source in sources.json once")
-    b.add_argument("--max", type=int, default=14, help="render at most this many shorts in total")
+    b.add_argument("--max", type=int, default=None, help="render at most this many (default: today's ramp quota)")
     b.add_argument("--yt", type=int, default=4, help="of which at most this many from YouTube (0 = skip YouTube)")
     b.add_argument("--n", type=int, default=3, help="clips per Twitch/Kick channel")
     b.add_argument("--per-video", type=int, default=3, help="moments per YouTube video")

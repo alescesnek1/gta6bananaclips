@@ -1,16 +1,62 @@
 {
-  "_napoveda": "Odkud bereme momenty. twitch/kick = login kanalu (klipy divaku), youtube = @handle (videa a streamy, heatmapa nebo spicky hlasitosti). Neplatny kanal se jen zaloguje. game = regex kategorie streamu (Twitch/Kick) nebo nazvu videa (YouTube).",
-  "game": "Grand Theft Auto VI|GTA ?VI|GTA ?6",
+  "_napoveda": "Odkud bereme momenty. twitch/kick = login kanalu (klipy divaku), youtube = @handle. game = regex kategorie streamu / nazvu videa (jen GTA 6). ramp = kolik klipu denne od data (rozjezd novych uctu). caps = max postu denne na sit (X, Threads). blocklist = streameri, kteri chteji klipy dolu (uz je nebrat).",
+  "game": "Grand Theft Auto VI\\b|\\bGTA ?(VI|6)\\b",
+  "ramp": {
+    "2026-11-19": 3,
+    "2026-11-26": 5,
+    "2026-12-03": 10
+  },
+  "caps": {
+    "twitter": 3,
+    "threads": 3
+  },
+  "blocklist": [],
   "twitch": [
-    "kaicenat", "adinross", "jynxzi", "caseoh_", "xqc", "lacy", "clix", "jasontheween",
-    "stableronaldo", "moistcr1tikal", "summit1g", "zackrawrr", "hasanabi", "sodapoppin",
-    "shroud", "lirik", "timthetatman", "valkyrae", "fuslie", "darkviperau", "sykkuno",
-    "buddha", "ramee", "agent00", "ludwig"
+    "kaicenat",
+    "adinross",
+    "jynxzi",
+    "caseoh_",
+    "xqc",
+    "lacy",
+    "clix",
+    "jasontheween",
+    "stableronaldo",
+    "moistcr1tikal",
+    "summit1g",
+    "zackrawrr",
+    "hasanabi",
+    "sodapoppin",
+    "shroud",
+    "lirik",
+    "timthetatman",
+    "valkyrae",
+    "fuslie",
+    "darkviperau",
+    "sykkuno",
+    "buddha",
+    "ramee",
+    "agent00",
+    "ludwig"
   ],
-  "kick": ["adinross", "n3on", "xqc", "amouranth", "sneako"],
+  "kick": [
+    "adinross",
+    "n3on",
+    "xqc"
+  ],
   "youtube": [
-    "@IShowSpeed", "@penguinz0", "@TypicalGamer", "@Sidemen", "@MoreSidemen",
-    "@DarkViperAU", "@VanossGaming", "@Nogla", "@CaseOh_", "@Jynxzi",
-    "@KaiCenat", "@ludwig", "@GTASeriesVideos", "@MrBossFTW"
+    "@IShowSpeed",
+    "@penguinz0",
+    "@TypicalGamer",
+    "@Sidemen",
+    "@MoreSidemen",
+    "@DarkViperAU",
+    "@VanossGaming",
+    "@Nogla",
+    "@CaseOh_",
+    "@Jynxzi",
+    "@KaiCenat",
+    "@ludwig",
+    "@GTASeriesVideos",
+    "@MrBossFTW"
   ]
 }

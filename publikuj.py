@@ -25,6 +25,7 @@ import io
 import json
 import math
 import os
+import random
 import re
 import sys
 import time
@@ -126,7 +127,7 @@ def gql(query, key="BUFFER_API_KEY"):
             break
         except urllib.error.HTTPError as e:
             if e.code == 429 and attempt < 2:      # rate limit: wait as told
-                wait = int(e.headers.get("Retry-After") or 60)
+                wait = int(e.headers.get("Retry-After") or 60) if (e.headers.get("Retry-After") or "60").isdigit() else 60
                 log(f"  Buffer rate limit, waiting {wait}s")
                 time.sleep(wait)
                 continue
@@ -199,14 +200,43 @@ def candidates():
         out.append(m)
     return sorted(out, key=lambda m: -m["score"])
 
+# Anti-spam: every post gets its own text (a quote from what the streamer said), no
+# @mentions (they would tag strangers / break X's automation rules), few rotating hashtags.
+JUNK_RE = re.compile(r"leak|n[i1]gg|f[a@]gg|retard|\bkys\b", re.I)
+HASHTAGS = ["#gta", "#gaming", "#twitch", "#gtavi", "#gta6clips", "#vicecity", "#gamingclips", "#streamer"]
+
+def home(m):
+    return f"kick.com/{m['channel']}" if m.get("platform") == "kick" else f"twitch.tv/{m['channel']}"
+
+def caption(m, service):
+    q = (m.get("quote") or "").strip()
+    q = f"“{q}”" if q else ""
+    src = f"🎮 {home(m)}"
+    if service in ("twitter", "threads"):            # short, one tag, text differs every post
+        return "\n\n".join(x for x in (q, f"{src} #GTA6") if x)
+    rot = random.Random(m["id"]).sample(HASHTAGS, 2)  # same clip -> same tags, clips differ
+    return "\n\n".join(x for x in (q, src, " ".join(["#gta6", "#gta6bananaclips"] + rot)) if x)
+
 def youtube_title(m):
-    t = (m.get("title") or "").strip() or "GTA 6 moment"
-    return f"{t} | {m['channel']} #shorts"[:100]
+    """Viewer clip titles are often junk ('yoooo') or risky ('LEAK'): then use the quote."""
+    t = (m.get("title") or "").strip()
+    if len(t) < 12 or JUNK_RE.search(t) or sum(c.isalpha() for c in t) < len(t) / 2:
+        t = (m.get("quote") or "").strip() or "GTA 6 moment"
+    return f"{t} | {m['channel']} GTA 6 #shorts"[:100]
+
+def daily_quota(day):
+    """Ramp-up for new accounts (sources.json 'ramp': {date: posts per day}); 10 if not set."""
+    ramp = load_json(HERE / "sources.json", {}).get("ramp") or {}
+    n = None
+    for d, k in sorted(ramp.items()):
+        if date.fromisoformat(d) <= day:
+            n = k
+    return n if n is not None else (min(ramp.values()) if ramp else 10)
 
 def post_input(ch, m, video_url, due, draft):
     service = ch["service"].lower()
     inp = {
-        "text": m["caption"],
+        "text": caption(m, service),
         "channelId": ch["id"],
         "schedulingType": Enum("automatic"),
         "mode": Enum("addToQueue" if draft else "customScheduled"),
@@ -268,13 +298,16 @@ def cmd_den(a):
     day = now.date() if a.den == "dnes" else date.fromisoformat(a.den) if a.den else now.date() + timedelta(days=1)
     # slots still ahead of us (+20 min for the deploy and for Buffer to fetch the video)
     taken = {rec.get("due") for rec in load_json(PUBLISHED, {}).values()}   # an earlier run today
+    quota = min(a.n, daily_quota(day))
     times = [t for t in slot_times(day, len(SLOTS))
-             if t > now + timedelta(minutes=20) and t.isoformat() not in taken][: a.n]
+             if t > now + timedelta(minutes=20) and t.isoformat() not in taken][:quota]
     picks = candidates()[: len(times)]
     times = times[: len(picks)]
     chans = load_json(CHANNELS, [])
     mode = "ZKOUŠKA" if a.zkouska else ("NAOSTRO" if a.ostre else "koncepty")
-    log(f"{day}: {len(picks)} shorts x {len(chans) or '?'} channels ({mode})")
+    log(f"{day}: {len(picks)} shorts (quota {quota}) x {len(chans) or '?'} channels ({mode})")
+    if os.environ.get("GITHUB_ACTIONS") and not a.ostre and not a.zkouska:
+        print("::warning::Buffer: jen KONCEPTY, nic nevyjde. Na GitHubu nastav promennou OSTRE=1.")
     if a.zkouska:
         for m, due in zip(picks, times):
             log(f"{due:%H:%M} {m['platform']}/{m['channel']} '{m.get('title', '')[:50]}' ({m.get('views')} views)")
@@ -294,12 +327,13 @@ def cmd_den(a):
     stage.mkdir(parents=True, exist_ok=True)
     files = {}
     for rec in done.values():
-        if rec.get("path") and datetime.fromisoformat(rec["due"]) > now:
+        # keep anything due later, or published in the last 6 h (Buffer may retry a fetch)
+        if rec.get("path") and datetime.fromisoformat(rec["due"]) > now - timedelta(hours=6):
             local = stage / rec["path"].replace("/", "_")
             try:
                 local.write_bytes(http(rec["url"], timeout=300)[1])   # carry it over
                 files[rec["path"]] = local
-            except urllib.error.URLError as e:
+            except Exception as e:
                 log(f"  could not carry over {rec['url']}: {e}")
     plan = []
     for m, due in zip(picks, times):
@@ -308,22 +342,37 @@ def cmd_den(a):
         plan.append((m, due, rel))
     netlify_deploy(files)
 
-    # 2) Buffer posts, one time slot per short, every channel
+    # 2) Buffer posts, one time slot per short, every channel (X/Threads capped per day)
+    caps = load_json(HERE / "sources.json", {}).get("caps") or {}
+    used, ok, failed = {}, 0, 0
     for m, due, rel in plan:
         url = media_url(rel)
         log(f"{due:%H:%M} {m['platform']}/{m['channel']} '{m.get('title', '')[:50]}' -> {url}")
         if not is_public(url):
             log("  not reachable after deploy, skipped")
+            failed += 1
             continue
         posts = {}
         for ch in chans:
+            service = ch["service"].lower()
+            if used.get(service, 0) >= caps.get(service, 99):
+                continue
             try:
                 posts[ch["id"]] = create_post(post_input(ch, m, url, due, not a.ostre), ch.get("key", "BUFFER_API_KEY"))
-                log(f"  {ch['service']}: ok")
+                used[service] = used.get(service, 0) + 1
+                ok += 1
+                log(f"  {service}: ok")
             except Exception as e:
-                log(f"  {ch['service']}: FAILED {e}")
+                failed += 1
+                log(f"  {service}: FAILED {e}")
         done[m["id"]] = {"url": url, "path": rel, "due": due.isoformat(), "draft": not a.ostre, "posts": posts}
         save_json(PUBLISHED, done)
+    # make failures visible: a red run = an e-mail from GitHub
+    if failed:
+        print(f"::warning::Buffer: {failed} postu se nepovedlo, {ok} ok")
+    if plan and not ok:
+        print("::error::Buffer: nevysel ani jeden post (klic, Netlify nebo Buffer API)")
+        sys.exit(1)
 
 def main():
     p = argparse.ArgumentParser(description="gta6bananaclips: shorts -> Buffer")
