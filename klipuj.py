@@ -31,6 +31,7 @@ Usage (from this folder):
 import argparse
 import json
 import os
+import random
 import re
 import subprocess
 import sys
@@ -586,6 +587,77 @@ def build_filter(cam, cmds_file, x0, crop_w, game_h, ass_file=None, mark_file=No
               f"drawtext={wm}:textfile='{mark_file}':x=(w-text_w)/2:y=h-320[v]")
     return f + chain
 
+# -----------------------------------------------------------------------------
+# our banana: a small head reacting 1-2x per clip (our own element, so the short is
+# not a bare re-upload). Two greenscreen videos with 5 reactions each.
+
+BANANA = HERE / "assets" / "banan"
+BANANA_KEY = "0x1BD02A"            # the greenscreen colour
+REACTIONS = {                       # name: (video, start s, end s)
+    "laugh": (1, 0.5, 2.0), "shock": (1, 2.0, 3.5), "hype": (1, 3.5, 5.0),
+    "facepalm": (1, 5.0, 6.5), "mindblown": (1, 6.5, 8.0),
+    "rage": (2, 0.5, 2.0), "sideeye": (2, 2.0, 3.6), "crylaugh": (2, 4.0, 5.0),
+    "clap": (2, 5.0, 6.5), "point": (2, 6.5, 8.0),
+}
+TRIGGERS = [                        # what was said -> fitting reactions
+    (r"\b(lmao|lmfao|lol|ha(ha)+|i'?m dead|crying)\b", ["laugh", "crylaugh"]),
+    (r"\b(no way|what|wait|huh|how|oh my god|omg)\b", ["shock", "mindblown"]),
+    (r"\b(let'?s go|yes+|clutch|easy|gg|w)\b", ["hype", "point"]),
+    (r"\b(fuck(ing)?|shit|bullshit|are you serious)\b", ["rage", "facepalm"]),
+    (r"\b(bruh|why|cringe|dude)\b", ["facepalm", "sideeye"]),
+]
+BANANA_SIZE, BANANA_X = 210, 40     # small, left side of the game band (TikTok's buttons are on the right)
+
+def pick_reactions(words, dur, seed):
+    """
+    As few as possible: one reaction, a second only in clips over 30 s. It lands right
+    after the line that triggered it; with no trigger, one calm reaction at 2/3 of the clip.
+    """
+    rnd = random.Random(seed)
+    out = []
+    for s, e, w in words:
+        if e < 1.5 or (out and e - out[-1][0] < 8):
+            continue
+        for rx, names in TRIGGERS:
+            if re.search(rx, w.lower().strip(".,!?\"'")) or re.search(rx, w.lower()):
+                t = e + 0.15
+                if t + 1.6 < dur:
+                    out.append((t, rnd.choice(names)))
+                break
+        if len(out) >= (2 if dur > 30 else 1):
+            break
+    if not out and dur > 6:
+        out.append((dur * 0.66, rnd.choice(["clap", "sideeye", "point"])))
+    return out
+
+def reaction_inputs(reactions):
+    """ffmpeg inputs: each reaction is its own trimmed, time-shifted input."""
+    args = []
+    for t, name in reactions:
+        v, s, e = REACTIONS[name]
+        args += ["-ss", f"{s}", "-t", f"{e - s}", "-i", str(BANANA / f"reakce{v}.mp4")]
+    return args
+
+def reaction_overlay(f, reactions, cam):
+    """Append overlays of the keyed banana head to a filter graph that ends in [v]."""
+    if not reactions:
+        return f
+    f = f[: -len("[v]")] + "[r_in]"
+    y = (CAM_H if cam else 0) + 520                  # left side, middle of the game band
+    prev = "r_in"
+    for i, (t, name) in enumerate(reactions):
+        v, s, e = REACTIONS[name]
+        d = e - s
+        # setpts moves the reaction to its moment (-itsoffset does not work together with -ss);
+        # the bottom 30 % fades out so the head doesn't end in a hard edge
+        f += (f";[{i + 1}:v]setpts=PTS-STARTPTS+{t:.2f}/TB,crop=600:600:60:10,"
+              f"chromakey={BANANA_KEY}:0.16:0.06,scale={BANANA_SIZE}:{BANANA_SIZE},format=yuva420p,"
+              f"geq=lum='lum(X,Y)':cb='cb(X,Y)':cr='cr(X,Y)':a='alpha(X,Y)*min(1\\,(H-Y)/(0.3*H))',"
+              f"fade=t=in:st={t:.2f}:d=0.12:alpha=1,fade=t=out:st={t + d - 0.18:.2f}:d=0.18:alpha=1[ban{i}];"
+              f"[{prev}][ban{i}]overlay={BANANA_X}:{y}:eof_action=pass[o{i}]")
+        prev = f"o{i}"
+    return f + f";[{prev}]null[v]"
+
 def encode(cmd_base, out_path):
     """Try NVIDIA NVENC first, fall back to CPU x264."""
     # capped at 6 Mb/s: plenty for phones, and every MB is fetched 5x from Netlify by Buffer
@@ -643,8 +715,10 @@ def render(clip, src=None, clean=False):
     ff = ["ffmpeg", "-nostdin", "-y", "-hide_banner", "-loglevel", "error", "-i", str(src)]
     args = (cam, ff_path(cmds), int(xs[0]), crop_w, game_h)
     out = d / "short_9x16.mp4"
-    enc = encode(ff + ["-filter_complex", build_filter(*args, ff_path(ass) if words else None, ff_path(d / "mark.txt")),
-                       "-map", "[v]", "-map", "0:a?"], out)
+    reactions = pick_reactions(words, dur, clip["id"]) if (BANANA / "reakce1.mp4").exists() else []
+    flt = reaction_overlay(build_filter(*args, ff_path(ass) if words else None, ff_path(d / "mark.txt")), reactions, cam)
+    enc = encode(ff + reaction_inputs(reactions) + ["-filter_complex", flt, "-map", "[v]", "-map", "0:a?"], out)
+    log(f"  banana: {', '.join(f'{n} @{t:.1f}s' for t, n in reactions) or 'none'}")
     base = d / "base_9x16.mp4"               # clean, no captions: input for the editor (OpenMotion)
     if clean:
         encode(ff + ["-filter_complex", build_filter(*args), "-map", "[v]", "-map", "0:a?"], base)
