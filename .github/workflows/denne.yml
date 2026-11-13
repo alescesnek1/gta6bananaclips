@@ -1,13 +1,14 @@
 # gta6bananaclips: every day on GitHub's servers (no home PC needed)
 #   1. klipuj.py batch   -> render the best fresh moments (Twitch, Kick, YouTube)
-#   2. publikuj.py den   -> upload to R2 + schedule today's slots in Buffer
+#   2. publikuj.py den   -> deploy videos to Netlify + schedule today's slots in Buffer
 #   3. commit state      -> what was rendered / published / which facecam boxes
 # Buffer then publishes on its own during the day.
 #
 # Secrets (Settings -> Secrets and variables -> Actions -> Secrets):
-#   BUFFER_API_KEY_1, BUFFER_API_KEY_2, R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY
+#   BUFFER_API_KEY_1, BUFFER_API_KEY_2, NETLIFY_AUTH_TOKEN
 # Variables (same page -> Variables):
-#   R2_BUCKET, MEDIA_BASE_URL, OSTRE (set to 1 to schedule for real; otherwise Buffer drafts)
+#   NETLIFY_SITE_ID, MEDIA_BASE_URL, OSTRE (set to 1 to schedule for real; otherwise Buffer drafts)
+# YouTube is off here: it blocks GitHub's servers ("confirm you're not a bot").
 
 name: denne-klipy
 
@@ -20,8 +21,11 @@ on:
         description: "max shorts to render"
         default: "12"
       yt:
-        description: "of which from YouTube (0 = skip YouTube)"
-        default: "3"
+        description: "of which from YouTube (blocked on GitHub servers, keep 0)"
+        default: "0"
+      url:
+        description: "test: render just this one clip URL (no publishing)"
+        default: ""
 
 permissions:
   contents: write
@@ -37,10 +41,8 @@ jobs:
     env:
       BUFFER_API_KEY_1: ${{ secrets.BUFFER_API_KEY_1 }}
       BUFFER_API_KEY_2: ${{ secrets.BUFFER_API_KEY_2 }}
-      R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
-      R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
-      R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
-      R2_BUCKET: ${{ vars.R2_BUCKET }}
+      NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+      NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
       MEDIA_BASE_URL: ${{ vars.MEDIA_BASE_URL }}
       PYTHONUTF8: "1"
     steps:
@@ -70,14 +72,19 @@ jobs:
           key: whisper-small.en
 
       - name: Buffer channels (first run only)
-        if: hashFiles('buffer.json') == '' && env.BUFFER_API_KEY_1 != ''
+        if: inputs.url == '' && hashFiles('buffer.json') == '' && env.BUFFER_API_KEY_1 != ''
         run: python publikuj.py kanaly
 
+      - name: render one test clip
+        if: inputs.url != ''
+        run: python klipuj.py --whisper small.en one "${{ inputs.url }}"
+
       - name: render
-        run: python klipuj.py --whisper small.en batch --max ${{ inputs.max || '12' }} --yt ${{ inputs.yt || '3' }}
+        if: inputs.url == ''
+        run: python klipuj.py --whisper small.en batch --max ${{ inputs.max || '12' }} --yt ${{ inputs.yt || '0' }}
 
       - name: publish to Buffer
-        if: env.BUFFER_API_KEY_1 != ''
+        if: inputs.url == '' && env.BUFFER_API_KEY_1 != '' && env.NETLIFY_AUTH_TOKEN != ''
         run: python publikuj.py den --den dnes --n 10 ${{ vars.OSTRE == '1' && '--ostre' || '' }}
 
       - name: keep the shorts for 3 days (download from the run page)

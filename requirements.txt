@@ -3,5 +3,4 @@ opencv-python-headless>=4.10,<5  # 5.0 dropped CascadeClassifier (facecam detect
 onnxruntime>=1.20
 openai-whisper  # install torch first with CUDA: pip install torch --index-url https://download.pytorch.org/whl/cu128
 # faster-whisper NEjde: Smart App Control blokuje ctranslate2.dll (WinError 4551)
-boto3  # upload to Cloudflare R2 (publikuj.py)
 tzdata  # Europe/Prague on Windows

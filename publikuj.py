@@ -1,40 +1,46 @@
 """
-publikuj.py - gta6bananaclips: rendered shorts -> public URL (Cloudflare R2) -> Buffer
+publikuj.py - gta6bananaclips: rendered shorts -> public URL (Netlify) -> Buffer
 -> Instagram, TikTok, X, Facebook, YouTube.
 
 Buffer's API has no upload: it takes a PUBLIC video URL and fetches the file at
-publish time, so every short is first put into a public R2 bucket and must stay
-there until it is published.
+publish time. So the day's shorts are deployed to a Netlify site
+(gta6bananaclips-media.netlify.app/<day>/<clip>.mp4) and must stay there until
+they are published. Every deploy replaces the whole site, so videos still waiting
+for their slot are carried over into the next deploy; published ones drop out.
 
 Daily flow:
-  .venv/Scripts/python klipuj.py batch          # render fresh moments
-  .venv/Scripts/python publikuj.py den --n 10   # best 10 -> Buffer, spread over tomorrow
+  .venv/Scripts/python klipuj.py batch                  # render fresh moments
+  .venv/Scripts/python publikuj.py den --den dnes --n 10   # best 10 -> today's slots in Buffer
 
 By default posts land in Buffer as DRAFTS (nothing goes public). --ostre schedules
 them for real. --zkouska prints the plan and the GraphQL without touching anything.
 
 One-time setup:
-  1. .env (see .env.example): BUFFER_API_KEY, R2_* keys, MEDIA_BASE_URL
+  1. .env (see .env.example): BUFFER_API_KEY_1/_2, NETLIFY_AUTH_TOKEN, NETLIFY_SITE_ID, MEDIA_BASE_URL
   2. .venv/Scripts/python publikuj.py kanaly    # saves your Buffer channels to buffer.json
 """
 
 import argparse
+import io
 import json
 import math
 import os
+import re
 import sys
 import time
 import urllib.error
 import urllib.request
+import zipfile
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
 HERE = Path(__file__).resolve().parent
 OUT = HERE / "out"
-PUBLISHED = HERE / "publikovano.json"   # clip id -> url, time, Buffer post ids
+PUBLISHED = HERE / "publikovano.json"   # clip id -> url, path, time, Buffer post ids
 CHANNELS = HERE / "buffer.json"         # Buffer channels we post to (from `kanaly`)
 API = "https://api.buffer.com"
+NETLIFY = "https://api.netlify.com/api/v1"
 TZ = ZoneInfo("Europe/Prague")
 SLOTS = ["09:00", "10:30", "12:00", "13:30", "15:00", "16:30", "18:00", "19:30", "21:00", "22:30"]
 
@@ -54,16 +60,23 @@ def save_json(path, data):
 
 def load_env():
     """KEY=VALUE lines from .env into the environment (real env vars win)."""
-    for line in (HERE / ".env").read_text(encoding="utf-8").splitlines() if (HERE / ".env").exists() else []:
+    env = HERE / ".env"
+    for line in env.read_text(encoding="utf-8").splitlines() if env.exists() else []:
         line = line.strip()
         if line and not line.startswith("#") and "=" in line:
             k, v = line.split("=", 1)
-            os.environ.setdefault(k.strip(), v.strip().strip('"'))
+            if v.strip():
+                os.environ.setdefault(k.strip(), v.strip().strip('"'))
 
 def need(*keys):
     missing = [k for k in keys if not os.environ.get(k)]
     if missing:
         sys.exit(f"missing in .env: {', '.join(missing)} (see .env.example)")
+
+def http(url, data=None, headers=None, method=None, timeout=120):
+    req = urllib.request.Request(url, data=data, headers=headers or {}, method=method)
+    with urllib.request.urlopen(req, timeout=timeout) as r:
+        return r.status, r.read()
 
 # -----------------------------------------------------------------------------
 # Buffer GraphQL. Inputs are written inline: strings quoted, enums bare.
@@ -92,12 +105,11 @@ def buffer_keys():
     return keys or (["BUFFER_API_KEY"] if os.environ.get("BUFFER_API_KEY") else [])
 
 def gql(query, key="BUFFER_API_KEY"):
-    req = urllib.request.Request(API, data=json.dumps({"query": query}).encode(), method="POST", headers={
-        "Authorization": f"Bearer {os.environ[key]}", "Content-Type": "application/json"})
+    body = json.dumps({"query": query}).encode()
+    headers = {"Authorization": f"Bearer {os.environ[key]}", "Content-Type": "application/json"}
     for attempt in range(3):
         try:
-            with urllib.request.urlopen(req, timeout=60) as r:
-                data = json.loads(r.read())
+            data = json.loads(http(API, body, headers, "POST", 60)[1])
             break
         except urllib.error.HTTPError as e:
             if e.code == 429 and attempt < 2:      # rate limit: wait as told
@@ -111,50 +123,53 @@ def gql(query, key="BUFFER_API_KEY"):
     return data["data"]
 
 # -----------------------------------------------------------------------------
-# public hosting: Cloudflare R2 (S3 API), served from MEDIA_BASE_URL
+# public hosting: one Netlify deploy per day (zip of all videos still needed)
 
-def r2():
-    import boto3
-    return boto3.client("s3", endpoint_url=f"https://{os.environ['R2_ACCOUNT_ID']}.r2.cloudflarestorage.com",
-                        aws_access_key_id=os.environ["R2_ACCESS_KEY_ID"],
-                        aws_secret_access_key=os.environ["R2_SECRET_ACCESS_KEY"], region_name="auto")
+INDEX = b"<!doctype html><meta name=robots content=noindex><title>gta6bananaclips media</title>"
 
-def cleanup_r2(done, keep_days=2):
-    """Delete videos published more than keep_days ago: keeps R2 inside the free 10 GB."""
-    now = datetime.now(timezone.utc)
-    s3, n = None, 0
-    for cid, rec in done.items():
-        if rec.get("deleted") or rec.get("draft") or "key" not in rec:
-            continue                                  # drafts: Buffer still needs the file
-        if now - datetime.fromisoformat(rec["due"]) > timedelta(days=keep_days):
-            s3 = s3 or r2()
-            s3.delete_object(Bucket=os.environ["R2_BUCKET"], Key=rec["key"])
-            rec["deleted"] = now.isoformat(timespec="seconds")
-            n += 1
-    if n:
-        save_json(PUBLISHED, done)
-        log(f"R2: deleted {n} published videos")
+def netlify_deploy(files):
+    """files: {site path: local path}. Deploys them as the whole site and waits until it is live."""
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w", zipfile.ZIP_STORED) as z:   # mp4 doesn't compress anyway
+        z.writestr("index.html", INDEX)
+        z.writestr("robots.txt", "User-agent: *\nDisallow: /\n")
+        for rel, src in files.items():
+            z.write(src, rel)
+    auth = {"Authorization": f"Bearer {os.environ['NETLIFY_AUTH_TOKEN']}"}
+    site = os.environ["NETLIFY_SITE_ID"]
+    log(f"Netlify: deploying {len(files)} videos ({buf.tell() / 1e6:.0f} MB)")
+    _, body = http(f"{NETLIFY}/sites/{site}/deploys", buf.getvalue(),
+                   {**auth, "Content-Type": "application/zip"}, "POST", 900)
+    deploy = json.loads(body)
+    for _ in range(120):                                     # up to 10 min
+        if deploy.get("state") == "ready":
+            return
+        if deploy.get("state") == "error":
+            raise RuntimeError(f"Netlify deploy failed: {deploy.get('error_message')}")
+        time.sleep(5)
+        deploy = json.loads(http(f"{NETLIFY}/deploys/{deploy['id']}", headers=auth)[1])
+    raise RuntimeError("Netlify deploy did not become ready in 10 min")
 
-def upload(path, key):
-    r2().upload_file(str(path), os.environ["R2_BUCKET"], key, ExtraArgs={"ContentType": "video/mp4"})
-    url = f"{os.environ['MEDIA_BASE_URL'].rstrip('/')}/{key}"
-    # Buffer will fetch it later: make sure the world can read it now
-    with urllib.request.urlopen(urllib.request.Request(url, method="HEAD"), timeout=30) as r:
-        if r.status != 200:
-            raise RuntimeError(f"{url} not public (HTTP {r.status})")
-    return url
+def media_url(rel):
+    return f"{os.environ['MEDIA_BASE_URL'].rstrip('/')}/{rel}"
+
+def is_public(url):
+    try:
+        return http(url, method="HEAD", timeout=30)[0] == 200
+    except urllib.error.URLError:
+        return False
 
 # -----------------------------------------------------------------------------
 # what to post
 
 def candidates():
-    """Rendered shorts not yet published, best first: views (log) plus a bonus for freshness."""
+    """Rendered shorts not yet published, best first: views (log) minus a penalty for age."""
     done = load_json(PUBLISHED, {})
     now = time.time()
     out = []
     for meta_file in OUT.glob("*/*/meta.json"):
         if meta_file.parts[-3].startswith("_"):
-            continue                                 # _ukazka, _tmp
+            continue                                 # _ukazka, _media
         m = load_json(meta_file, {})
         if not m or m.get("id") in done or not Path(m.get("short", "")).exists():
             continue
@@ -223,34 +238,54 @@ def cmd_kanaly(a):
     log(f"saved {len(chans)} channels to {CHANNELS.name} (delete the ones we should not post to)")
 
 def cmd_den(a):
-    today = datetime.now(TZ).date()
-    day = today if a.den == "dnes" else date.fromisoformat(a.den) if a.den else today + timedelta(days=1)
-    # slots still ahead of us (+20 min for Buffer to fetch the video)
-    times = [t for t in slot_times(day, len(SLOTS)) if t > datetime.now(TZ) + timedelta(minutes=20)][: a.n]
+    now = datetime.now(TZ)
+    day = now.date() if a.den == "dnes" else date.fromisoformat(a.den) if a.den else now.date() + timedelta(days=1)
+    # slots still ahead of us (+20 min for the deploy and for Buffer to fetch the video)
+    times = [t for t in slot_times(day, len(SLOTS)) if t > now + timedelta(minutes=20)][: a.n]
     picks = candidates()[: len(times)]
     times = times[: len(picks)]
     chans = load_json(CHANNELS, [])
     mode = "ZKOUŠKA" if a.zkouska else ("NAOSTRO" if a.ostre else "koncepty")
     log(f"{day}: {len(picks)} shorts x {len(chans) or '?'} channels ({mode})")
-    if not a.zkouska:
-        load_env()
-        need("R2_ACCOUNT_ID", "R2_ACCESS_KEY_ID", "R2_SECRET_ACCESS_KEY", "R2_BUCKET", "MEDIA_BASE_URL")
-        if not chans:
-            sys.exit("no channels: run `publikuj.py kanaly` first")
-    done = load_json(PUBLISHED, {})
-    if not a.zkouska:
-        cleanup_r2(done)
-    for m, due in zip(picks, times):
-        log(f"{due:%H:%M} {m['platform']}/{m['channel']} '{m.get('title', '')[:50]}' ({m.get('views')} views)")
-        if a.zkouska:
+    if a.zkouska:
+        for m, due in zip(picks, times):
+            log(f"{due:%H:%M} {m['platform']}/{m['channel']} '{m.get('title', '')[:50]}' ({m.get('views')} views)")
             fake = {"id": "CHANNEL_ID", "service": "youtube"}
             print("   ", gql_value(post_input(fake, m, "https://media.example/clip.mp4", due, not a.ostre))[:400])
-            continue
-        key = f"{day:%Y%m%d}/{m['id']}.mp4"
-        try:
-            url = upload(m["short"], key)
-        except Exception as e:
-            log(f"  upload failed: {e}")
+        return
+    if not picks:
+        return
+    load_env()
+    need("NETLIFY_AUTH_TOKEN", "NETLIFY_SITE_ID", "MEDIA_BASE_URL")
+    if not buffer_keys() or not chans:
+        sys.exit("no Buffer keys or channels: fill .env and run `publikuj.py kanaly` first")
+
+    # 1) one deploy: today's picks + videos from earlier runs whose slot hasn't come yet
+    done = load_json(PUBLISHED, {})
+    stage = OUT / "_media"
+    stage.mkdir(parents=True, exist_ok=True)
+    files = {}
+    for rec in done.values():
+        if rec.get("path") and datetime.fromisoformat(rec["due"]) > now:
+            local = stage / rec["path"].replace("/", "_")
+            try:
+                local.write_bytes(http(rec["url"], timeout=300)[1])   # carry it over
+                files[rec["path"]] = local
+            except urllib.error.URLError as e:
+                log(f"  could not carry over {rec['url']}: {e}")
+    plan = []
+    for m, due in zip(picks, times):
+        rel = f"{day:%Y%m%d}/{re.sub(r'[^A-Za-z0-9_-]', '_', m['id'])}.mp4"
+        files[rel] = Path(m["short"])
+        plan.append((m, due, rel))
+    netlify_deploy(files)
+
+    # 2) Buffer posts, one time slot per short, every channel
+    for m, due, rel in plan:
+        url = media_url(rel)
+        log(f"{due:%H:%M} {m['platform']}/{m['channel']} '{m.get('title', '')[:50]}' -> {url}")
+        if not is_public(url):
+            log("  not reachable after deploy, skipped")
             continue
         posts = {}
         for ch in chans:
@@ -259,7 +294,7 @@ def cmd_den(a):
                 log(f"  {ch['service']}: ok")
             except Exception as e:
                 log(f"  {ch['service']}: FAILED {e}")
-        done[m["id"]] = {"url": url, "key": key, "due": due.isoformat(), "draft": not a.ostre, "posts": posts}
+        done[m["id"]] = {"url": url, "path": rel, "due": due.isoformat(), "draft": not a.ostre, "posts": posts}
         save_json(PUBLISHED, done)
 
 def main():
