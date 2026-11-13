@@ -42,7 +42,20 @@ CHANNELS = HERE / "buffer.json"         # Buffer channels we post to (from `kana
 API = "https://api.buffer.com"
 NETLIFY = "https://api.netlify.com/api/v1"
 TZ = ZoneInfo("Europe/Prague")
-SLOTS = ["09:00", "10:30", "12:00", "13:30", "15:00", "16:30", "18:00", "19:30", "21:00", "22:30"]
+# Prague times for a UK + US audience; slots before noon belong to the NEXT calendar day.
+#   Prague  UK (GMT)  US East  US West
+#   14:00   13:00     08:00    05:00    UK lunch
+#   17:00   16:00     11:00    08:00    UK after school
+#   18:30   17:30     12:30    09:30    US lunch, UK evening
+#   20:00   19:00     14:00    11:00    UK prime time
+#   21:30   20:30     15:30    12:30    UK prime, US after school
+#   23:00   22:00     17:00    14:00    UK late, US east coast after work
+#   00:30   23:30     18:30    15:30    US east prime time
+#   02:00   01:00     20:00    17:00    US east prime, west after work
+#   03:30   02:30     21:30    18:30    US east late, west prime
+#   05:00   04:00     23:00    20:00    US west prime time
+# (CET; during summer time everything shifts together, the pattern stays.)
+SLOTS = ["14:00", "17:00", "18:30", "20:00", "21:30", "23:00", "00:30", "02:00", "03:30", "05:00"]
 
 def log(msg):
     print(f"[{datetime.now():%H:%M:%S}] {msg}", flush=True)
@@ -163,7 +176,12 @@ def is_public(url):
 # what to post
 
 def candidates():
-    """Rendered shorts not yet published, best first: views (log) minus a penalty for age."""
+    """
+    Rendered shorts not yet published, best first: views (log) minus a penalty for age.
+    Gate 2 of 2: only shorts whose saved stream category / video title matches the game
+    in sources.json (GTA 6) can go out - whatever slipped past the render step.
+    """
+    game = load_json(HERE / "sources.json", {}).get("game", "Grand Theft Auto VI|GTA ?VI|GTA ?6")
     done = load_json(PUBLISHED, {})
     now = time.time()
     out = []
@@ -172,6 +190,9 @@ def candidates():
             continue                                 # _ukazka, _media
         m = load_json(meta_file, {})
         if not m or m.get("id") in done or not Path(m.get("short", "")).exists():
+            continue
+        if not re.search(game, m.get("category") or "", re.I):
+            log(f"  not published (category '{m.get('category') or '?'}' is not {game}): {m.get('id')}")
             continue
         age_h = (now - (m.get("created") or now)) / 3600
         m["score"] = math.log1p(m.get("views") or 0) - age_h / 24
@@ -214,7 +235,12 @@ def create_post(inp, key):
     return res["post"]["id"]
 
 def slot_times(day, n):
-    return [datetime.combine(day, datetime.strptime(s, "%H:%M").time(), TZ) for s in SLOTS[:n]]
+    """The publishing day runs from 14:00 to 05:00 the next morning (Prague)."""
+    out = []
+    for s in SLOTS[:n]:
+        t = datetime.strptime(s, "%H:%M").time()
+        out.append(datetime.combine(day + timedelta(days=1 if t.hour < 12 else 0), t, TZ))
+    return out
 
 # -----------------------------------------------------------------------------
 # commands

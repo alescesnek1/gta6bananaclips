@@ -288,6 +288,7 @@ def youtube_clips(handle, days, per_video, max_videos=4):
                     "created": int(info.get("timestamp") or 0),
                     "channel": (info.get("uploader_id") or handle).lstrip("@").lower(),
                     "platform": "youtube", "section": [round(s, 1), round(e2, 1)], "signal": how,
+                    "category": about,
                 })
             log(f"  {handle}: {vid} -> {how} peaks")
     return clips
@@ -677,17 +678,23 @@ def game_re():
 
 def is_game(clip):
     """
-    Twitch and Kick clips carry the stream category (e.g. 'Grand Theft Auto V').
-    Just Chatting, slots or other games are remembered and never checked again.
+    Twitch and Kick clips carry the stream category (e.g. 'Grand Theft Auto VI').
+    Only the game in sources.json passes; Just Chatting, slots or other games are
+    remembered and never checked again. Unknown category = no (gate 1 of 2;
+    publikuj.py checks the saved category again before anything goes out).
     YouTube windows were already filtered by video title.
     """
+    if clip.get("platform") == "youtube":
+        return bool(re.search(game_re(), clip.get("category", ""), re.I))
     if clip.get("platform") not in ("twitch", "kick"):
-        return True
+        return False
     try:
         cats = ytdlp_json(clip["url"], timeout=60).get("categories") or []
-    except RuntimeError:
-        return True                                   # unknown: let the render decide
-    if re.search(game_re(), " ".join(cats), re.I):
+    except RuntimeError as e:
+        log(f"  skip {clip['channel']} {clip['id']}: category unknown ({str(e)[-80:]})")
+        return False
+    clip["category"] = " ".join(cats)
+    if re.search(game_re(), clip["category"], re.I):
         return True
     state = load_json(STATE, {"done": {}, "failed": {}})
     state.setdefault("other_game", {})[clip["id"]] = " ".join(cats)
@@ -764,7 +771,9 @@ def clip_info(url):
     return {"id": f"{platform}_{info.get('id')}", "url": url, "title": info.get("title") or "",
             "views": int(info.get("view_count") or 0), "duration": float(info.get("duration") or 0),
             "created": int(info.get("timestamp") or 0), "channel": (channel or "unknown").lstrip("@").lower(),
-            "platform": platform}
+            "platform": platform,
+            "category": " ".join(info.get("categories") or []) if platform != "youtube" else
+                        " ".join([info.get("title") or ""] + (info.get("tags") or []))}
 
 def cmd_one(a):
     if Path(a.url).exists():                  # local file: channel must be given
