@@ -770,7 +770,7 @@ def captions_ass(words, path, y):
         "BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, "
         "Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding\n"
         # no outline: a soft drop shadow only (Aleš: no thick outlined captions)
-        f"Style: Cap,{CAP_FONT},{CAP_SIZE},&H00FFFFFF,&H00FFFFFF,&H00000000,&H64000000,0,0,0,0,100,100,1,0,1,0,5,5,40,40,0,1\n\n"
+        f"Style: Cap,{CAP_FONT},{CAP_SIZE},&H00FFFFFF,&H00FFFFFF,&H00000000,&H64000000,0,0,0,0,100,100,1,0,1,4,4,5,40,40,0,1\n\n"
         "[Events]\nFormat: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\n"
     )
     clean = lambda s: s.replace("\\", "").replace("{", "(").replace("}", ")").upper()
@@ -785,7 +785,7 @@ def captions_ass(words, path, y):
             cur = []
     if cur:
         chunks.append(cur)
-    hi = "{\\c&H35E1FF&}"                 # spoken word in banana yellow #FFE135
+    hi = "{\\c&H35E1FF&\\fscx90\\fscy90\\t(0,110,\\fscx108\\fscy108)}"   # banana yellow + quick pop (openshorts)
     lines = []
     for ci, ch in enumerate(chunks):
         chunk_end = chunks[ci + 1][0][0] if ci + 1 < len(chunks) else ch[-1][1] + 0.4
