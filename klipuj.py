@@ -351,7 +351,7 @@ def faces_on(src, n, w=960, h=540):
         out.append(_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30)))
     return out
 
-def detect_cam(src):
+def detect_cam(src, mult=3.0):
     """
     Guess the facecam box. The webcam is a static part of the overlay, so the
     real face sits at (almost) the same spot on most frames, while false hits
@@ -370,7 +370,7 @@ def detect_cam(src):
     if len(best) < max(3, len(per_frame) // 3):   # not stable enough to be a webcam
         return None
     fx, fy, fw, fh = (float(v) for v in np.median(np.array(best), axis=0))
-    bw = min(fw * 3.0, 960)                       # ~3 face-widths: stays inside the cam overlay (no borders)
+    bw = min(fw * mult, 960)                      # ~3 face-widths: stays inside the cam overlay (no borders)
     if bw > 0.4 * 960:                            # that's a full-screen camera, not an overlay
         return None
     bh = bw * CAM_H / W                           # keep the top band's aspect (1080:640)
@@ -585,7 +585,7 @@ def pick_target(dets, cam_px, prev, w, h):
             best, best_s = cx, s
     return best if best_s > 0.12 else None
 
-def game_bars(src):
+def game_bars(src, loose=False):
     """
     Black bars at the top/bottom of the GAME picture only (a letterboxed trailer inside a stream:
     the streamer's cam and chat cover the bars at the sides, so a whole-frame cropdetect misses
@@ -595,10 +595,10 @@ def game_bars(src):
     masks = []
     for _, img in frames(src, 1, 960, 540):
         g = cv2.cvtColor(img[:, 300:660], cv2.COLOR_BGR2GRAY)
-        masks.append((g.mean(axis=1) < 16) & (g.std(axis=1) < 6))
+        masks.append((g.mean(axis=1) < (26 if loose else 16)) & (g.std(axis=1) < (10 if loose else 6)))
     if len(masks) < 3:
         return 0, 0
-    bar = np.mean(masks, axis=0) >= 0.7
+    bar = np.mean(masks, axis=0) >= (0.5 if loose else 0.7)
     top = int(np.argmin(bar)) if bar[0] else 0
     bot = int(np.argmin(bar[::-1])) if bar[-1] else 0
     if top + bot > 270:                       # more than half black: something is wrong, don't trust it
@@ -606,6 +606,46 @@ def game_bars(src):
     if top or bot:
         log(f"  black bars in the game picture: top {top * 2}px, bottom {bot * 2}px -> cropped")
     return top * 2 + (2 if top else 0), bot * 2 + (2 if bot else 0)
+
+def subtitle_band(src, top, bot):
+    """
+    Burned-in subtitles of the source (YouTube uploads, trailers): white text with dark
+    edges in a fixed band near the bottom of the picture. A row counts as subtitle row when
+    it has many sharp white pixels on at least 20 % of frames. Returns how many pixels to cut
+    from the bottom (1920x1080 space), 0 if there are no subtitles.
+    """
+    lo, hi = top // 2, 540 - bot // 2                      # the picture area in 960x540
+    zone = int(lo + (hi - lo) * 0.7)                       # look only at the lowest 30 %
+    hits = []
+    for _, img in frames(src, 2, 960, 540):
+        g = cv2.cvtColor(img[zone:hi, 120:840], cv2.COLOR_BGR2GRAY).astype(np.int16)
+        edge = np.abs(np.diff(g, axis=1))[:, :] > 60
+        white = g[:, 1:] > 200
+        hits.append((white & edge).mean(axis=1) > 0.015)
+    if len(hits) < 4:
+        return 0
+    rows = np.mean(hits, axis=0) >= 0.25
+    if not rows.any():
+        return 0
+    # subtitles = ONE narrow band at the bottom; a busy bright scene lights up many rows -> ignore
+    blocks, start = [], None
+    for i, r in enumerate(list(rows) + [False]):
+        if r and start is None:
+            start = i
+        elif not r and start is not None:
+            blocks.append((start, i))
+            start = None
+    b0, b1 = blocks[-1]                                    # the lowest block ...
+    for c0, c1 in reversed(blocks[:-1]):                   # ... plus the lines just above it (2-line subtitles)
+        if b0 - c1 <= 24:
+            b0 = c0
+        else:
+            break
+    if b1 - b0 > 0.2 * (hi - lo) or b1 - b0 < 4:
+        return 0
+    cut = (hi - (zone + b0) + 6) * 2                       # from the top of the band to the bottom, plus a margin
+    log(f"  subtitles in the source: cutting {cut}px at the bottom")
+    return cut
 
 def track_path(src, cam, crop_w, dur):
     """Per-output-frame crop x (left edge, source pixels) that follows the player."""
@@ -844,38 +884,53 @@ def render(clip, src=None, clean=False):
     dur = duration(src)
     if talking_head(src):                     # check first: a full-screen webcam also looks like a "facecam"
         raise NotGameplay("streamer's face fills the frame, no gameplay")
-    cam = get_cam(clip["channel"], src)
-    game_h = H - CAM_H if cam else H
-    top, bot = game_bars(src)                 # black bars inside the game picture (e.g. a letterboxed trailer)
-    crop_h = SH - top - bot
-    crop_w = round(W * crop_h / game_h)       # source width that fills the game band at full height
-    xs = track_path(src, cam, crop_w, dur)
-    cmds = d / "track.cmd"
-    cmds.write_text("".join(f"{i / FPS:.4f} crop@g x {x};\n" for i, x in enumerate(xs)), encoding="utf-8")
-
     words = transcribe(src)
     speech = " ".join(t for _, _, t in words)
     if SLUR_RE.search(speech):
         raise NotGameplay("slur in the speech - not worth a strike or a ban")
-    ass = d / "captions.ass"
-    n_chunks = captions_ass(words, ass, y=CAM_H if cam else 600)   # on the seam between face and game
-    log(f"  captions: {len(words)} words, {n_chunks} chunks")
-    (d / "transcript.txt").write_text(" ".join(t for _, _, t in words), encoding="utf-8")
+    (d / "transcript.txt").write_text(speech, encoding="utf-8")
     (d / "mark.txt").write_text(f"@{clip['channel']}", encoding="utf-8")
-
-    ff = ["ffmpeg", "-nostdin", "-y", "-hide_banner", "-loglevel", "error", "-i", str(src)]
-    args = (cam, ff_path(cmds), int(xs[0]), crop_w, game_h, crop_h, top)
-    out = d / "short_9x16.mp4"
     reactions = pick_reactions(words, dur, clip["id"]) if (BANANA / "reakce1.mp4").exists() else []
-    flt = reaction_overlay(build_filter(*args, ass_file=ff_path(ass) if words else None, mark_file=ff_path(d / "mark.txt"),
-                                        nf=src_norm(src)),
-                           reactions, cam)
-    enc = encode(ff + reaction_inputs(reactions) + ["-filter_complex", flt, "-map", "[v]", "-map", "0:a?"], out)
-    log(f"  banana: {', '.join(f'{n} @{t:.1f}s' for t, n in reactions) or 'none'}")
-    problems = quality_check(out, cam)
+    ff = ["ffmpeg", "-nostdin", "-y", "-hide_banner", "-loglevel", "error", "-i", str(src)]
+    out = d / "short_9x16.mp4"
+
+    # Render, check, and REPAIR instead of giving up (Aleš: a cut face or black bars must be fixed):
+    #   1) normal: saved/auto facecam box, detected bars and subtitles cropped
+    #   2) facecam detected again with a wider box, bars found with looser limits, 6 % extra zoom
+    #   3) no facecam band at all: the game fills the whole short (still a clean video)
+    problems = []
+    for attempt, (cam_mode, loose, zoom) in enumerate((("saved", False, 0.0), ("again", True, 0.06), ("none", True, 0.06))):
+        if cam_mode == "saved":
+            cam = get_cam(clip["channel"], src)
+        elif cam_mode == "again":
+            cam = detect_cam(src, mult=3.4)
+        else:
+            cam = None
+        game_h = H - CAM_H if cam else H
+        top, bot = game_bars(src, loose=loose)            # black bars inside the game picture
+        bot = max(bot, subtitle_band(src, top, bot))      # burned-in subtitles of the source video
+        crop_h = SH - top - bot
+        cut = int(crop_h * zoom / 2)
+        top, crop_h = top + cut, crop_h - 2 * cut
+        crop_w = round(W * crop_h / game_h)               # source width that fills the game band at full height
+        xs = track_path(src, cam, crop_w, dur)
+        cmds = d / "track.cmd"
+        cmds.write_text("".join(f"{i / FPS:.4f} crop@g x {x};\n" for i, x in enumerate(xs)), encoding="utf-8")
+        ass = d / "captions.ass"
+        n_chunks = captions_ass(words, ass, y=CAM_H if cam else 600)   # on the seam between face and game
+        args = (cam, ff_path(cmds), int(xs[0]), crop_w, game_h, crop_h, top)
+        flt = reaction_overlay(build_filter(*args, ass_file=ff_path(ass) if words else None,
+                                            mark_file=ff_path(d / "mark.txt"), nf=src_norm(src)), reactions, cam)
+        enc = encode(ff + reaction_inputs(reactions) + ["-filter_complex", flt, "-map", "[v]", "-map", "0:a?"], out)
+        problems = quality_check(out, cam)
+        if not problems:
+            break
+        log(f"  quality check: {'; '.join(problems)} -> repair attempt {attempt + 1}")
     if problems:
         out.unlink(missing_ok=True)
-        raise NotGameplay(f"quality check failed: {'; '.join(problems)}")
+        raise NotGameplay(f"quality check failed after repairs: {'; '.join(problems)}")
+    log(f"  captions: {len(words)} words, {n_chunks} chunks; "
+        f"banana: {', '.join(f'{n} @{t:.1f}s' for t, n in reactions) or 'none'}")
     base = d / "base_9x16.mp4"               # clean, no captions: input for the editor (OpenMotion)
     if clean:
         encode(ff + ["-filter_complex", build_filter(*args, nf=src_norm(src)), "-map", "[v]", "-map", "0:a?"], base)
