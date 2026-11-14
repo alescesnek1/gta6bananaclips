@@ -206,7 +206,8 @@ JUNK_RE = re.compile(r"leak|n[i1]gg|f[a@]gg|retard|\bkys\b", re.I)
 HASHTAGS = ["#gta", "#gaming", "#twitch", "#gtavi", "#gta6clips", "#vicecity", "#gamingclips", "#streamer"]
 
 def home(m):
-    return f"kick.com/{m['channel']}" if m.get("platform") == "kick" else f"twitch.tv/{m['channel']}"
+    return {"kick": f"kick.com/{m['channel']}", "youtube": f"youtube.com/@{m['channel']}"}.get(
+        m.get("platform"), f"twitch.tv/{m['channel']}")
 
 def caption(m, service):
     q = (m.get("quote") or "").strip()

@@ -70,8 +70,15 @@ YT_CLIP = 35.0         # seconds cut around a YouTube peak
 # -----------------------------------------------------------------------------
 # small helpers
 
+# Age-restricted YouTube videos need a signed-in account. Export the cookies of a separate
+# throwaway YouTube account (not your main Google account) to this file; it stays local
+# (.gitignore) and is only passed to yt-dlp for YouTube URLs.
+YT_COOKIES = HERE / "youtube_cookies.txt"
+
 def run(cmd, timeout=None):
     """Run a command, raise RuntimeError with its stderr tail if it fails or hangs."""
+    if cmd[0] == "yt-dlp" and YT_COOKIES.exists() and any("youtube.com" in c or "youtu.be" in c for c in cmd):
+        cmd = [cmd[0], "--cookies", str(YT_COOKIES)] + cmd[1:]
     try:
         p = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace",
                            stdin=subprocess.DEVNULL, timeout=timeout)
@@ -93,7 +100,9 @@ def save_json(path, data):
     tmp.replace(path)
 
 def log(msg):
-    print(f"[{datetime.now():%H:%M:%S}] {msg}", flush=True)
+    line = f"[{datetime.now():%H:%M:%S}] {msg}"
+    enc = sys.stdout.encoding or "utf-8"              # Windows console is cp1250: emoji in titles must not crash
+    print(line.encode(enc, "replace").decode(enc), flush=True)
 
 def ff_path(p):
     """Path as ffmpeg filter argument on Windows: forward slashes, escaped drive colon."""
@@ -101,9 +110,37 @@ def ff_path(p):
 
 NORM = f"scale={SW}:{SH}:force_original_aspect_ratio=increase,crop={SW}:{SH},setsar=1"
 
+_norm_cache = {}
+
+def src_norm(src):
+    """
+    Per-source normalisation: cut black letterbox/pillarbox bars that are baked into the
+    video (YouTube uploads often have them), then fill 1920x1080. Everything (tracking,
+    facecam box, render) uses this, so coordinates stay consistent.
+    """
+    key = str(src)
+    if key not in _norm_cache:
+        crop = ""
+        try:
+            iw, ih = (int(v) for v in run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries",
+                                           "stream=width,height", "-of", "csv=p=0", str(src)]).strip().split(",")[:2])
+            p = subprocess.run(["ffmpeg", "-nostdin", "-i", str(src), "-vf", "fps=2,cropdetect=limit=20:round=2:reset=0",
+                                "-f", "null", "-"], capture_output=True, text=True, encoding="utf-8", errors="replace",
+                               stdin=subprocess.DEVNULL, timeout=300)
+            m = re.findall(r"crop=(\d+):(\d+):(\d+):(\d+)", p.stderr)
+            if m:
+                w, h, x, y = map(int, m[-1])
+                if w * h < 0.97 * iw * ih and w > 0.5 * iw and h > 0.5 * ih:
+                    crop = f"crop={w}:{h}:{x}:{y},"
+                    log(f"  black bars in source: cropping to {w}x{h}+{x}+{y}")
+        except Exception as e:
+            log(f"  cropdetect failed ({str(e)[-80:]}), no crop")
+        _norm_cache[key] = crop + NORM
+    return _norm_cache[key]
+
 def frames(src, fps, w, h):
     """Yield (t, BGR frame) from a video, resampled to fps and scaled to w x h."""
-    cmd = ["ffmpeg", "-nostdin", "-v", "error", "-i", str(src), "-vf", f"fps={fps},{NORM},scale={w}:{h}",
+    cmd = ["ffmpeg", "-nostdin", "-v", "error", "-i", str(src), "-vf", f"fps={fps},{src_norm(src)},scale={w}:{h}",
            "-f", "rawvideo", "-pix_fmt", "bgr24", "-"]
     # stderr off: closing the pipe early (we often read only some frames) makes ffmpeg complain
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stdin=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -332,14 +369,34 @@ def detect_cam(src):
     if len(best) < max(3, len(per_frame) // 3):   # not stable enough to be a webcam
         return None
     fx, fy, fw, fh = (float(v) for v in np.median(np.array(best), axis=0))
-    bw = min(fw * 3.0, 960)                       # a webcam shot is ~3 face-widths wide
+    bw = min(fw * 3.0, 960)                       # ~3 face-widths: stays inside the cam overlay (no borders)
     if bw > 0.4 * 960:                            # that's a full-screen camera, not an overlay
         return None
     bh = bw * CAM_H / W                           # keep the top band's aspect (1080:640)
-    cx, cy = fx + fw / 2, fy + fh * 0.65
+    cx, cy = fx + fw / 2, fy + fh * 0.4           # fallback: face slightly above the middle
+    y = cy - bh / 2
+    # Haar sometimes "finds a face" on a T-shirt print. The person detector sees the whole
+    # streamer: put the top of his head just under the top edge of the box.
+    tops = person_tops(src, fx + fw / 2, fy + fh / 2)
+    if tops:
+        head_top = float(np.median(tops))
+        y = head_top - 0.06 * bh
     x = float(np.clip(cx - bw / 2, 0, 960 - bw))
-    y = float(np.clip(cy - bh / 2, 0, 540 - bh))
+    y = float(np.clip(y, 0, 540 - bh))
     return [round(x / 9.6, 2), round(y / 5.4, 2), round(bw / 9.6, 2), round(bh / 5.4, 2)]
+
+def person_tops(src, fcx, fcy, n=8):
+    """Top edge (y, 960x540 px) of the YOLO person that contains the face point, on ~n frames."""
+    global _yolox
+    if _yolox is None:
+        _yolox = Yolox(MODEL)
+    tops = []
+    for _, img in frames(src, n / max(duration(src), 1.0), 960, 540):
+        for cls, conf, cx, cy, bw, bh in _yolox(img):
+            if cls == 0 and abs(cx - fcx) < bw / 2 and cy - bh / 2 <= fcy <= cy + bh / 2:
+                tops.append(cy - bh / 2)
+                break
+    return tops if len(tops) >= 3 else []
 
 def face_in_box(src, cam):
     """Is there a face inside the cam box on at least a third of ~8 frames?"""
@@ -389,24 +446,77 @@ def pick_quote(words):
     q = sents[0] if sents else " ".join(text.split()[:10])
     return q[:90]
 
+def quality_check(short, cam):
+    """
+    Last gate before anything can be published (Aleš: no cut faces, no black bars, no errors):
+      - black bars: full-width rows that are pure black on most frames
+      - facecam band: a whole face (not touching the band edges) on at least half the frames
+    """
+    global _cascade
+    if _cascade is None:
+        _cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+    n = black = face_ok = 0
+    for _, img in frames_raw(short, 1, 540, 960):
+        g = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        n += 1
+        dark = (g.mean(axis=1) < 16) & (g.std(axis=1) < 5)
+        run = best = 0
+        for d in dark:
+            run = run + 1 if d else 0
+            best = max(best, run)
+        black += best >= 10                       # 10 rows here = 20 px in the 1080x1920 short
+        if cam:
+            band = g[: CAM_H // 2]
+            faces = _cascade.detectMultiScale(band, scaleFactor=1.1, minNeighbors=5, minSize=(40, 40))
+            face_ok += any(y > 4 and y + h < CAM_H // 2 - 4 and x > 4 and x + w < 536 for x, y, w, h in faces)
+    problems = []
+    if n and black / n >= 0.3:
+        problems.append("black bars")
+    if cam and n and face_ok / n < 0.4:
+        problems.append("face in the top band missing or cut")
+    return problems
+
+def frames_raw(src, fps, w, h):
+    """Frames of an already rendered short (no normalisation)."""
+    cmd = ["ffmpeg", "-nostdin", "-v", "error", "-i", str(src), "-vf", f"fps={fps},scale={w}:{h}",
+           "-f", "rawvideo", "-pix_fmt", "bgr24", "-"]
+    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stdin=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    size = w * h * 3
+    try:
+        while True:
+            buf = p.stdout.read(size)
+            if len(buf) < size:
+                break
+            yield None, np.frombuffer(buf, np.uint8).reshape(h, w, 3)
+    finally:
+        p.stdout.close()
+        p.wait()
+
 class NotGameplay(Exception):
     """The clip is in the GTA category but shows no game (e.g. full-screen webcam talk)."""
 
 def talking_head(src):
     """
     Full-screen webcam instead of game: one person (the streamer) fills a big part of the
-    picture on most frames. Measured on real clips: webcam 100 % of frames over 18 % of the
-    area, GTA gameplay at most 7 % (even with a big facecam overlay the person stays small).
+    picture on most frames AND stays in the same place. Measured on real clips: webcam 100 %
+    of frames over 18 % of the area, GTA gameplay at most 7 %. Trailers/cutscenes also have big
+    close-ups, but they cut between shots, so the big person jumps around - a webcam doesn't.
     """
     global _yolox
     if _yolox is None:
         _yolox = Yolox(MODEL)
-    n = big = 0
+    n, centres = 0, []
     for _, img in frames(src, 2, 960, 540):
         people = [d for d in _yolox(img) if d[0] == 0]
         n += 1
-        big += max((d[4] * d[5] / (960 * 540) for d in people), default=0) > 0.18
-    return n > 0 and big / n >= 0.6
+        if people:
+            best = max(people, key=lambda d: d[4] * d[5])
+            if best[4] * best[5] / (960 * 540) > 0.18:
+                centres.append((best[2] / 960, best[3] / 540))
+    if n == 0 or len(centres) / n < 0.6:
+        return False
+    c = np.array(centres)
+    return bool(c[:, 0].std() < 0.08 and c[:, 1].std() < 0.08)
 
 class Yolox:
     """Minimal YOLOX ONNX runner (official 0.1.1rc0 export: BGR 0-255, pad 114, raw grid output)."""
@@ -473,6 +583,28 @@ def pick_target(dets, cam_px, prev, w, h):
         if s > best_s:
             best, best_s = cx, s
     return best if best_s > 0.12 else None
+
+def game_bars(src):
+    """
+    Black bars at the top/bottom of the GAME picture only (a letterboxed trailer inside a stream:
+    the streamer's cam and chat cover the bars at the sides, so a whole-frame cropdetect misses
+    them). Looks at the middle columns; a row counts as bar when it is pure black on 70 % of frames.
+    Returns (top, bottom) in 1920x1080 pixels.
+    """
+    masks = []
+    for _, img in frames(src, 1, 960, 540):
+        g = cv2.cvtColor(img[:, 300:660], cv2.COLOR_BGR2GRAY)
+        masks.append((g.mean(axis=1) < 16) & (g.std(axis=1) < 6))
+    if len(masks) < 3:
+        return 0, 0
+    bar = np.mean(masks, axis=0) >= 0.7
+    top = int(np.argmin(bar)) if bar[0] else 0
+    bot = int(np.argmin(bar[::-1])) if bar[-1] else 0
+    if top + bot > 270:                       # more than half black: something is wrong, don't trust it
+        return 0, 0
+    if top or bot:
+        log(f"  black bars in the game picture: top {top * 2}px, bottom {bot * 2}px -> cropped")
+    return top * 2 + (2 if top else 0), bot * 2 + (2 if bot else 0)
 
 def track_path(src, cam, crop_w, dur):
     """Per-output-frame crop x (left edge, source pixels) that follows the player."""
@@ -581,10 +713,10 @@ def captions_ass(words, path, y):
 # -----------------------------------------------------------------------------
 # 5) render one clip to 9:16
 
-def build_filter(cam, cmds_file, x0, crop_w, game_h, ass_file=None, mark_file=None):
+def build_filter(cam, cmds_file, x0, crop_w, game_h, crop_h=SH, y0=0, ass_file=None, mark_file=None, nf=NORM):
     """Filter graph ending in [v]. Without ass/mark it returns the clean 9:16 base."""
-    f = f"[0:v]fps={FPS},{NORM},split[a][b];"
-    f += f"[b]sendcmd=f='{cmds_file}',crop@g={crop_w}:{SH}:{x0}:0,scale={W}:{game_h}[game];"
+    f = f"[0:v]fps={FPS},{nf},split[a][b];"
+    f += f"[b]sendcmd=f='{cmds_file}',crop@g={crop_w}:{crop_h}:{x0}:{y0},scale={W}:{game_h}[game];"
     if cam:
         x, y, w, h = [round(v / 100 * d) for v, d in zip(cam, (SW, SH, SW, SH))]
         f += f"[a]crop={w}:{h}:{x}:{y},scale={W}:{CAM_H}:force_original_aspect_ratio=increase,crop={W}:{CAM_H}[cam];"
@@ -713,7 +845,9 @@ def render(clip, src=None, clean=False):
         raise NotGameplay("streamer's face fills the frame, no gameplay")
     cam = get_cam(clip["channel"], src)
     game_h = H - CAM_H if cam else H
-    crop_w = round(W * SH / game_h)           # source width that fills the game band at full height
+    top, bot = game_bars(src)                 # black bars inside the game picture (e.g. a letterboxed trailer)
+    crop_h = SH - top - bot
+    crop_w = round(W * crop_h / game_h)       # source width that fills the game band at full height
     xs = track_path(src, cam, crop_w, dur)
     cmds = d / "track.cmd"
     cmds.write_text("".join(f"{i / FPS:.4f} crop@g x {x};\n" for i, x in enumerate(xs)), encoding="utf-8")
@@ -729,15 +863,21 @@ def render(clip, src=None, clean=False):
     (d / "mark.txt").write_text(f"@{clip['channel']}", encoding="utf-8")
 
     ff = ["ffmpeg", "-nostdin", "-y", "-hide_banner", "-loglevel", "error", "-i", str(src)]
-    args = (cam, ff_path(cmds), int(xs[0]), crop_w, game_h)
+    args = (cam, ff_path(cmds), int(xs[0]), crop_w, game_h, crop_h, top)
     out = d / "short_9x16.mp4"
     reactions = pick_reactions(words, dur, clip["id"]) if (BANANA / "reakce1.mp4").exists() else []
-    flt = reaction_overlay(build_filter(*args, ff_path(ass) if words else None, ff_path(d / "mark.txt")), reactions, cam)
+    flt = reaction_overlay(build_filter(*args, ass_file=ff_path(ass) if words else None, mark_file=ff_path(d / "mark.txt"),
+                                        nf=src_norm(src)),
+                           reactions, cam)
     enc = encode(ff + reaction_inputs(reactions) + ["-filter_complex", flt, "-map", "[v]", "-map", "0:a?"], out)
     log(f"  banana: {', '.join(f'{n} @{t:.1f}s' for t, n in reactions) or 'none'}")
+    problems = quality_check(out, cam)
+    if problems:
+        out.unlink(missing_ok=True)
+        raise NotGameplay(f"quality check failed: {'; '.join(problems)}")
     base = d / "base_9x16.mp4"               # clean, no captions: input for the editor (OpenMotion)
     if clean:
-        encode(ff + ["-filter_complex", build_filter(*args), "-map", "[v]", "-map", "0:a?"], base)
+        encode(ff + ["-filter_complex", build_filter(*args, nf=src_norm(src)), "-map", "[v]", "-map", "0:a?"], base)
 
     meta = {
         **clip,
@@ -882,6 +1022,34 @@ def cmd_batch(a):
     if total == 0 and os.environ.get("GITHUB_ACTIONS") and datetime.now().date() >= date(2026, 11, 19):
         print("::warning::Dnes se nevyrenderoval zadny GTA 6 klip (zadne cerstve klipy, nebo blokace Twitch/Kick).")
 
+def cmd_yt(a):
+    """
+    One long YouTube video (e.g. a streamer's GTA 6 trailer reaction) -> its moments that
+    the audience marked (heatmap, timestamps in comments, chat replay), rendered like clips.
+    Runs from a home PC only: YouTube blocks GitHub's servers.
+    """
+    for url in a.urls:
+        try:
+            info = ytdlp_json(url, timeout=120)
+        except Exception as e:                        # age-gated, private, members-only ...
+            log(f"skip {url}: {str(e)[-120:]}")
+            continue
+        vid, dur = info["id"], float(info.get("duration") or 0)
+        about = " ".join([info.get("title") or ""] + (info.get("tags") or []))
+        cands, how = viewer_signals(url, vid, info)
+        log(f"{info.get('channel')}: '{(info.get('title') or '')[:60]}' -> {len(cands)} audience peaks ({how})")
+        was_live = info.get("was_live") or info.get("live_status") == "was_live"
+        clips = []
+        for s, e, _ in pick_windows(cands, dur, a.n, skip_start=150 if was_live else 15):
+            clips.append({
+                "id": f"youtube_{vid}_{int(s)}", "url": url, "title": info.get("title") or "",
+                "views": int(info.get("view_count") or 0), "duration": e - s,
+                "created": int(info.get("timestamp") or 0),
+                "channel": (info.get("uploader_id") or info.get("channel") or "youtube").lstrip("@").lower(),
+                "platform": "youtube", "section": [round(s, 1), round(e, 1)], "signal": how, "category": about,
+            })
+        process(clips, a.clean)
+
 def cmd_top(a):
     for ch in a.channels:
         clips = [c for c in list_twitch(ch, a.range) if c["views"] >= a.min_views and not skip(c["id"])]
@@ -1001,6 +1169,11 @@ def main():
     o.add_argument("--start", type=float, help="section start (s), for long videos")
     o.add_argument("--end", type=float, help="section end (s)")
     o.set_defaults(fn=cmd_one)
+
+    y = sub.add_parser("yt", help="moments from long YouTube videos (home PC only)")
+    y.add_argument("urls", nargs="+")
+    y.add_argument("--n", type=int, default=3, help="moments per video")
+    y.set_defaults(fn=cmd_yt)
 
     c = sub.add_parser("cam", help="detect the facecam box of a streamer and save it")
     c.add_argument("channel")
