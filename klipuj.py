@@ -36,6 +36,7 @@ import re
 import subprocess
 import sys
 import time
+import urllib.parse
 from datetime import date, datetime, timezone
 from pathlib import Path
 
@@ -289,9 +290,52 @@ def pick_windows(cands, dur, k, clip_len=YT_CLIP, skip_start=15):
             break
     return [(max(0.0, t - clip_len / 2), min(dur, t + clip_len / 2), s) for t, s in out]
 
+def video_moments(url, info, per_video, label):
+    """One YouTube video (full yt-dlp info) -> clip dicts of its audience-marked moments."""
+    vid, dur = info["id"], float(info.get("duration") or 0)
+    about = " ".join([info.get("title") or ""] + (info.get("tags") or []))
+    if dur < 60 or not re.search(game_re(), about, re.I):
+        return []                                         # Shorts, or not a GTA 6 video
+    bad = load_json(SOURCES, {}).get("exclude_titles")
+    if bad and re.search(bad, info.get("title") or "", re.I):
+        log(f"  {label}: {vid} skipped (fake/leak/concept title)")
+        return []                                         # fan-made, AI or leaked "GTA 6" would mislead viewers
+    cands, how = viewer_signals(url, vid, info)
+    if not cands:
+        log(f"  {label}: {vid} no audience signal yet ({how}), skipped")
+        return []
+    # a stream's first minutes are "starting soon" hype in chat, not a moment
+    was_live = info.get("was_live") or info.get("live_status") == "was_live"
+    clips = []
+    for s, e2, score in pick_windows(cands, dur, per_video, skip_start=150 if was_live else 15):
+        clips.append({
+            "id": f"youtube_{vid}_{int(s)}", "url": url, "title": info.get("title") or "",
+            "views": int(info.get("view_count") or 0), "duration": e2 - s,
+            "created": int(info.get("timestamp") or 0),
+            "channel": (info.get("uploader_id") or info.get("channel") or label).lstrip("@").lower(),
+            "platform": "youtube", "section": [round(s, 1), round(e2, 1)], "signal": how, "category": about,
+        })
+    log(f"  {label}: {vid} -> {len(clips)} moments ({how})")
+    return clips
+
+def full_info(vid, days, min_followers=0):
+    """Full info of a fresh, finished video, or None (too old, live now, small channel, error)."""
+    url = f"https://www.youtube.com/watch?v={vid}"
+    try:
+        info = ytdlp_json(url, timeout=120)
+    except RuntimeError as err:
+        log(f"  {vid}: {str(err)[-120:]}")
+        cookie_alarm(str(err))
+        return None
+    if info.get("live_status") == "is_live" or time.time() - (info.get("timestamp") or 0) > days * 86400:
+        return None
+    if (info.get("channel_follower_count") or 0) < min_followers:
+        return None                                       # small / re-upload channels: credit would go to the wrong person
+    return info
+
 def youtube_clips(handle, days, per_video, max_videos=4):
     """Recent videos and streams of a YouTube channel -> its peak moments."""
-    clips, now = [], time.time()
+    clips = []
     for tab in ("videos", "streams"):
         try:
             entries = ytdlp_json(f"https://www.youtube.com/{handle}/{tab}", flat=True, limit=max_videos).get("entries") or []
@@ -299,40 +343,41 @@ def youtube_clips(handle, days, per_video, max_videos=4):
             log(f"  {handle}/{tab}: {str(e)[-120:]}")
             continue
         for e in entries:
+            if not e.get("id") or e.get("live_status") == "is_live":
+                continue
+            if e.get("title") and not re.search(game_re(), e["title"], re.I):
+                continue                                  # cheap title check before the full lookup
+            info = full_info(e["id"], days)
+            if info:
+                clips += video_moments(info.get("webpage_url") or f"https://www.youtube.com/watch?v={e['id']}",
+                                       info, per_video, handle)
+    return clips
+
+def youtube_search_clips(queries, days, per_video, min_followers, skip_ids=()):
+    """
+    Discovery beyond our channel list: the newest YouTube videos for searches like
+    "GTA 6 reaction", only from channels with at least min_followers subscribers
+    (official creators, not re-upload/clip channels).
+    """
+    clips, seen = [], set(skip_ids)
+    for q in queries:
+        try:
+            url = "https://www.youtube.com/results?search_query=" + urllib.parse.quote_plus(q) + "&sp=CAI%253D"
+            entries = ytdlp_json(url, flat=True, limit=20).get("entries") or []   # sp=CAI%3D: newest first
+        except RuntimeError as e:
+            log(f"  search '{q}': {str(e)[-120:]}")
+            continue
+        for e in entries:
             vid = e.get("id")
-            if not vid or e.get("live_status") == "is_live":
+            if not vid or vid in seen or e.get("live_status") == "is_live":
                 continue
-            url = f"https://www.youtube.com/watch?v={vid}"
-            try:
-                info = ytdlp_json(url, timeout=120)
-            except RuntimeError as err:
-                log(f"  {vid}: {str(err)[-120:]}")
-                cookie_alarm(str(err))
+            seen.add(vid)
+            if e.get("title") and not re.search(game_re(), e["title"], re.I):
                 continue
-            if info.get("live_status") == "is_live" or now - (info.get("timestamp") or now) > days * 86400:
-                continue
-            about = " ".join([info.get("title") or ""] + (info.get("tags") or []))
-            if not re.search(game_re(), about, re.I):
-                continue                                  # not a GTA video
-            dur = float(info.get("duration") or 0)
-            if dur < 60:
-                continue                                  # Shorts: already somebody's short
-            cands, how = viewer_signals(url, vid, info)
-            if not cands:
-                log(f"  {handle}: {vid} no audience signal yet ({how}), skipped")
-                continue
-            # a stream's first minutes are "starting soon" hype in chat, not a moment
-            was_live = info.get("was_live") or info.get("live_status") == "was_live"
-            for s, e2, score in pick_windows(cands, dur, per_video, skip_start=150 if was_live else 15):
-                clips.append({
-                    "id": f"youtube_{vid}_{int(s)}", "url": url, "title": info.get("title") or "",
-                    "views": int(info.get("view_count") or 0), "duration": e2 - s,
-                    "created": int(info.get("timestamp") or 0),
-                    "channel": (info.get("uploader_id") or handle).lstrip("@").lower(),
-                    "platform": "youtube", "section": [round(s, 1), round(e2, 1)], "signal": how,
-                    "category": about,
-                })
-            log(f"  {handle}: {vid} -> {how} peaks")
+            info = full_info(vid, days, min_followers)
+            if info:
+                clips += video_moments(info.get("webpage_url") or f"https://www.youtube.com/watch?v={vid}",
+                                       info, per_video, f"search:{q}")
     return clips
 
 # -----------------------------------------------------------------------------
@@ -1071,6 +1116,14 @@ def cmd_batch(a):
                 yt += [c for c in youtube_clips(handle, a.days, a.per_video) if not skip(c["id"])]
             except Exception as e:
                 log(f"youtube {handle}: {str(e)[-150:]}")
+        try:
+            seen = {c["id"].split("_")[1] for c in yt}
+            yt += [c for c in youtube_search_clips(src.get("youtube_search", []), max(a.days, 2), a.per_video,
+                                                   src.get("youtube_min_followers", 300000), seen)
+                   if not skip(c["id"]) and c["channel"] not in blocked]
+        except Exception as e:
+            log(f"youtube search: {str(e)[-150:]}")
+        yt.sort(key=virality, reverse=True)
     log(f"candidates: {len(live)} twitch/kick, {len(yt)} youtube -> rendering up to {a.max}")
     total = process(yt, a.clean, limit=min(a.yt, a.max))
     total += process(live, a.clean, limit=a.max - total)

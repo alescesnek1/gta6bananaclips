@@ -1,5 +1,5 @@
 {
-  "_napoveda": "Odkud bereme momenty. twitch/kick = login kanalu (klipy divaku), youtube = @handle. game = regex kategorie streamu / nazvu videa (jen GTA 6). ramp = kolik klipu denne od data (rozjezd novych uctu). caps = max postu denne na sit (X, Threads). blocklist = streameri, kteri chteji klipy dolu (uz je nebrat).",
+  "_napoveda": "Odkud bereme momenty. twitch/kick = login kanalu (klipy divaku), youtube = @handle. game = regex kategorie streamu / nazvu videa (jen GTA 6). ramp = kolik klipu denne od data (rozjezd novych uctu). caps = max postu denne na sit (X, Threads). blocklist = streameri, kteri chteji klipy dolu (uz je nebrat). youtube_search = hledani nejnovejsich videi (jen kanaly nad youtube_min_followers). exclude_titles = regex nazvu, ktere nebrat (fejky, leaky, koncepty).",
   "game": "Grand Theft Auto VI\\b|\\bGTA ?(VI|6)\\b",
   "ramp": {
     "2026-11-19": 3,
@@ -81,18 +81,44 @@
   ],
   "youtube": [
     "@IShowSpeed",
+    "@KaiCenat",
+    "@xQcOW",
+    "@ZackRawrr",
+    "@HasanAbi",
+    "@summit1g",
     "@penguinz0",
+    "@Sodapoppin",
+    "@timthetatman",
+    "@Ninja",
+    "@Valkyrae",
+    "@Agent00",
+    "@LacyHimself",
+    "@AdinRoss",
+    "@caseoh_",
+    "@Jynxzi",
+    "@ludwig",
+    "@shroud",
+    "@LIRIK",
+    "@DukeDennisGaming",
+    "@SSundee",
+    "@AliA",
+    "@Kwebbelkop",
     "@TypicalGamer",
+    "@Terroriser",
     "@Sidemen",
     "@MoreSidemen",
     "@DarkViperAU",
-    "@VanossGaming",
-    "@Nogla",
-    "@CaseOh_",
-    "@Jynxzi",
-    "@KaiCenat",
-    "@ludwig",
+    "@MrBossFTW",
     "@GTASeriesVideos",
-    "@MrBossFTW"
-  ]
+    "@VanossGaming"
+  ],
+  "youtube_search": [
+    "GTA 6 reaction",
+    "GTA 6 gameplay",
+    "GTA 6 funny moments",
+    "GTA 6 live",
+    "GTA 6 trailer reaction"
+  ],
+  "youtube_min_followers": 300000,
+  "exclude_titles": "leak|concept|fan.?made|photo.?real|too real|so realistic|\\bue5\\b|unreal engine 5|\\bmods?\\b|\\bmodded\\b|\\bai\\b|fake|rumou?r"
 }
