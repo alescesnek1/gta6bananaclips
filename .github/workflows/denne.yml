@@ -83,9 +83,8 @@ jobs:
       - name: YouTube cookies (GitHub servers are asked "confirm you're not a bot" without them)
         env:
           YT_COOKIES: ${{ secrets.YT_COOKIES }}
-        if: env.YT_COOKIES != ''
-        run: printf '%s
-' "$YT_COOKIES" > youtube_cookies.txt
+        if: ${{ secrets.YT_COOKIES != '' }}
+        run: echo "$YT_COOKIES" > youtube_cookies.txt
 
       - name: Buffer channels (first run only)
         if: inputs.url == '' && hashFiles('buffer.json') == '' && env.BUFFER_API_KEY_1 != ''
