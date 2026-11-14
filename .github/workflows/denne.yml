@@ -47,6 +47,7 @@ jobs:
       BUFFER_API_KEY_1: ${{ secrets.BUFFER_API_KEY_1 }}
       BUFFER_API_KEY_2: ${{ secrets.BUFFER_API_KEY_2 }}
       NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+      YT_COOKIES: ${{ secrets.YT_COOKIES }}
       NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
       MEDIA_BASE_URL: ${{ vars.MEDIA_BASE_URL }}
       PYTHONUTF8: "1"
@@ -81,9 +82,7 @@ jobs:
         run: echo "::error::Chybi secret BUFFER_API_KEY_1 nebo NETLIFY_AUTH_TOKEN - nic se nepublikuje."
 
       - name: YouTube cookies (GitHub servers are asked "confirm you're not a bot" without them)
-        env:
-          YT_COOKIES: ${{ secrets.YT_COOKIES }}
-        if: ${{ secrets.YT_COOKIES != '' }}
+        if: env.YT_COOKIES != ''
         run: echo "$YT_COOKIES" > youtube_cookies.txt
 
       - name: Buffer channels (first run only)
