@@ -54,8 +54,8 @@ WHISPER_DIR = HERE / "models" / "whisper"
 # open fonts shipped in the repo, so Windows and the Linux runner render the same
 CAP_FONTS = HERE / "fonts" / "cap"                 # libass looks here for the caption font
 CAP_FONT = "Montserrat Black"                      # family name inside fonts/cap/montserrat-900.ttf
-CAP_SIZE = 100                                     # big captions (Aleš: "mnohem větší")
-CAP_CHARS = 14                                     # max letters on a line at that size (2 words max)
+CAP_SIZE = 130                                     # big captions (Aleš 13.+14. 11.: "mnohem větší", "větší")
+CAP_CHARS = 11                                     # max letters on a line at that size (2 words max)
 WM_FONT_FILE = HERE / "fonts" / "montserrat-600.ttf"  # watermarks
 
 W, H = 1080, 1920      # output size
@@ -708,7 +708,7 @@ def render(clip, src=None, clean=False):
     if SLUR_RE.search(speech):
         raise NotGameplay("slur in the speech - not worth a strike or a ban")
     ass = d / "captions.ass"
-    n_chunks = captions_ass(words, ass, y=CAM_H + 135 if cam else 600)   # right under the streamer's face
+    n_chunks = captions_ass(words, ass, y=CAM_H if cam else 600)   # on the seam between face and game
     log(f"  captions: {len(words)} words, {n_chunks} chunks")
     (d / "transcript.txt").write_text(" ".join(t for _, _, t in words), encoding="utf-8")
     (d / "mark.txt").write_text(f"@{clip['channel']}", encoding="utf-8")
