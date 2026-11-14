@@ -83,7 +83,10 @@ jobs:
 
       - name: YouTube cookies (GitHub servers are asked "confirm you're not a bot" without them)
         if: env.YT_COOKIES != ''
-        run: echo "$YT_COOKIES" > youtube_cookies.txt
+        run: |
+          printf '%s
+' "$YT_COOKIES" | tr -d '' > youtube_cookies.txt
+          echo "cookie file: $(wc -l < youtube_cookies.txt) lines; fields per line:"; awk -F'	' '!/^#/ && NF {print NF}' youtube_cookies.txt | sort | uniq -c
 
       - name: Buffer channels (first run only)
         if: inputs.url == '' && hashFiles('buffer.json') == '' && env.BUFFER_API_KEY_1 != ''
