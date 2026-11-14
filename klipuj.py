@@ -48,7 +48,9 @@ BRAND = "gta6bananaclips"
 HERE = Path(__file__).resolve().parent
 OUT = HERE / "out"
 TMP = OUT / "_tmp"                   # audio for peak detection, deleted after use
-STATE = HERE / "state.json"          # rendered / failed clip ids
+# rendered / failed clip ids; the YouTube worker PC keeps its own file (KLIPY_STATE), because it
+# resets its checkout to GitHub before every run (worker/beh.ps1)
+STATE = Path(os.environ.get("KLIPY_STATE") or HERE / "state.json")
 STREAMERS = HERE / "streamers.json"  # facecam box per streamer, in percent
 SOURCES = HERE / "sources.json"      # which channels we take moments from
 MODEL = HERE / "models" / "yolox_tiny.onnx"
@@ -1021,9 +1023,12 @@ def mark(clip_id, ok):
     save_json(STATE, state)
 
 def skip(clip_id):
-    state = load_json(STATE, {"done": {}, "failed": {}})
-    return (clip_id in state["done"] or clip_id in state.get("other_game", {})
-            or state.get("failed", {}).get(clip_id, 0) >= MAX_TRIES)
+    for f in {STATE, HERE / "state.json"}:             # own state + what the repo already knows
+        state = load_json(f, {})
+        if (clip_id in state.get("done", {}) or clip_id in state.get("other_game", {})
+                or state.get("failed", {}).get(clip_id, 0) >= MAX_TRIES):
+            return True
+    return False
 
 def game_re():
     return load_json(SOURCES, {}).get("game", "Grand Theft Auto|GTA")
@@ -1100,8 +1105,8 @@ def cmd_batch(a):
         past = [k for d, k in sorted(ramp.items()) if d <= today]
         a.max = past[-1] if past else (min(ramp.values()) if ramp else 10)
     live = []
-    for platform, lister in (("twitch", lambda ch: list_twitch(ch, "24hr" if a.days <= 1 else "7d")),
-                             ("kick", list_kick)):
+    listers = (("twitch", lambda ch: list_twitch(ch, "24hr" if a.days <= 1 else "7d")), ("kick", list_kick))
+    for platform, lister in () if a.jen_yt else listers:
         for ch in src.get(platform, []):
             if ch.lower() in blocked:
                 continue
@@ -1277,6 +1282,7 @@ def main():
     b.add_argument("--per-video", type=int, default=3, help="moments per YouTube video")
     b.add_argument("--days", type=float, default=1, help="only moments from the last N days")
     b.add_argument("--min-views", type=int, default=500)
+    b.add_argument("--jen-yt", action="store_true", help="only YouTube (the worker PC; GitHub does Twitch + Kick)")
     b.set_defaults(fn=cmd_batch)
 
     t = sub.add_parser("top", help="best clips of Twitch channels")

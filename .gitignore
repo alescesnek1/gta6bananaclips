@@ -6,3 +6,6 @@ out/
 models/whisper/
 profile_pic/
 youtube_cookies.txt
+schranka.json
+worker_state.json
+.duel/

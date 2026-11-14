@@ -15,13 +15,20 @@ Daily flow:
 By default posts land in Buffer as DRAFTS (nothing goes public). --ostre schedules
 them for real. --zkouska prints the plan and the GraphQL without touching anything.
 
+YouTube blocks GitHub's servers, so YouTube moments are rendered on a PC with a home
+connection (worker/, every 30 min): `publikuj.py schranka` puts them on a Netlify DRAFT
+deploy titled yt-inbox (a deploy preview: 0 credits, production untouched). `den` reads
+the newest yt-inbox and treats its shorts like local ones (downloaded only when picked).
+
 One-time setup:
   1. .env (see .env.example): BUFFER_API_KEY_1/_2, NETLIFY_AUTH_TOKEN, NETLIFY_SITE_ID, MEDIA_BASE_URL
   2. .venv/Scripts/python publikuj.py kanaly    # saves your Buffer channels to buffer.json
 """
 
 import argparse
+import hashlib
 import io
+import shutil
 import json
 import math
 import os
@@ -30,6 +37,7 @@ import re
 import sys
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 import zipfile
 from datetime import date, datetime, timedelta, timezone
@@ -173,6 +181,71 @@ def is_public(url):
     except urllib.error.URLError:
         return False
 
+INBOX_TITLE = "yt-inbox"
+
+def safe_name(clip_id):
+    return re.sub(r"[^A-Za-z0-9_-]", "_", clip_id)
+
+def netlify(path, data=None, method=None, ctype="application/json", timeout=120):
+    h = {"Authorization": f"Bearer {os.environ['NETLIFY_AUTH_TOKEN']}", "Content-Type": ctype}
+    return json.loads(http(f"{NETLIFY}{path}", data, h, method, timeout)[1] or b"null")
+
+def inbox_deploy(files, inbox):
+    """
+    files: {site path: local path}, inbox: bytes of inbox.json. A draft deploy (deploy preview,
+    no credits) by file digest: Netlify asks only for files it doesn't have yet.
+    """
+    site = os.environ["NETLIFY_SITE_ID"]
+    blobs = {"/inbox.json": inbox, "/robots.txt": b"User-agent: *\nDisallow: /\n"}
+    digests = {k: hashlib.sha1(v).hexdigest() for k, v in blobs.items()}
+    for rel, src in files.items():
+        h = hashlib.sha1()
+        with open(src, "rb") as f:
+            for chunk in iter(lambda: f.read(1 << 20), b""):
+                h.update(chunk)
+        digests["/" + rel] = h.hexdigest()
+    d = netlify(f"/sites/{site}/deploys", json.dumps({"files": digests, "draft": True, "title": INBOX_TITLE}).encode(), "POST")
+    for _ in range(60):                                       # Netlify works out what it is missing
+        if d["state"] not in ("new", "preparing"):
+            break
+        time.sleep(2)
+        d = netlify(f"/deploys/{d['id']}")
+    need_sha = set(d.get("required") or [])
+    log(f"inbox: {len(files)} shorts, uploading {len(need_sha)} new files")
+    for path, sha in digests.items():
+        if sha not in need_sha:
+            continue
+        need_sha.discard(sha)                                 # same content twice = upload once
+        body = blobs[path] if path in blobs else Path(files[path[1:]]).read_bytes()
+        netlify(f"/deploys/{d['id']}/files{urllib.parse.quote(path)}", body, "PUT", "application/octet-stream", 900)
+    for _ in range(120):
+        d = netlify(f"/deploys/{d['id']}")
+        if d["state"] == "ready":
+            return d["links"]["permalink"]
+        if d["state"] == "error":
+            raise RuntimeError(f"Netlify inbox deploy failed: {d.get('error_message')}")
+        time.sleep(5)
+    raise RuntimeError("Netlify inbox deploy did not become ready in 10 min")
+
+def inbox_items():
+    """Shorts from the newest yt-inbox draft deploy (YouTube worker PC); [] when there is none."""
+    if not (os.environ.get("NETLIFY_AUTH_TOKEN") and os.environ.get("NETLIFY_SITE_ID")):
+        return []
+    try:
+        deploys = netlify(f"/sites/{os.environ['NETLIFY_SITE_ID']}/deploys?per_page=50")
+        d = next((d for d in deploys if d.get("title") == INBOX_TITLE and d.get("state") == "ready"), None)
+        if not d:
+            return []
+        base = d["links"]["permalink"]
+        items = json.loads(http(f"{base}/inbox.json", timeout=60)[1])
+    except Exception as e:                                    # no inbox must never stop Twitch/Kick posts
+        log(f"inbox: unreadable ({e})")
+        return []
+    for m in items:
+        m["short"], m["remote"] = f"{base}/{m['file']}", True
+    log(f"inbox: {len(items)} YouTube shorts from the worker PC ({d.get('created_at', '')[:16]})")
+    return items
+
 # -----------------------------------------------------------------------------
 # what to post
 
@@ -185,12 +258,15 @@ def candidates():
     game = load_json(HERE / "sources.json", {}).get("game", "Grand Theft Auto VI|GTA ?VI|GTA ?6")
     done = load_json(PUBLISHED, {})
     now = time.time()
-    out = []
+    out, local = [], []
     for meta_file in OUT.glob("*/*/meta.json"):
         if meta_file.parts[-3].startswith("_"):
             continue                                 # _ukazka, _media
-        m = load_json(meta_file, {})
-        if not m or m.get("id") in done or not Path(m.get("short", "")).exists():
+        local.append(load_json(meta_file, {}))
+    seen = {m.get("id") for m in local}
+    load_env()
+    for m in local + [m for m in inbox_items() if m.get("id") not in seen]:
+        if not m or m.get("id") in done or not (m.get("remote") or Path(m.get("short", "")).exists()):
             continue
         if not re.search(game, m.get("category") or "", re.I):
             log(f"  not published (category '{m.get('category') or '?'}' is not {game}): {m.get('id')}")
@@ -344,8 +420,15 @@ def cmd_den(a):
                 log(f"  could not carry over {rec['url']}: {e}")
     plan = []
     for m, due in zip(picks, times):
-        rel = f"{day:%Y%m%d}/{re.sub(r'[^A-Za-z0-9_-]', '_', m['id'])}.mp4"
-        files[rel] = Path(m["short"])
+        rel = f"{day:%Y%m%d}/{safe_name(m['id'])}.mp4"
+        src = Path(m["short"]) if not m.get("remote") else stage / f"inbox_{safe_name(m['id'])}.mp4"
+        if m.get("remote"):                          # YouTube short from the worker PC's inbox
+            try:
+                src.write_bytes(http(m["short"], timeout=300)[1])
+            except Exception as e:
+                log(f"  inbox short unavailable, skipped: {m['short']} ({e})")
+                continue
+        files[rel] = src
         plan.append((m, due, rel))
     netlify_deploy(files)
 
@@ -381,6 +464,47 @@ def cmd_den(a):
         print("::error::Buffer: nevysel ani jeden post (klic, Netlify nebo Buffer API)")
         sys.exit(1)
 
+def cmd_schranka(a):
+    """
+    Worker PC: its rendered YouTube shorts that are not published yet -> yt-inbox draft deploy.
+    Redeploys only when there is a short the live inbox doesn't have (published ones simply stay
+    until the next deploy; `den` skips them). --uklid deletes clip folders older than --dni.
+    """
+    load_env()
+    need("NETLIFY_AUTH_TOKEN", "NETLIFY_SITE_ID")
+    game = load_json(HERE / "sources.json", {}).get("game", "Grand Theft Auto VI|GTA ?VI|GTA ?6")
+    done = load_json(PUBLISHED, {})
+    cutoff = time.time() - a.dni * 86400
+    items, files = [], {}
+    for meta_file in OUT.glob("*/*/meta.json"):
+        if meta_file.parts[-3].startswith("_"):
+            continue
+        if meta_file.stat().st_mtime < cutoff:
+            if a.uklid:
+                shutil.rmtree(meta_file.parent, ignore_errors=True)
+            continue
+        m = load_json(meta_file, {})
+        short = Path(m.get("short") or "")
+        if (m.get("platform") != "youtube" or m.get("id") in done or not short.exists()
+                or not re.search(game, m.get("category") or "", re.I)):
+            continue
+        rel = f"yt/{safe_name(m['id'])}.mp4"
+        files[rel] = short
+        items.append({**{k: v for k, v in m.items() if k not in ("short", "base", "source")}, "file": rel})
+    now = time.time()                                # only the best few: `den` takes a handful a day anyway
+    items.sort(key=lambda m: -(m.get("views") or 0) / (max((now - (m.get("created") or now)) / 3600, 0) + 1) ** 0.5)
+    items = items[: a.max]
+    files = {m["file"]: files[m["file"]] for m in items}
+    sent = HERE / "schranka.json"                    # ids of the live inbox (local, not in git)
+    live = set(load_json(sent, []))
+    new = [m["id"] for m in items if m["id"] not in live]
+    if not new:
+        log(f"inbox: nothing new ({len(items)} waiting, all already on Netlify)")
+        return
+    url = inbox_deploy(files, json.dumps(items, ensure_ascii=False).encode())
+    save_json(sent, [m["id"] for m in items])
+    log(f"inbox: {len(items)} shorts ({len(new)} new) -> {url}")
+
 def main():
     p = argparse.ArgumentParser(description="gta6bananaclips: shorts -> Buffer")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -392,6 +516,11 @@ def main():
     d.add_argument("--ostre", action="store_true", help="schedule for real (default: Buffer drafts)")
     d.add_argument("--zkouska", action="store_true", help="dry run: print the plan, touch nothing")
     d.set_defaults(fn=cmd_den)
+    s = sub.add_parser("schranka", help="worker PC: YouTube shorts -> free Netlify draft deploy for GitHub")
+    s.add_argument("--dni", type=float, default=3, help="only shorts rendered in the last N days")
+    s.add_argument("--uklid", action="store_true", help="delete clip folders older than that")
+    s.add_argument("--max", type=int, default=10, help="at most this many shorts in the inbox (best first)")
+    s.set_defaults(fn=cmd_schranka)
     z = sub.add_parser("zbyva", help="print how many shorts today's quota still allows (for the workflow)")
     z.set_defaults(fn=lambda a: print(remaining(datetime.now(TZ).date())))
     a = p.parse_args()
