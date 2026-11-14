@@ -1032,7 +1032,9 @@ def cmd_yt(a):
         try:
             info = ytdlp_json(url, timeout=120)
         except Exception as e:                        # age-gated, private, members-only ...
-            log(f"skip {url}: {str(e)[-120:]}")
+            err = re.search(r"ERROR:[^
+]*", str(e))
+            log(f"skip {url}: {(err.group(0) if err else str(e))[:300]}")
             continue
         vid, dur = info["id"], float(info.get("duration") or 0)
         about = " ".join([info.get("title") or ""] + (info.get("tags") or []))
