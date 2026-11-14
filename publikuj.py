@@ -178,7 +178,7 @@ def is_public(url):
 
 def candidates():
     """
-    Rendered shorts not yet published, best first: views (log) minus a penalty for age.
+    Rendered shorts not yet published, best first: virality = views per hour of age (softened).
     Gate 2 of 2: only shorts whose saved stream category / video title matches the game
     in sources.json (GTA 6) can go out - whatever slipped past the render step.
     """
@@ -196,7 +196,7 @@ def candidates():
             log(f"  not published (category '{m.get('category') or '?'}' is not {game}): {m.get('id')}")
             continue
         age_h = (now - (m.get("created") or now)) / 3600
-        m["score"] = math.log1p(m.get("views") or 0) - age_h / 24
+        m["score"] = (m.get("views") or 0) / (max(age_h, 0) + 1) ** 0.5   # same "virality" as klipuj.batch
         out.append(m)
     return sorted(out, key=lambda m: -m["score"])
 

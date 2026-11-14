@@ -105,7 +105,8 @@ def frames(src, fps, w, h):
     """Yield (t, BGR frame) from a video, resampled to fps and scaled to w x h."""
     cmd = ["ffmpeg", "-nostdin", "-v", "error", "-i", str(src), "-vf", f"fps={fps},{NORM},scale={w}:{h}",
            "-f", "rawvideo", "-pix_fmt", "bgr24", "-"]
-    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stdin=subprocess.DEVNULL)
+    # stderr off: closing the pipe early (we often read only some frames) makes ffmpeg complain
+    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stdin=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     n, size = 0, w * h * 3
     try:
         while True:
@@ -332,6 +333,8 @@ def detect_cam(src):
         return None
     fx, fy, fw, fh = (float(v) for v in np.median(np.array(best), axis=0))
     bw = min(fw * 3.0, 960)                       # a webcam shot is ~3 face-widths wide
+    if bw > 0.4 * 960:                            # that's a full-screen camera, not an overlay
+        return None
     bh = bw * CAM_H / W                           # keep the top band's aspect (1080:640)
     cx, cy = fx + fw / 2, fy + fh * 0.65
     x = float(np.clip(cx - bw / 2, 0, 960 - bw))
@@ -390,10 +393,20 @@ class NotGameplay(Exception):
     """The clip is in the GTA category but shows no game (e.g. full-screen webcam talk)."""
 
 def talking_head(src):
-    """A big face (over 12 % of the frame width) on at least half of ~8 frames = webcam, not game."""
-    per_frame = faces_on(src, 8)
-    big = sum(any(w > 0.12 * 960 for _, _, w, _ in found) for found in per_frame)
-    return big >= max(2, len(per_frame) // 2)
+    """
+    Full-screen webcam instead of game: one person (the streamer) fills a big part of the
+    picture on most frames. Measured on real clips: webcam 100 % of frames over 18 % of the
+    area, GTA gameplay at most 7 % (even with a big facecam overlay the person stays small).
+    """
+    global _yolox
+    if _yolox is None:
+        _yolox = Yolox(MODEL)
+    n = big = 0
+    for _, img in frames(src, 2, 960, 540):
+        people = [d for d in _yolox(img) if d[0] == 0]
+        n += 1
+        big += max((d[4] * d[5] / (960 * 540) for d in people), default=0) > 0.18
+    return n > 0 and big / n >= 0.6
 
 class Yolox:
     """Minimal YOLOX ONNX runner (official 0.1.1rc0 export: BGR 0-255, pad 114, raw grid output)."""
@@ -450,6 +463,8 @@ def pick_target(dets, cam_px, prev, w, h):
         if cam_px and cam_px[0] <= cx <= cam_px[0] + cam_px[2] and cam_px[1] <= cy <= cam_px[1] + cam_px[3]:
             continue
         if bw * bh > 0.6 * w * h:          # the whole screen is not a character
+            continue
+        if abs(cx - w / 2) > 0.32 * w:     # GTA's camera keeps the player near the middle: edge = NPC
             continue
         d_centre = np.hypot((cx - w / 2) / w, (cy - h * 0.58) / h)
         s = TARGETS[cls] * conf / (1 + 4 * d_centre)
@@ -694,9 +709,9 @@ def render(clip, src=None, clean=False):
             download(clip, src)
 
     dur = duration(src)
-    cam = get_cam(clip["channel"], src)
-    if not cam and talking_head(src):
+    if talking_head(src):                     # check first: a full-screen webcam also looks like a "facecam"
         raise NotGameplay("streamer's face fills the frame, no gameplay")
+    cam = get_cam(clip["channel"], src)
     game_h = H - CAM_H if cam else H
     crop_w = round(W * SH / game_h)           # source width that fills the game band at full height
     xs = track_path(src, cam, crop_w, dur)
@@ -815,6 +830,11 @@ def process(clips, clean=False, limit=None):
             log(f"  FAILED {c['url']}: {e}")
     return n
 
+def virality(c):
+    """Views per hour of age (softened): what is spreading right now beats an old slow climber."""
+    age_h = (time.time() - c["created"]) / 3600 if c.get("created") else 24
+    return (c.get("views") or 0) / (max(age_h, 0) + 1) ** 0.5
+
 def fresh(clips, days):
     now = time.time()
     return [c for c in clips if not c["created"] or now - c["created"] <= days * 86400]
@@ -845,7 +865,7 @@ def cmd_batch(a):
                 log(f"{platform} {ch}: {str(e)[-150:]}")
                 continue
             live += clips[: a.n]
-    live.sort(key=lambda c: c["views"], reverse=True)
+    live.sort(key=virality, reverse=True)
     yt = []
     if a.yt:
         for handle in src.get("youtube", []):
