@@ -23,7 +23,7 @@ on:
         description: "max shorts to render (empty = today's ramp quota from sources.json)"
         default: ""
       yt:
-        description: "of which from YouTube (empty = 3 in the morning run, 0 otherwise)"
+        description: "of which from YouTube (default 0: needs fresh cookies, Google revokes them on GitHub)"
         default: ""
       url:
         description: "test: render just this one clip URL"
@@ -108,7 +108,9 @@ jobs:
           echo "quota left today: $n"
           yt="${{ inputs.yt }}"
           # YouTube discovery is slow (detail + comments per video): only in the morning run
-          [ -z "$yt" ] && { [ "$(date -u +%H)" -lt 8 ] && yt=3 || yt=0; }
+          # YouTube is OFF on the server: Google revokes the cookies within hours when GitHub's IPs use them
+          # (seen twice on 14. 11.) and without cookies it blocks GitHub completely. YouTube runs from the PC.
+          [ -z "$yt" ] && yt=0
           echo "youtube moments this run: $yt"
           if [ "$n" -gt 0 ]; then python klipuj.py --whisper small.en batch --max "$n" --yt "$yt"; fi
 
