@@ -1,5 +1,11 @@
 {
-  "done": {},
+  "done": {
+    "youtube_nMmtSIsOZOA_70": 1794669101,
+    "youtube_miGclAow9KI_1983": 1794669473,
+    "youtube_miGclAow9KI_2923": 1794669606,
+    "youtube_ClI-eATridI_943": 1794670115,
+    "youtube_ClI-eATridI_1483": 1794670233
+  },
   "failed": {},
   "other_game": {
     "twitch_3007922283": "World of Warcraft",
@@ -26,6 +32,8 @@
     "twitch_394157443": "Grand Theft Auto V",
     "twitch_438158769": "Just Chatting",
     "twitch_1533477113": "World of Warcraft",
-    "twitch_1446602651": "Just Chatting"
+    "twitch_1446602651": "Just Chatting",
+    "youtube_IhV9XZw3aNU_1043": "quality check failed: black bars; face in the top band missing or cut",
+    "youtube_IhV9XZw3aNU_1263": "quality check failed: black bars"
   }
 }

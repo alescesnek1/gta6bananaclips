@@ -23,8 +23,8 @@ on:
         description: "max shorts to render (empty = today's ramp quota from sources.json)"
         default: ""
       yt:
-        description: "of which from YouTube (blocked on GitHub servers, keep 0)"
-        default: "0"
+        description: "of which from YouTube (needs secret YT_COOKIES on GitHub servers)"
+        default: "3"
       url:
         description: "test: render just this one clip URL"
         default: ""
@@ -80,13 +80,24 @@ jobs:
         if: env.BUFFER_API_KEY_1 == '' || env.NETLIFY_AUTH_TOKEN == ''
         run: echo "::error::Chybi secret BUFFER_API_KEY_1 nebo NETLIFY_AUTH_TOKEN - nic se nepublikuje."
 
+      - name: YouTube cookies (GitHub servers are asked "confirm you're not a bot" without them)
+        env:
+          YT_COOKIES: ${{ secrets.YT_COOKIES }}
+        if: env.YT_COOKIES != ''
+        run: printf '%s
+' "$YT_COOKIES" > youtube_cookies.txt
+
       - name: Buffer channels (first run only)
         if: inputs.url == '' && hashFiles('buffer.json') == '' && env.BUFFER_API_KEY_1 != ''
         run: python publikuj.py kanaly
 
       - name: render one test clip
         if: inputs.url != ''
-        run: python klipuj.py --whisper small.en one "${{ inputs.url }}"
+        run: |
+          case "${{ inputs.url }}" in
+            *youtube.com*|*youtu.be*) python klipuj.py --whisper small.en yt "${{ inputs.url }}" --n 1 ;;
+            *) python klipuj.py --whisper small.en one "${{ inputs.url }}" ;;
+          esac
 
       - name: render (only as many as today's quota still allows)
         if: inputs.url == ''
@@ -94,7 +105,7 @@ jobs:
           n="${{ inputs.max }}"
           [ -z "$n" ] && n=$(python publikuj.py zbyva)
           echo "quota left today: $n"
-          if [ "$n" -gt 0 ]; then python klipuj.py --whisper small.en batch --max "$n" --yt ${{ inputs.yt || '0' }}; fi
+          if [ "$n" -gt 0 ]; then python klipuj.py --whisper small.en batch --max "$n" --yt ${{ inputs.yt || '3' }}; fi
 
       - name: publish to Buffer
         if: (inputs.url == '' || inputs.publikovat == 'ano') && env.BUFFER_API_KEY_1 != '' && env.NETLIFY_AUTH_TOKEN != ''
