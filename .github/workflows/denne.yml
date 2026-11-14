@@ -23,8 +23,8 @@ on:
         description: "max shorts to render (empty = today's ramp quota from sources.json)"
         default: ""
       yt:
-        description: "of which from YouTube (needs secret YT_COOKIES on GitHub servers)"
-        default: "3"
+        description: "of which from YouTube (empty = 3 in the morning run, 0 otherwise)"
+        default: ""
       url:
         description: "test: render just this one clip URL"
         default: ""
@@ -106,7 +106,11 @@ jobs:
           n="${{ inputs.max }}"
           [ -z "$n" ] && n=$(python publikuj.py zbyva)
           echo "quota left today: $n"
-          if [ "$n" -gt 0 ]; then python klipuj.py --whisper small.en batch --max "$n" --yt ${{ inputs.yt || '3' }}; fi
+          yt="${{ inputs.yt }}"
+          # YouTube discovery is slow (detail + comments per video): only in the morning run
+          [ -z "$yt" ] && { [ "$(date -u +%H)" -lt 8 ] && yt=3 || yt=0; }
+          echo "youtube moments this run: $yt"
+          if [ "$n" -gt 0 ]; then python klipuj.py --whisper small.en batch --max "$n" --yt "$yt"; fi
 
       - name: publish to Buffer
         if: (inputs.url == '' || inputs.publikovat == 'ano') && env.BUFFER_API_KEY_1 != '' && env.NETLIFY_AUTH_TOKEN != ''

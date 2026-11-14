@@ -29,6 +29,7 @@ Usage (from this folder):
 """
 
 import argparse
+from concurrent.futures import ThreadPoolExecutor
 import json
 import os
 import random
@@ -333,7 +334,7 @@ def full_info(vid, days, min_followers=0):
         return None                                       # small / re-upload channels: credit would go to the wrong person
     return info
 
-def youtube_clips(handle, days, per_video, max_videos=4):
+def youtube_clips(handle, days, per_video, max_videos=3):
     """Recent videos and streams of a YouTube channel -> its peak moments."""
     clips = []
     for tab in ("videos", "streams"):
@@ -353,13 +354,13 @@ def youtube_clips(handle, days, per_video, max_videos=4):
                                        info, per_video, handle)
     return clips
 
-def youtube_search_clips(queries, days, per_video, min_followers, skip_ids=()):
+def youtube_search_clips(queries, days, per_video, min_followers, skip_ids=(), max_videos=10):
     """
     Discovery beyond our channel list: the newest YouTube videos for searches like
     "GTA 6 reaction", only from channels with at least min_followers subscribers
     (official creators, not re-upload/clip channels).
     """
-    clips, seen = [], set(skip_ids)
+    seen, cands = set(skip_ids), []
     for q in queries:
         try:
             url = "https://www.youtube.com/results?search_query=" + urllib.parse.quote_plus(q) + "&sp=CAI%253D"
@@ -372,13 +373,17 @@ def youtube_search_clips(queries, days, per_video, min_followers, skip_ids=()):
             if not vid or vid in seen or e.get("live_status") == "is_live":
                 continue
             seen.add(vid)
-            if e.get("title") and not re.search(game_re(), e["title"], re.I):
-                continue
-            info = full_info(vid, days, min_followers)
-            if info:
-                clips += video_moments(info.get("webpage_url") or f"https://www.youtube.com/watch?v={vid}",
-                                       info, per_video, f"search:{q}")
-    return clips
+            if e.get("title") and re.search(game_re(), e["title"], re.I):
+                cands.append((int(e.get("view_count") or 0), vid, q))
+    cands = sorted(cands, reverse=True)[:max_videos]          # the most watched fresh ones only
+
+    def one(c):
+        _, vid, q = c
+        info = full_info(vid, days, min_followers)
+        return video_moments(info.get("webpage_url") or f"https://www.youtube.com/watch?v={vid}", info,
+                             per_video, f"search:{q}") if info else []
+    with ThreadPoolExecutor(6) as ex:
+        return [x for r in ex.map(one, cands) for x in r]
 
 # -----------------------------------------------------------------------------
 # 2) facecam: a static box of the overlay, found once per streamer
@@ -1109,13 +1114,15 @@ def cmd_batch(a):
     live.sort(key=virality, reverse=True)
     yt = []
     if a.yt:
-        for handle in src.get("youtube", []):
-            if handle.lstrip("@").lower() in blocked:
-                continue
+        def chan(handle):
             try:
-                yt += [c for c in youtube_clips(handle, a.days, a.per_video) if not skip(c["id"])]
+                return youtube_clips(handle, a.days, a.per_video)
             except Exception as e:
                 log(f"youtube {handle}: {str(e)[-150:]}")
+                return []
+        handles = [h for h in src.get("youtube", []) if h.lstrip("@").lower() not in blocked]
+        with ThreadPoolExecutor(6) as ex:                     # network-bound: 6 channels at once
+            yt += [c for r in ex.map(chan, handles) for c in r if not skip(c["id"])]
         try:
             seen = {c["id"].split("_")[1] for c in yt}
             yt += [c for c in youtube_search_clips(src.get("youtube_search", []), max(a.days, 2), a.per_video,
