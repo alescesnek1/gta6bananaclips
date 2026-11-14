@@ -233,6 +233,12 @@ def daily_quota(day):
             n = k
     return n if n is not None else (min(ramp.values()) if ramp else 10)
 
+def remaining(day):
+    """Today's quota minus what earlier runs already scheduled into this publishing day."""
+    taken = {rec.get("due") for rec in load_json(PUBLISHED, {}).values()}
+    used = sum(t.isoformat() in taken for t in slot_times(day, len(SLOTS)))
+    return max(0, daily_quota(day) - used)
+
 def post_input(ch, m, video_url, due, draft):
     service = ch["service"].lower()
     inp = {
@@ -298,7 +304,7 @@ def cmd_den(a):
     day = now.date() if a.den == "dnes" else date.fromisoformat(a.den) if a.den else now.date() + timedelta(days=1)
     # slots still ahead of us (+20 min for the deploy and for Buffer to fetch the video)
     taken = {rec.get("due") for rec in load_json(PUBLISHED, {}).values()}   # an earlier run today
-    quota = min(a.n, daily_quota(day))
+    quota = min(a.n, remaining(day))         # several runs a day share one daily quota
     times = [t for t in slot_times(day, len(SLOTS))
              if t > now + timedelta(minutes=20) and t.isoformat() not in taken][:quota]
     picks = candidates()[: len(times)]
@@ -385,6 +391,8 @@ def main():
     d.add_argument("--ostre", action="store_true", help="schedule for real (default: Buffer drafts)")
     d.add_argument("--zkouska", action="store_true", help="dry run: print the plan, touch nothing")
     d.set_defaults(fn=cmd_den)
+    z = sub.add_parser("zbyva", help="print how many shorts today's quota still allows (for the workflow)")
+    z.set_defaults(fn=lambda a: print(remaining(datetime.now(TZ).date())))
     a = p.parse_args()
     a.fn(a)
 
