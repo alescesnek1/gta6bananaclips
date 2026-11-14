@@ -307,6 +307,7 @@ def youtube_clips(handle, days, per_video, max_videos=4):
                 info = ytdlp_json(url, timeout=120)
             except RuntimeError as err:
                 log(f"  {vid}: {str(err)[-120:]}")
+                cookie_alarm(str(err))
                 continue
             if info.get("live_status") == "is_live" or now - (info.get("timestamp") or now) > days * 86400:
                 continue
@@ -1022,6 +1023,11 @@ def cmd_batch(a):
     if total == 0 and os.environ.get("GITHUB_ACTIONS") and datetime.now().date() >= date(2026, 11, 19):
         print("::warning::Dnes se nevyrenderoval zadny GTA 6 klip (zadne cerstve klipy, nebo blokace Twitch/Kick).")
 
+def cookie_alarm(err):
+    """YouTube asks for sign-in again = the cookies expired: say it loudly on GitHub (e-mail via ::warning)."""
+    if any(k in err for k in ("confirm your age", "not a bot", "cookies are no longer valid")):
+        print("::warning::YouTube cookies uz neplati - vyexportuj nove (anonymni okno) a nahraj secret YT_COOKIES.")
+
 def cmd_yt(a):
     """
     One long YouTube video (e.g. a streamer's GTA 6 trailer reaction) -> its moments that
@@ -1034,6 +1040,7 @@ def cmd_yt(a):
         except Exception as e:                        # age-gated, private, members-only ...
             err = re.search(r"ERROR:[^\n]*", str(e))
             log(f"skip {url}: {(err.group(0) if err else str(e))[:300]}")
+            cookie_alarm(str(e))
             continue
         vid, dur = info["id"], float(info.get("duration") or 0)
         about = " ".join([info.get("title") or ""] + (info.get("tags") or []))
