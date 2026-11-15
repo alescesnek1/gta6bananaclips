@@ -236,7 +236,18 @@ def list_twitch_game(days, pages=3):
     Clips viewers made in the whole 'Grand Theft Auto VI' category, from EVERY streamer,
     best first (Twitch API Get Clips by game_id). The strongest viral signal we have: a person
     picked the start, the end and the title. English streams only (our captions are English).
+    Two windows: the last `days` (pages x 100, by views) and the last 3 hours (100), so a
+    fresh, fast-rising clip is not buried under yesterday's big ones on launch day.
     """
+    out, seen = [], set()
+    for d, n in ((days, pages), (3 / 24, 1)):
+        for c in _game_clips(d, n):
+            if c["id"] not in seen:
+                seen.add(c["id"])
+                out.append(c)
+    return out
+
+def _game_clips(days, pages):
     name = load_json(SOURCES, {}).get("twitch_game", "Grand Theft Auto VI")
     games = helix("games", {"name": name}).get("data") or []
     if not games:
@@ -257,6 +268,7 @@ def list_twitch_game(days, pages=3):
                 "created": int(datetime.fromisoformat(c["created_at"].replace("Z", "+00:00")).timestamp()),
                 "channel": (c.get("broadcaster_name") or "twitch").lower(), "platform": "twitch",
                 "category": games[0]["name"],          # known from the API: no category lookup needed
+                "video_id": c.get("video_id") or None, "vod_offset": c.get("vod_offset"),   # same moment = same VOD spot
             })
         ids = {c["broadcaster_id"] for c in res.get("data") or []}
         if ids:                                    # Get Clips has only the display name: fetch logins
@@ -397,6 +409,7 @@ def video_moments(url, info, per_video, label):
             "created": int(info.get("timestamp") or 0),
             "channel": (info.get("uploader_id") or info.get("channel") or label).lstrip("@").lower(),
             "platform": "youtube", "section": [round(s, 1), round(e2, 1)], "signal": how, "category": about,
+            "signal_score": round(float(score), 2),
         })
     log(f"  {label}: {vid} -> {len(clips)} moments ({how})")
     return clips
@@ -571,8 +584,24 @@ TARGETS = {0: 1.6, 1: 1.0, 2: 1.2, 3: 1.2, 4: 1.0, 5: 1.0, 7: 1.0, 8: 1.0}
 
 SLUR_RE = re.compile(r"\bn[i1]gg(a|er)s?\b|\bf[a@]gg?(ot)?s?\b|\bretards?\b|\btr[a@]nn(y|ies)\b", re.I)
 
-def pick_quote(words):
-    """The line for the post text: a short exclamation/question if there is one, else the first full sentence."""
+def pick_quote(words, peak=None):
+    """
+    The line for the post text: the sentence said closest to the payoff (peak, seconds) if we
+    know it, else a short exclamation/question, else the first full sentence.
+    """
+    if peak is not None and words:
+        sents, cur = [], []
+        for w in words:
+            cur.append(w)
+            if w[2][-1:] in ".?!":
+                sents.append(cur)
+                cur = []
+        if cur:
+            sents.append(cur)
+        ok = [x for x in sents if 3 <= len(x) <= 14]
+        if ok:
+            best = min(ok, key=lambda x: 0 if x[0][0] - 1 <= peak <= x[-1][1] + 1 else min(abs(x[0][0] - peak), abs(x[-1][1] - peak)))
+            return " ".join(t for _, _, t in best)[:90]
     text = " ".join(t for _, _, t in words)
     sents = [s.strip() for s in re.split(r"(?<=[.!?])\s+", text) if 3 <= len(s.split()) <= 14]
     sents.sort(key=lambda s: (not s.endswith(("!", "?")), 0))
@@ -886,10 +915,15 @@ def captions_ass(words, path, y):
 # -----------------------------------------------------------------------------
 # 5) render one clip to 9:16
 
-def build_filter(cam, cmds_file, x0, crop_w, game_h, crop_h=SH, y0=0, ass_file=None, mark_file=None, nf=NORM):
+def build_filter(cam, cmds_file, x0, crop_w, game_h, crop_h=SH, y0=0, ass_file=None, mark_file=None, nf=NORM, zoom_at=None):
     """Filter graph ending in [v]. Without ass/mark it returns the clean 9:16 base."""
     f = f"[0:v]fps={FPS},{nf},split[a][b];"
-    f += f"[b]sendcmd=f='{cmds_file}',crop@g={crop_w}:{crop_h}:{x0}:{y0},scale={W}:{game_h}[game];"
+    zoom = ""
+    if zoom_at is not None:      # punch-in 1.12x on the payoff: 0.25 s in, hold 1.3 s, 0.55 s out (game band only)
+        t0 = max(0.0, zoom_at - 0.25)
+        z = f"1+0.12*clip((it-{t0:.2f})/0.25\\,0\\,1)*clip(({t0 + 2.1:.2f}-it)/0.55\\,0\\,1)"
+        zoom = f",zoompan=z='{z}':d=1:x='iw/2-iw/zoom/2':y='ih/2-ih/zoom/2':s={W}x{game_h}:fps={FPS}"
+    f += f"[b]sendcmd=f='{cmds_file}',crop@g={crop_w}:{crop_h}:{x0}:{y0},scale={W}:{game_h}{zoom}[game];"
     if cam:
         x, y, w, h = [round(v / 100 * d) for v, d in zip(cam, (SW, SH, SW, SH))]
         f += f"[a]crop={w}:{h}:{x}:{y},scale={W}:{CAM_H}:force_original_aspect_ratio=increase,crop={W}:{CAM_H}[cam];"
@@ -919,28 +953,53 @@ def build_filter(cam, cmds_file, x0, crop_w, game_h, crop_h=SH, y0=0, ass_file=N
 
 BANANA = HERE / "assets" / "banan"
 BANANA_KEY = "0x1BD02A"            # the greenscreen colour
-REACTIONS = {                       # name: (video, start s, end s)
+REACTIONS = {                       # name: (video number -> reakce<N>.mp4, start s, end s)
     "laugh": (1, 0.5, 2.0), "shock": (1, 2.0, 3.5), "hype": (1, 3.5, 5.0),
     "facepalm": (1, 5.0, 6.5), "mindblown": (1, 6.5, 8.0),
     "rage": (2, 0.5, 2.0), "sideeye": (2, 2.0, 3.6), "crylaugh": (2, 4.0, 5.0),
     "clap": (2, 5.0, 6.5), "point": (2, 6.5, 8.0),
 }
-TRIGGERS = [                        # what was said -> fitting reactions
-    (r"\b(lmao|lmfao|lol|ha(ha)+|i'?m dead|crying)\b", ["laugh", "crylaugh"]),
-    (r"\b(no way|what|wait|huh|how|oh my god|omg)\b", ["shock", "mindblown"]),
-    (r"\b(let'?s go|yes+|clutch|easy|gg|w)\b", ["hype", "point"]),
-    (r"\b(fuck(ing)?|shit|bullshit|are you serious)\b", ["rage", "facepalm"]),
-    (r"\b(bruh|why|cringe|dude)\b", ["facepalm", "sideeye"]),
+# more reactions without touching the code: assets/banan/reakce.json {"name": [video, start, end]}
+# (new greenscreen videos reakce3.mp4, reakce4.mp4 ... from docs/banan-reakce-prompt.md)
+for _k, _v in load_json(BANANA / "reakce.json", {}).items() if (BANANA / "reakce.json").exists() else []:
+    if not _k.startswith("_") and (BANANA / f"reakce{_v[0]}.mp4").exists():
+        REACTIONS[_k] = tuple(_v)
+TRIGGERS = [                        # what was said -> fitting reactions (only those we have are used)
+    (r"\b(lmao|lmfao|lol|ha(ha)+|i'?m dead|crying)\b", ["laugh", "crylaugh", "popcorn"]),
+    (r"\b(no way|what|wait|huh|how|oh my god|omg)\b", ["shock", "mindblown", "scared", "thinking"]),
+    (r"\b(let'?s go|yes+|clutch|easy|gg|w)\b", ["hype", "point", "dance", "celebrate", "cool", "chefkiss"]),
+    (r"\b(fuck(ing)?|shit|bullshit|are you serious)\b", ["rage", "facepalm", "cry"]),
+    (r"\b(bruh|why|cringe|dude)\b", ["facepalm", "sideeye", "shrug"]),
 ]
+LOUD = ["shock", "mindblown", "laugh", "hype", "scared"]    # payoff without a trigger word
+# the banana's one-line comment next to it (Aleš 15. 11.: banana as a commentator, our own layer)
+PHRASES = {
+    "laugh": ["LMAOOO", "I'M DEAD", "HAHAHA"], "crylaugh": ["I'M CRYING", "STOPPP", "NOT AGAIN"],
+    "shock": ["NO WAY", "WAIT WHAT", "HOLD ON"], "mindblown": ["WHAT?!", "HOW?!", "GTA 6 IS INSANE"],
+    "hype": ["LET'S GOOO", "HUGE W", "CLEAN"], "point": ["LOOK AT THIS", "DID YOU SEE THAT", "W"],
+    "rage": ["NAHHH", "UNFAIR", "SO MAD"], "facepalm": ["BRUH", "WHY THO", "MAN..."],
+    "sideeye": ["SUS", "HMMM", "OKAY..."], "clap": ["RESPECT", "BIG W", "GG"],
+    "popcorn": ["THIS IS CINEMA", "PEAK", "MORE"], "scared": ["RUNNN", "NOPE", "AAAAH"],
+    "dance": ["VIBES", "LET'S GOOO", "EZ"], "celebrate": ["W", "LEGEND", "LET'S GOOO"],
+    "shrug": ["IT IS WHAT IT IS", "WELL...", "OK THEN"], "cool": ["TOO SMOOTH", "EZ", "COLD"],
+    "cry": ["NOOO", "PAIN", "WHY"], "thinking": ["WAIT...", "HOW THO", "BIG BRAIN"],
+    "chefkiss": ["PERFECTION", "CHEF'S KISS", "10/10"], "salute": ["RESPECT", "LEGEND", "O7"],
+}
 BANANA_W, BANANA_H, BANANA_X = 200, 356, 30   # whole banana, small; left side (TikTok's buttons are on the right)
 
-def pick_reactions(words, dur, seed):
+def pick_reactions(words, dur, seed, peak=None):
     """
-    As few as possible: one reaction, a second only in clips over 30 s. It lands right
-    after the line that triggered it; with no trigger, one calm reaction at 2/3 of the clip.
+    As few as possible: one reaction, a second only in clips over 30 s. The first one sits on
+    the payoff (the loudest moment), its kind chosen by what was said around it; without a
+    payoff it lands right after a trigger line, or one calm reaction at 2/3 of the clip.
     """
     rnd = random.Random(seed)
+    have = lambda names: [n for n in names if n in REACTIONS] or ["shock"]
     out = []
+    if peak is not None and 1.0 <= peak - 0.15 and peak + 1.35 < dur:
+        near = " ".join(w.lower() for s0, e0, w in words if peak - 3 <= e0 <= peak + 2)
+        kind = next((names for rx, names in TRIGGERS if re.search(rx, near)), LOUD)
+        out.append((peak - 0.15, rnd.choice(have(kind))))
     for s, e, w in words:
         if e < 1.5 or (out and e - out[-1][0] < 8):
             continue
@@ -948,13 +1007,39 @@ def pick_reactions(words, dur, seed):
             if re.search(rx, w.lower().strip(".,!?\"'")) or re.search(rx, w.lower()):
                 t = e + 0.15
                 if t + 1.6 < dur:
-                    out.append((t, rnd.choice(names)))
+                    out.append((t, rnd.choice(have(names))))
                 break
         if len(out) >= (2 if dur > 30 else 1):
             break
     if not out and dur > 6:
-        out.append((dur * 0.66, rnd.choice(["clap", "sideeye", "point"])))
-    return out
+        out.append((dur * 0.66, rnd.choice(have(["clap", "sideeye", "point"]))))
+    return sorted(out)[: (2 if dur > 30 else 1)]
+
+def banana_rating(views):
+    """The banana's score for the clip, 6-10: 500 views -> 6, ~50k -> 10 (log scale)."""
+    return int(max(6, min(10, 6 + np.log10(max(views or 1, 1) / 500) * 2)))
+
+def extras_ass(path, reactions, rating, dur, cam, seed):
+    """
+    Our own layer on top of the captions (Aleš 15. 11.): a short speech bubble next to every
+    banana reaction, and the banana's score for the clip in the last 1.6 s.
+    """
+    rnd = random.Random(seed)
+    y0 = (CAM_H if cam else 0) + 520                   # banana's top edge (see reaction_overlay)
+    style = (f"Style: Bub,{CAP_FONT},50,&H00000000,&H00000000,&H00FFFFFF,&H00FFFFFF,0,0,0,0,100,100,1,0,3,10,0,4,0,0,0,1\n"
+             f"Style: Rate,{CAP_FONT},76,&H0035E1FF,&H0035E1FF,&H00000000,&H64000000,0,0,0,0,100,100,1,0,1,0,5,5,0,0,0,1\n")
+    txt = path.read_text(encoding="utf-8").replace("\n\n[Events]", "\n" + style.rstrip("\n") + "\n\n[Events]", 1)
+    lines = []
+    for t, name in reactions:                          # white box, black text, pops in with the banana
+        e = t + (REACTIONS[name][2] - REACTIONS[name][1])
+        lines.append(f"Dialogue: 1,{ass_time(t + 0.1)},{ass_time(e)},Bub,,0,0,0,,"
+                     f"{{\\pos({BANANA_X + BANANA_W + 6},{y0 + 110})\\fscx70\\fscy70\\t(0,120,\\fscx100\\fscy100)}}"
+                     f"{rnd.choice(PHRASES.get(name, ['W']))}")
+    if rating and dur > 8:
+        lines.append(f"Dialogue: 1,{ass_time(dur - 1.6)},{ass_time(dur)},Rate,,0,0,0,,"
+                     f"{{\\pos(540,{(CAM_H if cam else 0) + 380})\\fscx60\\fscy60\\t(0,140,\\fscx100\\fscy100)}}"
+                     f"BANANA SCORE {rating}/10")
+    path.write_text(txt.rstrip("\n") + "\n" + "\n".join(lines) + "\n", encoding="utf-8")
 
 def reaction_inputs(reactions):
     """ffmpeg inputs: each reaction is its own trimmed, time-shifted input."""
@@ -1037,6 +1122,90 @@ def fetch_section(clip, d, dst):
     log(f"  cut on sentence pauses: {clip['section']} ({b - a:.0f} s)")
     return [(w0 - a, w1 - a, t) for w0, w1, t in words if w0 >= a and w1 <= b]
 
+def has_audio(src):
+    try:
+        out = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "a", "-show_entries", "stream=index",
+                              "-of", "csv=p=0", str(src)], capture_output=True, text=True, timeout=60).stdout
+    except subprocess.TimeoutExpired:
+        return False
+    return bool(out.strip())
+
+def audio_peak(src):
+    """
+    The payoff: the loudest 0.5 s of the clip (seconds, centre), ignoring the first second.
+    Used only for TIMING (cut, banana, zoom, thumbnail) - which clips we take stays a viewer
+    decision (clip views), never a volume spike.
+    """
+    try:
+        raw = subprocess.run(["ffmpeg", "-nostdin", "-v", "error", "-i", str(src), "-vn", "-ac", "1", "-ar", "8000",
+                              "-f", "s16le", "-"], capture_output=True, timeout=300).stdout
+    except subprocess.TimeoutExpired:
+        return None
+    a = np.frombuffer(raw, np.int16).astype(np.float64)
+    if a.size < 8000 * 3:
+        return None
+    c = np.concatenate([[0.0], np.cumsum(a * a)])
+    rms = np.sqrt((c[4000:] - c[:-4000]) / 4000)[::800]          # 0.5 s windows, every 0.1 s
+    t = np.arange(len(rms)) * 0.1 + 0.25
+    rms[t < 1.0] = 0
+    i = int(np.argmax(rms))
+    return float(t[i]) if rms[i] > 0 else None
+
+def trim_points(words, peak, dur, hi=35.0, lo=8.0):
+    """
+    Twitch/Kick clip: drop the dead run-up and the tail after the payoff (Fable 15. 11.):
+    start 0.4 s before the first word (if the talking starts late), end just after the
+    sentence around the payoff, at most 35 s.
+    """
+    a, b = 0.0, dur
+    if words and words[0][0] > 1.5:
+        a = max(0.0, min(words[0][0], (peak - 6) if peak else words[0][0]) - 0.4)
+    talk_after = [w for w in words if w[0] > (peak or 0) + 5]
+    if peak is not None and not (peak < dur / 3 and talk_after):   # a shout early on is not the payoff
+        end_sent = next((w[1] for w in words if w[0] >= peak - 0.5 and w[2][-1:] in ".?!"), None)
+        end_word = next((w[1] for w in words if w[1] >= peak + 0.6), None)       # no punctuation: end of a word
+        end = end_sent if end_sent and end_sent <= peak + 4 else (end_word if end_word and end_word <= peak + 4 else peak + 0.6)
+        b = min(dur, max(end + 0.3, peak + 1.8))          # the banana (1.5 s) must fit after the payoff
+    elif words and dur - words[-1][1] > 2:
+        b = words[-1][1] + 0.8
+    if b - a > hi:
+        a = b - hi
+    if b - a < lo:
+        return 0.0, dur
+    return a, b
+
+def edit_cut(src, words, d, clip):
+    """
+    Cut the source before rendering: trim (Twitch/Kick; YouTube windows are already cut on
+    sentences) and a COLD START - the payoff flashes for 1 s first, then the clip plays from
+    its start (Aleš 15. 11.). Returns (source, words, payoff time) in the new timeline.
+    """
+    dur = duration(src)
+    peak = audio_peak(src)
+    a, b = (0.0, dur) if clip.get("section") else trim_points(words, peak, dur)
+    tease = peak is not None and peak - a >= 3 and b - peak >= 0.3
+    if not tease and a < 0.5 and b > dur - 0.5:
+        return src, words, peak
+    if not has_audio(src):
+        return src, words, peak
+    out = d / "edit.mp4"
+    ps, pe = (peak - 0.7, peak + 0.3) if tease else (0, 0)
+    T = pe - ps
+    if tease:
+        flt = (f"[0:v]trim={ps:.2f}:{pe:.2f},setpts=PTS-STARTPTS[v1];[0:a]atrim={ps:.2f}:{pe:.2f},asetpts=PTS-STARTPTS[a1];"
+               f"[0:v]trim={a:.2f}:{b:.2f},setpts=PTS-STARTPTS[v2];[0:a]atrim={a:.2f}:{b:.2f},asetpts=PTS-STARTPTS[a2];"
+               f"[v1][a1][v2][a2]concat=n=2:v=1:a=1[v][a]")
+    else:
+        flt = (f"[0:v]trim={a:.2f}:{b:.2f},setpts=PTS-STARTPTS[v];"
+               f"[0:a]atrim={a:.2f}:{b:.2f},asetpts=PTS-STARTPTS[a]")
+    encode(["ffmpeg", "-nostdin", "-y", "-hide_banner", "-loglevel", "error", "-i", str(src),
+            "-filter_complex", flt, "-map", "[v]", "-map", "[a]"], out)
+    new = [(w0 - ps, w1 - ps, t) for w0, w1, t in words if tease and w0 >= ps and w1 <= pe]
+    new += [(w0 - a + T, w1 - a + T, t) for w0, w1, t in words if w0 >= a and w1 <= b]
+    pk = None if peak is None else peak - a + T
+    log(f"  cut {a:.1f}-{b:.1f} s of {dur:.0f} s" + (f", cold start from the payoff at {peak:.1f} s" if tease else ""))
+    return out, new, pk
+
 def home_url(clip):
     return {"twitch": f"twitch.tv/{clip['channel']}", "kick": f"kick.com/{clip['channel']}",
             "youtube": f"youtube.com/@{clip['channel']}"}.get(clip.get("platform"), clip["url"])
@@ -1065,7 +1234,11 @@ def render(clip, src=None, clean=False):
         raise NotGameplay("slur in the speech - not worth a strike or a ban")
     (d / "transcript.txt").write_text(speech, encoding="utf-8")
     (d / "mark.txt").write_text(f"@{clip['channel']}", encoding="utf-8")
-    reactions = pick_reactions(words, dur, clip["id"]) if (BANANA / "reakce1.mp4").exists() else []
+    src, words, peak = edit_cut(src, words, d, clip)
+    dur = duration(src)
+    rating = (int(round(5 + 5 * clip["signal_score"])) if clip.get("platform") == "youtube" and "signal_score" in clip
+              else banana_rating(clip.get("views")))
+    reactions = pick_reactions(words, dur, clip["id"], peak) if (BANANA / "reakce1.mp4").exists() else []
     ff = ["ffmpeg", "-nostdin", "-y", "-hide_banner", "-loglevel", "error", "-i", str(src)]
     out = d / "short_9x16.mp4"
 
@@ -1092,8 +1265,9 @@ def render(clip, src=None, clean=False):
         cmds.write_text("".join(f"{i / FPS:.4f} crop@g x {x};\n" for i, x in enumerate(xs)), encoding="utf-8")
         ass = d / "captions.ass"
         n_chunks = captions_ass(words, ass, y=CAM_H if cam else 600)   # on the seam between face and game
+        extras_ass(ass, reactions, rating, dur, cam, clip["id"])            # banana's bubble + score
         args = (cam, ff_path(cmds), int(xs[0]), crop_w, game_h, crop_h, top)
-        flt = reaction_overlay(build_filter(*args, ass_file=ff_path(ass) if words else None,
+        flt = reaction_overlay(build_filter(*args, ass_file=ff_path(ass), zoom_at=peak,
                                             mark_file=ff_path(d / "mark.txt"), nf=src_norm(src)), reactions, cam)
         enc = encode(ff + reaction_inputs(reactions) + ["-filter_complex", flt, "-map", "[v]", "-map", "0:a?"], out)
         problems = quality_check(out, cam)
@@ -1117,7 +1291,9 @@ def render(clip, src=None, clean=False):
         "short": str(out),
         "base": str(base) if clean else None,
         "source": str(src),
-        "quote": pick_quote(words),          # publikuj.py builds a different post text per platform from it
+        "quote": pick_quote(words, peak),    # publikuj.py builds a different post text per platform from it
+        "peak": peak,                        # payoff (s): thumbnail frame, banana, zoom
+        "rating": rating,
         "caption": f"🎮 {home_url(clip)}\n#gta6 #{BRAND}",
         "rendered_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "checklist": [
@@ -1192,6 +1368,8 @@ def process(clips, clean=False, limit=None):
         try:
             render(c, clean=clean)
             mark(c["id"], True)
+            if has_moment(c):                    # other viewers' clips of this moment: skip them later
+                save_moment(c)
             n += 1
         except NotGameplay as e:                 # right category, wrong picture: never again
             if "no facecam" in str(e):           # detection can miss once: counts as a failure (max 3 tries)
@@ -1208,9 +1386,59 @@ def process(clips, clean=False, limit=None):
     return n
 
 def virality(c):
-    """Views per hour of age (softened): what is spreading right now beats an old slow climber."""
+    """
+    Views per hour of age (softened): what is spreading right now beats an old slow climber.
+    Boosted by measured growth since the last run (views/h relative, capped 3x) and by how
+    many viewers clipped the same moment (cluster). publikuj.candidates uses the same formula.
+    """
     age_h = (time.time() - c["created"]) / 3600 if c.get("created") else 24
-    return (c.get("views") or 0) / (max(age_h, 0) + 1) ** 0.5
+    base = (c.get("views") or 0) / (max(age_h, 0) + 1) ** 0.5
+    return base * (1 + min(c.get("growth") or 0, 3)) * (1 + 0.5 * ((c.get("cluster") or 1) - 1))
+
+def cluster(clips):
+    """Several viewers clipping the same 30 s of the same stream = one moment, a stronger one."""
+    groups = []
+    for c in sorted(clips, key=lambda c: -c["views"]):
+        if c.get("video_id") and c.get("vod_offset") is not None:
+            g = next((g for g in groups if g[0].get("video_id") == c["video_id"]
+                      and g[0].get("vod_offset") is not None and abs(g[0]["vod_offset"] - c["vod_offset"]) < 30), None)
+            if g:
+                g.append(c)
+                continue
+        groups.append([c])
+    for g in groups:
+        g[0]["cluster"] = len(g)
+    return [g[0] for g in groups]
+
+def has_moment(c):
+    return bool(c.get("video_id")) and c.get("vod_offset") is not None
+
+def moment_done(c):
+    """The same stream moment (same VOD, < 30 s apart) already rendered from another viewer's clip."""
+    if not has_moment(c):
+        return False
+    seen = load_json(STATE, {}).get("moments", {}).get(c["video_id"], [])
+    return any(abs(off - c["vod_offset"]) < 30 for _, off in seen)
+
+def save_moment(c):
+    state = load_json(STATE, {"done": {}, "failed": {}})
+    now = int(time.time())
+    m = {v: [x for x in xs if now - x[0] < 3 * 86400] for v, xs in state.get("moments", {}).items()}
+    m.setdefault(c["video_id"], []).append([now, c["vod_offset"]])
+    state["moments"] = {v: xs for v, xs in m.items() if xs}
+    save_json(STATE, state)
+
+def add_growth(clips):
+    """Views growth since the previous run (saved per clip in state 'views', kept 2 days)."""
+    state = load_json(STATE, {"done": {}, "failed": {}})
+    snap, now = state.get("views", {}), time.time()
+    for c in clips:
+        prev = snap.get(c["id"])
+        if prev and 600 <= now - prev[0] <= 4 * 3600:
+            c["growth"] = round(max(0.0, (c["views"] - prev[1]) / max(prev[1], 50) / ((now - prev[0]) / 3600)), 3)
+        snap[c["id"]] = [int(now), c["views"]]
+    state["views"] = {k: v for k, v in snap.items() if now - v[0] < 2 * 86400}
+    save_json(STATE, state)
 
 def fresh(clips, days):
     now = time.time()
@@ -1249,14 +1477,15 @@ def cmd_batch(a):
             seen, per = {c["id"] for c in live}, {}
             for c in live:
                 per[c["channel"]] = per.get(c["channel"], 0) + 1
-            for c in list_twitch_game(max(a.days, 1)):
+            for c in cluster(list_twitch_game(max(a.days, 1))):
                 if (c["id"] in seen or c["channel"] in blocked or c["views"] < a.min_views
-                        or per.get(c["channel"], 0) >= a.n or skip(c["id"])):
+                        or per.get(c["channel"], 0) >= a.n or skip(c["id"]) or moment_done(c)):
                     continue
                 per[c["channel"]] = per.get(c["channel"], 0) + 1
                 live.append(c)
         except Exception as e:
             log(f"twitch api: {str(e)[-150:]}")
+    add_growth(live)
     live.sort(key=virality, reverse=True)
     yt = []
     if a.yt:

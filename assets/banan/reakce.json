@@ -1,0 +1,5 @@
+{
+  "_napoveda": "Dalsi reakce banana: nazev -> [cislo videa reakce<N>.mp4, zacatek s, konec s]. Pouziji se jen ty, jejichz video existuje. Prompty: docs/banan-reakce-prompt.md (Video 3, 4).",
+  "popcorn": [3, 0.3, 1.8], "scared": [3, 1.8, 3.3], "dance": [3, 3.4, 4.9], "celebrate": [3, 5.0, 6.5], "shrug": [3, 6.5, 8.0],
+  "cool": [4, 0.3, 1.8], "cry": [4, 1.8, 3.3], "thinking": [4, 3.4, 4.9], "chefkiss": [4, 5.0, 6.5], "salute": [4, 6.5, 8.0]
+}

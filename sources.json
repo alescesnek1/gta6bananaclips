@@ -1,5 +1,5 @@
 {
-  "_napoveda": "Odkud bereme momenty. twitch/kick = login kanalu (klipy divaku), youtube = @handle. game = regex kategorie streamu / nazvu videa (jen GTA 6). ramp = kolik klipu denne od data (rozjezd novych uctu). caps = max postu denne na sit (X, Threads). blocklist = streameri, kteri chteji klipy dolu (uz je nebrat). youtube_search = hledani nejnovejsich videi (jen kanaly nad youtube_min_followers). exclude_titles = regex nazvu, ktere nebrat (fejky, leaky, koncepty). twitch_game = kategorie pro Twitch API (klipy divaku od vsech streameru, chce TWITCH_CLIENT_ID/SECRET). youtube_per_day = max YouTube shortu za publikacni den (Twitch/Kick maji prednost). Trailery a reakce na ne se neberou (Ales 14. 11.: nudne).",
+  "_napoveda": "Odkud bereme momenty. twitch/kick = login kanalu (klipy divaku), youtube = @handle. game = regex kategorie streamu / nazvu videa (jen GTA 6). ramp = kolik klipu denne od data (rozjezd novych uctu). caps = max postu denne na sit (X, Threads). blocklist = streameri, kteri chteji klipy dolu (uz je nebrat). youtube_search = hledani nejnovejsich videi (jen kanaly nad youtube_min_followers). exclude_titles = regex nazvu, ktere nebrat (fejky, leaky, koncepty). twitch_game = kategorie pro Twitch API (klipy divaku od vsech streameru, chce TWITCH_CLIENT_ID/SECRET). youtube_per_day = max YouTube shortu za publikacni den (Twitch/Kick maji prednost). Trailery a reakce na ne se neberou (Ales 14. 11.: nudne). hot_score = skore (zhlednuti/odmocnina(stari h+1) x rust x shluk), od ktereho klip mladsi 3 h jde ven do 25 min (horka cesta).",
   "game": "Grand Theft Auto VI\\b|\\bGTA ?(VI|6)\\b",
   "ramp": {
     "2026-11-19": 3,
@@ -13,6 +13,7 @@
   "blocklist": [],
   "twitch_game": "Grand Theft Auto VI",
   "youtube_per_day": 1,
+  "hot_score": 2000,
   "twitch": [
     "kaicenat",
     "adinross",

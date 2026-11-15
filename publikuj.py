@@ -29,6 +29,7 @@ import argparse
 import hashlib
 import io
 import shutil
+import subprocess
 import json
 import math
 import os
@@ -65,6 +66,9 @@ TZ = ZoneInfo("Europe/Prague")
 #   05:00   04:00     23:00    20:00    US west prime time
 # (CET; during summer time everything shifts together, the pattern stays.)
 SLOTS = ["14:00", "17:00", "18:30", "20:00", "21:30", "23:00", "00:30", "02:00", "03:30", "05:00"]
+# which slots a small quota fills first: spread over UK evening + US prime time (Fable 15. 11.:
+# the first 3 in time order were all US morning)
+PRIORITY = ["18:30", "23:00", "02:00", "20:00", "00:30", "21:30", "14:00", "03:30", "17:00", "05:00"]
 
 def log(msg):
     print(f"[{datetime.now():%H:%M:%S}] {msg}", flush=True)
@@ -273,8 +277,10 @@ def candidates():
         if not re.search(game, m.get("category") or "", re.I):
             log(f"  not published (category '{m.get('category') or '?'}' is not {game}): {m.get('id')}")
             continue
-        age_h = (now - (m.get("created") or now)) / 3600
-        m["score"] = (m.get("views") or 0) / (max(age_h, 0) + 1) ** 0.5   # same "virality" as klipuj.batch
+        age_h = (now - m["created"]) / 3600 if m.get("created") else 24      # unknown age = not fresh
+        m["age_h"] = age_h
+        m["score"] = ((m.get("views") or 0) / (max(age_h, 0) + 1) ** 0.5   # same "virality" as klipuj.batch
+                      * (1 + min(m.get("growth") or 0, 3)) * (1 + 0.5 * ((m.get("cluster") or 1) - 1)))
         out.append(m)
     # viewer-made Twitch/Kick clips first: a YouTube window's "views" are the whole video's,
     # not comparable, so YouTube only fills what is left (and at most youtube_per_day)
@@ -290,6 +296,12 @@ def home(m):
         m.get("platform"), f"twitch.tv/{m['channel']}")
 
 def caption(m, service):
+    if m.get("platform") == "top3":                  # daily Top 3: credit every streamer
+        lines = [f"#{i} {home(x)}" for i, x in enumerate(m["items"], 1)]
+        if service in ("twitter", "threads"):
+            return "Top 3 GTA 6 moments of the day 🍌\n\n" + "\n".join(lines) + "\n\n#GTA6"
+        return ("Top 3 GTA 6 moments of the day 🍌 Which one wins?\n\n" + "\n".join(lines)
+                + "\n\n#gta6 #gta6bananaclips #gaming #gta6clips")
     q = (m.get("quote") or "").strip()
     q = f"“{q}”" if q else ""
     src = f"🎮 {home(m)}"
@@ -299,11 +311,26 @@ def caption(m, service):
     return "\n\n".join(x for x in (q, src, " ".join(["#gta6", "#gta6bananaclips"] + rot)) if x)
 
 def youtube_title(m):
-    """Viewer clip titles are often junk ('yoooo') or risky ('LEAK'): then use the quote."""
+    """
+    'GTA 6' and the streamer first (that is what people search), then the clip title -
+    viewer titles are often junk ('yoooo') or risky ('LEAK'): then the quote.
+    """
+    if m.get("platform") == "top3":
+        return "Top 3 GTA 6 Moments Today 🍌 #shorts"
     t = (m.get("title") or "").strip()
     if len(t) < 12 or JUNK_RE.search(t) or sum(c.isalpha() for c in t) < len(t) / 2:
-        t = (m.get("quote") or "").strip() or "GTA 6 moment"
-    return f"{t} | {m['channel']} GTA 6 #shorts"[:100]
+        t = (m.get("quote") or "").strip() or "insane moment"
+    head = f"GTA 6: {m['channel']} - "
+    return head + t[: 100 - len(head) - len(" #shorts")] + " #shorts"
+
+def in_day(rec, day):
+    """Is the post due inside this publishing day (12:00 that day to 12:00 the next, Prague)?"""
+    try:
+        t = datetime.fromisoformat(rec.get("due") or "")
+    except ValueError:
+        return False
+    start = datetime.combine(day, datetime.min.time(), TZ) + timedelta(hours=12)
+    return start <= t < start + timedelta(days=1)
 
 def daily_quota(day):
     """Ramp-up for new accounts (sources.json 'ramp': {date: posts per day}); 10 if not set."""
@@ -316,9 +343,8 @@ def daily_quota(day):
 
 def remaining(day):
     """Today's quota minus what earlier runs already scheduled into this publishing day."""
-    taken = {rec.get("due") for rec in load_json(PUBLISHED, {}).values()}
-    used = sum(t.isoformat() in taken for t in slot_times(day, len(SLOTS)))
-    return max(0, daily_quota(day) - used)
+    used = sum(in_day(rec, day) for k, rec in load_json(PUBLISHED, {}).items() if not k.startswith("top3_"))
+    return max(0, daily_quota(day) - used)       # hot posts (any time) count too; the daily Top 3 does not
 
 def post_input(ch, m, video_url, due, draft):
     service = ch["service"].lower()
@@ -333,8 +359,8 @@ def post_input(ch, m, video_url, due, draft):
         inp["dueAt"] = due.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
     else:
         inp["saveToDraft"] = True
-    if service in ("instagram", "tiktok"):
-        inp["assets"][0]["video"]["metadata"] = {"thumbnailOffset": 1000}
+    if service in ("instagram", "tiktok"):            # cover = the payoff frame (banana + reaction)
+        inp["assets"][0]["video"]["metadata"] = {"thumbnailOffset": int(max(0.5, m.get("peak") or 1.0) * 1000)}
     if service == "youtube":
         inp["metadata"] = {"youtube": {"title": youtube_title(m), "categoryId": "20"}}   # 20 = Gaming
     elif service == "instagram":
@@ -386,11 +412,11 @@ def cmd_den(a):
     # slots still ahead of us (+20 min for the deploy and for Buffer to fetch the video)
     taken = {rec.get("due") for rec in load_json(PUBLISHED, {}).values()}   # an earlier run today
     quota = min(a.n, remaining(day))         # several runs a day share one daily quota
-    times = [t for t in slot_times(day, len(SLOTS))
-             if t > now + timedelta(minutes=20) and t.isoformat() not in taken][:quota]
-    day_slots = {t.isoformat() for t in slot_times(day, len(SLOTS))}
-    yt_left = load_json(HERE / "sources.json", {}).get("youtube_per_day", 1) - sum(
-        k.startswith("youtube_") and rec.get("due") in day_slots for k, rec in load_json(PUBLISHED, {}).items())
+    free = [t for t in slot_times(day, len(SLOTS)) if t > now + timedelta(minutes=20) and t.isoformat() not in taken]
+    times = sorted(sorted(free, key=lambda t: PRIORITY.index(t.strftime("%H:%M")))[:quota])
+    src_cfg = load_json(HERE / "sources.json", {})
+    yt_left = src_cfg.get("youtube_per_day", 1) - sum(
+        k.startswith("youtube_") and in_day(rec, day) for k, rec in load_json(PUBLISHED, {}).items())
     picks = []
     for m in candidates():
         if len(picks) >= len(times):
@@ -401,6 +427,14 @@ def cmd_den(a):
             yt_left -= 1
         picks.append(m)
     times = times[: len(picks)]
+    # hot path: a clip from the last 3 h that is exploding goes out in 25 min, not at the next slot
+    hot_due = (now + timedelta(minutes=25)).replace(second=0, microsecond=0)
+    if (picks and picks[0].get("platform") != "youtube" and picks[0].get("created")
+            and picks[0].get("age_h", 99) <= 3 and picks[0]["score"] >= src_cfg.get("hot_score", 2000)
+            and in_day({"due": hot_due.isoformat()}, day) and hot_due < times[0] - timedelta(minutes=30)):
+        picks[0]["hot"] = True
+        times[0] = hot_due
+        log(f"HOT: {picks[0]['channel']} '{picks[0].get('title', '')[:40]}' -> {hot_due:%H:%M}")
     chans = load_json(CHANNELS, [])
     mode = "ZKOUŠKA" if a.zkouska else ("NAOSTRO" if a.ostre else "koncepty")
     log(f"{day}: {len(picks)} shorts (quota {quota}) x {len(chans) or '?'} channels ({mode})")
@@ -413,6 +447,8 @@ def cmd_den(a):
             print("   ", gql_value(post_input(fake, m, "https://media.example/clip.mp4", due, not a.ostre))[:400])
         return
     if not picks:
+        if not a.zkouska and load_json(CHANNELS, []) and f"top3_{day}" not in load_json(PUBLISHED, {}):
+            top3_only(a, day, now)                   # the day's quota is full: the Top 3 may still be due
         return
     load_env()
     need("NETLIFY_AUTH_TOKEN", "NETLIFY_SITE_ID", "MEDIA_BASE_URL")
@@ -445,6 +481,11 @@ def cmd_den(a):
                 continue
         files[rel] = src
         plan.append((m, due, rel))
+    # the daily Top 3 (our own curated format): once the day's quota is full
+    top3 = make_top3(day, done, plan, stage)
+    if top3:
+        plan.append(top3)
+        files[top3[2]] = top3[0].pop("file")
     netlify_deploy(files)
 
     # 2) Buffer posts, one time slot per short, every channel (X/Threads capped per day)
@@ -458,19 +499,22 @@ def cmd_den(a):
             failed += 1
             continue
         posts = {}
-        for ch in chans:
+        for i, ch in enumerate(chans):
             service = ch["service"].lower()
             if used.get(service, 0) >= caps.get(service, 99):
                 continue
+            ch_due = due + timedelta(minutes=4 * i)       # not the same file on 6 networks in the same minute
             try:
-                posts[ch["id"]] = create_post(post_input(ch, m, url, due, not a.ostre), ch.get("key", "BUFFER_API_KEY"))
+                posts[ch["id"]] = create_post(post_input(ch, m, url, ch_due, not a.ostre), ch.get("key", "BUFFER_API_KEY"))
                 used[service] = used.get(service, 0) + 1
                 ok += 1
                 log(f"  {service}: ok")
             except Exception as e:
                 failed += 1
                 log(f"  {service}: FAILED {e}")
-        done[m["id"]] = {"url": url, "path": rel, "due": due.isoformat(), "draft": not a.ostre, "posts": posts}
+        done[m["id"]] = {"url": url, "path": rel, "due": due.isoformat(), "draft": not a.ostre, "posts": posts,
+                         "channel": m.get("channel"), "platform": m.get("platform"), "score": round(m.get("score") or 0, 1),
+                         "hot": bool(m.get("hot"))}
         save_json(PUBLISHED, done)
     # make failures visible: a red run = an e-mail from GitHub
     if failed:
@@ -478,6 +522,117 @@ def cmd_den(a):
     if plan and not ok:
         print("::error::Buffer: nevysel ani jeden post (klic, Netlify nebo Buffer API)")
         sys.exit(1)
+
+TOP3_FONT = HERE / "fonts" / "cap" / "montserrat-900.ttf"
+
+def top3_only(a, day, now):
+    """A run with no new shorts: build, deploy and post the day's Top 3 if it is due."""
+    load_env()
+    if not (buffer_keys() and os.environ.get("NETLIFY_AUTH_TOKEN")):
+        return
+    done = load_json(PUBLISHED, {})
+    stage = OUT / "_media"
+    stage.mkdir(parents=True, exist_ok=True)
+    top3 = make_top3(day, done, [], stage)
+    if not top3:
+        return
+    files = {}
+    for rec in done.values():                        # carry over what is still needed (as in cmd_den)
+        if rec.get("path") and datetime.fromisoformat(rec["due"]) > now - timedelta(hours=6):
+            local = stage / rec["path"].replace("/", "_")
+            try:
+                local.write_bytes(http(rec["url"], timeout=300)[1])
+                files[rec["path"]] = local
+            except Exception as e:
+                log(f"  could not carry over {rec['url']}: {e}")
+    m, due, rel = top3
+    files[rel] = m.pop("file")
+    netlify_deploy(files)
+    url = media_url(rel)
+    if not is_public(url):
+        print("::warning::Top 3: not reachable after deploy")
+        return
+    posts, caps, used = {}, load_json(HERE / "sources.json", {}).get("caps") or {}, {}
+    for i, ch in enumerate(load_json(CHANNELS, [])):
+        service = ch["service"].lower()
+        try:
+            posts[ch["id"]] = create_post(post_input(ch, m, url, due + timedelta(minutes=4 * i), not a.ostre),
+                                          ch.get("key", "BUFFER_API_KEY"))
+            log(f"  top3 {service}: ok")
+        except Exception as e:
+            log(f"  top3 {service}: FAILED {e}")
+    done[m["id"]] = {"url": url, "path": rel, "due": due.isoformat(), "draft": not a.ostre, "posts": posts,
+                     "channel": "top3", "platform": "top3"}
+    save_json(PUBLISHED, done)
+
+def make_top3(day, done, plan, stage):
+    """
+    Daily 'Top 3 GTA 6 moments' (Fable 15. 11.: a curated series is the 'something new' the
+    platforms ask for): once the day's quota is full, the 3 best shorts of the day, #3 -> #1,
+    each with a big number for the first 1.2 s, posted 75 min after the day's last short.
+    Returns (meta, due, site path) with meta['file'] = the local mp4, or None.
+    """
+    key = f"top3_{day}"
+    if key in done or remaining(day) - len(plan) > 0:
+        return None
+    items = []                                       # (score, meta-ish, local file or url, due)
+    for k, rec in done.items():
+        if (not k.startswith("top3_") and in_day(rec, day) and rec.get("url") and rec.get("channel")
+                and rec.get("platform") != "youtube"):
+            items.append((rec.get("score") or 0, {"channel": rec.get("channel") or "?", "platform": rec.get("platform")},
+                          rec["url"], datetime.fromisoformat(rec["due"])))
+    for m, due, rel in plan:
+        if m.get("platform") != "youtube":           # YouTube 'views' are the whole video's: not comparable
+            items.append((m.get("score") or 0, m, m["short"] if not m.get("remote") else None, due))
+    items = [x for x in items if x[2]]
+    if len(items) < 3:
+        return None
+    best = sorted(items, key=lambda x: -x[0])[:3]
+    srcs = []
+    for i, (_, m, src, _) in enumerate(best):
+        if str(src).startswith("http"):
+            local = stage / f"top3_{i}.mp4"
+            try:
+                local.write_bytes(http(src, timeout=300)[1])
+            except Exception as e:
+                log(f"top3: {src} unavailable ({e})")
+                return None
+            src = local
+        srcs.append(Path(src))
+    total = 0.0
+    for f in srcs:
+        probe = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration:stream=codec_type",
+                                "-of", "json", str(f)], capture_output=True, text=True, timeout=60)
+        info = json.loads(probe.stdout or "{}")
+        if "audio" not in [x.get("codec_type") for x in info.get("streams", [])]:
+            print(f"::warning::Top 3: {f.name} has no audio, skipped today")
+            return None
+        total += float(info.get("format", {}).get("duration") or 0)
+    if total > 130:                                  # X takes at most 140 s
+        print(f"::warning::Top 3: {total:.0f} s is too long for X, skipped today")
+        return None
+    order = list(reversed(range(3)))                 # countdown: #3, #2, #1
+    font = str(TOP3_FONT).replace("\\", "/").replace(":", "\\:")
+    parts = []
+    for j, i in enumerate(order):
+        parts.append(f"[{i}:v]drawtext=fontfile='{font}':text='#{i + 1}':fontsize=260:fontcolor=0xFFE135:"
+                     f"borderw=10:bordercolor=black:x=(w-text_w)/2:y=760:enable='lt(t,1.2)'[v{j}]")
+    flt = ";".join(parts) + ";" + "".join(f"[v{j}][{i}:a]" for j, i in enumerate(order)) + "concat=n=3:v=1:a=1[v][a]"
+    out = stage / f"{key}.mp4"
+    cmd = ["ffmpeg", "-nostdin", "-y", "-v", "error"]
+    for f in srcs:
+        cmd += ["-i", str(f)]
+    cmd += ["-filter_complex", flt, "-map", "[v]", "-map", "[a]", "-c:v", "libx264", "-preset", "veryfast",
+            "-crf", "22", "-maxrate", "6M", "-bufsize", "12M", "-c:a", "aac", "-b:a", "160k", "-movflags", "+faststart", str(out)]
+    r = subprocess.run(cmd, capture_output=True, text=True, timeout=900)
+    if r.returncode or not out.exists():
+        print(f"::warning::Top 3: ffmpeg failed {r.stderr[-300:]}")
+        return None
+    due = max(x[3] for x in items) + timedelta(minutes=75)
+    meta = {"id": key, "platform": "top3", "channel": "top3", "category": "Grand Theft Auto VI",
+            "items": [best[i][1] for i in range(3)], "peak": 1.0, "score": 0, "file": out, "title": "Top 3"}
+    log(f"top3: {', '.join(x[1]['channel'] for x in best)} -> {due:%d.%m %H:%M}")
+    return meta, due, f"{day:%Y%m%d}/top3.mp4"
 
 def cmd_schranka(a):
     """
