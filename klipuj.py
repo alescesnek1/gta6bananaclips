@@ -964,13 +964,15 @@ def beat_grid(path, start, dur):
     return T, phase
 
 def build_filter(cam, cmds_file, x0, crop_w, game_h, crop_h=SH, y0=0, ass_file=None, mark_file=None, nf=NORM,
-                 zoom_at=None, beat=None):
+                 zoom_at=None, beat=None, punch=None):
     """Filter graph ending in [v]. Without ass/mark it returns the clean 9:16 base."""
     f = f"[0:v]fps={FPS},{nf},split[a][b];"
     zs = []
     if zoom_at is not None:      # punch-in 1.12x on the payoff: 0.25 s in, hold 1.3 s, 0.55 s out (game band only)
         t0 = max(0.0, zoom_at - 0.25)
         zs.append(f"(1+0.12*clip((it-{t0:.2f})/0.25\\,0\\,1)*clip(({t0 + 2.1:.2f}-it)/0.55\\,0\\,1))")
+    if punch and mark_file:      # alternating 1.0 / 1.08 punch-in on phrases and jump cuts
+        zs.append("(1+0.08*(" + "+".join(f"between(it\\,{x:.2f}\\,{y:.2f})" for x, y in punch) + "))")
     if beat and mark_file:       # edit feel: a small 3 % zoom pulse on every beat of the music
         T, ph = beat
         zs.append(f"(1+0.03*exp(-14*mod(it-{ph:.3f}+{T * 1000:.3f}\\,{T:.3f})))")
@@ -1299,6 +1301,43 @@ def trim_points(words, peak, dur, hi=35.0, lo=8.0):
         return 0.0, dur
     return a, b
 
+def rms_curve(src):
+    """Loudness every 0.1 s (0.5 s windows) -> (times, rms); empty if there is no audio."""
+    try:
+        raw = subprocess.run(["ffmpeg", "-nostdin", "-v", "error", "-i", str(src), "-vn", "-ac", "1", "-ar", "8000",
+                              "-f", "s16le", "-"], capture_output=True, timeout=300).stdout
+    except subprocess.TimeoutExpired:
+        return np.zeros(0), np.zeros(0)
+    a = np.frombuffer(raw, np.int16).astype(np.float64)
+    if a.size < 8000:
+        return np.zeros(0), np.zeros(0)
+    c = np.concatenate([[0.0], np.cumsum(a * a)])
+    rms = np.sqrt((c[4000:] - c[:-4000]) / 4000)[::800]
+    return np.arange(len(rms)) * 0.1 + 0.25, rms
+
+def dead_air(words, src, a, b, peak):
+    """
+    Pieces of [a, b] to KEEP: pauses longer than 0.9 s between words that are also quiet (no
+    shouting, no explosion) are jump-cut out, never near the payoff (Aleš: built for ADHD
+    scrollers, no dead second). auto-editor idea, done with our own word times + loudness.
+    """
+    ts, rms = rms_curve(src)
+    if not words or rms.size == 0:
+        return [(a, b)]
+    med = float(np.median(rms))
+    keep, cur = [], a
+    inside = [w for w in words if a <= w[0] and w[1] <= b]
+    for w1, w2 in zip(inside, inside[1:]):
+        g0, g1 = w1[1] + 0.2, w2[0] - 0.15
+        if g1 - g0 < 0.6 or (peak is not None and g0 - 1.0 < peak < g1 + 1.0):
+            continue
+        m = (ts >= g0) & (ts <= g1)
+        if m.any() and rms[m].mean() < 0.6 * med:
+            keep.append((cur, g0))
+            cur = g1
+    keep.append((cur, b))
+    return [(x, y) for x, y in keep if y - x > 0.05]
+
 def edit_cut(src, words, d, clip):
     """
     Cut the source before rendering: trim (Twitch/Kick; YouTube windows are already cut on
@@ -1312,12 +1351,14 @@ def edit_cut(src, words, d, clip):
     a, b = (0.0, dur) if clip.get("section") else trim_points(words, peak, dur)
     e = b + min(RATING_DUR, dur - b)                  # live footage for under the card
     tease = peak is not None and peak - a >= 4 and b - peak >= 0.3
-    if not tease and a < 0.5 and b > dur - 0.5:
+    segs = dead_air(words, src, a, b, peak)
+    segs[-1] = (segs[-1][0], e)                       # the tail under the card stays continuous
+    if not tease and a < 0.5 and b > dur - 0.5 and len(segs) == 1:
         # untouched: the card covers the last seconds, but only if the payoff is safely before them
         late = peak is not None and dur - peak >= RATING_DUR + 1.8
-        return src, words, peak, dur - RATING_DUR if late else dur
+        return src, words, peak, dur - RATING_DUR if late else dur, []
     if not has_audio(src):
-        return src, words, peak, dur
+        return src, words, peak, dur, []
     out = d / "edit.mp4"
     # hook (Aleš: 1 s looked like a cut by mistake; the rewind he did not like): ~2.7 s of the
     # payoff, then a white FLASH and the clip from its start
@@ -1330,9 +1371,8 @@ def edit_cut(src, words, d, clip):
         t0, t1 = T - 0.35, T + 0.1
         flash = (f"eq=eval=frame:brightness='0.85*if(lt(t\\,{T:.3f})\\,clip((t-{t0:.3f})/0.35\\,0\\,1)"
                  f"\\,clip(1-(t-{t1:.3f})/0.4\\,0\\,1))'")
-        flt = (f"[0:v]trim={ps:.2f}:{pe:.2f},setpts=PTS-STARTPTS[v1];[0:a]atrim={ps:.2f}:{pe:.2f},asetpts=PTS-STARTPTS[a1];"
-               f"[0:v]trim={a:.2f}:{e:.2f},setpts=PTS-STARTPTS[v2];[0:a]atrim={a:.2f}:{e:.2f},asetpts=PTS-STARTPTS[a2];"
-               f"[v1][a1][v2][a2]concat=n=2:v=1:a=1[vc][ac];[vc]{flash}[v]")
+        flt = (f"[0:v]trim={ps:.2f}:{pe:.2f},setpts=PTS-STARTPTS[v0];[0:a]atrim={ps:.2f}:{pe:.2f},asetpts=PTS-STARTPTS[a0];"
+               + pieces(segs) + f"[v0][a0]{pairs(len(segs))}concat=n={len(segs) + 1}:v=1:a=1[vc][ac];[vc]{flash}[v]")
         whoosh = HERE / "assets" / "sfx" / "flash.wav"
         if whoosh.exists():                            # the impact sits 0.45 s into the file
             sfx = ["-i", str(whoosh)]
@@ -1343,16 +1383,59 @@ def edit_cut(src, words, d, clip):
         else:
             flt += ";[ac]anull[a]"
     else:
-        flt = (f"[0:v]trim={a:.2f}:{e:.2f},setpts=PTS-STARTPTS[v];"
-               f"[0:a]atrim={a:.2f}:{e:.2f},asetpts=PTS-STARTPTS[a]")
+        flt = pieces(segs) + f"{pairs(len(segs))}concat=n={len(segs)}:v=1:a=1[v][a]"
     encode(["ffmpeg", "-nostdin", "-y", "-hide_banner", "-loglevel", "error", "-i", str(src)] + sfx +
            ["-filter_complex", flt, "-map", "[v]", "-map", "[a]"], out)
+    starts, acc = [], T                                # where each kept piece starts in the new timeline
+    for x, y in segs:
+        starts.append(acc)
+        acc += y - x
+
+    def remap(t):
+        for (x, y), st in zip(segs, starts):
+            if x <= t <= y:
+                return st + t - x
+        return None
+
     new = [(w0 - ps, w1 - ps, t) for w0, w1, t in words if tease and w0 >= ps and w1 <= pe]
-    new += [(w0 - a + T, w1 - a + T, t) for w0, w1, t in words if w0 >= a and w1 <= e]
-    pk = None if peak is None else peak - a + T
-    log(f"  cut {a:.1f}-{b:.1f} s of {dur:.0f} s (+{e - b:.1f} s under the card)"
+    for w0, w1, t in words:
+        m0, m1 = remap(w0), remap(w1)
+        if m0 is not None and m1 is not None:
+            new.append((m0, m1, t))
+    pk = None if peak is None else remap(peak)
+    card = remap(b) if remap(b) is not None else acc - (e - b)
+    jumps = [round(st, 2) for st in starts[1:]]       # jump cuts: the zoom switches there to hide them
+    log(f"  cut {a:.1f}-{b:.1f} s of {dur:.0f} s (+{e - b:.1f} s under the card), {len(jumps)} jump cuts"
         + (f", hook {pe - ps:.1f} s from the payoff at {peak:.1f} s + flash" if tease else ""))
-    return out, new, pk, b - a + T
+    return out, new, pk, card, jumps
+
+def pieces(segs):
+    """ffmpeg trims of the kept pieces -> [v1][a1] ... [vN][aN]."""
+    return "".join(f"[0:v]trim={x:.2f}:{y:.2f},setpts=PTS-STARTPTS[v{i}];[0:a]atrim={x:.2f}:{y:.2f},asetpts=PTS-STARTPTS[a{i}];"
+                   for i, (x, y) in enumerate(segs, 1))
+
+def pairs(n):
+    return "".join(f"[v{i}][a{i}]" for i in range(1, n + 1))
+
+def zoom_jumps(words, jumps, dur):
+    """
+    Alternating punch-in (1.0 <-> 1.08) for the game band: switches on every jump cut and on
+    new phrases, at most every 1.6 s - the picture never sits still (ADHD-proof pacing).
+    Returns the zoomed-in intervals.
+    """
+    marks = set(jumps)
+    prev_end = None
+    for w0, w1, _ in words:
+        if prev_end is None or w0 - prev_end > 0.35:
+            marks.add(round(w0, 2))
+        prev_end = w1
+    out, last = [], -9.0
+    for t in sorted(marks):
+        if t - last >= 1.6 and 0.3 < t < dur - 0.3:
+            out.append(t)
+            last = t
+    edges = out + [dur]
+    return [(edges[i], edges[i + 1]) for i in range(0, len(edges) - 1, 2)]
 
 def home_url(clip):
     return {"twitch": f"twitch.tv/{clip['channel']}", "kick": f"kick.com/{clip['channel']}",
@@ -1382,7 +1465,7 @@ def render(clip, src=None, clean=False):
         raise NotGameplay("slur in the speech - not worth a strike or a ban")
     (d / "transcript.txt").write_text(speech, encoding="utf-8")
     (d / "mark.txt").write_text(f"@{clip['channel']}", encoding="utf-8")
-    src, words, peak, card_at = edit_cut(src, words, d, clip)
+    src, words, peak, card_at, jumps = edit_cut(src, words, d, clip)
     dur = duration(src)
     card_at = min(card_at, dur)
     words = [w for w in words if w[0] < card_at]      # no captions / banana under the score card
@@ -1428,6 +1511,7 @@ def render(clip, src=None, clean=False):
         mpath, mvol, mstart = music_cfg(clip["id"], total)
         beat = beat_grid(mpath, mstart, total) if mpath else None
         flt = reaction_overlay(build_filter(*args, ass_file=ff_path(ass), zoom_at=peak, beat=beat,
+                                            punch=zoom_jumps(words, jumps, card_at),
                                             mark_file=ff_path(d / "mark.txt"), nf=src_norm(src)), reactions, cam)
         inputs, idx = [], 1 + len(reactions)
         card_idx = music_idx = None
