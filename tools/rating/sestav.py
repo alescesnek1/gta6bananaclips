@@ -63,19 +63,108 @@ def put(buf, sig, t):
     if i < buf.size:
         buf[i:j] += sig[: j - i]
 
-def sound(meta):
+# ---------------------------------------------------------------- alternative sound styles
+
+def knock(vol=0.8):
+    """
+    The landing 'tup' that stays audible over music: a short mid-range body (420 -> 190 Hz,
+    above the beat's bass) plus a woody 1.6 kHz click, both gone in ~0.1 s.
+    """
+    body = tone(420, 190, 0.12, decay=30, vol=vol)
+    n = int(SR * 0.03)
+    t = np.arange(n) / SR
+    click = 0.35 * vol * np.sin(2 * np.pi * 1600 * t) * np.exp(-t / 0.006)
+    return soft(add(body, click), 3)
+
+def add(*sigs):
+    """Sum signals of different lengths."""
+    out = np.zeros(max(x.size for x in sigs))
+    for x in sigs:
+        out[: x.size] += x
+    return out
+
+PENTA = [392, 440, 523, 587, 659, 784, 880, 1047, 1175, 1319]     # landings climb a pentatonic scale
+
+def marimba(f, vol=0.22):
+    """Wooden mallet: fundamental + a 4x overtone that dies fast."""
+    return soft(add(tone(f, f, 0.35, decay=14, vol=vol), tone(4 * f, 4 * f, 0.08, decay=60, vol=vol * 0.25)), 4)
+
+def bubble(f, vol=0.2):
+    """A soft bubble 'blup': quick upward sweep."""
+    return soft(tone(f, f * 2.2, 0.07, decay=35, vol=vol), 6)
+
+def cushion(rnd, vol=0.3):
+    """Pillow thump: low sine + heavily muffled noise."""
+    n = int(SR * 0.18)
+    noise = soft(rnd.normal(0, 1, n), 260) * np.exp(-np.arange(n) / (SR * 0.04))
+    return add(tone(75, 55, 0.18, decay=18, vol=vol), vol * 2.5 * noise)
+
+def whoosh(rnd, dur=0.22, vol=0.05):
+    """Air before a landing: filtered noise swelling up."""
+    n = int(SR * dur)
+    return vol * soft(rnd.normal(0, 1, n), 40) * np.linspace(0, 1, n) ** 2
+
+def tri(f, dur, vol=0.12):
+    t = np.arange(int(SR * dur)) / SR
+    w = 2 * np.abs(2 * ((f * t) % 1) - 1) - 1
+    return soft(vol * w * np.exp(-8 * t) * np.minimum(1, t * 300), 6)
+
+def bell(f, vol=0.12):
+    """Small glass bell: fundamental + inharmonic partials, long soft tail."""
+    return add(tone(f, f, 1.2, decay=3, vol=vol), tone(f * 2.76, f * 2.76, 0.6, decay=6, vol=vol * 0.35),
+               tone(f * 5.4, f * 5.4, 0.3, decay=12, vol=vol * 0.12))
+
+def score_tune(style, score):
+    up = score >= 7
+    if style == "marimba":
+        notes = [784, 1047, 1319] if score == 10 else [659, 784] if up else [523, 440] if score <= 3 else [523, 587]
+        out = np.zeros(int(SR * 0.9))
+        for i, f in enumerate(notes):
+            put(out, marimba(f, 0.2), i * 0.11)
+        return out
+    if style == "bubliny":
+        return add(bell(1760 if up else 1320 if score > 3 else 990, 0.1), bubble(700, 0.12))
+    if style == "plys":
+        return bell(880 if up else 660 if score > 3 else 523, 0.13)
+    if style == "arkada":
+        notes = [988, 1319] if up else [784, 659] if score <= 3 else [784, 880]
+        out = np.zeros(int(SR * 0.6))
+        for i, f in enumerate(notes):
+            put(out, tri(f, 0.25 if i else 0.09), i * 0.09)
+        return out
+    return tune(score)
+
+def sound(meta, style="jemne"):
+    """jemne = current default; marimba, bubliny, plys, arkada = alternatives to choose from."""
     rnd = np.random.default_rng(meta["score"])
     buf = np.zeros(int(SR * meta["dur"]) + SR)
+    k = 0
     for t, kind in meta["pops"]:
         if kind == "thud":
-            put(buf, bonk(rnd), t)
+            if style == "stejny":                      # every banana lands with the very same sound
+                put(buf, knock(), t)
+            elif style == "marimba":
+                put(buf, marimba(PENTA[min(k, 9)]), t)
+            elif style == "bubliny":
+                put(buf, bubble(PENTA[min(k, 9)] * 0.6), t)
+            elif style == "plys":
+                put(buf, whoosh(rnd), max(0.0, t - 0.22))
+                put(buf, cushion(rnd), t)
+            elif style == "arkada":
+                put(buf, tri(PENTA[min(k, 9)] * 0.5, 0.08, 0.1), t)
+            else:
+                put(buf, bonk(rnd), t)
+            k += 1
         elif kind == "num":
-            put(buf, tune(meta["score"]), t)
+            put(buf, score_tune(style, meta["score"]), t)
         elif kind == "burst":
             put(buf, crackle(rnd), t)
     buf = buf[: int(SR * meta["dur"])]
-    buf *= 0.45 / max(1e-6, np.abs(buf).max())         # quiet master; the clip's audio stays on top
+    master = 0.85 if style == "stejny" else 0.45       # the landing tup must cut through the music
+    buf *= master / max(1e-6, np.abs(buf).max())
     return buf
+
+STYLE = "stejny"                                      # chosen by Aleš 15. 11.: every banana the same audible tup
 
 def main():
     src = Path(sys.argv[1])
@@ -84,7 +173,7 @@ def main():
         meta = json.loads(js.read_text())
         n = meta["score"]
         wav = src / f"score_{n}.wav"
-        pcm = (sound(meta) * 32767).astype(np.int16)
+        pcm = (sound(meta, STYLE) * 32767).astype(np.int16)
         with wave.open(str(wav), "wb") as w:
             w.setnchannels(1)
             w.setsampwidth(2)

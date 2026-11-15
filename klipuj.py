@@ -1037,7 +1037,34 @@ def banana_rating(views):
     """The banana's score 1-10 on a log scale: 50 views -> 1, 500 -> 3, 5k -> 6, 50k -> 8, 500k -> 10."""
     return int(round(max(1, min(10, 1 + np.log10(max(views or 1, 1) / 50) * 2.25))))
 
-def card_overlay(f, idx, at, pad, audio):
+def music_cfg():
+    """Background track for every short (sources.json 'music'): our own, no Content ID."""
+    cfg = load_json(SOURCES, {})
+    path = HERE / cfg.get("music", "assets/hudba/The_Heavy_Toll.mp3")
+    return (path, float(cfg.get("music_volume", 0.4)), cfg.get("music_window", [16, 170])) if path.exists() else (None, 0, None)
+
+def audio_mix(clip_audio, total, card_idx=None, card_at=0.0, music_idx=None, music_vol=0.4):
+    """
+    The short's sound: the clip's own audio + our music at one steady level (Aleš: always the
+    same volume) + the score card's landing 'tups'. A limiter keeps the sum from clipping.
+    """
+    parts, f = [], ""
+    fmt = "aformat=sample_rates=48000:channel_layouts=stereo"
+    if clip_audio:
+        f += f";[0:a]{fmt},apad=whole_dur={total:.3f}[a0]"
+        parts.append("[a0]")
+    if music_idx is not None:                  # adeclick: the generated track has a little crackle
+        f += f";[{music_idx}:a]atrim=0:{total:.3f},adeclick,volume={music_vol},{fmt},apad=whole_dur={total:.3f}[mu]"
+        parts.append("[mu]")
+    if card_idx is not None:
+        f += f";[{card_idx}:a]{fmt},adelay={int(card_at * 1000)}:all=1,apad=whole_dur={total:.3f}[ar]"
+        parts.append("[ar]")
+    if not parts:
+        return None
+    f += f";{''.join(parts)}amix=inputs={len(parts)}:duration=longest:normalize=0,atrim=0:{total:.3f},alimiter=limit=0.95[aud]"
+    return f
+
+def card_overlay(f, idx, at, pad):
     """
     The banana score card starts where the clip's story ends (`at`, after the payoff, never
     over a moment) and the footage keeps running underneath; only when the source has no more
@@ -1047,12 +1074,6 @@ def card_overlay(f, idx, at, pad, audio):
     hold = f"tpad=stop_mode=clone:stop_duration={pad:.3f}," if pad > 0.01 else ""
     f += (f";[pre]{hold}null[pz];"
           f"[{idx}:v]setpts=PTS-STARTPTS+{at:.3f}/TB[rc];[pz][rc]overlay=0:0:eof_action=pass[v]")
-    ms, total = int(at * 1000), at + RATING_DUR
-    if audio:                                          # the card's sounds stay quiet under the clip's audio
-        f += (f";[0:a]apad=whole_dur={total:.3f}[a0];[{idx}:a]volume=0.45,adelay={ms}:all=1[ar];"
-              f"[a0][ar]amix=inputs=2:duration=first:normalize=0[aud]")
-    else:
-        f += f";[{idx}:a]volume=0.45,adelay={ms}:all=1,apad=whole_dur={total:.3f}[aud]"
     return f
 
 def extras_ass(path, reactions, rating, dur, cam, seed):
@@ -1314,11 +1335,21 @@ def render(clip, src=None, clean=False):
         args = (cam, ff_path(cmds), int(xs[0]), crop_w, game_h, crop_h, top)
         flt = reaction_overlay(build_filter(*args, ass_file=ff_path(ass), zoom_at=peak,
                                             mark_file=ff_path(d / "mark.txt"), nf=src_norm(src)), reactions, cam)
+        inputs, idx = [], 1 + len(reactions)
+        card_idx = music_idx = None
+        total = dur
         if card.exists():
-            flt = card_overlay(flt, 1 + len(reactions), card_at, max(0.0, card_at + RATING_DUR - dur), has_audio(src))
-            maps = ["-c:v", "libvpx-vp9", "-i", str(card), "-filter_complex", flt, "-map", "[v]", "-map", "[aud]"]
-        else:
-            maps = ["-filter_complex", flt, "-map", "[v]", "-map", "0:a?"]
+            flt = card_overlay(flt, idx, card_at, max(0.0, card_at + RATING_DUR - dur))
+            inputs += ["-c:v", "libvpx-vp9", "-i", str(card)]
+            card_idx, idx, total = idx, idx + 1, card_at + RATING_DUR
+        mpath, mvol, mwin = music_cfg()
+        if mpath:                                  # each short starts the track somewhere else
+            lo, hi = mwin
+            start = random.Random(clip["id"]).uniform(lo, max(lo, hi - total))
+            inputs += ["-ss", f"{start:.2f}", "-i", str(mpath)]
+            music_idx = idx
+        mix = audio_mix(has_audio(src), total, card_idx, card_at, music_idx, mvol)
+        maps = inputs + ["-filter_complex", flt + (mix or ""), "-map", "[v]"] + (["-map", "[aud]"] if mix else [])
         enc = encode(ff + reaction_inputs(reactions) + maps, out)
         problems = quality_check(out, cam)
         if not problems:

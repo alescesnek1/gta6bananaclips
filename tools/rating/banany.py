@@ -21,6 +21,7 @@ import sys
 from pathlib import Path
 
 import bmesh
+import numpy as np
 import bpy
 from mathutils import Euler, Vector
 
@@ -421,18 +422,22 @@ def build(n):
         # front/back glass of the jar keeps every banana facing the camera)
         guys.append(g)
 
-    # pass 1: run the physics, record when each banana hits something (velocity flips)
-    impacts, prev = [], {g.name: None for g in guys}
+    # pass 1: run the physics and keep every banana's height per frame
     sc = bpy.context.scene
+    zs = {g.name: [] for g in guys}
     for f in range(1, FRAMES + 1):
         sc.frame_set(f)
         for g in guys:
-            z = g.matrix_world.translation.z
-            p = prev[g.name]
-            if p is not None and p[1] is not None and p[1] < -0.25 and z - p[0] > -0.05:
-                if not any(abs((f - 1) / FPS - t) < 0.12 and nm == g.name for t, nm in impacts):
-                    impacts.append(((f - 1) / FPS, g.name))
-            prev[g.name] = (z, None if p is None else z - p[0])
+            zs[g.name].append(g.matrix_world.translation.z)
+    # one landing per banana (Aleš: a sound every time a banana lands): the first sudden
+    # braking while falling; if it slid in softly, the moment it comes to rest
+    impacts = []
+    for name, z in zs.items():
+        v = np.diff(z)
+        hit = next((i + 1 for i in range(1, len(v)) if v[i - 1] < -0.2 and v[i] - v[i - 1] > max(0.15, 0.35 * -v[i - 1])), None)
+        if hit is None:
+            hit = next((i + 1 for i in range(1, len(v)) if v[i - 1] < -0.2 and abs(v[i]) < 0.05), len(v))
+        impacts.append((hit / FPS, name))
     # every banana must end up inside the frame (Aleš: 10 means 10 you can count)
     tops = [max((g.matrix_world @ Vector(c)).z for c in g.bound_box) for g in guys]
     fits = max(tops) < HALF_H - 0.3 and all(abs(g.matrix_world.translation.x) < HALF_W for g in guys)
@@ -500,6 +505,8 @@ def main():
                 break
             k *= 0.93
         if '--probe' in ARGS:
+            (OUT / f"score_{n}.json").write_text(json.dumps({"score": n, "pops": pops, "dur": FRAMES / FPS}))
+            print(f"score {n}: {sum(k == 'thud' for _, k in pops)} landings")
             continue
         d = OUT / f"score_{n}"
         d.mkdir(exist_ok=True)
