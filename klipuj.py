@@ -621,10 +621,16 @@ def quality_check(short, cam):
     for _, img in frames_raw(short, 1, 540, 960):
         g = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         n += 1
-        dark = (g.mean(axis=1) < 16) & (g.std(axis=1) < 5)
-        run = best = 0
-        for d in dark:
-            run = run + 1 if d else 0
+        dark = (g.mean(axis=1) < 12) & (g.std(axis=1) < 4)
+        # a letterbox bar sits on an EDGE of a band (top/bottom of the game, top of the short);
+        # a dark night sky in the middle of the picture is not a bar
+        edges = [0, (CAM_H // 2) if cam else 0, g.shape[0] - 1]
+        best = 0
+        for e0 in edges:
+            step = -1 if e0 == g.shape[0] - 1 else 1
+            run, i = 0, e0
+            while 0 <= i < g.shape[0] and dark[i]:
+                run, i = run + 1, i + step
             best = max(best, run)
         black += best >= 10                       # 10 rows here = 20 px in the 1080x1920 short
         if cam:
@@ -1148,7 +1154,7 @@ def extras_ass(path, reactions, rating, dur, cam, seed):
              f"Style: Rate,{CAP_FONT},76,&H0035E1FF,&H0035E1FF,&H00000000,&H64000000,0,0,0,0,100,100,1,0,1,0,5,5,0,0,0,1\n")
     txt = path.read_text(encoding="utf-8").replace("\n\n[Events]", "\n" + style.rstrip("\n") + "\n\n[Events]", 1)
     lines = []
-    for t, name in reactions:                          # white box, black text, pops in with the banana
+    for t, name in []:                                  # bubble off (Aleš 15. 11.: the banana says nothing)
         e = t + (REACTIONS[name][2] - REACTIONS[name][1])
         lines.append(f"Dialogue: 1,{ass_time(t + 0.1)},{ass_time(e)},Bub,,0,0,0,,"
                      f"{{\\pos({BANANA_X + BANANA_W + 6},{y0 + 110})\\fscx70\\fscy70\\t(0,120,\\fscx100\\fscy100)}}"
@@ -1305,7 +1311,7 @@ def edit_cut(src, words, d, clip):
     peak = audio_peak(src)
     a, b = (0.0, dur) if clip.get("section") else trim_points(words, peak, dur)
     e = b + min(RATING_DUR, dur - b)                  # live footage for under the card
-    tease = peak is not None and peak - a >= 3 and b - peak >= 0.3
+    tease = peak is not None and peak - a >= 4 and b - peak >= 0.3
     if not tease and a < 0.5 and b > dur - 0.5:
         # untouched: the card covers the last seconds, but only if the payoff is safely before them
         late = peak is not None and dur - peak >= RATING_DUR + 1.8
@@ -1313,12 +1319,18 @@ def edit_cut(src, words, d, clip):
     if not has_audio(src):
         return src, words, peak, dur
     out = d / "edit.mp4"
-    ps, pe = (peak - 0.7, peak + 0.3) if tease else (0, 0)
-    T = pe - ps
+    # hook (Aleš: 1 s looked like a cut by mistake): ~2.7 s of the payoff, then a fast REWIND
+    # (reversed, 3x, washed out) back to the start: the edit trope everybody reads as intentional
+    ps, pe = (max(0.0, peak - 1.8), min(dur, peak + 0.9)) if tease else (0, 0)
+    rw = (pe - ps) / 3
+    T = (pe - ps) + rw if tease else 0.0
     if tease:
-        flt = (f"[0:v]trim={ps:.2f}:{pe:.2f},setpts=PTS-STARTPTS[v1];[0:a]atrim={ps:.2f}:{pe:.2f},asetpts=PTS-STARTPTS[a1];"
-               f"[0:v]trim={a:.2f}:{e:.2f},setpts=PTS-STARTPTS[v2];[0:a]atrim={a:.2f}:{e:.2f},asetpts=PTS-STARTPTS[a2];"
-               f"[v1][a1][v2][a2]concat=n=2:v=1:a=1[v][a]")
+        flt = (f"[0:v]trim={ps:.2f}:{pe:.2f},setpts=PTS-STARTPTS,split[v1][vr];"
+               f"[vr]reverse,setpts=PTS/3,eq=saturation=0.35:contrast=1.15[v2];"
+               f"[0:a]atrim={ps:.2f}:{pe:.2f},asetpts=PTS-STARTPTS,asplit[a1][ar];"
+               f"[ar]areverse,atempo=2,atempo=1.5,volume=0.6[a2];"
+               f"[0:v]trim={a:.2f}:{e:.2f},setpts=PTS-STARTPTS[v3];[0:a]atrim={a:.2f}:{e:.2f},asetpts=PTS-STARTPTS[a3];"
+               f"[v1][a1][v2][a2][v3][a3]concat=n=3:v=1:a=1[v][a]")
     else:
         flt = (f"[0:v]trim={a:.2f}:{e:.2f},setpts=PTS-STARTPTS[v];"
                f"[0:a]atrim={a:.2f}:{e:.2f},asetpts=PTS-STARTPTS[a]")
@@ -1328,7 +1340,7 @@ def edit_cut(src, words, d, clip):
     new += [(w0 - a + T, w1 - a + T, t) for w0, w1, t in words if w0 >= a and w1 <= e]
     pk = None if peak is None else peak - a + T
     log(f"  cut {a:.1f}-{b:.1f} s of {dur:.0f} s (+{e - b:.1f} s under the card)"
-        + (f", cold start from the payoff at {peak:.1f} s" if tease else ""))
+        + (f", hook {pe - ps:.1f} s from the payoff at {peak:.1f} s + rewind" if tease else ""))
     return out, new, pk, b - a + T
 
 def home_url(clip):
@@ -1372,13 +1384,19 @@ def render(clip, src=None, clean=False):
     # Render, check, and REPAIR instead of giving up (Aleš: a cut face or black bars must be fixed):
     #   1) normal: saved/auto facecam box, detected bars and subtitles cropped
     #   2) facecam detected again with a wider box, bars found with looser limits, 6 % extra zoom
-    # No facecam = no short (Aleš 14. 11.: every video has the streamer's head on top).
+    #   3) only for a clip with viral potential: no facecam band, the game fills the short
+    # No facecam = no short, unless the clip is big (Aleš 15. 11.: "pustit i bez kamery, pokud má
+    # potenciál být virální"): sources.json nocam_min_views, or several viewers clipped it.
+    cfg = load_json(SOURCES, {})
+    nocam_ok = (clip.get("views") or 0) >= cfg.get("nocam_min_views", 5000) or (clip.get("cluster") or 1) >= 2
+    modes = [("saved", False, 0.0), ("again", True, 0.06)] + ([("none", True, 0.0)] if nocam_ok else [])
     problems = []
-    for attempt, (cam_mode, loose, zoom) in enumerate((("saved", False, 0.0), ("again", True, 0.06))):
-        cam = get_cam(clip["channel"], src) if cam_mode == "saved" else detect_cam(src, mult=3.4)
-        if not cam:
-            if cam_mode == "saved":
-                continue                                  # try the wider detection once more
+    for attempt, (cam_mode, loose, zoom) in enumerate(modes):
+        cam = (get_cam(clip["channel"], src) if cam_mode == "saved" else
+               detect_cam(src, mult=3.4) if cam_mode == "again" else None)
+        if not cam and cam_mode != "none":
+            if cam_mode == "saved" or nocam_ok:
+                continue                                  # wider detection / game-only layout next
             raise NotGameplay("no facecam - every short needs the streamer's face on top")
         game_h = H - CAM_H if cam else H
         top, bot = game_bars(src, loose=loose)            # black bars inside the game picture
@@ -1413,7 +1431,7 @@ def render(clip, src=None, clean=False):
         mix = audio_mix(has_audio(src), total, card_idx, card_at, music_idx, mvol)
         maps = inputs + ["-filter_complex", flt + (mix or ""), "-map", "[v]"] + (["-map", "[aud]"] if mix else [])
         enc = encode(ff + reaction_inputs(reactions) + maps, out)
-        problems = quality_check(out, cam)
+        problems = [x for x in quality_check(out, cam) if not (x == "no facecam" and cam_mode == "none")]
         if not problems:
             break
         log(f"  quality check: {'; '.join(problems)} -> repair attempt {attempt + 1}")

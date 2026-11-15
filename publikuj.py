@@ -272,7 +272,7 @@ def candidates():
     for m in local + [m for m in inbox_items() if m.get("id") not in seen]:
         if not m or m.get("id") in done or not (m.get("remote") or Path(m.get("short", "")).exists()):
             continue
-        if not m.get("cam"):                         # Aleš: every short has the streamer's face on top
+        if not m.get("cam") and m.get("layout") != "game":   # no facecam only for viral-potential clips (render decides)
             continue
         if not re.search(game, m.get("category") or "", re.I):
             log(f"  not published (category '{m.get('category') or '?'}' is not {game}): {m.get('id')}")
@@ -655,7 +655,7 @@ def cmd_schranka(a):
             continue
         m = load_json(meta_file, {})
         short = Path(m.get("short") or "")
-        if (m.get("platform") != "youtube" or m.get("id") in done or not short.exists() or not m.get("cam")
+        if (m.get("platform") != "youtube" or m.get("id") in done or not short.exists()
                 or not re.search(game, m.get("category") or "", re.I)):
             continue
         rel = f"yt/{safe_name(m['id'])}.mp4"
