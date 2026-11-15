@@ -930,15 +930,48 @@ def captions_ass(words, path, y):
 # -----------------------------------------------------------------------------
 # 5) render one clip to 9:16
 
-def build_filter(cam, cmds_file, x0, crop_w, game_h, crop_h=SH, y0=0, ass_file=None, mark_file=None, nf=NORM, zoom_at=None):
+GRADE = "eq=contrast=1.06:brightness=0.02:saturation=1.3"   # edit look: punchier colours in the game band
+
+def beat_grid(path, start, dur):
+    """
+    Beat period and first beat (s, in the short's timeline) of the music under the short:
+    kick energy (40-150 Hz) -> autocorrelation for the tempo, comb sum for the phase.
+    """
+    try:
+        raw = subprocess.run(["ffmpeg", "-nostdin", "-v", "error", "-ss", f"{start:.2f}", "-t", f"{max(dur, 8):.2f}",
+                              "-i", str(path), "-af", "lowpass=150,highpass=40", "-ac", "1", "-ar", "4000",
+                              "-f", "s16le", "-"], capture_output=True, timeout=120).stdout
+    except subprocess.TimeoutExpired:
+        return None
+    a = np.frombuffer(raw, np.int16).astype(np.float64)
+    if a.size < 4000 * 4:
+        return None
+    e = np.sqrt(np.convolve(a * a, np.ones(40) / 40, mode="same"))[::40]          # 100 Hz envelope
+    on = np.maximum(0, np.diff(e, prepend=e[0]))                                    # onsets
+    ac = np.correlate(on, on, mode="full")[on.size - 1:]
+    lags = np.arange(33, 101)                                                       # 60-180 BPM
+    T = lags[int(np.argmax(ac[lags]))] / 100
+    k = int(round(T * 100))
+    if T < 0.5:                                    # fast beat: pulse on every other one (the heavy hits)
+        T, k = T * 2, k * 2
+    phase = int(np.argmax([on[p::k].sum() for p in range(k)])) / 100
+    return T, phase
+
+def build_filter(cam, cmds_file, x0, crop_w, game_h, crop_h=SH, y0=0, ass_file=None, mark_file=None, nf=NORM,
+                 zoom_at=None, beat=None):
     """Filter graph ending in [v]. Without ass/mark it returns the clean 9:16 base."""
     f = f"[0:v]fps={FPS},{nf},split[a][b];"
-    zoom = ""
+    zs = []
     if zoom_at is not None:      # punch-in 1.12x on the payoff: 0.25 s in, hold 1.3 s, 0.55 s out (game band only)
         t0 = max(0.0, zoom_at - 0.25)
-        z = f"1+0.12*clip((it-{t0:.2f})/0.25\\,0\\,1)*clip(({t0 + 2.1:.2f}-it)/0.55\\,0\\,1)"
-        zoom = f",zoompan=z='{z}':d=1:x='iw/2-iw/zoom/2':y='ih/2-ih/zoom/2':s={W}x{game_h}:fps={FPS}"
-    f += f"[b]sendcmd=f='{cmds_file}',crop@g={crop_w}:{crop_h}:{x0}:{y0},scale={W}:{game_h}{zoom}[game];"
+        zs.append(f"(1+0.12*clip((it-{t0:.2f})/0.25\\,0\\,1)*clip(({t0 + 2.1:.2f}-it)/0.55\\,0\\,1))")
+    if beat and mark_file:       # edit feel: a small 3 % zoom pulse on every beat of the music
+        T, ph = beat
+        zs.append(f"(1+0.03*exp(-14*mod(it-{ph:.3f}+{T * 1000:.3f}\\,{T:.3f})))")
+    zoom = (f",zoompan=z='{'*'.join(zs)}':d=1:x='iw/2-iw/zoom/2':y='ih/2-ih/zoom/2':s={W}x{game_h}:fps={FPS}"
+            if zs else "")
+    grade = f",{GRADE}" if mark_file else ""
+    f += f"[b]sendcmd=f='{cmds_file}',crop@g={crop_w}:{crop_h}:{x0}:{y0},scale={W}:{game_h}{grade}{zoom}[game];"
     if cam:
         x, y, w, h = [round(v / 100 * d) for v, d in zip(cam, (SW, SH, SW, SH))]
         f += f"[a]crop={w}:{h}:{x}:{y},scale={W}:{CAM_H}:force_original_aspect_ratio=increase,crop={W}:{CAM_H}[cam];"
@@ -948,6 +981,11 @@ def build_filter(cam, cmds_file, x0, crop_w, game_h, crop_h=SH, y0=0, ass_file=N
     if not mark_file:
         return f + "[base]null[v]"
     chain = "[base]"
+    if zoom_at is not None:      # payoff: a 2-frame white flash and a short camera shake (captions stay steady)
+        P = zoom_at
+        on = f"between(t\\,{P:.2f}\\,{P + 0.35:.2f})"
+        chain += (f"eq=eval=frame:brightness='0.28*between(t\\,{P:.2f}\\,{P + 0.07:.2f})',"
+                  f"crop=w=iw-32:h=ih-32:x='16+14*sin(t*95)*{on}':y='16+14*cos(t*80)*{on}',scale={W}:{H},setsar=1,")
     if ass_file:
         chain += f"subtitles=filename='{ass_file}':fontsdir='{ff_path(CAP_FONTS)}',"
     # two quiet watermarks:
@@ -1037,11 +1075,34 @@ def banana_rating(views):
     """The banana's score 1-10 on a log scale: 50 views -> 1, 500 -> 3, 5k -> 6, 50k -> 8, 500k -> 10."""
     return int(round(max(1, min(10, 1 + np.log10(max(views or 1, 1) / 50) * 2.25))))
 
-def music_cfg():
-    """Background track for every short (sources.json 'music'): our own, no Content ID."""
+_tracks = {}
+
+def track_window(path):
+    """Usable part of a track (s): from where it gets loud (skips a quiet intro) to 10 s before the end."""
+    if path not in _tracks:
+        raw = subprocess.run(["ffmpeg", "-nostdin", "-v", "error", "-i", str(path), "-ac", "1", "-ar", "4000",
+                              "-f", "s16le", "-"], capture_output=True, timeout=120).stdout
+        a = np.frombuffer(raw, np.int16).astype(np.float64)
+        rms = np.sqrt(np.convolve(a * a, np.ones(8000) / 8000, mode="valid")[::4000])       # every 1 s
+        loud = int(np.argmax(rms > 0.5 * rms.max())) if rms.size else 0
+        _tracks[path] = (float(loud), max(float(loud), rms.size - 10.0))
+    return _tracks[path]
+
+def music_cfg(seed, total):
+    """
+    Background track for the short (sources.json 'music': a list of our own tracks, no Content
+    ID). Each short gets one of them and starts at a different place, so it never repeats.
+    Returns (path, volume, start s) or (None, 0, 0).
+    """
     cfg = load_json(SOURCES, {})
-    path = HERE / cfg.get("music", "assets/hudba/The_Heavy_Toll.mp3")
-    return (path, float(cfg.get("music_volume", 0.4)), cfg.get("music_window", [16, 170])) if path.exists() else (None, 0, None)
+    paths = [HERE / m for m in (cfg.get("music") or [])] if isinstance(cfg.get("music"), list) else         [HERE / cfg.get("music", "assets/hudba/The_Heavy_Toll.mp3")]
+    paths = [p for p in paths if p.exists()]
+    if not paths:
+        return None, 0.0, 0.0
+    rnd = random.Random(seed)
+    path = rnd.choice(paths)
+    lo, hi = track_window(path)
+    return path, float(cfg.get("music_volume", 0.18)), rnd.uniform(lo, max(lo, hi - total))
 
 def audio_mix(clip_audio, total, card_idx=None, card_at=0.0, music_idx=None, music_vol=0.4):
     """
@@ -1225,8 +1286,9 @@ def trim_points(words, peak, dur, hi=35.0, lo=8.0):
         b = min(dur, max(end + 0.3, peak + 1.8))          # the banana (1.5 s) must fit after the payoff
     elif words and dur - words[-1][1] > 2:
         b = words[-1][1] + 0.8
-    if b - a > hi:
-        a = b - hi
+    if b - a > hi:                                 # too long: keep the 35 s around the payoff, never cut it off
+        a = max(a, min(peak - 8, b - hi)) if peak is not None else b - hi
+        b = min(b, a + hi)
     if b - a < lo:
         return 0.0, dur
     return a, b
@@ -1333,7 +1395,10 @@ def render(clip, src=None, clean=False):
         card = RATING / f"score_{rating}.webm"
         extras_ass(ass, reactions, None if card.exists() else rating, card_at, cam, clip["id"])   # bubble (+ text score)
         args = (cam, ff_path(cmds), int(xs[0]), crop_w, game_h, crop_h, top)
-        flt = reaction_overlay(build_filter(*args, ass_file=ff_path(ass), zoom_at=peak,
+        total = card_at + RATING_DUR if card.exists() else dur
+        mpath, mvol, mstart = music_cfg(clip["id"], total)
+        beat = beat_grid(mpath, mstart, total) if mpath else None
+        flt = reaction_overlay(build_filter(*args, ass_file=ff_path(ass), zoom_at=peak, beat=beat,
                                             mark_file=ff_path(d / "mark.txt"), nf=src_norm(src)), reactions, cam)
         inputs, idx = [], 1 + len(reactions)
         card_idx = music_idx = None
@@ -1342,11 +1407,8 @@ def render(clip, src=None, clean=False):
             flt = card_overlay(flt, idx, card_at, max(0.0, card_at + RATING_DUR - dur))
             inputs += ["-c:v", "libvpx-vp9", "-i", str(card)]
             card_idx, idx, total = idx, idx + 1, card_at + RATING_DUR
-        mpath, mvol, mwin = music_cfg()
         if mpath:                                  # each short starts the track somewhere else
-            lo, hi = mwin
-            start = random.Random(clip["id"]).uniform(lo, max(lo, hi - total))
-            inputs += ["-ss", f"{start:.2f}", "-i", str(mpath)]
+            inputs += ["-ss", f"{mstart:.2f}", "-i", str(mpath)]
             music_idx = idx
         mix = audio_mix(has_audio(src), total, card_idx, card_at, music_idx, mvol)
         maps = inputs + ["-filter_complex", flt + (mix or ""), "-map", "[v]"] + (["-map", "[aud]"] if mix else [])
