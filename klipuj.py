@@ -1319,18 +1319,15 @@ def edit_cut(src, words, d, clip):
     if not has_audio(src):
         return src, words, peak, dur
     out = d / "edit.mp4"
-    # hook (Aleš: 1 s looked like a cut by mistake): ~2.7 s of the payoff, then a fast REWIND
-    # (reversed, 3x, washed out) back to the start: the edit trope everybody reads as intentional
+    # hook (Aleš: 1 s looked like a cut by mistake; the rewind he did not like): ~2.7 s of the
+    # payoff, then a white FLASH and the clip from its start
     ps, pe = (max(0.0, peak - 1.8), min(dur, peak + 0.9)) if tease else (0, 0)
-    rw = (pe - ps) / 3
-    T = (pe - ps) + rw if tease else 0.0
+    T = pe - ps if tease else 0.0
     if tease:
-        flt = (f"[0:v]trim={ps:.2f}:{pe:.2f},setpts=PTS-STARTPTS,split[v1][vr];"
-               f"[vr]reverse,setpts=PTS/3,eq=saturation=0.35:contrast=1.15[v2];"
-               f"[0:a]atrim={ps:.2f}:{pe:.2f},asetpts=PTS-STARTPTS,asplit[a1][ar];"
-               f"[ar]areverse,atempo=2,atempo=1.5,volume=0.6[a2];"
-               f"[0:v]trim={a:.2f}:{e:.2f},setpts=PTS-STARTPTS[v3];[0:a]atrim={a:.2f}:{e:.2f},asetpts=PTS-STARTPTS[a3];"
-               f"[v1][a1][v2][a2][v3][a3]concat=n=3:v=1:a=1[v][a]")
+        flash = f"eq=eval=frame:brightness='0.85*max(0\\,1-abs(t-{T:.3f})/0.1)'"
+        flt = (f"[0:v]trim={ps:.2f}:{pe:.2f},setpts=PTS-STARTPTS[v1];[0:a]atrim={ps:.2f}:{pe:.2f},asetpts=PTS-STARTPTS[a1];"
+               f"[0:v]trim={a:.2f}:{e:.2f},setpts=PTS-STARTPTS[v2];[0:a]atrim={a:.2f}:{e:.2f},asetpts=PTS-STARTPTS[a2];"
+               f"[v1][a1][v2][a2]concat=n=2:v=1:a=1[vc][a];[vc]{flash}[v]")
     else:
         flt = (f"[0:v]trim={a:.2f}:{e:.2f},setpts=PTS-STARTPTS[v];"
                f"[0:a]atrim={a:.2f}:{e:.2f},asetpts=PTS-STARTPTS[a]")
@@ -1340,7 +1337,7 @@ def edit_cut(src, words, d, clip):
     new += [(w0 - a + T, w1 - a + T, t) for w0, w1, t in words if w0 >= a and w1 <= e]
     pk = None if peak is None else peak - a + T
     log(f"  cut {a:.1f}-{b:.1f} s of {dur:.0f} s (+{e - b:.1f} s under the card)"
-        + (f", hook {pe - ps:.1f} s from the payoff at {peak:.1f} s + rewind" if tease else ""))
+        + (f", hook {pe - ps:.1f} s from the payoff at {peak:.1f} s + flash" if tease else ""))
     return out, new, pk, b - a + T
 
 def home_url(clip):
