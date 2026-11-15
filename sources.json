@@ -1,9 +1,8 @@
 {
-  "_napoveda": "Odkud bereme momenty. twitch/kick = login kanalu (klipy divaku), youtube = @handle. game = regex kategorie streamu / nazvu videa (jen GTA 6). ramp = kolik klipu denne od data (rozjezd novych uctu). caps = max postu denne na sit (X, Threads). blocklist = streameri, kteri chteji klipy dolu (uz je nebrat). youtube_search = hledani nejnovejsich videi (jen kanaly nad youtube_min_followers). exclude_titles = regex nazvu, ktere nebrat (fejky, leaky, koncepty). twitch_game = kategorie pro Twitch API (klipy divaku od vsech streameru, chce TWITCH_CLIENT_ID/SECRET). youtube_per_day = max YouTube shortu za publikacni den (Twitch/Kick maji prednost). Trailery a reakce na ne se neberou (Ales 14. 11.: nudne). hot_score = skore (zhlednuti/odmocnina(stari h+1) x rust x shluk), od ktereho klip mladsi 3 h jde ven do 25 min (horka cesta). music = seznam vlastnich skladeb (Gemini), kazdy klip dostane jednu a zacne v ni jinde (preskoci tichy uvod a poslednich 10 s), music_volume = stala hlasitost. nocam_min_views = klip bez kamery projde jen s aspon tolika zhlednutimi (nebo kdyz ho klipne vic divaku), pak hra pres celou vysku.",
+  "_napoveda": "Odkud bereme momenty. twitch/kick = login kanalu (klipy divaku), youtube = @handle. game = regex kategorie streamu / nazvu videa (jen GTA 6). ramp = kolik klipu denne od data (rozjezd novych uctu). caps = max postu denne na sit (X, Threads). blocklist = streameri, kteri chteji klipy dolu (uz je nebrat). youtube_search = hledani nejnovejsich videi (jen kanaly nad youtube_min_followers). exclude_titles = regex nazvu, ktere nebrat (fejky, leaky, koncepty). twitch_game = kategorie pro Twitch API (klipy divaku od vsech streameru, chce TWITCH_CLIENT_ID/SECRET). youtube_per_day = max YouTube shortu za publikacni den (Twitch/Kick maji prednost). Trailery a reakce na ne se neberou (Ales 14. 11.: nudne). hot_score = skore (zhlednuti/odmocnina(stari h+1) x rust x shluk), od ktereho klip mladsi 3 h jde ven do 25 min (horka cesta). music = seznam vlastnich skladeb (Gemini), kazdy klip dostane jednu a zacne v ni jinde (preskoci tichy uvod a poslednich 10 s), music_volume = stala hlasitost. nocam_min_views = klip bez kamery projde jen s aspon tolika zhlednutimi (nebo kdyz ho klipne vic divaku), pak hra pres celou vysku. hot_reserve = kolik z denni kvoty horka cesta nesmi vycerpat (zustane na vecerni sloty UK/US).",
   "game": "Grand Theft Auto VI\\b|\\bGTA ?(VI|6)\\b",
   "ramp": {
-    "2026-11-19": 3,
-    "2026-11-26": 5,
+    "2026-11-19": 8,
     "2026-12-03": 10
   },
   "caps": {
@@ -128,5 +127,6 @@
   ],
   "youtube_min_followers": 300000,
   "exclude_titles": "leak|concept|fan.?made|photo.?real|too real|so realistic|\\bue5\\b|unreal engine 5|\\bmods?\\b|\\bmodded\\b|\\bai\\b|fake|rumou?r|trailer|extended look|showcase",
-  "nocam_min_views": 5000
+  "nocam_min_views": 5000,
+  "hot_reserve": 3
 }

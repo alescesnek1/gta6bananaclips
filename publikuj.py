@@ -429,7 +429,8 @@ def cmd_den(a):
     times = times[: len(picks)]
     # hot path: a clip from the last 3 h that is exploding goes out in 25 min, not at the next slot
     hot_due = (now + timedelta(minutes=25)).replace(second=0, microsecond=0)
-    if (picks and picks[0].get("platform") != "youtube" and picks[0].get("created")
+    # ... but never eat the evening: `hot_reserve` posts of the day stay for the UK/US prime-time slots
+    if (picks and quota > src_cfg.get("hot_reserve", 3) and picks[0].get("platform") != "youtube" and picks[0].get("created")
             and picks[0].get("age_h", 99) <= 3 and picks[0]["score"] >= src_cfg.get("hot_score", 2000)
             and in_day({"due": hot_due.isoformat()}, day) and hot_due < times[0] - timedelta(minutes=30)):
         picks[0]["hot"] = True
