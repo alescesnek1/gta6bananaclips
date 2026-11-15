@@ -1323,16 +1323,30 @@ def edit_cut(src, words, d, clip):
     # payoff, then a white FLASH and the clip from its start
     ps, pe = (max(0.0, peak - 1.8), min(dur, peak + 0.9)) if tease else (0, 0)
     T = pe - ps if tease else 0.0
+    sfx = []
     if tease:
-        flash = f"eq=eval=frame:brightness='0.85*max(0\\,1-abs(t-{T:.3f})/0.1)'"
+        # slow flash (Aleš: the first was far too fast): fade to white over 0.35 s, hold 0.1 s,
+        # back over 0.4 s; a whoosh swells into a soft boom exactly on the white (assets/sfx)
+        t0, t1 = T - 0.35, T + 0.1
+        flash = (f"eq=eval=frame:brightness='0.85*if(lt(t\\,{T:.3f})\\,clip((t-{t0:.3f})/0.35\\,0\\,1)"
+                 f"\\,clip(1-(t-{t1:.3f})/0.4\\,0\\,1))'")
         flt = (f"[0:v]trim={ps:.2f}:{pe:.2f},setpts=PTS-STARTPTS[v1];[0:a]atrim={ps:.2f}:{pe:.2f},asetpts=PTS-STARTPTS[a1];"
                f"[0:v]trim={a:.2f}:{e:.2f},setpts=PTS-STARTPTS[v2];[0:a]atrim={a:.2f}:{e:.2f},asetpts=PTS-STARTPTS[a2];"
-               f"[v1][a1][v2][a2]concat=n=2:v=1:a=1[vc][a];[vc]{flash}[v]")
+               f"[v1][a1][v2][a2]concat=n=2:v=1:a=1[vc][ac];[vc]{flash}[v]")
+        whoosh = HERE / "assets" / "sfx" / "flash.wav"
+        if whoosh.exists():                            # the impact sits 0.45 s into the file
+            sfx = ["-i", str(whoosh)]
+            ms = int(max(0.0, T - 0.45) * 1000)
+            flt += (f";[1:a]volume=0.7,adelay={ms}:all=1,aformat=sample_rates=48000:channel_layouts=stereo[sx];"
+                    f"[ac]aformat=sample_rates=48000:channel_layouts=stereo[ac2];"
+                    f"[ac2][sx]amix=inputs=2:duration=first:normalize=0[a]")
+        else:
+            flt += ";[ac]anull[a]"
     else:
         flt = (f"[0:v]trim={a:.2f}:{e:.2f},setpts=PTS-STARTPTS[v];"
                f"[0:a]atrim={a:.2f}:{e:.2f},asetpts=PTS-STARTPTS[a]")
-    encode(["ffmpeg", "-nostdin", "-y", "-hide_banner", "-loglevel", "error", "-i", str(src),
-            "-filter_complex", flt, "-map", "[v]", "-map", "[a]"], out)
+    encode(["ffmpeg", "-nostdin", "-y", "-hide_banner", "-loglevel", "error", "-i", str(src)] + sfx +
+           ["-filter_complex", flt, "-map", "[v]", "-map", "[a]"], out)
     new = [(w0 - ps, w1 - ps, t) for w0, w1, t in words if tease and w0 >= ps and w1 <= pe]
     new += [(w0 - a + T, w1 - a + T, t) for w0, w1, t in words if w0 >= a and w1 <= e]
     pk = None if peak is None else peak - a + T
