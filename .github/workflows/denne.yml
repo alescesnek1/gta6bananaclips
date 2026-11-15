@@ -46,6 +46,8 @@ jobs:
       BUFFER_API_KEY_2: ${{ secrets.BUFFER_API_KEY_2 }}
       NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
       YT_COOKIES: ${{ secrets.YT_COOKIES }}
+      TWITCH_CLIENT_ID: ${{ secrets.TWITCH_CLIENT_ID }}          # Twitch API: clips of the whole GTA VI category
+      TWITCH_CLIENT_SECRET: ${{ secrets.TWITCH_CLIENT_SECRET }}
       NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
       MEDIA_BASE_URL: ${{ vars.MEDIA_BASE_URL }}
       PYTHONUTF8: "1"

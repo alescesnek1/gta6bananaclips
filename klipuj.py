@@ -38,6 +38,7 @@ import subprocess
 import sys
 import time
 import urllib.parse
+import urllib.request
 from datetime import date, datetime, timezone
 from pathlib import Path
 
@@ -185,8 +186,10 @@ def entries_to_clips(entries, channel, platform):
     for e in entries or []:
         if not e.get("url"):
             continue
+        # Twitch: the clip slug from the URL, the same id the Twitch API uses (one clip = one id)
+        slug = e["url"].rstrip("/").split("/clip/")[-1] if "/clip/" in e["url"] else e.get("id")
         clips.append({
-            "id": f"{platform}_{e.get('id')}",
+            "id": f"{platform}_{slug}",
             "url": e["url"],
             "title": (e.get("title") or "").strip(),
             "views": int(e.get("view_count") or 0),
@@ -202,6 +205,70 @@ def list_twitch(channel, rng="24hr", limit=100):
     """Twitch lists clips by views, so a fresh clip can sit low - hence the generous limit."""
     url = f"https://www.twitch.tv/{channel}/clips?filter=clips&range={rng}"
     return entries_to_clips(ytdlp_json(url, flat=True, limit=limit).get("entries"), channel, "twitch")
+
+HELIX = "https://api.twitch.tv/helix"
+_helix = {}
+
+def helix_keys():
+    """TWITCH_CLIENT_ID / _SECRET from the environment (GitHub secrets) or .env (home PC)."""
+    env = HERE / ".env"
+    for line in env.read_text(encoding="utf-8").splitlines() if env.exists() else []:
+        k, _, v = line.strip().partition("=")
+        if k in ("TWITCH_CLIENT_ID", "TWITCH_CLIENT_SECRET") and v.strip():
+            os.environ.setdefault(k, v.strip().strip('"'))
+    return os.environ.get("TWITCH_CLIENT_ID"), os.environ.get("TWITCH_CLIENT_SECRET")
+
+def helix(path, params):
+    """GET on the Twitch API with an app access token (client credentials, no user login)."""
+    cid, secret = helix_keys()
+    if "token" not in _helix:
+        q = urllib.parse.urlencode({"client_id": cid, "client_secret": secret, "grant_type": "client_credentials"})
+        req = urllib.request.Request(f"https://id.twitch.tv/oauth2/token?{q}", method="POST")
+        with urllib.request.urlopen(req, timeout=30) as r:
+            _helix["token"] = json.load(r)["access_token"]
+    req = urllib.request.Request(f"{HELIX}/{path}?{urllib.parse.urlencode(params)}",
+                                 headers={"Client-Id": cid, "Authorization": f"Bearer {_helix['token']}"})
+    with urllib.request.urlopen(req, timeout=30) as r:
+        return json.load(r)
+
+def list_twitch_game(days, pages=3):
+    """
+    Clips viewers made in the whole 'Grand Theft Auto VI' category, from EVERY streamer,
+    best first (Twitch API Get Clips by game_id). The strongest viral signal we have: a person
+    picked the start, the end and the title. English streams only (our captions are English).
+    """
+    name = load_json(SOURCES, {}).get("twitch_game", "Grand Theft Auto VI")
+    games = helix("games", {"name": name}).get("data") or []
+    if not games:
+        log(f"twitch api: category '{name}' not found")
+        return []
+    since = datetime.fromtimestamp(time.time() - days * 86400, tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    clips, cursor = [], None
+    for _ in range(pages):
+        params = {"game_id": games[0]["id"], "started_at": since, "first": 100}
+        if cursor:
+            params["after"] = cursor
+        res = helix("clips", params)
+        page = [c for c in res.get("data") or [] if (c.get("language") or "en").split("-")[0] == "en"]
+        for c in page:
+            clips.append({
+                "id": f"twitch_{c['id']}", "url": c["url"], "title": (c.get("title") or "").strip(),
+                "views": int(c.get("view_count") or 0), "duration": float(c.get("duration") or 0),
+                "created": int(datetime.fromisoformat(c["created_at"].replace("Z", "+00:00")).timestamp()),
+                "channel": (c.get("broadcaster_name") or "twitch").lower(), "platform": "twitch",
+                "category": games[0]["name"],          # known from the API: no category lookup needed
+            })
+        ids = {c["broadcaster_id"] for c in res.get("data") or []}
+        if ids:                                    # Get Clips has only the display name: fetch logins
+            users = helix("users", [("id", i) for i in sorted(ids)[:100]]).get("data") or []
+            logins = {u["id"]: u["login"] for u in users}
+            for clip, c in zip(clips[len(clips) - len(page):], page):
+                clip["channel"] = logins.get(c["broadcaster_id"], clip["channel"])
+        cursor = (res.get("pagination") or {}).get("cursor")
+        if not cursor:
+            break
+    log(f"twitch api: {len(clips)} English clips in '{games[0]['name']}' since {since}")
+    return clips
 
 def list_kick(channel, limit=100):
     return entries_to_clips(ytdlp_json(f"https://kick.com/{channel}/clips", flat=True, limit=limit).get("entries"),
@@ -228,14 +295,19 @@ def comment_peaks(url, dur):
     except RuntimeError as e:
         log(f"  comments: {str(e)[-100:]}")
         return []
-    bins = {}
+    bins, who = {}, {}
     for c in info.get("comments") or []:
-        for h, m, s in TS_RE.findall(c.get("text") or ""):
+        stamps = TS_RE.findall(c.get("text") or "")
+        if len(stamps) >= 3 or c.get("author_is_uploader"):
+            continue                                  # a chapter list / the uploader's own index, not a reaction
+        for h, m, s in stamps:
             t = int(h or 0) * 3600 + int(m) * 60 + int(s)
             if 0 < t < dur:
                 bins[t // 20] = bins.get(t // 20, 0) + 1 + np.log1p(c.get("like_count") or 0)
-    # a timestamp marks where the moment starts: centre the clip a bit after it
-    return [(b * 20 + 10 + YT_CLIP * 0.3, s) for b, s in bins.items() if s >= 2]
+                who.setdefault(t // 20, set()).add(c.get("author_id") or c.get("author"))
+    # a timestamp marks where the moment starts: centre the clip a bit after it.
+    # At least 2 different viewers must point at the same moment.
+    return [(b * 20 + 10 + YT_CLIP * 0.3, s) for b, s in bins.items() if s >= 2 and len(who[b]) >= 2]
 
 def chat_peaks(url, vid):
     """Live-chat replay of a past stream: messages per 10 s (laughs count double) vs the 5 min median."""
@@ -275,7 +347,15 @@ def viewer_signals(url, vid, info):
     dur = float(info.get("duration") or 0)
     hm = info.get("heatmap") or []
     if hm:
-        return norm([((b["start_time"] + b["end_time"]) / 2, b["value"]) for b in hm if b["value"] >= 0.5]), "heatmap"
+        v = [b["value"] for b in hm]
+        peaks = []
+        for i, b in enumerate(hm):
+            near = v[max(0, i - 3): i + 4]
+            around = np.median(v[max(0, i - 10): i + 11])
+            left = max(v[max(0, i - 3): i], default=-1)   # strict on the left: a flat top counts once
+            if v[i] >= 0.5 and v[i] > left and v[i] == max(near) and v[i] - around >= 0.15:   # sticks out
+                peaks.append(((b["start_time"] + b["end_time"]) / 2, v[i] - around))
+        return norm(peaks), "heatmap"
     cands, how = norm(comment_peaks(url, dur)), ["comments"]
     if info.get("was_live") or info.get("live_status") == "was_live":
         cands += norm(chat_peaks(url, vid))
@@ -522,7 +602,7 @@ def quality_check(short, cam):
             band = g[: CAM_H // 2]
             faces = _cascade.detectMultiScale(band, scaleFactor=1.1, minNeighbors=5, minSize=(40, 40))
             face_ok += any(y > 4 and y + h < CAM_H // 2 - 4 and x > 4 and x + w < 536 for x, y, w, h in faces)
-    problems = []
+    problems = [] if cam else ["no facecam"]
     if n and black / n >= 0.3:
         problems.append("black bars")
     if cam and n and face_ok / n < 0.4:
@@ -919,6 +999,44 @@ def download(clip, dst):
         cmd += ["--download-sections", f"*{s}-{e}", "--force-keyframes-at-cuts"]
     run(cmd + [clip["url"]], timeout=600)
 
+PAD = 8.0   # seconds downloaded around a YouTube window, room to move the cut
+
+def snap_cut(words, s, e, total, lo=15.0, hi=40.0):
+    """
+    Cut points in the padded download: start just before a sentence begins near s, end just
+    after a sentence ends a few seconds past the peak (the window centre), 15-40 s long.
+    """
+    if not words:
+        return s, min(total, e)
+    gaps = [(0.0, words[0][0])] + [(w1[1], w2[0]) for w1, w2 in zip(words, words[1:]) if w2[0] - w1[1] >= 0.35]
+    gaps.append((words[-1][1], total))
+    starts = [max(0.0, g1 - 0.15) for _, g1 in gaps if g1 - 0.15 <= s + 6]
+    a = min(starts, key=lambda t: abs(t - s), default=s)
+    peak = (s + e) / 2
+    ends = [min(g0 + 0.5, g1) for g0, g1 in gaps if a + lo <= g0 <= a + hi]
+    b = min(ends, key=lambda t: abs(t - (peak + 10)), default=min(total, a + max(lo, e - s)))
+    return a, min(b, total, a + hi)
+
+def fetch_section(clip, d, dst):
+    """
+    A YouTube window is a guess around the audience peak. Download it with room on both
+    sides, find the sentence pauses and cut there, so the short starts on a new sentence and
+    ends after the reaction instead of mid-word. Returns the words (times in the cut file).
+    """
+    s, e = clip["section"]
+    ps = max(0.0, s - PAD)
+    raw = d / "padded.mp4"
+    log(f"  download {clip['url']} [{ps:.0f}-{e + PAD:.0f}]")
+    download({**clip, "section": [ps, e + PAD]}, raw)
+    words = transcribe(raw)
+    a, b = snap_cut(words, s - ps, e - ps, duration(raw))
+    encode(["ffmpeg", "-nostdin", "-y", "-hide_banner", "-loglevel", "error", "-ss", f"{a:.2f}", "-to", f"{b:.2f}",
+            "-i", str(raw), "-map", "0:v:0", "-map", "0:a?"], dst)
+    raw.unlink(missing_ok=True)
+    clip["section"] = [round(float(ps + a), 1), round(float(ps + b), 1)]
+    log(f"  cut on sentence pauses: {clip['section']} ({b - a:.0f} s)")
+    return [(w0 - a, w1 - a, t) for w0, w1, t in words if w0 >= a and w1 <= b]
+
 def home_url(clip):
     return {"twitch": f"twitch.tv/{clip['channel']}", "kick": f"kick.com/{clip['channel']}",
             "youtube": f"youtube.com/@{clip['channel']}"}.get(clip.get("platform"), clip["url"])
@@ -927,16 +1045,21 @@ def render(clip, src=None, clean=False):
     day = datetime.fromtimestamp(clip["created"] or time.time(), tz=timezone.utc).strftime("%Y%m%d")
     d = OUT / clip["channel"] / f"{day}_{clip['id']}"
     d.mkdir(parents=True, exist_ok=True)
+    words = None
     if src is None:
         src = d / "source.mp4"
         if not src.exists():
-            log(f"  download {clip['url']} {clip.get('section') or ''}")
-            download(clip, src)
+            if clip.get("section"):                   # YouTube window: cut on sentence pauses
+                words = fetch_section(clip, d, src)
+            else:
+                log(f"  download {clip['url']}")
+                download(clip, src)
 
     dur = duration(src)
     if talking_head(src):                     # check first: a full-screen webcam also looks like a "facecam"
         raise NotGameplay("streamer's face fills the frame, no gameplay")
-    words = transcribe(src)
+    if words is None:
+        words = transcribe(src)
     speech = " ".join(t for _, _, t in words)
     if SLUR_RE.search(speech):
         raise NotGameplay("slur in the speech - not worth a strike or a ban")
@@ -949,15 +1072,14 @@ def render(clip, src=None, clean=False):
     # Render, check, and REPAIR instead of giving up (Aleš: a cut face or black bars must be fixed):
     #   1) normal: saved/auto facecam box, detected bars and subtitles cropped
     #   2) facecam detected again with a wider box, bars found with looser limits, 6 % extra zoom
-    #   3) no facecam band at all: the game fills the whole short (still a clean video)
+    # No facecam = no short (Aleš 14. 11.: every video has the streamer's head on top).
     problems = []
-    for attempt, (cam_mode, loose, zoom) in enumerate((("saved", False, 0.0), ("again", True, 0.06), ("none", True, 0.06))):
-        if cam_mode == "saved":
-            cam = get_cam(clip["channel"], src)
-        elif cam_mode == "again":
-            cam = detect_cam(src, mult=3.4)
-        else:
-            cam = None
+    for attempt, (cam_mode, loose, zoom) in enumerate((("saved", False, 0.0), ("again", True, 0.06))):
+        cam = get_cam(clip["channel"], src) if cam_mode == "saved" else detect_cam(src, mult=3.4)
+        if not cam:
+            if cam_mode == "saved":
+                continue                                  # try the wider detection once more
+            raise NotGameplay("no facecam - every short needs the streamer's face on top")
         game_h = H - CAM_H if cam else H
         top, bot = game_bars(src, loose=loose)            # black bars inside the game picture
         bot = max(bot, subtitle_band(src, top, bot))      # burned-in subtitles of the source video
@@ -1041,7 +1163,7 @@ def is_game(clip):
     publikuj.py checks the saved category again before anything goes out).
     YouTube windows were already filtered by video title.
     """
-    if clip.get("platform") == "youtube":
+    if clip.get("platform") == "youtube" or clip.get("category"):   # YouTube title / Twitch API category
         return bool(re.search(game_re(), clip.get("category", ""), re.I))
     if clip.get("platform") not in ("twitch", "kick"):
         return False
@@ -1072,6 +1194,10 @@ def process(clips, clean=False, limit=None):
             mark(c["id"], True)
             n += 1
         except NotGameplay as e:                 # right category, wrong picture: never again
+            if "no facecam" in str(e):           # detection can miss once: counts as a failure (max 3 tries)
+                mark(c["id"], False)
+                log(f"  skip: {e}")
+                continue
             state = load_json(STATE, {"done": {}, "failed": {}})
             state.setdefault("other_game", {})[c["id"]] = str(e)
             save_json(STATE, state)
@@ -1116,6 +1242,21 @@ def cmd_batch(a):
                 log(f"{platform} {ch}: {str(e)[-150:]}")
                 continue
             live += clips[: a.n]
+    if not a.jen_yt and not all(helix_keys()):
+        log("twitch api: no TWITCH_CLIENT_ID/SECRET - only the channel list, not the whole GTA VI category")
+    if not a.jen_yt and all(helix_keys()):
+        try:                                               # every streamer in the category, not just our list
+            seen, per = {c["id"] for c in live}, {}
+            for c in live:
+                per[c["channel"]] = per.get(c["channel"], 0) + 1
+            for c in list_twitch_game(max(a.days, 1)):
+                if (c["id"] in seen or c["channel"] in blocked or c["views"] < a.min_views
+                        or per.get(c["channel"], 0) >= a.n or skip(c["id"])):
+                    continue
+                per[c["channel"]] = per.get(c["channel"], 0) + 1
+                live.append(c)
+        except Exception as e:
+            log(f"twitch api: {str(e)[-150:]}")
     live.sort(key=virality, reverse=True)
     yt = []
     if a.yt:
@@ -1137,8 +1278,9 @@ def cmd_batch(a):
             log(f"youtube search: {str(e)[-150:]}")
         yt.sort(key=virality, reverse=True)
     log(f"candidates: {len(live)} twitch/kick, {len(yt)} youtube -> rendering up to {a.max}")
-    total = process(yt, a.clean, limit=min(a.yt, a.max))
-    total += process(live, a.clean, limit=a.max - total)
+    # viewer-made clips first (a person picked the moment); YouTube windows only fill the rest
+    total = process(live, a.clean, limit=a.max)
+    total += process(yt, a.clean, limit=min(a.yt, a.max - total))
     log(f"batch done: {total} new shorts")
     if total == 0 and os.environ.get("GITHUB_ACTIONS") and datetime.now().date() >= date(2026, 11, 19):
         print("::warning::Dnes se nevyrenderoval zadny GTA 6 klip (zadne cerstve klipy, nebo blokace Twitch/Kick).")

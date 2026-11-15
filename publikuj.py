@@ -268,13 +268,17 @@ def candidates():
     for m in local + [m for m in inbox_items() if m.get("id") not in seen]:
         if not m or m.get("id") in done or not (m.get("remote") or Path(m.get("short", "")).exists()):
             continue
+        if not m.get("cam"):                         # Aleš: every short has the streamer's face on top
+            continue
         if not re.search(game, m.get("category") or "", re.I):
             log(f"  not published (category '{m.get('category') or '?'}' is not {game}): {m.get('id')}")
             continue
         age_h = (now - (m.get("created") or now)) / 3600
         m["score"] = (m.get("views") or 0) / (max(age_h, 0) + 1) ** 0.5   # same "virality" as klipuj.batch
         out.append(m)
-    return sorted(out, key=lambda m: -m["score"])
+    # viewer-made Twitch/Kick clips first: a YouTube window's "views" are the whole video's,
+    # not comparable, so YouTube only fills what is left (and at most youtube_per_day)
+    return sorted(out, key=lambda m: (m.get("platform") == "youtube", -m["score"]))
 
 # Anti-spam: every post gets its own text (a quote from what the streamer said), no
 # @mentions (they would tag strangers / break X's automation rules), few rotating hashtags.
@@ -384,7 +388,18 @@ def cmd_den(a):
     quota = min(a.n, remaining(day))         # several runs a day share one daily quota
     times = [t for t in slot_times(day, len(SLOTS))
              if t > now + timedelta(minutes=20) and t.isoformat() not in taken][:quota]
-    picks = candidates()[: len(times)]
+    day_slots = {t.isoformat() for t in slot_times(day, len(SLOTS))}
+    yt_left = load_json(HERE / "sources.json", {}).get("youtube_per_day", 1) - sum(
+        k.startswith("youtube_") and rec.get("due") in day_slots for k, rec in load_json(PUBLISHED, {}).items())
+    picks = []
+    for m in candidates():
+        if len(picks) >= len(times):
+            break
+        if m.get("platform") == "youtube":
+            if yt_left <= 0:
+                continue
+            yt_left -= 1
+        picks.append(m)
     times = times[: len(picks)]
     chans = load_json(CHANNELS, [])
     mode = "ZKOUŠKA" if a.zkouska else ("NAOSTRO" if a.ostre else "koncepty")
@@ -485,7 +500,7 @@ def cmd_schranka(a):
             continue
         m = load_json(meta_file, {})
         short = Path(m.get("short") or "")
-        if (m.get("platform") != "youtube" or m.get("id") in done or not short.exists()
+        if (m.get("platform") != "youtube" or m.get("id") in done or not short.exists() or not m.get("cam")
                 or not re.search(game, m.get("category") or "", re.I)):
             continue
         rel = f"yt/{safe_name(m['id'])}.mp4"
