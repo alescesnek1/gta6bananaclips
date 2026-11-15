@@ -4,6 +4,9 @@
 # picks them up from there and publishes them together with Twitch + Kick.
 # ASCII only: Windows PowerShell 5.1 reads scripts without BOM as ANSI.
 
+# runs without anyone logged in (S4U task): take PATH from the registry so git/ffmpeg/deno are found
+$env:Path = [Environment]::GetEnvironmentVariable("Path", "Machine") + ";" +
+            [Environment]::GetEnvironmentVariable("Path", "User")
 $dir = Split-Path $PSScriptRoot -Parent
 Set-Location $dir
 $log = Join-Path $dir "out\worker.log"

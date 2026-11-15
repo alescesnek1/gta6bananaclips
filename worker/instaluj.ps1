@@ -63,11 +63,24 @@ $act = New-ScheduledTaskAction -Execute "powershell.exe" `
     -Argument "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$beh`""
 $trig = New-ScheduledTaskTrigger -Once -At (Get-Date).AddMinutes(1) `
     -RepetitionInterval (New-TimeSpan -Minutes 30) -RepetitionDuration (New-TimeSpan -Days 3650)
-$set = New-ScheduledTaskSettingsSet -StartWhenAvailable -MultipleInstances IgnoreNew `
+$boot = New-ScheduledTaskTrigger -AtStartup                  # and right after every restart
+$boot.Delay = "PT2M"
+$set = New-ScheduledTaskSettingsSet -StartWhenAvailable -MultipleInstances IgnoreNew -WakeToRun `
     -ExecutionTimeLimit (New-TimeSpan -Hours 2) -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries
-Register-ScheduledTask -TaskName "gta6-yt" -Action $act -Trigger $trig -Settings $set -Force | Out-Null
+# 24/7: runs whether anyone is logged in or not (S4U = no password stored); needs admin (SPUST.cmd asks)
+$who = "$env:USERDOMAIN\$env:USERNAME"
+try {
+    $pr = New-ScheduledTaskPrincipal -UserId $who -LogonType S4U -RunLevel Limited
+    Register-ScheduledTask -TaskName "gta6-yt" -Action $act -Trigger @($trig, $boot) -Settings $set -Principal $pr -Force -ErrorAction Stop | Out-Null
+    $mode = "i bez prihlaseni a po restartu"
+} catch {
+    Register-ScheduledTask -TaskName "gta6-yt" -Action $act -Trigger @($trig, $boot) -Settings $set -Force | Out-Null
+    $mode = "JEN kdyz je uzivatel prihlaseny (spust SPUST.cmd jako spravce pro rezim 24/7)"
+}
 
 Write-Host ""
-Write-Host "HOTOVO. Prvni beh za minutu, pak kazdych 30 min (jen kdyz je PC zapnute a prihlasene)."
+Write-Host "HOTOVO. Vse je zkopirovane v $dir - flashku muzes vytahnout."
+Write-Host "Prvni beh za minutu, pak kazdych 30 min, $mode."
+Write-Host "Pocitac nesmi usinat: Nastaveni > Napajeni > Rezim spanku = Nikdy."
 Write-Host "Log: $dir\out\worker.log"
 Write-Host "Vypnout: Unregister-ScheduledTask gta6-yt"
