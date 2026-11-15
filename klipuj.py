@@ -815,8 +815,15 @@ def track_path(src, cam, crop_w, dur):
         _yolox = Yolox(MODEL)
     dw, dh = 960, 540                         # detect on half resolution (fast enough on CPU)
     cam_px = [cam[0] / 100 * dw, cam[1] / 100 * dh, cam[2] / 100 * dw, cam[3] / 100 * dh] if cam else None
-    ts, xs, prev = [], [], None
+    ts, xs, prev, cuts, hist0 = [], [], None, [], None
     for t, img in frames(src, DET_FPS, dw, dh):
+        # a cut in the source (or our cold start): the camera must jump, not pan across (PySceneDetect idea)
+        hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+        hist = cv2.normalize(cv2.calcHist([hsv], [0, 1], None, [16, 16], [0, 180, 0, 256]), None).flatten()
+        if hist0 is not None and cv2.compareHist(hist0, hist, cv2.HISTCMP_BHATTACHARYYA) > 0.45:
+            cuts.append(t)
+            prev = None                               # the player from the old shot is gone
+        hist0 = hist
         cx = pick_target(_yolox(img), cam_px, prev, dw, dh)
         if cx is not None:
             prev = cx
@@ -825,7 +832,7 @@ def track_path(src, cam, crop_w, dur):
     n_out = max(int(dur * FPS), 1)
     raw = np.array(xs, dtype=np.float64)
     found = ~np.isnan(raw)
-    log(f"  tracking: player found on {found.sum()}/{len(raw)} samples")
+    log(f"  tracking: player found on {found.sum()}/{len(raw)} samples, {len(cuts)} cuts")
     if not found.any():
         target = np.full(n_out, SW / 2)       # GTA's camera already centres the player
     else:
@@ -833,13 +840,21 @@ def track_path(src, cam, crop_w, dur):
 
     # lazy camera: ignore small moves (dead zone), follow big ones with capped speed
     dead, k, vmax = crop_w * 0.12, 0.10, 28.0
+    cut_frames = sorted({min(n_out - 1, int(c * FPS)) for c in cuts})
     cur, path = target[0], np.empty(n_out)
     for i, tx in enumerate(target):
+        if i in cut_frames:
+            cur = tx                                  # new shot: jump straight to the player
         d = tx - cur
         if abs(d) > dead:
             cur += float(np.clip((d - np.sign(d) * dead) * k, -vmax, vmax))
         path[i] = cur
-    path = np.convolve(np.pad(path, 7, mode="edge"), np.ones(15) / 15, mode="valid")  # 0.5 s smoothing
+    out, edges = [], [0] + cut_frames + [n_out]       # 0.5 s smoothing inside each shot, never across a cut
+    for a, b in zip(edges, edges[1:]):
+        if b > a:
+            seg = path[a:b]
+            out.append(np.convolve(np.pad(seg, 7, mode="edge"), np.ones(15) / 15, mode="valid"))
+    path = np.concatenate(out)
 
     # keep the facecam overlay out of the game crop (it is already on top): a cam on the
     # left pushes the crop's left edge past it, a cam on the right caps the right edge
@@ -1015,9 +1030,30 @@ def pick_reactions(words, dur, seed, peak=None):
         out.append((dur * 0.66, rnd.choice(have(["clap", "sideeye", "point"]))))
     return sorted(out)[: (2 if dur > 30 else 1)]
 
+RATING = HERE / "assets" / "rating"            # score_N.webm: end cards from tools/rating (Blender)
+RATING_DUR = 2.6                               # seconds added after the clip, on its frozen last frame
+
 def banana_rating(views):
-    """The banana's score for the clip, 6-10: 500 views -> 6, ~50k -> 10 (log scale)."""
-    return int(max(6, min(10, 6 + np.log10(max(views or 1, 1) / 500) * 2)))
+    """The banana's score 1-10 on a log scale: 50 views -> 1, 500 -> 3, 5k -> 6, 50k -> 8, 500k -> 10."""
+    return int(round(max(1, min(10, 1 + np.log10(max(views or 1, 1) / 50) * 2.25))))
+
+def card_overlay(f, idx, at, pad, audio):
+    """
+    The banana score card starts where the clip's story ends (`at`, after the payoff, never
+    over a moment) and the footage keeps running underneath; only when the source has no more
+    footage the last frame holds for `pad` s. Bananas drop into the 'jar' of the short.
+    """
+    f = f[: -len("[v]")] + "[pre]"
+    hold = f"tpad=stop_mode=clone:stop_duration={pad:.3f}," if pad > 0.01 else ""
+    f += (f";[pre]{hold}null[pz];"
+          f"[{idx}:v]setpts=PTS-STARTPTS+{at:.3f}/TB[rc];[pz][rc]overlay=0:0:eof_action=pass[v]")
+    ms, total = int(at * 1000), at + RATING_DUR
+    if audio:                                          # the card's sounds stay quiet under the clip's audio
+        f += (f";[0:a]apad=whole_dur={total:.3f}[a0];[{idx}:a]volume=0.45,adelay={ms}:all=1[ar];"
+              f"[a0][ar]amix=inputs=2:duration=first:normalize=0[aud]")
+    else:
+        f += f";[{idx}:a]volume=0.45,adelay={ms}:all=1,apad=whole_dur={total:.3f}[aud]"
+    return f
 
 def extras_ass(path, reactions, rating, dur, cam, seed):
     """
@@ -1178,33 +1214,39 @@ def edit_cut(src, words, d, clip):
     """
     Cut the source before rendering: trim (Twitch/Kick; YouTube windows are already cut on
     sentences) and a COLD START - the payoff flashes for 1 s first, then the clip plays from
-    its start (Aleš 15. 11.). Returns (source, words, payoff time) in the new timeline.
+    its start (Aleš 15. 11.). Up to RATING_DUR s of the source after the cut are kept, so the
+    clip keeps running under the banana score card (Aleš: the background must not freeze).
+    Returns (source, words, payoff time, where the card starts) in the new timeline.
     """
     dur = duration(src)
     peak = audio_peak(src)
     a, b = (0.0, dur) if clip.get("section") else trim_points(words, peak, dur)
+    e = b + min(RATING_DUR, dur - b)                  # live footage for under the card
     tease = peak is not None and peak - a >= 3 and b - peak >= 0.3
     if not tease and a < 0.5 and b > dur - 0.5:
-        return src, words, peak
+        # untouched: the card covers the last seconds, but only if the payoff is safely before them
+        late = peak is not None and dur - peak >= RATING_DUR + 1.8
+        return src, words, peak, dur - RATING_DUR if late else dur
     if not has_audio(src):
-        return src, words, peak
+        return src, words, peak, dur
     out = d / "edit.mp4"
     ps, pe = (peak - 0.7, peak + 0.3) if tease else (0, 0)
     T = pe - ps
     if tease:
         flt = (f"[0:v]trim={ps:.2f}:{pe:.2f},setpts=PTS-STARTPTS[v1];[0:a]atrim={ps:.2f}:{pe:.2f},asetpts=PTS-STARTPTS[a1];"
-               f"[0:v]trim={a:.2f}:{b:.2f},setpts=PTS-STARTPTS[v2];[0:a]atrim={a:.2f}:{b:.2f},asetpts=PTS-STARTPTS[a2];"
+               f"[0:v]trim={a:.2f}:{e:.2f},setpts=PTS-STARTPTS[v2];[0:a]atrim={a:.2f}:{e:.2f},asetpts=PTS-STARTPTS[a2];"
                f"[v1][a1][v2][a2]concat=n=2:v=1:a=1[v][a]")
     else:
-        flt = (f"[0:v]trim={a:.2f}:{b:.2f},setpts=PTS-STARTPTS[v];"
-               f"[0:a]atrim={a:.2f}:{b:.2f},asetpts=PTS-STARTPTS[a]")
+        flt = (f"[0:v]trim={a:.2f}:{e:.2f},setpts=PTS-STARTPTS[v];"
+               f"[0:a]atrim={a:.2f}:{e:.2f},asetpts=PTS-STARTPTS[a]")
     encode(["ffmpeg", "-nostdin", "-y", "-hide_banner", "-loglevel", "error", "-i", str(src),
             "-filter_complex", flt, "-map", "[v]", "-map", "[a]"], out)
     new = [(w0 - ps, w1 - ps, t) for w0, w1, t in words if tease and w0 >= ps and w1 <= pe]
-    new += [(w0 - a + T, w1 - a + T, t) for w0, w1, t in words if w0 >= a and w1 <= b]
+    new += [(w0 - a + T, w1 - a + T, t) for w0, w1, t in words if w0 >= a and w1 <= e]
     pk = None if peak is None else peak - a + T
-    log(f"  cut {a:.1f}-{b:.1f} s of {dur:.0f} s" + (f", cold start from the payoff at {peak:.1f} s" if tease else ""))
-    return out, new, pk
+    log(f"  cut {a:.1f}-{b:.1f} s of {dur:.0f} s (+{e - b:.1f} s under the card)"
+        + (f", cold start from the payoff at {peak:.1f} s" if tease else ""))
+    return out, new, pk, b - a + T
 
 def home_url(clip):
     return {"twitch": f"twitch.tv/{clip['channel']}", "kick": f"kick.com/{clip['channel']}",
@@ -1234,11 +1276,13 @@ def render(clip, src=None, clean=False):
         raise NotGameplay("slur in the speech - not worth a strike or a ban")
     (d / "transcript.txt").write_text(speech, encoding="utf-8")
     (d / "mark.txt").write_text(f"@{clip['channel']}", encoding="utf-8")
-    src, words, peak = edit_cut(src, words, d, clip)
+    src, words, peak, card_at = edit_cut(src, words, d, clip)
     dur = duration(src)
+    card_at = min(card_at, dur)
+    words = [w for w in words if w[0] < card_at]      # no captions / banana under the score card
     rating = (int(round(5 + 5 * clip["signal_score"])) if clip.get("platform") == "youtube" and "signal_score" in clip
               else banana_rating(clip.get("views")))
-    reactions = pick_reactions(words, dur, clip["id"], peak) if (BANANA / "reakce1.mp4").exists() else []
+    reactions = pick_reactions(words, card_at, clip["id"], peak) if (BANANA / "reakce1.mp4").exists() else []
     ff = ["ffmpeg", "-nostdin", "-y", "-hide_banner", "-loglevel", "error", "-i", str(src)]
     out = d / "short_9x16.mp4"
 
@@ -1265,11 +1309,17 @@ def render(clip, src=None, clean=False):
         cmds.write_text("".join(f"{i / FPS:.4f} crop@g x {x};\n" for i, x in enumerate(xs)), encoding="utf-8")
         ass = d / "captions.ass"
         n_chunks = captions_ass(words, ass, y=CAM_H if cam else 600)   # on the seam between face and game
-        extras_ass(ass, reactions, rating, dur, cam, clip["id"])            # banana's bubble + score
+        card = RATING / f"score_{rating}.webm"
+        extras_ass(ass, reactions, None if card.exists() else rating, card_at, cam, clip["id"])   # bubble (+ text score)
         args = (cam, ff_path(cmds), int(xs[0]), crop_w, game_h, crop_h, top)
         flt = reaction_overlay(build_filter(*args, ass_file=ff_path(ass), zoom_at=peak,
                                             mark_file=ff_path(d / "mark.txt"), nf=src_norm(src)), reactions, cam)
-        enc = encode(ff + reaction_inputs(reactions) + ["-filter_complex", flt, "-map", "[v]", "-map", "0:a?"], out)
+        if card.exists():
+            flt = card_overlay(flt, 1 + len(reactions), card_at, max(0.0, card_at + RATING_DUR - dur), has_audio(src))
+            maps = ["-c:v", "libvpx-vp9", "-i", str(card), "-filter_complex", flt, "-map", "[v]", "-map", "[aud]"]
+        else:
+            maps = ["-filter_complex", flt, "-map", "[v]", "-map", "0:a?"]
+        enc = encode(ff + reaction_inputs(reactions) + maps, out)
         problems = quality_check(out, cam)
         if not problems:
             break
@@ -1293,6 +1343,7 @@ def render(clip, src=None, clean=False):
         "source": str(src),
         "quote": pick_quote(words, peak),    # publikuj.py builds a different post text per platform from it
         "peak": peak,                        # payoff (s): thumbnail frame, banana, zoom
+        "card_at": round(card_at, 2),        # where the banana score card starts
         "rating": rating,
         "caption": f"🎮 {home_url(clip)}\n#gta6 #{BRAND}",
         "rendered_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
