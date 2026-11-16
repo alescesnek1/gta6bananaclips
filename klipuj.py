@@ -622,7 +622,7 @@ def quality_check(short, cam):
     for _, img in frames_raw(short, 1, 540, 960):
         g = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         n += 1
-        dark = (g.mean(axis=1) < 12) & (g.std(axis=1) < 4)
+        dark = (g.mean(axis=1) < 10) & (g.std(axis=1) < 2.5)     # true letterbox black, not a dark scene
         # a letterbox bar sits on an EDGE of a band (top/bottom of the game, top of the short);
         # a dark night sky in the middle of the picture is not a bar
         edges = [0, (CAM_H // 2) if cam else 0, g.shape[0] - 1]
@@ -889,8 +889,51 @@ def transcribe(src):
         _whisper = whisper.load_model(WHISPER_MODEL, download_root=str(WHISPER_DIR))
     res = _whisper.transcribe(str(src), word_timestamps=True, condition_on_previous_text=False,
                               fp16=_whisper.device.type == "cuda", verbose=None)
-    return [(w["start"], w["end"], w["word"].strip()) for seg in res["segments"] for w in seg.get("words", [])
-            if w["word"].strip()]
+    audio = whisper.load_audio(str(src))              # 16 kHz mono, for the singing check
+    words, dropped = [], 0
+    for seg in res["segments"]:
+        # captions = what the STREAMER says (Aleš: they were lyrics of the in-game radio):
+        # drop segments Whisper itself doubts, repetitive ones (choruses) and sung ones
+        sung = singing(audio[int(seg["start"] * 16000): int(seg["end"] * 16000)])
+        if (seg.get("no_speech_prob", 0) > 0.5 or seg.get("avg_logprob", 0) < -0.9
+                or seg.get("compression_ratio", 1) > 2.2 or sung > 0.45):
+            dropped += 1
+            continue
+        words += [(w["start"], w["end"], w["word"].strip()) for w in seg.get("words", []) if w["word"].strip()]
+    if dropped:
+        log(f"  captions: {dropped} segment(s) dropped as music/lyrics or unsure")
+    return words
+
+def singing(x, sr=16000):
+    """
+    0..1: how much of the voiced audio holds a steady pitch for 120+ ms. Sung notes do (song
+    lyrics from the game radio), speech glides all the time. Autocorrelation pitch, 80-500 Hz.
+    """
+    if x.size < sr // 2:
+        return 0.0
+    win, hop = int(0.04 * sr), int(0.01 * sr)
+    lo, hi = sr // 500, sr // 80
+    f0 = []
+    for i in range(0, x.size - win, hop):
+        fr = x[i: i + win] - x[i: i + win].mean()
+        if np.sqrt((fr * fr).mean()) < 0.01:          # silence
+            f0.append(0.0)
+            continue
+        ac = np.correlate(fr, fr, mode="full")[win - 1:]
+        lag = lo + int(np.argmax(ac[lo:hi]))
+        f0.append(sr / lag if ac[lag] > 0.5 * ac[0] else 0.0)
+    f0 = np.array(f0)
+    voiced = f0 > 0
+    if voiced.sum() < 10:
+        return 0.0
+    steady = np.zeros_like(voiced)
+    run = 0
+    for i in range(1, len(f0)):
+        ok = voiced[i] and voiced[i - 1] and abs(f0[i] - f0[i - 1]) / f0[i - 1] < 0.02
+        run = run + 1 if ok else 0
+        if run >= 12:
+            steady[i - run: i + 1] = True
+    return float(steady[voiced].mean())
 
 def ass_time(t):
     t = max(t, 0.0)
@@ -1858,6 +1901,170 @@ def cmd_cam(a):
          f"{NORM},drawbox=x={x}:y={y}:w={w}:h={h}:color=red:t=6", str(preview)])
     log(f"{ch}: cam {cam} -> preview {preview} (if right, remove \"auto\" in streamers.json)")
 
+# -----------------------------------------------------------------------------
+# live: chat explosion on a running GTA VI stream -> the last ~40 s from its live VOD -> short
+
+LAUGH_IRC = re.compile(r"KEKW|OMEGALUL|LUL|LMAO|ICANT|💀|😂|\bW\b|\?\?\?|HOLY|NO WAY|WTF", re.I)
+
+class ChatMeter:
+    """
+    Anonymous, read-only Twitch chat (irc.chat.twitch.tv, nick justinfan*, no account): messages
+    per 5 s for every joined channel, laughs / hype emotes count double.
+    """
+    def __init__(self):
+        import socket, threading
+        self.sock = socket.create_connection(("irc.chat.twitch.tv", 6667), timeout=10)
+        self.sock.send(f"NICK justinfan{random.randint(10000, 99999)}\r\n".encode())
+        self.counts, self.joined, self.lock = {}, set(), threading.Lock()
+        threading.Thread(target=self._read, daemon=True).start()
+
+    def join(self, logins):
+        for lg in set(logins) - self.joined:
+            self.sock.send(f"JOIN #{lg}\r\n".encode())
+            self.joined.add(lg)
+        for lg in self.joined - set(logins):
+            self.sock.send(f"PART #{lg}\r\n".encode())
+        self.joined = set(logins)
+
+    def _read(self):
+        buf = b""
+        while True:
+            try:
+                data = self.sock.recv(65536)
+            except Exception:
+                continue
+            if not data:
+                return
+            buf += data
+            *lines, buf = buf.split(b"\r\n")
+            for ln in lines:
+                if ln.startswith(b"PING"):
+                    self.sock.send(b"PONG :tmi.twitch.tv\r\n")
+                    continue
+                if b" PRIVMSG #" not in ln:
+                    continue
+                head, _, text = ln.decode("utf-8", "replace").partition(" :")
+                chan = head.rsplit("#", 1)[-1].strip()
+                b5 = int(time.time() // 5)
+                w = 2 if LAUGH_IRC.search(text.split(" :", 1)[-1]) else 1
+                with self.lock:
+                    c = self.counts.setdefault(chan, {})
+                    c[b5] = c.get(b5, 0) + w
+
+    def spike(self, chan, z_min, cool):
+        """(z, msgs) when the last finished 5 s bin explodes over the channel's last 5 minutes."""
+        now = int(time.time() // 5) - 1
+        with self.lock:
+            c = self.counts.get(chan, {})
+            for old in [k for k in c if k < now - 80]:
+                del c[old]
+            hist = [c.get(i, 0) for i in range(now - 60, now)]
+            cur = c.get(now, 0)
+        if sum(1 for x in hist if x) < 20:            # not enough chat history yet
+            return None
+        med = float(np.median(hist))
+        mad = float(np.median([abs(x - med) for x in hist])) + 1
+        z = (cur - med) / mad
+        return (round(z, 1), cur) if z >= z_min and cur >= max(8, 3 * med) else None
+
+def vod_section(login, user_id, started_at, t_spike, before=32, after=6):
+    """The window around a chat spike from the running stream's live VOD (no login needed)."""
+    vids = helix("videos", {"user_id": user_id, "type": "archive", "first": 1}).get("data") or []
+    if not vids or vids[0]["created_at"][:13] < started_at[:13]:
+        return None                                   # VODs off for this channel
+    start = datetime.fromisoformat(started_at.replace("Z", "+00:00")).timestamp()
+    off = t_spike - start
+    return f"https://www.twitch.tv/videos/{vids[0]['id']}", max(0.0, off - before), off + after
+
+def cmd_live(a):
+    """
+    Launch conveyor belt (Aleš: be the fastest, clip it right away): every 2 min the biggest
+    live English streams in the GTA VI category; their chats are watched live; a chat explosion
+    -> ~70 s later (the live VOD lags about a minute) the window 32 s before .. 6 s after the
+    spike is cut from the running stream (the payoff is often ~20 s before the chat reacts),
+    rendered, put on the live-inbox (free Netlify draft deploy) and the GitHub publish run is
+    started, so the hot path can post it within ~25 min.
+    """
+    cfg = load_json(SOURCES, {})
+    start_at = cfg.get("live_from", "2026-11-17T23:00:00Z")
+    if datetime.now(timezone.utc) < datetime.fromisoformat(start_at.replace("Z", "+00:00")) and not a.ted:
+        log(f"live: starts {start_at} (use --ted to test now)")
+        return
+    if not all(helix_keys()):
+        sys.exit("live: TWITCH_CLIENT_ID / TWITCH_CLIENT_SECRET missing")
+    game_name = a.hra or cfg.get("twitch_game", "Grand Theft Auto VI")
+    games = helix("games", {"name": game_name}).get("data") or []
+    if not games:
+        sys.exit(f"live: category '{game_name}' not found")
+    blocked = {b.lower() for b in cfg.get("blocklist", [])}
+    meter, streams, queue, cooldown = ChatMeter(), {}, [], {}
+    end, next_poll, made = time.time() + a.hours * 3600, 0.0, 0
+    log(f"live: watching '{games[0]['name']}' for {a.hours} h")
+    while time.time() < end:
+        if time.time() >= next_poll:                  # who is live right now
+            try:
+                data = helix("streams", {"game_id": games[0]["id"], "first": 50}).get("data") or []
+                top = [x for x in data if (x.get("language") or "en").startswith("en")
+                       and x["viewer_count"] >= a.min_viewers and x["user_login"].lower() not in blocked][: a.n_streams]
+                streams = {x["user_login"].lower(): x for x in top}
+                meter.join(list(streams))
+                log(f"live: {len(streams)} streams: " + ", ".join(f"{k} {v['viewer_count']}" for k, v in list(streams.items())[:8]))
+            except Exception as e:
+                log(f"live: stream list failed ({str(e)[-100:]})")
+            next_poll = time.time() + 120
+        for lg in list(streams):                      # chat explosions
+            if time.time() < cooldown.get(lg, 0):
+                continue
+            hit = meter.spike(lg, a.z, a.cool)
+            if hit:
+                cooldown[lg] = time.time() + a.cool
+                queue.append((time.time() - 2.5, lg, streams[lg], hit))
+                log(f"live: SPIKE {lg} z={hit[0]} msgs={hit[1]} -> cut in ~70 s")
+        while queue and time.time() >= queue[0][0] + 70:   # the live VOD has caught up
+            t_spike, lg, st, (z, msgs) = queue.pop(0)
+            try:
+                sec = vod_section(lg, st["user_id"], st["started_at"], t_spike)
+                if not sec:
+                    log(f"live: {lg} has no live VOD, skipped")
+                    continue
+                url, s0, s1 = sec
+                clip = {"id": f"live_{lg}_{int(t_spike)}", "url": url, "title": st.get("title") or "",
+                        "views": int(st["viewer_count"]), "duration": s1 - s0, "created": int(t_spike),
+                        "channel": lg, "platform": "twitch", "category": games[0]["name"],
+                        "live": True, "spike_z": z, "cluster": 2}     # a chat explosion = a strong moment
+                d = OUT / lg / f"{datetime.fromtimestamp(clip['created'], tz=timezone.utc):%Y%m%d}_{clip['id']}"   # = render()'s folder
+                d.mkdir(parents=True, exist_ok=True)
+                src = d / "source.mp4"
+                run(["yt-dlp", "-q", "-f", "best[height<=1080]/best", "--download-sections", f"*{s0:.0f}-{s1:.0f}",
+                     "--force-overwrites", "-o", str(src), url], timeout=300)
+                render(clip, src=src)
+                mark(clip["id"], True)
+                made += 1
+                log(f"live: short #{made} from {lg}")
+                hand_over_live()
+            except NotGameplay as e:
+                log(f"live: {lg} skipped: {e}")
+            except Exception as e:
+                log(f"live: {lg} failed: {str(e)[-200:]}")
+        time.sleep(5)
+    log(f"live: done, {made} shorts")
+
+def hand_over_live():
+    """Put the live shorts on the live-inbox and start the GitHub publish run right away."""
+    subprocess.run([sys.executable, str(HERE / "publikuj.py"), "schranka", "--nazev", "live-inbox", "--prefix", "live_"],
+                   timeout=900)
+    tok, repo = os.environ.get("GITHUB_TOKEN"), os.environ.get("GITHUB_REPOSITORY", "aleshrani/gta6bananaclips")
+    if not tok:
+        return
+    req = urllib.request.Request(f"https://api.github.com/repos/{repo}/actions/workflows/denne.yml/dispatches",
+                                 data=b'{"ref":"main"}', method="POST",
+                                 headers={"Authorization": f"Bearer {tok}", "Accept": "application/vnd.github+json"})
+    try:
+        urllib.request.urlopen(req, timeout=30)
+        log("live: publish run started")
+    except Exception as e:
+        log(f"live: could not start the publish run ({e})")
+
 def cmd_watch(a):
     """
     Launch-day loop over Twitch + Kick channels (from the command line or sources.json).
@@ -1938,6 +2145,15 @@ def main():
     c.add_argument("source", help="clip URL or local video file")
     c.set_defaults(fn=cmd_cam)
 
+    lv = sub.add_parser("live", help="launch: live chat spikes of GTA VI streams -> instant shorts")
+    lv.add_argument("--hours", type=float, default=5.7, help="how long to watch (GitHub job limit is 6 h)")
+    lv.add_argument("--streamu", dest="n_streams", type=int, default=15, help="watch the chat of the N biggest streams")
+    lv.add_argument("--min-viewers", type=int, default=1500)
+    lv.add_argument("--z", type=float, default=6.0, help="how far the chat must jump over its last 5 min")
+    lv.add_argument("--cool", type=int, default=180, help="seconds between two spikes of one channel")
+    lv.add_argument("--hra", help="other Twitch category (test before the launch, e.g. 'Grand Theft Auto V')")
+    lv.add_argument("--ted", action="store_true", help="start now even before live_from (test)")
+    lv.set_defaults(fn=cmd_live)
     w = sub.add_parser("watch", help="live loop for launch day (Twitch + Kick)")
     w.add_argument("channels", nargs="*", help="Twitch logins; default: twitch + kick from sources.json")
     w.add_argument("--every", type=int, default=90, help="seconds between polls")

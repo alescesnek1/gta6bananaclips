@@ -44,6 +44,12 @@ if ($token -and (Due "github" $(if ($launch) { 4 } else { 25 }))) {
             -Headers @{ Authorization = "Bearer $token"; Accept = "application/vnd.github+json"; "User-Agent" = "gta6-pc" } `
             -Body '{"ref":"main"}' -ContentType "application/json" | Out-Null
         "$(Get-Date -Format s) github run started" | Out-File $log -Append -Encoding utf8
+        # the live chat watcher (from 18. 11. 00:00): queued in its group, so it runs back to back
+        if ($now -ge [datetime]"2026-11-18T00:00:00") {
+            Invoke-RestMethod -Method Post -Uri "https://api.github.com/repos/aleshrani/gta6bananaclips/actions/workflows/live.yml/dispatches" `
+                -Headers @{ Authorization = "Bearer $token"; Accept = "application/vnd.github+json"; "User-Agent" = "gta6-pc" } `
+                -Body '{"ref":"main"}' -ContentType "application/json" | Out-Null
+        }
     } catch {
         "$(Get-Date -Format s) github run FAILED: $($_.Exception.Message)" | Out-File $log -Append -Encoding utf8
     }

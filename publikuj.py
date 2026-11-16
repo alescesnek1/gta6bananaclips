@@ -194,7 +194,7 @@ def netlify(path, data=None, method=None, ctype="application/json", timeout=120)
     h = {"Authorization": f"Bearer {os.environ['NETLIFY_AUTH_TOKEN']}", "Content-Type": ctype}
     return json.loads(http(f"{NETLIFY}{path}", data, h, method, timeout)[1] or b"null")
 
-def inbox_deploy(files, inbox):
+def inbox_deploy(files, inbox, title=None):
     """
     files: {site path: local path}, inbox: bytes of inbox.json. A draft deploy (deploy preview,
     no credits) by file digest: Netlify asks only for files it doesn't have yet.
@@ -208,7 +208,7 @@ def inbox_deploy(files, inbox):
             for chunk in iter(lambda: f.read(1 << 20), b""):
                 h.update(chunk)
         digests["/" + rel] = h.hexdigest()
-    d = netlify(f"/sites/{site}/deploys", json.dumps({"files": digests, "draft": True, "title": INBOX_TITLE}).encode(), "POST")
+    d = netlify(f"/sites/{site}/deploys", json.dumps({"files": digests, "draft": True, "title": title or INBOX_TITLE}).encode(), "POST")
     for _ in range(60):                                       # Netlify works out what it is missing
         if d["state"] not in ("new", "preparing"):
             break
@@ -232,23 +232,30 @@ def inbox_deploy(files, inbox):
     raise RuntimeError("Netlify inbox deploy did not become ready in 10 min")
 
 def inbox_items():
-    """Shorts from the newest yt-inbox draft deploy (YouTube worker PC); [] when there is none."""
+    """Shorts from the newest yt-inbox (YouTube, worker PC) and live-inbox (live chat spikes) draft deploys."""
     if not (os.environ.get("NETLIFY_AUTH_TOKEN") and os.environ.get("NETLIFY_SITE_ID")):
         return []
+    out = []
     try:
         deploys = netlify(f"/sites/{os.environ['NETLIFY_SITE_ID']}/deploys?per_page=50")
-        d = next((d for d in deploys if d.get("title") == INBOX_TITLE and d.get("state") == "ready"), None)
-        if not d:
-            return []
-        base = d["links"]["permalink"]
-        items = json.loads(http(f"{base}/inbox.json", timeout=60)[1])
     except Exception as e:                                    # no inbox must never stop Twitch/Kick posts
         log(f"inbox: unreadable ({e})")
         return []
-    for m in items:
-        m["short"], m["remote"] = f"{base}/{m['file']}", True
-    log(f"inbox: {len(items)} YouTube shorts from the worker PC ({d.get('created_at', '')[:16]})")
-    return items
+    for title in (INBOX_TITLE, "live-inbox"):
+        d = next((d for d in deploys if d.get("title") == title and d.get("state") == "ready"), None)
+        if not d:
+            continue
+        try:
+            base = d["links"]["permalink"]
+            items = json.loads(http(f"{base}/inbox.json", timeout=60)[1])
+        except Exception as e:
+            log(f"inbox {title}: unreadable ({e})")
+            continue
+        for m in items:
+            m["short"], m["remote"] = f"{base}/{m['file']}", True
+        log(f"inbox {title}: {len(items)} shorts ({d.get('created_at', '')[:16]})")
+        out += items
+    return out
 
 # -----------------------------------------------------------------------------
 # what to post
@@ -341,10 +348,16 @@ def daily_quota(day):
             n = k
     return n if n is not None else (min(ramp.values()) if ramp else 10)
 
+def used_today(day):
+    return sum(in_day(rec, day) for k, rec in load_json(PUBLISHED, {}).items() if not k.startswith("top3_"))
+
 def remaining(day):
-    """Today's quota minus what earlier runs already scheduled into this publishing day."""
-    used = sum(in_day(rec, day) for k, rec in load_json(PUBLISHED, {}).items() if not k.startswith("top3_"))
-    return max(0, daily_quota(day) - used)       # hot posts (any time) count too; the daily Top 3 does not
+    """Today's obligatory quota (ramp) minus what earlier runs already scheduled (hot posts count, Top 3 not)."""
+    return max(0, daily_quota(day) - used_today(day))
+
+def remaining_max(day):
+    """Up to max_per_day (10) when the extra clips are strong enough (Aleš: 8 is a must, 10 if worth it)."""
+    return max(0, max(daily_quota(day), load_json(HERE / "sources.json", {}).get("max_per_day", 10)) - used_today(day))
 
 def post_input(ch, m, video_url, due, draft):
     service = ch["service"].lower()
@@ -411,22 +424,33 @@ def cmd_den(a):
     day = now.date() if a.den == "dnes" else date.fromisoformat(a.den) if a.den else now.date() + timedelta(days=1)
     # slots still ahead of us (+20 min for the deploy and for Buffer to fetch the video)
     taken = {rec.get("due") for rec in load_json(PUBLISHED, {}).values()}   # an earlier run today
-    quota = min(a.n, remaining(day))         # several runs a day share one daily quota
+    must = min(a.n, remaining(day))          # obligatory part of the daily quota (8)
+    cap = min(a.n, remaining_max(day))       # with strong extras up to 10
+    quota = must
     free = [t for t in slot_times(day, len(SLOTS)) if t > now + timedelta(minutes=20) and t.isoformat() not in taken]
-    times = sorted(sorted(free, key=lambda t: PRIORITY.index(t.strftime("%H:%M")))[:quota])
     src_cfg = load_json(HERE / "sources.json", {})
+    good, extra = src_cfg.get("good_score", 1000), src_cfg.get("extra_score", 5000)
+    # Aleš: do not burn the 8 on average clips. An average one only goes out when the 8 would
+    # otherwise be missed (no more free slots than posts still owed today).
+    owed_now = must >= len(free)
     yt_left = src_cfg.get("youtube_per_day", 1) - sum(
         k.startswith("youtube_") and in_day(rec, day) for k, rec in load_json(PUBLISHED, {}).items())
     picks = []
     for m in candidates():
-        if len(picks) >= len(times):
+        if len(picks) >= min(len(free), cap):
             break
         if m.get("platform") == "youtube":
             if yt_left <= 0:
                 continue
+        if len(picks) < must:
+            if m["score"] < good and not owed_now:
+                continue
+        elif m["score"] < extra:
+            continue
+        if m.get("platform") == "youtube":
             yt_left -= 1
         picks.append(m)
-    times = times[: len(picks)]
+    times = sorted(sorted(free, key=lambda t: PRIORITY.index(t.strftime("%H:%M")))[: len(picks)])
     # hot path: a clip from the last 3 h that is exploding goes out in 25 min, not at the next slot
     hot_due = (now + timedelta(minutes=25)).replace(second=0, microsecond=0)
     # ... but never eat the evening: `hot_reserve` posts of the day stay for the UK/US prime-time slots
@@ -656,7 +680,8 @@ def cmd_schranka(a):
             continue
         m = load_json(meta_file, {})
         short = Path(m.get("short") or "")
-        if (m.get("platform") != "youtube" or m.get("id") in done or not short.exists()
+        keep = m.get("id", "").startswith(a.prefix) if a.prefix else m.get("platform") == "youtube"
+        if (not keep or m.get("id") in done or not short.exists()
                 or not re.search(game, m.get("category") or "", re.I)):
             continue
         rel = f"yt/{safe_name(m['id'])}.mp4"
@@ -666,13 +691,13 @@ def cmd_schranka(a):
     items.sort(key=lambda m: -(m.get("views") or 0) / (max((now - (m.get("created") or now)) / 3600, 0) + 1) ** 0.5)
     items = items[: a.max]
     files = {m["file"]: files[m["file"]] for m in items}
-    sent = HERE / "schranka.json"                    # ids of the live inbox (local, not in git)
+    sent = HERE / f"schranka_{a.nazev}.json"          # ids of the live inbox (local, not in git)
     live = set(load_json(sent, []))
     new = [m["id"] for m in items if m["id"] not in live]
     if not new:
         log(f"inbox: nothing new ({len(items)} waiting, all already on Netlify)")
         return
-    url = inbox_deploy(files, json.dumps(items, ensure_ascii=False).encode())
+    url = inbox_deploy(files, json.dumps(items, ensure_ascii=False).encode(), a.nazev)
     save_json(sent, [m["id"] for m in items])
     log(f"inbox: {len(items)} shorts ({len(new)} new) -> {url}")
 
@@ -691,9 +716,11 @@ def main():
     s.add_argument("--dni", type=float, default=3, help="only shorts rendered in the last N days")
     s.add_argument("--uklid", action="store_true", help="delete clip folders older than that")
     s.add_argument("--max", type=int, default=10, help="at most this many shorts in the inbox (best first)")
+    s.add_argument("--nazev", default=INBOX_TITLE, help="draft deploy title (yt-inbox, live-inbox)")
+    s.add_argument("--prefix", default="", help="only shorts whose id starts with this (live_); default: YouTube")
     s.set_defaults(fn=cmd_schranka)
     z = sub.add_parser("zbyva", help="print how many shorts today's quota still allows (for the workflow)")
-    z.set_defaults(fn=lambda a: print(remaining(datetime.now(TZ).date())))
+    z.set_defaults(fn=lambda a: print(remaining_max(datetime.now(TZ).date())))   # render enough for the strong extras
     a = p.parse_args()
     a.fn(a)
 
