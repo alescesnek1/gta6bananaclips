@@ -815,7 +815,23 @@ def subtitle_band(src, top, bot):
     log(f"  subtitles in the source: cutting {cut}px at the bottom")
     return cut
 
-def track_path(src, cam, crop_w, dur):
+def content_box(src):
+    """
+    The part of the frame that is EVER not black (per-pixel max over 1 fps frames), as
+    (x0, y0, x1, y1) in 1920x1080 - finds black bars of any size, even half the picture.
+    """
+    mx = None
+    for _, img in frames(src, 1, 480, 270):
+        g = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        mx = g if mx is None else np.maximum(mx, g)
+    if mx is None:
+        return 0, 0, SW, SH
+    rows, cols = np.where(mx.max(axis=1) > 30)[0], np.where(mx.max(axis=0) > 30)[0]
+    if rows.size < 20 or cols.size < 20:
+        return 0, 0, SW, SH
+    return int(cols[0]) * 4, int(rows[0]) * 4, int(cols[-1] + 1) * 4, int(rows[-1] + 1) * 4
+
+def track_path(src, cam, crop_w, dur, xlim=None):
     """Per-output-frame crop x (left edge, source pixels) that follows the player."""
     global _yolox
     if _yolox is None:
@@ -865,7 +881,7 @@ def track_path(src, cam, crop_w, dur):
 
     # keep the facecam overlay out of the game crop (it is already on top): a cam on the
     # left pushes the crop's left edge past it, a cam on the right caps the right edge
-    lo, hi = 0, SW - crop_w
+    lo, hi = (xlim[0], max(xlim[0], xlim[1] - crop_w)) if xlim else (0, SW - crop_w)
     if cam:
         margin = 0.03 * SW
         cam_l, cam_r = cam[0] / 100 * SW, (cam[0] + cam[2]) / 100 * SW
@@ -1527,23 +1543,32 @@ def render(clip, src=None, clean=False):
     # potenciál být virální"): sources.json nocam_min_views, or several viewers clipped it.
     cfg = load_json(SOURCES, {})
     nocam_ok = (clip.get("views") or 0) >= cfg.get("nocam_min_views", 5000) or (clip.get("cluster") or 1) >= 2
-    modes = [("saved", False, 0.0), ("again", True, 0.06)] + ([("none", True, 0.0)] if nocam_ok else [])
+    #   (between 2 and 3) "content": big black areas of any size cut off by the ever-not-black box
+    #   (Aleš: a viral clip is a shame to throw away because of a black bar)
+    modes = [("saved", False, 0.0), ("again", True, 0.06), ("content", True, 0.03)] + ([("none", True, 0.0)] if nocam_ok else [])
     problems = []
     for attempt, (cam_mode, loose, zoom) in enumerate(modes):
         cam = (get_cam(clip["channel"], src) if cam_mode == "saved" else
-               detect_cam(src, mult=3.4) if cam_mode == "again" else None)
+               detect_cam(src, mult=3.4) if cam_mode == "again" else
+               (get_cam(clip["channel"], src) or detect_cam(src, mult=3.4)) if cam_mode == "content" else None)
         if not cam and cam_mode != "none":
-            if cam_mode == "saved" or nocam_ok:
+            if cam_mode in ("saved", "content") or nocam_ok:
                 continue                                  # wider detection / game-only layout next
             raise NotGameplay("no facecam - every short needs the streamer's face on top")
         game_h = H - CAM_H if cam else H
-        top, bot = game_bars(src, loose=loose)            # black bars inside the game picture
+        xlim = None
+        if cam_mode == "content":
+            x0, y0, x1, y1 = content_box(src)
+            top, bot, xlim = y0, SH - y1, (x0, x1)
+            log(f"  content box {x0},{y0}-{x1},{y1}: black area cut off")
+        else:
+            top, bot = game_bars(src, loose=loose)        # black bars inside the game picture
         bot = max(bot, subtitle_band(src, top, bot))      # burned-in subtitles of the source video
         crop_h = SH - top - bot
         cut = int(crop_h * zoom / 2)
         top, crop_h = top + cut, crop_h - 2 * cut
         crop_w = round(W * crop_h / game_h)               # source width that fills the game band at full height
-        xs = track_path(src, cam, crop_w, dur)
+        xs = track_path(src, cam, crop_w, dur, xlim)
         cmds = d / "track.cmd"
         cmds.write_text("".join(f"{i / FPS:.4f} crop@g x {x};\n" for i, x in enumerate(xs)), encoding="utf-8")
         ass = d / "captions.ass"
