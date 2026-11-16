@@ -302,6 +302,18 @@ def home(m):
     return {"kick": f"kick.com/{m['channel']}", "youtube": f"youtube.com/@{m['channel']}"}.get(
         m.get("platform"), f"twitch.tv/{m['channel']}")
 
+# caption lines (SlopMonster lint 5/5, 16. 11.); {s} = the streamer
+HOOKS = [
+    "{s} was NOT ready for this 💀", "GTA 6 had {s} crying 😭", "{s} found the worst way to play GTA 6",
+    "Nobody warned {s} about this part", "{s} vs GTA 6 physics. Physics won.", "This is why {s} can't have nice things",
+    "{s} said it before we could 😭", "Watch the end 👀", "{s} really thought this would work",
+    "Day one and {s} is already losing it", "{s} was one second from greatness", "{s} picked violence today",
+]
+CTAS = [
+    "W or L? 👇", "Rate it 1-10 🍌", "Would you have done the same?", "Send this to the friend who drives like this",
+    "What would you have done? 👇", "Clip of the day or nah?", "Is {s} cooked? 👇",
+]
+
 def caption(m, service):
     if m.get("platform") == "top3":                  # daily Top 3: credit every streamer
         lines = [f"#{i} {home(x)}" for i, x in enumerate(m["items"], 1)]
@@ -309,13 +321,22 @@ def caption(m, service):
             return "Top 3 GTA 6 moments of the day 🍌\n\n" + "\n".join(lines) + "\n\n#GTA6"
         return ("Top 3 GTA 6 moments of the day 🍌 Which one wins?\n\n" + "\n".join(lines)
                 + "\n\n#gta6 #gta6bananaclips #gaming #gta6clips")
+    # Aleš 16. 11.: more entertaining and engaging. hook line + the streamer's own words + banana
+    # score + a question for the comments + credit; a different combination per clip AND network
+    rnd = random.Random(f"{m['id']}:{service}")
+    s = (m.get("channel") or "they")[:1].upper() + (m.get("channel") or "they")[1:]
+    hook = rnd.choice(HOOKS).format(s=s)
     q = (m.get("quote") or "").strip()
     q = f"“{q}”" if q else ""
+    score = f"🍌 Banana score: {m['rating']}/10" if m.get("rating") else ""
+    cta = rnd.choice(CTAS).format(s=s)
     src = f"🎮 {home(m)}"
-    if service in ("twitter", "threads"):            # short, one tag, text differs every post
-        return "\n\n".join(x for x in (q, f"{src} #GTA6") if x)
-    rot = random.Random(m["id"]).sample(HASHTAGS, 2)  # same clip -> same tags, clips differ
-    return "\n\n".join(x for x in (q, src, " ".join(["#gta6", "#gta6bananaclips"] + rot)) if x)
+    if service in ("twitter", "threads"):            # short: X counts 280 characters
+        text = "\n\n".join(x for x in (hook, q, cta, f"{src} #GTA6") if x)
+        return text if len(text) <= 270 else "\n\n".join(x for x in (hook, f"{src} #GTA6") if x)
+    rot = rnd.sample(HASHTAGS, 2)
+    return "\n\n".join(x for x in (hook, q, " · ".join(y for y in (score, cta) if y), src,
+                                   " ".join(["#gta6", "#gta6bananaclips"] + rot)) if x)
 
 def youtube_title(m):
     """
