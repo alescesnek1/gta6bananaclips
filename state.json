@@ -122,7 +122,8 @@
     "twitch_SpinelessTameCheddarKippa-Dms8Ku6hSywcgedm": "Just Chatting",
     "twitch_FancyAntsyKathyTBTacoLeft-sbDVgyOIRooyK7_L": "ROB RUN",
     "twitch_IncredulousSmellyTrayPartyTime-0QCPo1piOjm10CWc": "Just Chatting",
-    "twitch_ManlyBlindingPepperoniArsonNoSexy-8Iw3Se0Z1KU9fGvV": "Minecraft"
+    "twitch_ManlyBlindingPepperoniArsonNoSexy-8Iw3Se0Z1KU9fGvV": "Minecraft",
+    "twitch_ModernDeadNikudonAMPTropPunch-CzKMAHWn901f8fam": "Just Chatting"
   },
   "views": {
     "twitch_SeductiveScaryArtichokeMikeHogu-ilokmbgy1N7dF3Gp": [
@@ -344,6 +345,10 @@
     "twitch_ManlyBlindingPepperoniArsonNoSexy-8Iw3Se0Z1KU9fGvV": [
       1794864233,
       511
+    ],
+    "twitch_ModernDeadNikudonAMPTropPunch-CzKMAHWn901f8fam": [
+      1794867532,
+      518
     ]
   }
 }
