@@ -25,9 +25,20 @@ $now = Get-Date
 $launch = ($now.Month -eq 11) -and ($now.Day -ge 19) -and ($now.Day -le 21)
 
 # --- 1) clock for the GitHub run
+# "is it time?" by the time of the last run (not by the clock minute: the task may run at :15/:45)
+function Due($name, $minutes) {
+    $f = Join-Path $dir "out\last_$name.txt"
+    if (Test-Path $f) {
+        $last = [datetime]::Parse((Get-Content $f -Raw).Trim(), [Globalization.CultureInfo]::InvariantCulture)
+        if (($now - $last).TotalMinutes -lt $minutes) { return $false }
+    }
+    $now.ToString("s") | Set-Content $f -Encoding ascii
+    return $true
+}
 $token = (Get-Content (Join-Path $dir ".env") -ErrorAction SilentlyContinue |
           Where-Object { $_ -match '^GITHUB_TOKEN=(.+)$' } | ForEach-Object { $Matches[1].Trim() }) | Select-Object -First 1
-if ($token -and ($launch -or ($now.Minute % 30) -lt 5)) {
+if (-not $token) { "$(Get-Date -Format s) no GITHUB_TOKEN in .env - clock off" | Out-File $log -Append -Encoding utf8 }
+if ($token -and (Due "github" $(if ($launch) { 4 } else { 25 }))) {
     try {
         Invoke-RestMethod -Method Post -Uri "https://api.github.com/repos/aleshrani/gta6bananaclips/actions/workflows/denne.yml/dispatches" `
             -Headers @{ Authorization = "Bearer $token"; Accept = "application/vnd.github+json"; "User-Agent" = "gta6-pc" } `
@@ -39,7 +50,7 @@ if ($token -and ($launch -or ($now.Minute % 30) -lt 5)) {
 }
 
 # --- 2) YouTube, every 30 min
-if (($now.Minute % 30) -ge 5) { exit 0 }
+if (-not (Due "youtube" 25)) { exit 0 }
 & {
     "=== $(Get-Date -Format s)"
     # always the newest code and publikovano.json from GitHub (local changes to tracked files are dropped)
