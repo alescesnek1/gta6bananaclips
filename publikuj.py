@@ -383,6 +383,26 @@ def daily_quota(day):
             n = k
     return n if n is not None else (min(ramp.values()) if ramp else 10)
 
+def month_gb():
+    """
+    Netlify bandwidth this month, estimated: every published video is fetched by Buffer for each
+    of the 6 networks (+1 download from an inbox). Netlify: 20 credits per GB -> 1000 credits = 50 GB.
+    """
+    start = datetime.now(TZ).replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    mb = 0.0
+    for rec in load_json(PUBLISHED, {}).values():
+        try:
+            if datetime.fromisoformat(rec.get("due", "")) >= start:
+                mb += (rec.get("mb") or 20) * 7
+        except ValueError:
+            pass
+    return mb / 1024
+
+def over_budget(share=0.9):
+    """True once the month's Netlify transfer nears the budget (sources.json netlify_gb_month)."""
+    budget = load_json(HERE / "sources.json", {}).get("netlify_gb_month", 45)
+    return month_gb() >= share * budget
+
 def used_today(day):
     return sum(in_day(rec, day) for k, rec in load_json(PUBLISHED, {}).items() if not k.startswith("top3_"))
 
@@ -461,6 +481,9 @@ def cmd_den(a):
     taken = {rec.get("due") for rec in load_json(PUBLISHED, {}).values()}   # an earlier run today
     must = min(a.n, remaining(day))          # obligatory part of the daily quota (8)
     cap = min(a.n, remaining_max(day))       # with strong extras up to 10
+    if over_budget():                        # Netlify < 1000 credits/month: extras pause, the 8 always go out
+        cap = must
+        print(f"::warning::Netlify: ~{month_gb():.0f} GB this month, 9./10. video and Top 3 paused")
     quota = must
     free = [t for t in slot_times(day, len(SLOTS)) if t > now + timedelta(minutes=20) and t.isoformat() not in taken]
     src_cfg = load_json(HERE / "sources.json", {})
@@ -566,7 +589,9 @@ def cmd_den(a):
             except Exception as e:
                 failed += 1
                 log(f"  {service}: FAILED {e}")
-        done[m["id"]] = {"url": url, "path": rel, "due": due.isoformat(), "draft": not a.ostre, "posts": posts,
+        size = files.get(rel)
+        mb = round(Path(size).stat().st_size / 1e6, 1) if size and Path(size).exists() else None
+        done[m["id"]] = {"url": url, "path": rel, "due": due.isoformat(), "draft": not a.ostre, "posts": posts, "mb": mb,
                          "channel": m.get("channel"), "platform": m.get("platform"), "score": round(m.get("score") or 0, 1),
                          "hot": bool(m.get("hot"))}
         save_json(PUBLISHED, done)
@@ -617,7 +642,7 @@ def make_top3(day, done, plan, stage):
     Returns (meta, due, site path) with meta['file'] = the local mp4, or None.
     """
     key = f"top3_{day}"
-    if key in done or remaining(day) - len(plan) > 0:
+    if key in done or remaining(day) - len(plan) > 0 or over_budget():
         return None
     items = []                                       # (score, meta-ish, local file or url, due)
     for k, rec in done.items():
@@ -667,7 +692,7 @@ def make_top3(day, done, plan, stage):
     for f in srcs:
         cmd += ["-i", str(f)]
     cmd += ["-filter_complex", flt, "-map", "[v]", "-map", "[a]", "-c:v", "libx264", "-preset", "veryfast",
-            "-crf", "22", "-maxrate", "6M", "-bufsize", "12M", "-c:a", "aac", "-b:a", "160k", "-movflags", "+faststart", str(out)]
+            "-crf", "23", "-maxrate", "3.5M", "-bufsize", "7M", "-c:a", "aac", "-b:a", "128k", "-movflags", "+faststart", str(out)]
     r = subprocess.run(cmd, capture_output=True, text=True, timeout=900)
     if r.returncode or not out.exists():
         print(f"::warning::Top 3: ffmpeg failed {r.stderr[-300:]}")
