@@ -32,6 +32,9 @@ on:
       publikovat:
         description: "test: publish that one clip too (ano/ne)"
         default: "ne"
+      jen_publikace:
+        description: "only publish (live hot path: no render, no torch install -> minutes faster)"
+        default: "ne"
 
 permissions:
   contents: write
@@ -71,6 +74,7 @@ jobs:
         run: sudo apt-get update -q && sudo apt-get install -y -q --no-install-recommends ffmpeg
 
       - name: python deps (CPU torch, no GPU on the runner)
+        if: inputs.jen_publikace != 'ano'
         run: |
           pip install torch --index-url https://download.pytorch.org/whl/cpu
           pip install -r requirements-ci.txt
@@ -104,7 +108,7 @@ jobs:
           esac
 
       - name: render (only as many as today's quota still allows)
-        if: inputs.url == ''
+        if: inputs.url == '' && inputs.jen_publikace != 'ano'
         run: |
           n="${{ inputs.max }}"
           [ -z "$n" ] && n=$(python publikuj.py zbyva)

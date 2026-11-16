@@ -2057,7 +2057,7 @@ def hand_over_live():
     if not tok:
         return
     req = urllib.request.Request(f"https://api.github.com/repos/{repo}/actions/workflows/denne.yml/dispatches",
-                                 data=b'{"ref":"main"}', method="POST",
+                                 data=b'{"ref":"main","inputs":{"jen_publikace":"ano"}}', method="POST",
                                  headers={"Authorization": f"Bearer {tok}", "Accept": "application/vnd.github+json"})
     try:
         urllib.request.urlopen(req, timeout=30)

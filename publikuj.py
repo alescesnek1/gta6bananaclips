@@ -365,10 +365,10 @@ def post_input(ch, m, video_url, due, draft):
         "text": caption(m, service),
         "channelId": ch["id"],
         "schedulingType": Enum("automatic"),
-        "mode": Enum("addToQueue" if draft else "customScheduled"),
+        "mode": Enum("addToQueue" if draft else "shareNow" if m.get("now") else "customScheduled"),
         "assets": [{"video": {"url": video_url}}],
     }
-    if not draft:
+    if not draft and not m.get("now"):
         inp["dueAt"] = due.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
     else:
         inp["saveToDraft"] = True
@@ -452,7 +452,7 @@ def cmd_den(a):
         picks.append(m)
     times = sorted(sorted(free, key=lambda t: PRIORITY.index(t.strftime("%H:%M")))[: len(picks)])
     # hot path: a clip from the last 3 h that is exploding goes out in 25 min, not at the next slot
-    hot_due = (now + timedelta(minutes=25)).replace(second=0, microsecond=0)
+    hot_due = (now + timedelta(minutes=2)).replace(second=0, microsecond=0)   # the deploy below takes ~1 min
     # ... but never eat the evening: `hot_reserve` posts of the day stay for the UK/US prime-time slots
     if (picks and quota > src_cfg.get("hot_reserve", 3) and picks[0].get("platform") != "youtube" and picks[0].get("created")
             and picks[0].get("age_h", 99) <= 3 and picks[0]["score"] >= src_cfg.get("hot_score", 2000)
@@ -529,6 +529,8 @@ def cmd_den(a):
             if used.get(service, 0) >= caps.get(service, 99):
                 continue
             ch_due = due + timedelta(minutes=4 * i)       # not the same file on 6 networks in the same minute
+            # hot path: the first network goes out NOW (Buffer shareNow), the others 4, 8, ... min later
+            m["now"] = bool(m.get("hot")) and i == 0
             try:
                 posts[ch["id"]] = create_post(post_input(ch, m, url, ch_due, not a.ostre), ch.get("key", "BUFFER_API_KEY"))
                 used[service] = used.get(service, 0) + 1
