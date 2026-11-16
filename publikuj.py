@@ -186,6 +186,20 @@ def is_public(url):
         return False
 
 INBOX_TITLE = "yt-inbox"
+MEDIA_TITLE = "media"          # draft deploys holding the published videos (permalinks)
+
+def prune_drafts(days=4):
+    """Delete our own draft deploys (media / inboxes) older than `days` - Buffer has long fetched them."""
+    try:
+        site = os.environ["NETLIFY_SITE_ID"]
+        for d in netlify(f"/sites/{site}/deploys?per_page=100"):
+            if d.get("title") not in (MEDIA_TITLE, INBOX_TITLE, "live-inbox") or d.get("context") == "production":
+                continue
+            age = datetime.now(timezone.utc) - datetime.fromisoformat(d["created_at"].replace("Z", "+00:00"))
+            if age > timedelta(days=days):
+                netlify(f"/deploys/{d['id']}", method="DELETE")
+    except Exception as e:
+        log(f"  prune drafts: {e}")
 
 def safe_name(clip_id):
     return re.sub(r"[^A-Za-z0-9_-]", "_", clip_id)
@@ -501,20 +515,12 @@ def cmd_den(a):
     if not buffer_keys() or not chans:
         sys.exit("no Buffer keys or channels: fill .env and run `publikuj.py kanaly` first")
 
-    # 1) one deploy: today's picks + videos from earlier runs whose slot hasn't come yet
+    # 1) one deploy of this run's videos as a Netlify DRAFT deploy: 0 credits (a production
+    # deploy is 15), and its permalink stays forever, so earlier videos need no carry-over
     done = load_json(PUBLISHED, {})
     stage = OUT / "_media"
     stage.mkdir(parents=True, exist_ok=True)
     files = {}
-    for rec in done.values():
-        # keep anything due later, or published in the last 6 h (Buffer may retry a fetch)
-        if rec.get("path") and datetime.fromisoformat(rec["due"]) > now - timedelta(hours=6):
-            local = stage / rec["path"].replace("/", "_")
-            try:
-                local.write_bytes(http(rec["url"], timeout=300)[1])   # carry it over
-                files[rec["path"]] = local
-            except Exception as e:
-                log(f"  could not carry over {rec['url']}: {e}")
     plan = []
     for m, due in zip(picks, times):
         rel = f"{day:%Y%m%d}/{safe_name(m['id'])}.mp4"
@@ -532,13 +538,14 @@ def cmd_den(a):
     if top3:
         plan.append(top3)
         files[top3[2]] = top3[0].pop("file")
-    netlify_deploy(files)
+    base = inbox_deploy(files, b"[]", MEDIA_TITLE)
+    prune_drafts()
 
     # 2) Buffer posts, one time slot per short, every channel (X/Threads capped per day)
     caps = load_json(HERE / "sources.json", {}).get("caps") or {}
     used, ok, failed = {}, 0, 0
     for m, due, rel in plan:
-        url = media_url(rel)
+        url = f"{base}/{rel}"
         log(f"{due:%H:%M} {m['platform']}/{m['channel']} '{m.get('title', '')[:50]}' -> {url}")
         if not is_public(url):
             log("  not reachable after deploy, skipped")
@@ -583,19 +590,9 @@ def top3_only(a, day, now):
     top3 = make_top3(day, done, [], stage)
     if not top3:
         return
-    files = {}
-    for rec in done.values():                        # carry over what is still needed (as in cmd_den)
-        if rec.get("path") and datetime.fromisoformat(rec["due"]) > now - timedelta(hours=6):
-            local = stage / rec["path"].replace("/", "_")
-            try:
-                local.write_bytes(http(rec["url"], timeout=300)[1])
-                files[rec["path"]] = local
-            except Exception as e:
-                log(f"  could not carry over {rec['url']}: {e}")
     m, due, rel = top3
-    files[rel] = m.pop("file")
-    netlify_deploy(files)
-    url = media_url(rel)
+    base = inbox_deploy({rel: m.pop("file")}, b"[]", MEDIA_TITLE)    # draft deploy, 0 credits
+    url = f"{base}/{rel}"
     if not is_public(url):
         print("::warning::Top 3: not reachable after deploy")
         return
