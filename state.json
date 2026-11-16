@@ -105,7 +105,9 @@
     "twitch_AstuteTolerantRamenDogFace-FHb3yDloje64U2TA": "Just Chatting",
     "twitch_BrainyHilariousSwordDendiFace-ZiIxQcymhcZ6sCBG": "Just Chatting",
     "twitch_CloudyChillyAppleTwitchRaid-5Yg1ini87U3sLGiT": "Enshrouded",
-    "twitch_AntediluvianAggressivePuffinKappaWealth-PI6RsUA1E3X1MSU8": "ROB RUN"
+    "twitch_AntediluvianAggressivePuffinKappaWealth-PI6RsUA1E3X1MSU8": "ROB RUN",
+    "twitch_TenderDeliciousPepperoniTriHard-vVQTkZTQykfv8z4n": "Just Chatting",
+    "twitch_SuperSmoothGoatPJSalt-jSEfC6z747wLB7h8": "World of Warcraft"
   },
   "views": {
     "twitch_SeductiveScaryArtichokeMikeHogu-ilokmbgy1N7dF3Gp": [
@@ -259,6 +261,14 @@
     "twitch_CloudyChillyAppleTwitchRaid-5Yg1ini87U3sLGiT": [
       1794815650,
       502
+    ],
+    "twitch_TenderDeliciousPepperoniTriHard-vVQTkZTQykfv8z4n": [
+      1794819300,
+      594
+    ],
+    "twitch_SuperSmoothGoatPJSalt-jSEfC6z747wLB7h8": [
+      1794819300,
+      907
     ]
   }
 }
