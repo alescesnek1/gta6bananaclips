@@ -22,7 +22,7 @@ function Need($cmd, $id) {
     if (-not (Get-Command $cmd -ErrorAction SilentlyContinue)) { throw "$cmd se nenainstaloval ($id)" }
 }
 
-if (-not (Test-Path (Join-Path $usb ".env"))) { throw "na flashce chybi .env (NETLIFY_AUTH_TOKEN, NETLIFY_SITE_ID)" }
+if (-not (Test-Path (Join-Path $usb ".env")) -and -not (Test-Path (Join-Path $dir ".env"))) { throw "chybi .env (NETLIFY_AUTH_TOKEN, NETLIFY_SITE_ID)" }
 if (-not (Get-Command winget -ErrorAction SilentlyContinue)) { throw "chybi winget (App Installer z Microsoft Store)" }
 
 Need git Git.Git
@@ -43,7 +43,7 @@ if (Test-Path (Join-Path $dir ".git")) {
 } else {
     git clone -q $repo $dir
 }
-Copy-Item (Join-Path $usb ".env") (Join-Path $dir ".env") -Force
+if (Test-Path (Join-Path $usb ".env")) { Copy-Item (Join-Path $usb ".env") (Join-Path $dir ".env") -Force }   # rerun from the installed folder keeps its .env
 $cookies = Join-Path $usb "youtube_cookies.txt"
 if (Test-Path $cookies) { Copy-Item $cookies (Join-Path $dir "youtube_cookies.txt") -Force }
 
@@ -57,12 +57,12 @@ $torch = if ($gpu) { "https://download.pytorch.org/whl/cu128" } else { "https://
 & $py -m pip install -q -r (Join-Path $dir "requirements-ci.txt")
 if ($LASTEXITCODE -ne 0) { throw "pip install selhal" }
 
-Write-Host "naplanovana uloha gta6-yt (kazdych 30 min) ..."
+Write-Host "naplanovana uloha gta6-yt (kazdych 5 min: hodiny pro GitHub + YouTube kazdych 30 min) ..."
 $beh = Join-Path $dir "worker\beh.ps1"
 $act = New-ScheduledTaskAction -Execute "powershell.exe" `
     -Argument "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$beh`""
 $trig = New-ScheduledTaskTrigger -Once -At (Get-Date).AddMinutes(1) `
-    -RepetitionInterval (New-TimeSpan -Minutes 30) -RepetitionDuration (New-TimeSpan -Days 3650)
+    -RepetitionInterval (New-TimeSpan -Minutes 5) -RepetitionDuration (New-TimeSpan -Days 3650)
 $boot = New-ScheduledTaskTrigger -AtStartup                  # and right after every restart
 $boot.Delay = "PT2M"
 $set = New-ScheduledTaskSettingsSet -StartWhenAvailable -MultipleInstances IgnoreNew -WakeToRun `
@@ -80,7 +80,8 @@ try {
 
 Write-Host ""
 Write-Host "HOTOVO. Vse je zkopirovane v $dir - flashku muzes vytahnout."
-Write-Host "Prvni beh za minutu, pak kazdych 30 min, $mode."
+Write-Host "Prvni beh za minutu, pak kazdych 5 min, $mode."
+Write-Host "Hodiny pro GitHub: do $dir\.env pridej radek GITHUB_TOKEN=... (fine-grained token, jen toto repo, Actions: read and write)."
 Write-Host "Pocitac nesmi usinat: Nastaveni > Napajeni > Rezim spanku = Nikdy."
 Write-Host "Log: $dir\out\worker.log"
 Write-Host "Vypnout: Unregister-ScheduledTask gta6-yt"
