@@ -528,9 +528,8 @@ def cmd_den(a):
             service = ch["service"].lower()
             if used.get(service, 0) >= caps.get(service, 99):
                 continue
-            ch_due = due + timedelta(minutes=4 * i)       # not the same file on 6 networks in the same minute
-            # hot path: the first network goes out NOW (Buffer shareNow), the others 4, 8, ... min later
-            m["now"] = bool(m.get("hot")) and i == 0
+            ch_due = due                                   # all networks at the same time (Aleš 16. 11.)
+            m["now"] = bool(m.get("hot"))                  # hot path: everywhere NOW (Buffer shareNow)
             try:
                 posts[ch["id"]] = create_post(post_input(ch, m, url, ch_due, not a.ostre), ch.get("key", "BUFFER_API_KEY"))
                 used[service] = used.get(service, 0) + 1
@@ -583,7 +582,7 @@ def top3_only(a, day, now):
     for i, ch in enumerate(load_json(CHANNELS, [])):
         service = ch["service"].lower()
         try:
-            posts[ch["id"]] = create_post(post_input(ch, m, url, due + timedelta(minutes=4 * i), not a.ostre),
+            posts[ch["id"]] = create_post(post_input(ch, m, url, due, not a.ostre),
                                           ch.get("key", "BUFFER_API_KEY"))
             log(f"  top3 {service}: ok")
         except Exception as e:
