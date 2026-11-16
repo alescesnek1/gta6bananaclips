@@ -94,7 +94,10 @@
     "twitch_DifficultElegantCookieCeilingCat-Y6HivDRRCx1RWv7D": "Retro",
     "twitch_FlaccidStupidWolfKAPOW-LSJnZ3V-yooyyBMz": "Just Chatting",
     "twitch_DaintyShinyToadNomNom-h-M4bMfCbat8wMLc": "Just Chatting",
-    "twitch_DelightfulMoralFlyHassanChop-lRz8MZfOUnILozsz": "World of Warcraft"
+    "twitch_DelightfulMoralFlyHassanChop-lRz8MZfOUnILozsz": "World of Warcraft",
+    "twitch_WittyPiliablePineappleDogFace-gKUzhjDvgfnm4L66": "Just Chatting",
+    "twitch_HumbleRamshackleSwanTebowing-y9YPDgvUjm4TtSQL": "Just Chatting",
+    "twitch_GiftedRacyHerbsTBTacoLeft-rwHeV32i6x2qgqWH": "Just Chatting"
   },
   "views": {
     "twitch_SeductiveScaryArtichokeMikeHogu-ilokmbgy1N7dF3Gp": [
@@ -204,6 +207,18 @@
     "twitch_PhilanthropicReliableLapwingSMOrc-BPxuYjgmaNv4RDOd": [
       1794776398,
       1117
+    ],
+    "twitch_WittyPiliablePineappleDogFace-gKUzhjDvgfnm4L66": [
+      1794790737,
+      714
+    ],
+    "twitch_HumbleRamshackleSwanTebowing-y9YPDgvUjm4TtSQL": [
+      1794790737,
+      554
+    ],
+    "twitch_GiftedRacyHerbsTBTacoLeft-rwHeV32i6x2qgqWH": [
+      1794790737,
+      548
     ]
   }
 }
