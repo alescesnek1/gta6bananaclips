@@ -352,8 +352,9 @@ def chat_peaks(url, vid):
     med = np.array([np.median(c[max(0, i - 15): i + 15]) for i in range(n)])
     mad = np.array([np.median(np.abs(c[max(0, i - 15): i + 15] - med[i])) for i in range(n)]) + 1
     z = (c - med) / mad
-    # chat reacts after the moment: centre the clip a bit before the burst
-    return [(i * 10 + 5 - YT_CLIP * 0.25, float(z[i])) for i in range(n) if z[i] >= 4]
+    # chat reacts AFTER the moment (stream delay + typing, the payoff can be ~20 s earlier):
+    # the 35 s window covers 30 s before the burst and 5 s after it
+    return [(i * 10 + 5 - YT_CLIP * 0.36, float(z[i])) for i in range(n) if z[i] >= 4]
 
 def viewer_signals(url, vid, info):
     dur = float(info.get("duration") or 0)
