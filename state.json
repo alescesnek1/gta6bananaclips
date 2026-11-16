@@ -117,7 +117,8 @@
     "twitch_SteamyTangibleBaconThisIsSparta-Ud0vSzMkxYbBC8dn": "Just Chatting",
     "twitch_ChillyAlluringFennelPJSalt-AU01V_jf7kbxx2QQ": "Just Chatting",
     "twitch_CredulousIcyMarrowRlyTho-9J7w8HQ3lzEDpLI1": "Minecraft",
-    "twitch_HeartlessPhilanthropicGerbilBibleThump-h4zuCqYV5Kx0I8G8": "Just Chatting"
+    "twitch_HeartlessPhilanthropicGerbilBibleThump-h4zuCqYV5Kx0I8G8": "Just Chatting",
+    "twitch_SaltyPeppyRabbitDoubleRainbow-_11xOT3YyYX4mV-h": "Just Chatting"
   },
   "views": {
     "twitch_SeductiveScaryArtichokeMikeHogu-ilokmbgy1N7dF3Gp": [
@@ -319,6 +320,10 @@
     "twitch_HeartlessPhilanthropicGerbilBibleThump-h4zuCqYV5Kx0I8G8": [
       1794852533,
       525
+    ],
+    "twitch_SaltyPeppyRabbitDoubleRainbow-_11xOT3YyYX4mV-h": [
+      1794857355,
+      544
     ]
   }
 }
