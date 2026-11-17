@@ -7,6 +7,8 @@ publikuj.py, second agent). Sources:
   publikovano*.json         what went out as a short (id -> due time); its meta.json in out/ gives the
                             channel, views and the banana score ("rating")
 Banana score of a moment = meta "rating" if present, else klipuj.banana_rating(views) (1-10, log scale).
+Live chat clips (id live_..., klipuj.py live) are left out: they have no clip views (their banana score is a
+proxy from the chat spike), so they would not compare fairly with viewer-made clips.
 
   table(days=7, end=None) -> [{channel, n, avg, total, best, rank, rank_prev}], best first
   python liga.py [--days 7] [--end 2026-11-24]
@@ -39,10 +41,15 @@ def _ts(s):
     except (TypeError, ValueError):
         return 0
 
+def _live(cid, rec):
+    return str(cid or "").startswith("live_") or bool((rec or {}).get("live"))
+
 def moments():
     """{id: {channel, ts, score}} from the pool and from published shorts (their meta.json)."""
     out = {}
     for r in _load(POOL).values():
+        if _live(r.get("id"), r):
+            continue
         if r.get("channel") and (r.get("created") or r.get("added")):
             out[r["id"]] = {"channel": r["channel"].lower(), "ts": r.get("created") or r.get("added"),
                             "score": r.get("rating") or banana_rating(r.get("views"))}
@@ -58,6 +65,8 @@ def moments():
         for cid, rec in _load(f).items():
             if cid.startswith(("top3_", "exp_")) or rec.get("platform") in ("top3", "exp"):
                 continue                          # our own formats, not a streamer's moment
+            if _live(cid, rec):
+                continue                          # live chat clip: no clip views, not comparable
             # on GitHub the runner's out/ is gone by the next run: the record itself carries channel,
             # rating and views (publikuj.py saves them for the league)
             m = metas.get(cid) or {}

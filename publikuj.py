@@ -10,7 +10,7 @@ for their slot are carried over into the next deploy; published ones drop out.
 
 Daily flow:
   .venv/Scripts/python klipuj.py batch                  # render fresh moments
-  .venv/Scripts/python publikuj.py den --den dnes --n 10   # best 10 -> today's slots in Buffer
+  .venv/Scripts/python publikuj.py den --den dnes --n 10   # just in time: slots of the next 3 h + hot clips now
 
 By default posts land in Buffer as DRAFTS (nothing goes public). --ostre schedules
 them for real. --zkouska prints the plan and the GraphQL without touching anything.
@@ -70,9 +70,24 @@ TZ = ZoneInfo("Europe/Prague")
 #   05:00   04:00     23:00    20:00    US west prime time
 # (CET; during summer time everything shifts together, the pattern stays.)
 SLOTS = ["14:00", "17:00", "18:30", "20:00", "21:30", "23:00", "00:30", "02:00", "03:30", "05:00"]
-# which slots a small quota fills first: spread over UK evening + US prime time (Fable 15. 11.:
-# the first 3 in time order were all US morning)
-PRIORITY = ["18:30", "23:00", "02:00", "20:00", "00:30", "21:30", "14:00", "03:30", "17:00", "05:00"]
+# Just-in-time (18. 11., before the launch): a run commits only the slots due within the next
+# plan_horizon_h hours (sources.json, default 3), with the best clips it has at that moment; the
+# rest of the day's quota stays open for better clips found later. Catch-up: when the free slots
+# after the horizon (minus plan_spare_slots) could no longer reach the day's minimum, the run fills
+# more now, average clips included. Hot clips (score >= hot_score, < hot_max_age_h old) and live
+# chat clips go out at once (shareNow) whenever the day has quota left up to max_per_day.
+
+NOW = None                              # tests: a fixed "now" (datetime in TZ); None = the clock
+FAST = False                            # den --rychle: the live fast path (own record file, live clips only)
+
+def now_tz():
+    return NOW or datetime.now(TZ)
+
+def pub_day(t=None):
+    """The publishing day a moment belongs to: the window 12:00 that day .. 11:59 the next (Prague).
+    01:30 still belongs to yesterday's day (its 02:00 slot, its quota), not to the coming one."""
+    t = t or now_tz()
+    return t.date() if t.hour >= 12 else t.date() - timedelta(days=1)
 
 # Two accounts (brands.json, docs/dva-ucty.md): `bananas` = gta6bananaclips (the original, its
 # behaviour and files stay as they were), `fanpage` = gta6fanpageclip. Every command takes
@@ -92,6 +107,37 @@ def set_brand(znacka):
     ZNACKA, BRAND = znacka, cfg.get(znacka) or {}
     PUBLISHED = HERE / BRAND.get("published", "publikovano.json")
     CHANNELS = HERE / BRAND.get("channels", "buffer.json")
+
+# Two writers, two files per brand (no git conflict on one JSON): normal runs write the brand's
+# `published` file, the live fast path (den --rychle, its own concurrency group) writes the same name
+# with _live (publikovano_live.json, publikovano_fanpage_live.json). Everything that counts or checks
+# what went out (duplicates, quotas, slots, X/Threads caps, Top 3, Netlify budget) reads both.
+def live_file(p):
+    p = Path(p)
+    return p.with_name(f"{p.stem}_live{p.suffix}")
+
+def rec_files(znacka=None):
+    """The brand's record files: [main, live]."""
+    if znacka is None or znacka == ZNACKA:
+        main = PUBLISHED
+    else:
+        main = HERE / ((brands_cfg().get(znacka) or {}).get("published") or "publikovano.json")
+    return [main, live_file(main)]
+
+def records(znacka=None):
+    """Everything the brand published (both record files; the main file wins a shared id)."""
+    main, live = rec_files(znacka)
+    return {**load_json(live, {}), **load_json(main, {})}
+
+def target_file():
+    """The record file THIS run writes."""
+    return live_file(PUBLISHED) if FAST else PUBLISHED
+
+def all_record_files():
+    """Record files of every brand (both writers)."""
+    mains = {HERE / b.get("published", "publikovano.json") for b in brands_cfg().values() if isinstance(b, dict)}
+    mains |= {PUBLISHED, HERE / "publikovano.json"}
+    return sorted({f for m in mains for f in (m, live_file(m))})
 
 def log(msg):
     print(f"[{datetime.now():%H:%M:%S}] {msg}", flush=True)
@@ -174,6 +220,8 @@ def gql(query, key="BUFFER_API_KEY"):
                 wait = int(e.headers.get("Retry-After") or 60) if (e.headers.get("Retry-After") or "60").isdigit() else 60
                 log(f"  Buffer rate limit, waiting {wait}s")
                 time.sleep(wait)
+                if lock_lost():                    # the wait may have outlived our publishing lock
+                    raise RuntimeError("publishing lock lost while waiting for Buffer - not posted")
                 continue
             raise RuntimeError(f"Buffer HTTP {e.code}: {e.read().decode(errors='replace')[:300]}")
     if data.get("errors"):
@@ -287,7 +335,7 @@ def inbox_items():
     except Exception as e:                                    # no inbox must never stop Twitch/Kick posts
         log(f"inbox: unreadable ({e})")
         return []
-    for title in (INBOX_TITLE, "live-inbox"):
+    for title in ("live-inbox",) if FAST else (INBOX_TITLE, "live-inbox"):   # fast path: live clips only
         d = next((d for d in deploys if d.get("title") == title and d.get("state") == "ready"), None)
         if not d:
             continue
@@ -377,13 +425,13 @@ def candidates(znacka=None):
     """
     znacka = znacka or ZNACKA
     game = load_json(HERE / "sources.json", {}).get("game", "Grand Theft Auto VI|GTA ?VI|GTA ?6")
-    done = load_json(PUBLISHED, {})
+    # Never twice: the id is checked against EVERY record file (both brands, normal + live fast path).
     # Aleš 17. 11.: one clip = one account. A clip the other brand already posted never goes out here
     # (render gives each clip one brand; this also covers the inbox and a clip rendered for both).
-    for z, b in brands_cfg().items():
-        if isinstance(b, dict) and z != znacka:
-            done = {**load_json(HERE / b.get("published", "publikovano.json"), {}), **done}
-    now = time.time()
+    done = {}
+    for f in all_record_files() + rec_files(znacka):
+        done.update(load_json(f, {}))
+    now = now_tz().timestamp()
     out, local = [], []
     for meta_file in OUT.glob("*/*/meta.json"):
         if meta_file.parts[-3].startswith("_"):
@@ -400,7 +448,9 @@ def candidates(znacka=None):
     for m in local:
         if not m or not m.get("short") or m.get("id") in done or not (m.get("remote") or Path(m["short"]).exists()):
             continue
-        if (m.get("platform") == "youtube" and (PLAN_DAY or date.today()) >= date.fromisoformat(
+        if FAST and not is_live(m):
+            continue                                 # the fast path only carries live chat clips
+        if (m.get("platform") == "youtube" and (PLAN_DAY or pub_day()) >= date.fromisoformat(
                 (load_json(HERE / "sources.json", {}).get("youtube_prelaunch") or {}).get("until", "2026-11-19"))
                 and re.search(r"trailer|extended look|showcase", m.get("title") or "", re.I)):
             continue                                 # from the launch on: gameplay, no trailer reactions
@@ -417,6 +467,20 @@ def candidates(znacka=None):
     # viewer-made Twitch/Kick clips first: a YouTube window's "views" are the whole video's,
     # not comparable, so YouTube only fills what is left (and at most youtube_per_day)
     return sorted(out, key=lambda m: (m.get("platform") == "youtube", -m["score"]))
+
+def is_live(m):
+    """A clip cut from a live chat explosion (klipuj.py live)."""
+    return bool(m.get("live")) or str(m.get("id", "")).startswith("live_")
+
+def is_hot(m, src_cfg=None):
+    """Goes out NOW (shareNow): a live chat clip, or a viewer clip spreading fast (score >= hot_score),
+    both younger than hot_max_age_h (an old one waits for a normal slot). Never a YouTube window."""
+    src_cfg = src_cfg if src_cfg is not None else load_json(HERE / "sources.json", {})
+    if m.get("platform") == "youtube" or not m.get("created"):
+        return False
+    if m.get("age_h", 99) > src_cfg.get("hot_max_age_h", 3):
+        return False
+    return is_live(m) or (m.get("score") or 0) >= src_cfg.get("hot_score", 2000)
 
 # Anti-spam: every post gets its own text (a quote from what the streamer said), no
 # @mentions (they would tag strangers / break X's automation rules), few rotating hashtags.
@@ -609,10 +673,9 @@ def month_gb():
     Netlify bandwidth this month, estimated: every published video is fetched by Buffer for each
     of the 6 networks (+1 download from an inbox). Netlify: 20 credits per GB -> 1000 credits = 50 GB.
     """
-    start = datetime.now(TZ).replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    start = now_tz().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
     mb = 0.0
-    files = {HERE / b.get("published", "publikovano.json")      # both accounts share one Netlify site
-             for b in brands_cfg().values() if isinstance(b, dict)} | {PUBLISHED}
+    files = all_record_files()                       # both accounts (and both writers) share one Netlify site
     for rec in (r for f in files for r in load_json(f, {}).values()):
         try:
             if datetime.fromisoformat(rec.get("due", "")) >= start:
@@ -643,9 +706,10 @@ def budget_level():
     gb = month_gb()
     return 2 if gb >= cfg.get("netlify_gb_hard", 1e9) else 1 if gb >= cfg["netlify_gb_soft"] else 0
 
-def used_today(day):
-    """Posts of the quota today (the Top 3 is an extra, never counted)."""
-    return sum(in_day(rec, day) for k, rec in load_json(PUBLISHED, {}).items() if not k.startswith(("top3_", "exp_")))
+def used_today(day, recs=None):
+    """Posts of the quota today, both writers (the Top 3 and experiments are extras, never counted)."""
+    recs = records() if recs is None else recs
+    return sum(in_day(rec, day) for k, rec in recs.items() if not k.startswith(("top3_", "exp_")))
 
 def extra_score(day, src_cfg):
     """Score a clip needs to go out OVER the obligatory quota: the brand's extra_ramp (launch week
@@ -656,14 +720,50 @@ def extra_score(day, src_cfg):
             n = k
     return n if n is not None else src_cfg.get("extra_score", 5000)
 
-def remaining(day):
+def remaining(day, recs=None):
     """Today's obligatory quota (ramp) minus what earlier runs already scheduled (hot posts count, Top 3 not)."""
-    return max(0, daily_quota(day) - used_today(day))
+    return max(0, daily_quota(day) - used_today(day, recs))
 
-def remaining_max(day):
-    """Up to max_per_day (10) when the extra clips are strong enough (Aleš: 8 is a must, 10 if worth it)."""
+def max_per_day(day):
     top = BRAND.get("max_per_day") or load_json(HERE / "sources.json", {}).get("max_per_day", 10)
-    return max(0, max(daily_quota(day), top) - used_today(day))
+    return max(daily_quota(day), top)
+
+def remaining_max(day, recs=None):
+    """Up to max_per_day (10) when the extra clips are strong enough (Aleš: 8 is a must, 10 if worth it)."""
+    return max(0, max_per_day(day) - used_today(day, recs))
+
+def day_plan(day, now, recs=None, n_hot=0):
+    """
+    How much THIS run commits (shared by `den` and `zbyva`, so render and publishing agree):
+      cap    posts the day still allows (max_per_day; over the Netlify soft budget only the minimum) - hot
+             posts may use all of it; slots only up to max(minimum, max_per_day - hot_room)
+      free   base slots still ahead (due > now + 20 min for the deploy and Buffer's fetch), not taken
+      near   free slots due within plan_horizon_h - the only ones a normal run fills
+      owed   catch-up: posts that must go out now because the free slots after the horizon
+             (minus plan_spare_slots, a run may be skipped) can no longer reach the minimum
+      slots  how many slots this run fills when the clips are good enough (owed ones in any case)
+    n_hot = hot posts this run makes first (no slot; they count toward the minimum and the cap).
+    """
+    src = load_json(HERE / "sources.json", {})
+    recs = records() if recs is None else recs
+    used = used_today(day, recs) + n_hot
+    must = daily_quota(day)
+    level = budget_level()
+    top = must if level else max_per_day(day)
+    cap = max(0, top - used)
+    # slots never take the last hot_room posts of max_per_day: they stay for hot / live clips found
+    # later (21:00 US launch moment, a chat explosion after midnight); never below the minimum
+    slot_cap = max(0, max(must, top - src.get("hot_room", 2)) - used)
+    taken = {rec.get("slot") or rec.get("due") for rec in recs.values()}
+    free = [t for t in slot_times(day, len(SLOTS))
+            if jittered(t, day) > now + timedelta(minutes=20) and t.isoformat() not in taken]
+    horizon = now + timedelta(hours=src.get("plan_horizon_h", 3))
+    near = [t for t in free if jittered(t, day) <= horizon]
+    later = len(free) - len(near)
+    owed = max(0, max(0, must - used) - max(0, later - src.get("plan_spare_slots", 1)))
+    owed = min(owed, len(free), slot_cap)
+    return {"used": used, "must": must, "cap": cap, "level": level, "free": free, "near": near,
+            "owed": owed, "slots": min(slot_cap, len(free), max(len(near), owed)), "later": later}
 
 def post_input(ch, m, video_url, due, draft):
     service = ch["service"].lower()
@@ -702,6 +802,8 @@ def day_service_counts(done, chans, day):
     return used
 
 def create_post(inp, key):
+    if lock_lost():                  # every publishing path (classics, hot, Top 3, experiments) stops here
+        raise RuntimeError("publishing lock lost (zamek_ztracen) - not posted")
     q = ("mutation { createPost(input: " + gql_value(inp) + ") { "
          "... on PostActionSuccess { post { id } } ... on MutationError { message } } }")
     res = gql(q, key)["createPost"]
@@ -764,68 +866,71 @@ def cmd_kanaly(a):
     log(f"saved {len(chans)} channels to {CHANNELS.name} (delete the ones we should not post to)")
 
 def cmd_den(a):
-    global TAKE_LONG
-    TAKE_LONG = not a.zkouska                    # a dry run writes nothing (long_pool.json either)
-    now = datetime.now(TZ)
-    day = now.date() if a.den == "dnes" else date.fromisoformat(a.den) if a.den else now.date() + timedelta(days=1)
-    global PLAN_DAY
+    global TAKE_LONG, PLAN_DAY, FAST
+    FAST = bool(getattr(a, "rychle", False))
+    TAKE_LONG = not a.zkouska and not FAST       # a dry run writes nothing; the fast path only its record file
+    now = now_tz()
+    # --den dnes = the publishing day we are in NOW (12:00-11:59): after midnight that is still
+    # yesterday's day (its late slots, its quota) - the hot path checks the current window
+    day = pub_day(now) if a.den == "dnes" else date.fromisoformat(a.den) if a.den else now.date() + timedelta(days=1)
     PLAN_DAY = day
-    # slots still ahead of us (+20 min for the deploy and for Buffer to fetch the video); a slot is
-    # taken by its base time ('slot'; older records and hot posts only have 'due')
-    taken = {rec.get("slot") or rec.get("due") for rec in load_json(PUBLISHED, {}).values()}   # an earlier run today
     level = budget_level()
     if level >= 2 and ZNACKA == "fanpage":   # Netlify hard limit: the second account waits for next month
         print(f"::warning::Netlify: ~{month_gb():.0f} GB this month, {BRAND.get('name', ZNACKA)} paused")
         return
-    must = min(a.n, remaining(day))          # obligatory part of the daily quota (8)
-    cap = min(a.n, remaining_max(day))       # with strong extras up to 10
-    if level:                                # Netlify < 1000 credits/month: extras pause, the 8 always go out
-        cap = must
+    if level:                                # Netlify < 1000 credits/month: extras pause, the minimum always goes out
         print(f"::warning::Netlify: ~{month_gb():.0f} GB this month, extra videos and Top 3 paused")
-    quota = must
-    free = [t for t in slot_times(day, len(SLOTS))
-            if jittered(t, day) > now + timedelta(minutes=20) and t.isoformat() not in taken]
+    recs = records()                         # both writers (normal runs + live fast path)
     src_cfg = load_json(HERE / "sources.json", {})
     good, extra = src_cfg.get("good_score", 1000), extra_score(day, src_cfg)
-    # Aleš: do not burn the 8 on average clips. An average one only goes out when the 8 would
-    # otherwise be missed (no more free slots than posts still owed today).
-    owed_now = must >= len(free)
-    pre = src_cfg.get("youtube_prelaunch") or {}
-    yt_cap = pre.get("per_day", 3) if pre and day < date.fromisoformat(pre.get("until", "2000-01-01")) else src_cfg.get("youtube_per_day", 1)
-    yt_left = yt_cap - sum(
-        k.startswith("youtube_") and in_day(rec, day) for k, rec in load_json(PUBLISHED, {}).items())
-    picks = []
-    for m in candidates():
-        if len(picks) >= min(len(free), cap):
-            break
-        if m.get("platform") == "youtube":
-            if yt_left <= 0:
-                continue
-        if len(picks) < must:
-            if m["score"] < good and not owed_now:
-                continue
-        elif m["score"] < extra:
-            continue
-        if m.get("platform") == "youtube":
-            yt_left -= 1
-        picks.append(m)
-    slots = sorted(sorted(free, key=lambda t: PRIORITY.index(t.strftime("%H:%M")))[: len(picks)])
-    times = [jittered(t, day) for t in slots]
-    # hot path: a clip from the last 3 h that is exploding goes out in 25 min, not at the next slot
+    cands = candidates()
+
+    # 1) hot path: live chat clips and clips spreading fast go out NOW on every network, whenever the
+    # day has quota left up to max_per_day (they may run ahead of the planned pace)
+    p0 = day_plan(day, now, recs)
     hot_due = (now + timedelta(minutes=2)).replace(second=0, microsecond=0)   # the deploy below takes ~1 min
-    # ... but never eat the evening: `hot_reserve` posts of the day stay for the UK/US prime-time slots
-    if (picks and quota > src_cfg.get("hot_reserve", 3) and picks[0].get("platform") != "youtube" and picks[0].get("created")
-            and picks[0].get("age_h", 99) <= 3 and picks[0]["score"] >= src_cfg.get("hot_score", 2000)
-            and in_day({"due": hot_due.isoformat()}, day) and hot_due < times[0] - timedelta(minutes=30)):
-        picks[0]["hot"] = True
-        times[0], slots[0] = hot_due, None          # hot post: takes no slot (as before)
-        log(f"HOT: {picks[0]['channel']} '{picks[0].get('title', '')[:40]}' -> {hot_due:%H:%M}")
+    hot = []
+    if in_day({"due": hot_due.isoformat()}, day):
+        hot = [m for m in cands if is_hot(m, src_cfg)][: min(a.n, p0["cap"])]
+    for m in hot:
+        m["hot"] = True
+        log(f"HOT{' (live)' if is_live(m) else ''}: {m['channel']} '{m.get('title', '')[:40]}' -> {hot_due:%H:%M}")
+
+    # 2) just in time: only the slots due within the horizon (+ catch-up for the minimum), the best
+    # clips available right now; the fast path never fills slots
+    p = day_plan(day, now, recs, n_hot=len(hot))
+    picks = []
+    if not FAST:
+        n = min(p["slots"], a.n - len(hot))
+        pre = src_cfg.get("youtube_prelaunch") or {}
+        yt_cap = (pre.get("per_day", 3) if pre and day < date.fromisoformat(pre.get("until", "2000-01-01"))
+                  else src_cfg.get("youtube_per_day", 1))
+        yt_left = yt_cap - sum(k.startswith("youtube_") and in_day(rec, day) for k, rec in recs.items())
+        hot_ids = {m["id"] for m in hot}
+        for m in cands:                          # best first
+            if len(picks) >= n:
+                break
+            if m["id"] in hot_ids or (m.get("platform") == "youtube" and yt_left <= 0):
+                continue
+            # Aleš: do not burn the minimum on average clips - an average one only as catch-up (owed);
+            # over the minimum only extra_score (launch week extra_ramp: good_score) up to max_per_day
+            k = p["used"] + len(picks)
+            if len(picks) >= p["owed"] and m["score"] < (good if k < p["must"] else extra):
+                continue
+            if m.get("platform") == "youtube":
+                yt_left -= 1
+            picks.append(m)
+    slots = [None] * len(hot) + p["free"][: len(picks)]        # earliest free slots (the near ones first)
+    picks = hot + picks
+    times = [hot_due if s is None else jittered(s, day) for s in slots]
     chans = load_json(CHANNELS, [])
-    seq0 = len(load_json(PUBLISHED, {}))     # caption rotation: the brand's post counter (no line twice in a row)
+    seq0 = len(recs)                         # caption rotation: the brand's post counter (no line twice in a row)
     for i, m in enumerate(picks):
         m["_seq"] = seq0 + i
     mode = "ZKOUŠKA" if a.zkouska else ("NAOSTRO" if a.ostre else "koncepty")
-    log(f"{day} [{ZNACKA}]: {len(picks)} shorts (quota {quota}, over it only score >= {extra}, up to {cap})"
+    log(f"{day} [{ZNACKA}{' fast' if FAST else ''}]: {len(picks)} shorts ({len(hot)} hot) - day {p0['used']}/{p0['must']}"
+        f" (max {p0['used'] + p0['cap']}), {len(p['near'])} free slots in the next {src_cfg.get('plan_horizon_h', 3)} h,"
+        f" catch-up {p['owed']}, {p['later']} later; over the minimum only score >= {extra}"
         f" x {len(chans) or '?'} channels ({mode})")
     if os.environ.get("GITHUB_ACTIONS") and not a.ostre and not a.zkouska:
         print("::warning::Buffer: jen KONCEPTY, nic nevyjde. Na GitHubu nastav promennou OSTRE=1.")
@@ -836,11 +941,12 @@ def cmd_den(a):
                                   for c in chans))
             fake = {"id": "CHANNEL_ID", "service": "youtube"}
             print("   ", gql_value(post_input(fake, m, "https://media.example/clip.mp4", due, not a.ostre))[:400])
-        exp_post(a, day, now)                        # experiment of the day: plan only
+        if not FAST:
+            exp_post(a, day, now)                    # experiment of the day: plan only
         return
     if not picks:
-        if not a.zkouska and load_json(CHANNELS, []):
-            top3_only(a, day, now)                   # the day's quota is full: the Top 3 may still be due
+        if not FAST and load_json(CHANNELS, []):
+            top3_only(a, day, now, final=p["later"] == 0)   # the day's last stretch: the Top 3 may be due
             exp_post(a, day, now)                    # experiment: own slot, outside the quota
         return
     load_env()
@@ -850,7 +956,6 @@ def cmd_den(a):
 
     # 1) one deploy of this run's videos as a Netlify DRAFT deploy: 0 credits (a production
     # deploy is 15), and its permalink stays forever, so earlier videos need no carry-over
-    done = load_json(PUBLISHED, {})
     stage = OUT / "_media"
     stage.mkdir(parents=True, exist_ok=True)
     files = {}
@@ -860,7 +965,7 @@ def cmd_den(a):
         slot_of[m["id"]] = slot.isoformat() if slot else None
         rel = f"{day:%Y%m%d}/{safe_name(m['id'])}.mp4"
         src = Path(m["short"]) if not m.get("remote") else stage / f"inbox_{safe_name(m['id'])}.mp4"
-        if m.get("remote"):                          # YouTube short from the worker PC's inbox
+        if m.get("remote"):                          # YouTube / live short from an inbox
             try:
                 src.write_bytes(http(m["short"], timeout=300)[1])
             except Exception as e:
@@ -868,8 +973,8 @@ def cmd_den(a):
                 continue
         files[rel] = src
         plan.append((m, due, rel))
-    # the daily Top 3 (our own curated format): once the day's quota is full
-    top3 = make_top3(day, done, plan, stage)
+    # the daily Top 3 (our own curated format): in the day's last stretch, once the minimum is met
+    top3 = None if FAST else make_top3(day, recs, plan, stage, final=p["later"] == 0)
     if top3:
         plan.append(top3)
         files[top3[2]] = top3[0].pop("file")
@@ -877,11 +982,16 @@ def cmd_den(a):
     prune_drafts()
 
     # 2) Buffer posts, one time slot per short, every channel (X/Threads capped per day: the cap
-    # counts the posts of earlier runs of this publishing day too, not only this run's)
-    caps = load_json(HERE / "sources.json", {}).get("caps") or {}
-    used, ok, failed = day_service_counts(done, chans, day), 0, 0
+    # counts every post of this publishing day, both writers, not only this run's)
+    caps = src_cfg.get("caps") or {}
+    used, ok, failed = day_service_counts(recs, chans, day), 0, 0
+    target = target_file()
     for m, due, rel in plan:
         url = f"{base}/{rel}"
+        if lock_lost():                                    # another run may hold the lock now: stop
+            print("::error::zamek publikace ztracen - zbytek postu tohoto behu se neposle")
+            failed += 1
+            break
         log(f"{due:%H:%M} {m['platform']}/{m['channel']} '{m.get('title', '')[:50]}' -> {url}")
         if not is_public(url):
             log("  not reachable after deploy, skipped")
@@ -904,14 +1014,23 @@ def cmd_den(a):
                 log(f"  {service}: FAILED {e}")
         size = files.get(rel)
         mb = round(Path(size).stat().st_size / 1e6, 1) if size and Path(size).exists() else None
-        done[m["id"]] = {"url": url, "path": rel, "due": due.isoformat(), "draft": not a.ostre, "posts": posts, "mb": mb,
-                         "channel": m.get("channel"), "platform": m.get("platform"), "score": round(m.get("score") or 0, 1),
-                         "hot": bool(m.get("hot")), "rating": m.get("rating"), "views": m.get("views"),   # Banana League (liga.py)
-                         "golden": bool(m.get("golden"))}
+        rec = {"url": url, "path": rel, "due": due.isoformat(), "draft": not a.ostre, "posts": posts, "mb": mb,
+               "channel": m.get("channel"), "platform": m.get("platform"), "score": round(m.get("score") or 0, 1),
+               "hot": bool(m.get("hot")), "rating": m.get("rating"), "views": m.get("views"),   # Banana League (liga.py)
+               "golden": bool(m.get("golden"))}
+        if is_live(m):                                     # live: the stream's audience is not clip views
+            rec.update(live=True, viewers=m.get("viewers"), spike_z=m.get("spike_z"))
         if slot_of.get(m["id"]):
-            done[m["id"]]["slot"] = slot_of[m["id"]]
-        save_json(PUBLISHED, done)
-    exp_post(a, day, now)                            # experiment: own slot, outside the quota, after the classics
+            rec["slot"] = slot_of[m["id"]]
+        if not posts:                                      # nothing went out: no record, the next run retries
+            continue
+        own = load_json(target, {})
+        own[m["id"]] = rec
+        save_json(target, own)
+        recs[m["id"]] = rec
+        push_records(target)                               # on origin before the next clip (under the lock)
+    if not FAST:
+        exp_post(a, day, now)                        # experiment: own slot, outside the quota, after the classics
     # make failures visible: a red run = an e-mail from GitHub
     if failed:
         print(f"::warning::Buffer: {failed} postu se nepovedlo, {ok} ok")
@@ -947,7 +1066,7 @@ def exp_post(a, day, now):
         if budget_level():
             print(f"::warning::Netlify: ~{month_gb():.0f} GB this month, experiment {ready[0]['concept']} paused")
             return
-        done = load_json(PUBLISHED, {})
+        done = records()                               # both writers (X/Threads cap, slots)
         m = ready[0]
         n_today = sum(1 for k, rec in done.items() if k.startswith("exp_") and in_day(rec, day))
         if n_today >= E.per_day(ZNACKA, m["concept"]) or not E.enabled(ZNACKA, m["concept"]):
@@ -995,25 +1114,26 @@ def exp_post(a, day, now):
         if not posts:                                  # nothing went out: stays pending, the next run retries
             print("::warning::exp: no Buffer post succeeded")
             return
-        done = load_json(PUBLISHED, {})
+        done = load_json(PUBLISHED, {})               # experiments: normal runs only -> the main file
         done[m["id"]] = {"url": url, "path": rel, "due": due.isoformat(), "slot": base.isoformat(), "draft": not a.ostre,
                          "posts": posts, "mb": round(Path(m["file"]).stat().st_size / 1e6, 1), "channel": "exp",
                          "platform": "exp", "concept": m["concept"], "items": [x["id"] for x in m["items"]]}
         save_json(PUBLISHED, done)
+        push_records(PUBLISHED)
     except Exception as e:                            # an experiment never costs a classic post
         print(f"::warning::exp: {str(e)[-200:]}")
 
 TOP3_FONT = HERE / "fonts" / "cap" / "montserrat-900.ttf"
 
-def top3_only(a, day, now):
+def top3_only(a, day, now, final=True):
     """A run with no new shorts: build, deploy and post the day's Top 3 if it is due."""
     load_env()
     if not (brand_keys() and os.environ.get("NETLIFY_AUTH_TOKEN")):
         return
-    done = load_json(PUBLISHED, {})
+    done = records()
     stage = OUT / "_media"
     stage.mkdir(parents=True, exist_ok=True)
-    top3 = make_top3(day, done, [], stage)
+    top3 = make_top3(day, done, [], stage, final=final)
     if not top3:
         return
     m, due, rel = top3
@@ -1035,19 +1155,26 @@ def top3_only(a, day, now):
             log(f"  top3 {service}: ok")
         except Exception as e:
             log(f"  top3 {service}: FAILED {e}")
-    done[m["id"]] = {"url": url, "path": rel, "due": due.isoformat(), "draft": not a.ostre, "posts": posts,
-                     "channel": "top3", "platform": "top3"}
-    save_json(PUBLISHED, done)
+    if not posts:                                    # failed everywhere: the next run may try again
+        print("::warning::Top 3: no Buffer post succeeded")
+        return
+    own = load_json(PUBLISHED, {})                   # Top 3: normal runs only -> the main file
+    own[m["id"]] = {"url": url, "path": rel, "due": due.isoformat(), "draft": not a.ostre, "posts": posts,
+                    "channel": "top3", "platform": "top3"}
+    save_json(PUBLISHED, own)
+    push_records(PUBLISHED)
 
-def make_top3(day, done, plan, stage):
+def make_top3(day, done, plan, stage, final=True):
     """
     Daily 'Top 3 GTA 6 moments' (Fable 15. 11.: a curated series is the 'something new' the
-    platforms ask for): once the day's quota is full, the 3 best shorts of the day, #3 -> #1,
+    platforms ask for): once the day's minimum is met AND the day is in its last stretch (`final`:
+    no free slot left after the planning horizon), the 3 best shorts of the day, #3 -> #1,
     each with a big number for the first 1.2 s, posted 75 min after the day's last short.
     Returns (meta, due, site path) with meta['file'] = the local mp4, or None.
     """
     key = f"top3_{day}"
-    if not BRAND.get("top3", True) or key in done or remaining(day) - len(plan) > 0 or budget_level():
+    if (not final or not BRAND.get("top3", True) or key in done or remaining(day, done) - len(plan) > 0
+            or budget_level()):
         return None
     items = []                                       # (score, meta-ish, local file or url, due)
     for k, rec in done.items():
@@ -1103,6 +1230,11 @@ def make_top3(day, done, plan, stage):
         print(f"::warning::Top 3: ffmpeg failed {r.stderr[-300:]}")
         return None
     due = max(x[3] for x in items) + timedelta(minutes=75)
+    # built later now (last stretch of the day): never in the past - render + deploy + Buffer's fetch,
+    # and never on the full / half hour
+    due = max(due, (now_tz() + timedelta(minutes=25)).replace(second=0, microsecond=0))
+    if due.minute in (0, 30):
+        due += timedelta(minutes=1)
     meta = {"id": key, "platform": "top3", "channel": "top3", "category": "Grand Theft Auto VI",
             "items": [best[i][1] for i in range(3)], "peak": 1.0, "score": 0, "file": out, "title": "Top 3"}
     log(f"top3: {', '.join(x[1]['channel'] for x in best)} -> {due:%d.%m %H:%M}")
@@ -1119,7 +1251,7 @@ def cmd_schranka(a):
     game = load_json(HERE / "sources.json", {}).get("game", "Grand Theft Auto VI|GTA ?VI|GTA ?6")
     cfg = brands_cfg()
     names = ["bananas"] + [k for k, v in cfg.items() if isinstance(v, dict) and k != "bananas"]
-    done = {z: load_json(HERE / ((cfg.get(z) or {}).get("published") or "publikovano.json"), {}) for z in names}
+    done = {z: records(z) for z in names}            # both record files of each brand
     cutoff = time.time() - a.dni * 86400
     items, files = [], {}
     for meta_file in OUT.glob("*/*/meta.json"):
@@ -1171,6 +1303,238 @@ def cmd_schranka(a):
     save_json(sent, [m["id"] for m in items])
     log(f"inbox: {len(items)} shorts ({len(new)} new) -> {url}")
 
+# -----------------------------------------------------------------------------
+# Publishing lock (18. 11.): the live fast path has its own concurrency group, so it no longer waits
+# behind a render - but then two runs could publish at the same moment, each blind to the other's
+# fresh posts (double post, max_per_day or the X/Threads cap exceeded). The publishing part of every
+# run therefore holds a lock that lives in git: publikace_zamek.json on main, taken and released by a
+# commit pushed straight on top of origin/main (git plumbing: the work tree, the index and local
+# commits stay untouched). A push is a compare-and-swap - rejected if origin moved since the fetch -
+# so two runs can never both take it. A dead run's lock expires after --ttl minutes.
+
+LOCK_FILE = "publikace_zamek.json"
+LOCK_LOST = "zamek_ztracen"              # local flag (not in git): `obnov` lost the lock -> `den` stops posting
+LOCK_UNTIL = "zamek_do"                  # local (not in git): our lock surely holds until this epoch (expiry - margin)
+LOCK_MARGIN = 180                        # s before the expiry in git: stop posting, whatever the renewal is doing
+
+def lock_lost():
+    """True once this job must not post any more: the renewal lost the lock, or the last confirmed expiry
+    (minus a margin) has passed - checked against the clock, so a hanging git cannot outlive the lock."""
+    if (HERE / LOCK_LOST).exists():
+        return True
+    try:
+        return time.time() > float((HERE / LOCK_UNTIL).read_text())
+    except (FileNotFoundError, ValueError):
+        return False                         # no lock in use (local runs, tests)
+
+def lock_deadline(until):
+    (HERE / LOCK_UNTIL).write_text(str(until - LOCK_MARGIN))
+
+def push_records(path):
+    """
+    Under the publishing lock: push the record file to origin right after a post (merged per key, the
+    lock stays held), so a run that ever takes the lock over sees every post of this run. If the push
+    fails, this job posts nothing more (LOCK_LOST) - an unshared record must not grow.
+    """
+    if not (HERE / LOCK_UNTIL).exists():
+        return True                              # no lock in use (local runs, tests)
+    try:
+        ok = lock_release("den", [Path(path).name], tries=3, release=False)
+    except Exception as e:
+        log(f"records push: {str(e)[-120:]}")
+        ok = False
+    if not ok:
+        (HERE / LOCK_LOST).write_text(str(int(time.time())))
+        print("::error::zaznam publikace se nepodarilo pushnout - dalsi posty tohoto behu se neposlou")
+    return ok
+GIT_ID = {"GIT_AUTHOR_NAME": "gta6bananaclips-bot", "GIT_AUTHOR_EMAIL": "41898282+github-actions[bot]@users.noreply.github.com",
+          "GIT_COMMITTER_NAME": "gta6bananaclips-bot", "GIT_COMMITTER_EMAIL": "41898282+github-actions[bot]@users.noreply.github.com"}
+
+def git(*args, data=None, env=None, cwd=None):
+    r = subprocess.run(["git", *args], cwd=cwd or HERE, input=data, capture_output=True, timeout=120,
+                       env={**os.environ, **GIT_ID, **(env or {})})
+    return r.returncode, r.stdout.decode("utf-8", "replace").strip(), r.stderr.decode("utf-8", "replace").strip()
+
+def git_cas(build, msg, cwd=None):
+    """
+    One compare-and-swap on origin/main. build(get) gets get(path) -> origin's text of a file (or None)
+    and returns {path: new text} to commit, or None to back off (lock held). True = pushed (or nothing
+    to change), None = backed off, False = origin moved / git error (try again).
+    """
+    if git("fetch", "-q", "origin", "main", cwd=cwd)[0]:
+        return False
+    rc, base, _ = git("rev-parse", "origin/main", cwd=cwd)
+    if rc:
+        return False
+
+    def get(path):
+        rc, out, _ = git("show", f"origin/main:{path}", cwd=cwd)
+        return out if rc == 0 else None
+    files = build(get)
+    if files is None:
+        return None
+    if not files:
+        return True
+    import tempfile
+    with tempfile.TemporaryDirectory() as t:
+        env = {"GIT_INDEX_FILE": str(Path(t) / "index")}
+        if git("read-tree", base, env=env, cwd=cwd)[0]:
+            return False
+        for path, text in files.items():
+            rc, blob, _ = git("hash-object", "-w", "--stdin", data=text.encode("utf-8"), cwd=cwd)
+            if rc or git("update-index", "--add", "--cacheinfo", f"100644,{blob},{path}", env=env, cwd=cwd)[0]:
+                return False
+        rc, tree, _ = git("write-tree", env=env, cwd=cwd)
+        if rc:
+            return False
+    rc, commit, _ = git("commit-tree", tree, "-p", base, "-m", msg, cwd=cwd)
+    if rc:
+        return False
+    return git("push", "-q", "origin", f"{commit}:refs/heads/main", cwd=cwd)[0] == 0
+
+def lock_take(who, ttl_min=20, wait_min=25, cwd=None, poll=10):
+    """Take the publishing lock (wait while another live run holds it). False = gave up."""
+    deadline = time.time() + wait_min * 60
+    holder = {}
+    while True:
+        def build(get):
+            try:
+                cur = json.loads(get(LOCK_FILE) or "{}")
+            except json.JSONDecodeError:
+                cur = {}
+            if cur.get("kdo") and cur["kdo"] != who and cur.get("until", 0) > time.time():
+                holder.update(cur)
+                return None                      # held by a live run
+            if cur.get("kdo") and cur["kdo"] != who:
+                log(f"lock: {cur['kdo']} expired, taking over")
+            holder["until"] = time.time() + ttl_min * 60
+            return {LOCK_FILE: json.dumps({"kdo": who, "until": holder["until"],
+                                           "od": datetime.now(timezone.utc).isoformat(timespec="seconds")}) + "\n"}
+        r = git_cas(build, f"zamek: {who}", cwd)
+        if r is True:
+            if cwd is None:
+                lock_deadline(holder["until"])
+            log(f"lock: taken by {who}")
+            return True
+        if time.time() >= deadline:
+            print(f"::warning::zamek publikace: {holder.get('kdo') or 'git'} ho drzi, po {wait_min:.0f} min vzdavam")
+            return False
+        time.sleep(poll if r is None else 2)
+
+def lock_release(who, save=(), cwd=None, tries=10, release=True):
+    """
+    Release the lock and, in the same commit, push this run's record files - merged into origin's
+    version (ours wins per key), and the merged file is written back to the work tree (so the later
+    `save state` rebase sees identical changes, no conflict). release=False: only push the records.
+    """
+    root = Path(cwd) if cwd else HERE
+    merged = {}
+
+    def build(get):
+        out = {}
+        for f in save:
+            local = root / f
+            if not local.exists() and get(f) is None:
+                continue
+            try:
+                origin = json.loads(get(f) or "{}")
+            except json.JSONDecodeError:
+                origin = {}
+            merged[f] = {**origin, **load_json(local, {})}
+            out[f] = json.dumps(merged[f], indent=2, ensure_ascii=False)
+        try:
+            cur = json.loads(get(LOCK_FILE) or "{}")
+        except json.JSONDecodeError:
+            cur = {}
+        if release and cur.get("kdo") == who:
+            out[LOCK_FILE] = json.dumps({"kdo": None, "until": 0}) + "\n"
+        return out
+    for _ in range(tries):
+        merged.clear()
+        if git_cas(build, f"stav publikace{' + zamek pust' if release else ''}: {who}", cwd) is True:
+            for f, data in merged.items():
+                save_json(root / f, data)
+            if release and cwd is None:
+                (HERE / LOCK_UNTIL).unlink(missing_ok=True)
+            log(f"lock: {'released' if release else 'records pushed'} by {who}"
+                + (f", saved {', '.join(merged)}" if merged else ""))
+            return True
+        time.sleep(3)
+    print(f"::error::zamek publikace: nepodarilo se uvolnit / ulozit zaznam ({who})")
+    return False
+
+def lock_renew(who, ttl_min=20, cwd=None):
+    """Push a new expiry while we still hold the lock. True = renewed, None = not ours any more."""
+    def build(get):
+        try:
+            cur = json.loads(get(LOCK_FILE) or "{}")
+        except json.JSONDecodeError:
+            cur = {}
+        if cur.get("kdo") != who:
+            return None
+        new["until"] = time.time() + ttl_min * 60
+        return {LOCK_FILE: json.dumps({**cur, "until": new["until"]}) + "\n"}
+    new = {}
+    for _ in range(5):
+        r = git_cas(build, f"zamek obnov: {who}", cwd)
+        if r is True and cwd is None:
+            lock_deadline(new["until"])
+        if r is not False:
+            return r
+        time.sleep(3)
+    return False
+
+def cmd_zamek(a):
+    if a.akce == "vezmi":
+        sys.exit(0 if lock_take(a.kdo, a.ttl, a.cekej) else 1)
+    if a.akce == "obnov":
+        # runs in the background of the job from `vezmi` to `pust` (the workflow kills it before `pust`):
+        # a long publishing part (Top 3 render, Buffer rate limits) never outlives its lock; when the job
+        # dies, this dies with it and the lock expires after --ttl
+        (HERE / LOCK_LOST).unlink(missing_ok=True)
+        good = time.time()                       # last time the lock was surely ours
+        while True:
+            time.sleep(max(30, a.ttl * 60 / 4))
+            try:
+                r = lock_renew(a.kdo, a.ttl)
+            except Exception as e:               # git timeout etc. = a failed renewal, never a silent exit
+                log(f"lock: renewal error {str(e)[-120:]}")
+                r = False
+            if r:
+                good = time.time()
+                log(f"lock: renewed by {a.kdo}")
+                continue
+            # not ours any more, or no renewal for 3/4 of the TTL (git down): `den` stops posting
+            if r is None or time.time() - good > a.ttl * 60 * 0.75:
+                (HERE / LOCK_LOST).write_text(str(int(time.time())))
+                print(f"::error::zamek publikace: {a.kdo} ho uz nedrzi / nelze obnovit - publikace se zastavi",
+                      flush=True)
+                sys.exit(1)
+            log("lock: renewal failed, trying again")
+    sys.exit(0 if lock_release(a.kdo, a.uloz) else 1)
+
+def cmd_zbyva(a):
+    """
+    Render side of the just-in-time plan (same day_plan as `den`), so GitHub renders only what this
+    run can post: `need` slot posts (`owed` of them catch-up = any clip, then `good_n` that need
+    good_score, the rest extra_score) + up to `hot` extra clips that are hot (score >= hot_score, fresh).
+    A rendered clip that is not posted is lost (the runner's out/ is gone next run).
+    """
+    now = now_tz()
+    day = pub_day(now)
+    if ZNACKA == "fanpage" and budget_level() >= 2:
+        print("0 0 0 0 0 0 0" if a.plan else 0)
+        return
+    src = load_json(HERE / "sources.json", {})
+    good, extra = src.get("good_score", 1000), extra_score(day, src)
+    p = day_plan(day, now)
+    good_n = max(0, min(p["slots"] - p["owed"], p["must"] - p["used"] - p["owed"]))
+    hot = max(0, p["cap"] - p["slots"])
+    if a.plan:
+        print(p["slots"], p["owed"], good_n, int(good), int(extra), hot, int(src.get("hot_score", 2000)))
+    else:
+        print(p["slots"])
+
 def main():
     p = argparse.ArgumentParser(description="gta6bananaclips: shorts -> Buffer")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -1189,10 +1553,20 @@ def main():
     s.add_argument("--nazev", default=INBOX_TITLE, help="draft deploy title (yt-inbox, live-inbox)")
     s.add_argument("--prefix", default="", help="only shorts whose id starts with this (live_); default: YouTube")
     s.set_defaults(fn=cmd_schranka)
-    z = sub.add_parser("zbyva", help="print how many shorts today's quota still allows (for the workflow)")
-    z.set_defaults(fn=lambda a: print(0 if ZNACKA == "fanpage" and budget_level() >= 2
-                                      else remaining_max(datetime.now(TZ).date())))   # render enough for the strong extras
-    for x in (k, d, s, z):
+    d.add_argument("--rychle", action="store_true",
+                   help="live fast path: only live clips, only the hot path, record -> publikovano*_live.json")
+    z = sub.add_parser("zbyva", help="how many shorts this run should render (just-in-time plan, for the workflow)")
+    z.add_argument("--plan", action="store_true", help="print: need owed good_n good extra hot hot_score")
+    z.set_defaults(fn=cmd_zbyva)
+    lk = sub.add_parser("zamek", help="publishing lock in git (one publisher at a time: normal run / live fast path)")
+    lk.add_argument("akce", choices=["vezmi", "pust", "obnov"],
+                    help="vezmi = take, pust = release (+ save records), obnov = keep renewing while the job lives")
+    lk.add_argument("--kdo", required=True, help="lock owner, e.g. the GitHub run id")
+    lk.add_argument("--ttl", type=float, default=20, help="minutes the lock is valid (a dead run frees it)")
+    lk.add_argument("--cekej", type=float, default=25, help="vezmi: wait at most this many minutes")
+    lk.add_argument("--uloz", nargs="*", default=[], help="pust: also commit these record files (merged into origin's)")
+    lk.set_defaults(fn=cmd_zamek)
+    for x in (k, d, s, z, lk):
         x.add_argument("--znacka", default="bananas", help="account from brands.json: bananas (default) | fanpage")
     a = p.parse_args()
     set_brand(a.znacka)

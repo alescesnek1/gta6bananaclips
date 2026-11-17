@@ -1255,6 +1255,8 @@ def brand_cfg(cfg, name):
     b["key"] = name
     return b
 
+BRAND_NEED = {}                         # batch --brand-need: {brand: [catch-up now, other slot posts now, hot room]}
+
 def assign_brands(clip, cfg=None):
     """
     Which accounts get this clip: a very viral one (virality >= both_score, or a live chat
@@ -1269,6 +1271,17 @@ def assign_brands(clip, cfg=None):
     both = float(os.environ.get("KLIPY_BOTH_SCORE") or cfg.get("both_score", float("inf")))
     if virality(clip) >= both:                         # both_score is off in brands.json: one clip = one account
         return names
+    # just-in-time render (batch --brand-need): the brand that can post it in this run - first the one
+    # that owes catch-up posts (any score: the catch-up clips are rendered first), then the one with
+    # other open slots now, then the one with room for a hot clip; a clip for a brand that cannot post
+    # it now would be lost (the runner's out/ is gone by the next run)
+    for part in (0, 1, 2):
+        open_ = [n for n in names if (BRAND_NEED.get(n) or [0, 0, 0])[part] > 0]
+        if open_:
+            nxt = max(open_, key=lambda n: BRAND_NEED[n][part])
+            BRAND_NEED[nxt][part] -= 1
+            clip["_need"] = (nxt, part)              # process() gives it back if the render fails
+            return [nxt]
     state = load_json(STATE, {"done": {}, "failed": {}})
     last = state.get("rr")
     nxt = names[(names.index(last) + 1) % len(names)] if last in names else names[0]
@@ -1465,6 +1478,11 @@ RATING_DUR = 2.6                               # seconds added after the clip, o
 def banana_rating(views):
     """The banana's score 1-10 on a log scale: 50 views -> 1, 500 -> 3, 5k -> 6, 50k -> 8, 500k -> 10."""
     return int(round(max(1, min(10, 1 + np.log10(max(views or 1, 1) / 50) * 2.25))))
+
+def live_rating(z):
+    """Live chat clips have no clip views: the banana score from the chat explosion instead
+    (z 6 -> 5, 12 -> 7 (6.5 rounds up), 24 -> 8, 48+ -> 9; never the golden 10)."""
+    return int(min(9, math.floor(5 + 1.5 * math.log2(max(z or 6, 6) / 6) + 0.5)))
 
 _tracks = {}
 
@@ -1666,7 +1684,7 @@ def golden_rating(clip, raw):
     clips by views (the number the score comes from) gets 10 - the golden one; every other clip
     is capped at 9. YouTube windows carry the whole video's views: never gold.
     """
-    if clip.get("platform") == "youtube":
+    if clip.get("platform") == "youtube" or clip.get("live"):   # live: no clip views either
         return min(raw, 9), False
     v = clip.get("views") or 0
     hist = [x for x in load_json(STATE, {}).get("rating_hist") or [] if isinstance(x, (int, float))]
@@ -2522,6 +2540,7 @@ def render(clip, src=None, clean=False):
     blist = [brand_cfg(bcfg, n) for n in assign_brands(clip, bcfg)]
     log(f"  brands: {', '.join(b['key'] for b in blist)}")
     raw = (int(round(5 + 5 * clip["signal_score"])) if clip.get("platform") == "youtube" and "signal_score" in clip
+           else live_rating(clip.get("spike_z")) if clip.get("live")
            else banana_rating(clip.get("views")))
     rating, gold = raw, False
     if any(b.get("golden10") or b.get("heat") for b in blist):
@@ -3011,11 +3030,23 @@ def is_game(clip):
     log(f"  skip {clip['channel']} {clip['id']}: category {cats}")
     return False
 
-def process(clips, clean=False, limit=None):
+def need_back(c):
+    """A render failed after assign_brands took a brand's need (--brand-need): give it back."""
+    b = c.pop("_need", None)
+    if b and b[0] in BRAND_NEED:
+        BRAND_NEED[b[0]][b[1]] += 1
+
+def process(clips, clean=False, limit=None, tried=None):
+    """Render clips in order until `limit` succeed. `tried` (a set shared by several calls in one run)
+    keeps a clip that failed once from being tried again in the same run."""
     n = 0
     for c in clips:
         if limit is not None and n >= limit:
             break
+        if tried is not None:
+            if c["id"] in tried:
+                continue
+            tried.add(c["id"])
         if skip(c["id"]) or not is_game(c):
             continue
         log(f"render {c['platform']}/{c['channel']} '{c['title'][:60]}' {c['views']} views")
@@ -3026,6 +3057,7 @@ def process(clips, clean=False, limit=None):
                 save_moment(c)
             n += 1
         except NotGameplay as e:                 # right category, wrong picture: never again
+            need_back(c)
             if "no facecam" in str(e):           # detection can miss once: counts as a failure (max 3 tries)
                 mark(c["id"], False)
                 log(f"  skip: {e}")
@@ -3035,6 +3067,7 @@ def process(clips, clean=False, limit=None):
             save_json(STATE, state)
             log(f"  skip: {e}")
         except Exception as e:  # one broken clip must not stop launch day
+            need_back(c)
             mark(c["id"], False)
             log(f"  FAILED {c['url']}: {e}")
     return n
@@ -3161,9 +3194,31 @@ def cmd_batch(a):
         except Exception as e:
             log(f"youtube search: {str(e)[-150:]}")
         yt.sort(key=virality, reverse=True)
-    log(f"candidates: {len(live)} twitch/kick, {len(yt)} youtube -> rendering up to {a.max}")
+    log(f"candidates: {len(live)} twitch/kick, {len(yt)} youtube -> rendering up to {a.max}"
+        + (f" (catch-up {a.owed}, then >= {a.min_score:.0f} / {a.extra_score:.0f}; + up to {a.hot} hot >= {a.hot_score:.0f})"
+           if a.min_score is not None else ""))
     # viewer-made clips first (a person picked the moment); YouTube windows only fill the rest
-    total = process(live, a.clean, limit=a.max)
+    for part in filter(None, a.brand_need.split(",")):      # bananas=OWED/OTHER/HOT
+        name, _, v = part.partition("=")
+        nums = [int(x or 0) for x in v.split("/")] + [0, 0, 0]
+        BRAND_NEED[name.strip()] = nums[:3]
+    if a.min_score is None:
+        total = process(live, a.clean, limit=a.max)
+    else:
+        # just-in-time plan from `publikuj.py zbyva --plan` (same rules as `den`): a rendered clip that
+        # is not posted in this run is lost, so render only what can go out now - `owed` catch-up
+        # clips of any score, `good_n` that need good_score, the rest of `max` extra_score, and on top
+        # up to `hot` clips spreading fast (score >= hot_score, < 3 h old) for the hot path
+        tried = set()
+        total = process(live, a.clean, limit=min(a.owed, a.max), tried=tried)
+        total += process([c for c in live if virality(c) >= a.min_score], a.clean,
+                         limit=min(a.good_n, a.max - total), tried=tried)
+        total += process([c for c in live if virality(c) >= max(a.extra_score, a.min_score)], a.clean,
+                         limit=a.max - total, tried=tried)
+        if a.hot:
+            now = time.time()
+            total += process([c for c in live if virality(c) >= a.hot_score and c.get("created")
+                              and now - c["created"] <= 3 * 3600], a.clean, limit=a.hot, tried=tried)
     total += process(yt, a.clean, limit=min(a.yt, a.max - total))
     min_pool = load_json(SOURCES, {}).get("long_pool_min_views", 300)
     for c in live:                                     # missed the shorts quota: long-form may still use it
@@ -3173,7 +3228,7 @@ def cmd_batch(a):
         except Exception as e:                         # long-form pool must never break the shorts run
             log(f"pool: {e}")
     log(f"batch done: {total} new shorts")
-    if total == 0 and os.environ.get("GITHUB_ACTIONS") and datetime.now().date() >= date(2026, 11, 19):
+    if total == 0 and a.max > 0 and os.environ.get("GITHUB_ACTIONS") and datetime.now().date() >= date(2026, 11, 19):
         print("::warning::Dnes se nevyrenderoval zadny GTA 6 klip (zadne cerstve klipy, nebo blokace Twitch/Kick).")
 
 def cookie_alarm(err):
@@ -3666,7 +3721,9 @@ def cmd_live(a):
                     continue
                 url, s0, s1 = sec
                 clip = {"id": f"live_{lg}_{int(t_spike)}", "url": url, "title": st.get("title") or "",
-                        "views": int(st["viewer_count"]), "duration": s1 - s0, "created": int(t_spike),
+                        # views = 0: the stream's audience is not a clip's views (it inflated the score,
+                        # banana rating and the league); the live signal is spike_z (hot path, live_rating)
+                        "views": 0, "viewers": int(st["viewer_count"]), "duration": s1 - s0, "created": int(t_spike),
                         "channel": lg, "platform": "twitch", "category": games[0]["name"],
                         "live": True, "spike_z": z, "cluster": 2,     # a chat explosion = a strong moment
                         "chat_x": chat_x}                             # messages vs the 5 min median (post text)
@@ -3757,6 +3814,14 @@ def main():
     b.add_argument("--days", type=float, default=1, help="only moments from the last N days")
     b.add_argument("--min-views", type=int, default=500)
     b.add_argument("--jen-yt", action="store_true", help="only YouTube (the worker PC; GitHub does Twitch + Kick)")
+    b.add_argument("--owed", type=int, default=0, help="JIT plan: of --max this many catch-up clips of any score")
+    b.add_argument("--good-n", type=int, default=0, help="JIT plan: then this many with virality >= --min-score")
+    b.add_argument("--min-score", type=float, default=None, help="JIT plan (publikuj.py zbyva --plan): good_score")
+    b.add_argument("--extra-score", type=float, default=0, help="JIT plan: the rest of --max needs this")
+    b.add_argument("--hot", type=int, default=0, help="JIT plan: up to this many extra hot clips")
+    b.add_argument("--hot-score", type=float, default=2000, help="JIT plan: hot = virality >= this, < 3 h old")
+    b.add_argument("--brand-need", default="",
+                   help="JIT plan: bananas=OWED/OTHER/HOT,fanpage=... (catch-up, other slots, hot room: which brand gets a clip)")
     b.set_defaults(fn=cmd_batch)
 
     t = sub.add_parser("top", help="best clips of Twitch channels")

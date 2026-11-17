@@ -40,8 +40,12 @@ on:
 permissions:
   contents: write
 
+# Normal runs queue in 'denne' (render can take tens of minutes). The live fast path (jen_publikace=ano,
+# dispatched by live.yml) has its own group, so it never waits behind a render; the two never publish
+# at the same moment because the publishing part holds a lock in git (publikuj.py zamek), and the fast
+# path writes its own record files (publikovano_live.json, publikovano_fanpage_live.json).
 concurrency:
-  group: denne
+  group: ${{ inputs.jen_publikace == 'ano' && 'denne-live' || 'denne' }}
   cancel-in-progress: false
 
 jobs:
@@ -70,10 +74,12 @@ jobs:
           cache-dependency-path: requirements-ci.txt
 
       - uses: denoland/setup-deno@v2      # yt-dlp solves YouTube's JS challenge with deno
+        if: inputs.jen_publikace != 'ano'
         with:
           deno-version: v2.x
 
       - name: ffmpeg
+        if: inputs.jen_publikace != 'ano'   # the fast path posts ready shorts (no Top 3, no render)
         run: sudo apt-get update -q && sudo apt-get install -y -q --no-install-recommends ffmpeg
 
       - name: python deps (CPU torch, no GPU on the runner)
@@ -83,6 +89,7 @@ jobs:
           pip install -r requirements-ci.txt
 
       - uses: actions/cache@v4
+        if: inputs.jen_publikace != 'ano'
         with:
           path: models/whisper
           key: whisper-small.en
@@ -114,25 +121,33 @@ jobs:
             *) python klipuj.py --whisper small.en one "${{ inputs.url }}" ;;
           esac
 
-      - name: render (only as many as today's quota still allows)
+      - name: render (just in time, only what this run can post)
         if: inputs.url == '' && inputs.jen_publikace != 'ano'
         run: |
-          n="${{ inputs.max }}"
-          if [ -z "$n" ]; then
-            # each clip goes to ONE brand (alternating; very viral ones to both): render what both still need
-            a=$(python publikuj.py zbyva --znacka bananas 2>/dev/null || python publikuj.py zbyva)
-            b=$(python publikuj.py zbyva --znacka fanpage 2>/dev/null || echo 0)
-            echo "quota left: bananas $a, fanpage $b"
-            n=$(( a + b ))
-          fi
-          echo "quota left today: $n"
           yt="${{ inputs.yt }}"
-          # YouTube discovery is slow (detail + comments per video): only in the morning run
           # YouTube is OFF on the server: Google revokes the cookies within hours when GitHub's IPs use them
           # (seen twice on 14. 11.) and without cookies it blocks GitHub completely. YouTube runs from the PC.
           [ -z "$yt" ] && yt=0
-          echo "youtube moments this run: $yt"
-          if [ "$n" -gt 0 ]; then python klipuj.py --whisper small.en batch --max "$n" --yt "$yt"; fi
+          n="${{ inputs.max }}"
+          if [ -n "$n" ]; then
+            python klipuj.py --whisper small.en batch --max "$n" --yt "$yt"
+            exit 0
+          fi
+          # The same plan as `publikuj.py den` (publikuj.day_plan): slots due in the next plan_horizon_h
+          # + catch-up for the day's minimum + room for hot clips. A clip rendered but not posted in this
+          # run is lost (the runner's out/ is gone next time), so never the whole day at once.
+          # Each clip goes to ONE brand: the one with open slots now (--brand-need), then hot room.
+          read -r an ao ag gs es ah hs <<< "$(python publikuj.py zbyva --plan --znacka bananas)"
+          read -r bn bo bg bgs bes bh _ <<< "$(python publikuj.py zbyva --plan --znacka fanpage || echo 0 0 0 1000 5000 0 2000)"
+          n=$(( an + bn )); owed=$(( ao + bo )); goodn=$(( ag + bg )); hot=$(( ah + bh ))
+          if [ "$bgs" -lt "$gs" ]; then gs=$bgs; fi
+          if [ "$bes" -lt "$es" ]; then es=$bes; fi
+          echo "plan: bananas need $an (catch-up $ao, good $ag) hot room $ah | fanpage need $bn (catch-up $bo, good $bg) hot room $bh"
+          if [ "$n" -gt 0 ] || [ "$hot" -gt 0 ]; then
+            python klipuj.py --whisper small.en batch --max "$n" --owed "$owed" --good-n "$goodn" \
+              --min-score "$gs" --extra-score "$es" --hot "$hot" --hot-score "$hs" --yt "$yt" \
+              --brand-need "bananas=$ao/$(( an - ao ))/$ah,fanpage=$bo/$(( bn - bo ))/$bh"
+          fi
 
       # experiments (experimenty.py): at most 1 a day per account, outside the quota, only when the day's data
       # has strong material of the right kind; `den` posts it in its own slot. Never on the live hot path.
@@ -144,13 +159,39 @@ jobs:
           python experimenty.py vyrob --znacka bananas
           python experimenty.py vyrob --znacka fanpage
 
-      - name: publish to Buffer
+      # one publisher at a time (normal run or live fast path): lock in git, then the freshest records
+      # of both writers (another run may have posted while this one rendered or waited)
+      - name: publishing lock
+        id: zamek
         if: (inputs.url == '' || inputs.publikovat == 'ano') && env.BUFFER_API_KEY_1 != '' && env.NETLIFY_AUTH_TOKEN != ''
-        run: python publikuj.py den --den dnes --n 10 ${{ vars.OSTRE == '1' && '--ostre' || '' }}
+        run: |
+          rm -f zamek_ztracen zamek_do
+          python publikuj.py zamek vezmi --kdo "${{ github.run_id }}-${{ github.run_attempt }}" --ttl 20 \
+            --cekej ${{ inputs.jen_publikace == 'ano' && '25' || '40' }}
+          # keep the lock alive while this job publishes (dies with the job; then it expires in 20 min)
+          nohup python publikuj.py zamek obnov --kdo "${{ github.run_id }}-${{ github.run_attempt }}" --ttl 20 \
+            > zamek_obnov.log 2>&1 &
+          git fetch -q origin main
+          for f in publikovano.json publikovano_fanpage.json publikovano_live.json publikovano_fanpage_live.json; do
+            if git cat-file -e "origin/main:$f" 2>/dev/null; then git show "origin/main:$f" > "$f"; fi
+          done
+
+      - name: publish to Buffer
+        if: steps.zamek.outcome == 'success'
+        run: python publikuj.py den --den dnes --n 10 ${{ inputs.jen_publikace == 'ano' && '--rychle' || '' }} ${{ vars.OSTRE == '1' && '--ostre' || '' }}
 
       - name: publish to Buffer, fanpage account
-        if: (inputs.url == '' || inputs.publikovat == 'ano') && env.BUFFER_API_KEY_3 != '' && env.NETLIFY_AUTH_TOKEN != '' && hashFiles('buffer_fanpage.json') != ''
-        run: python publikuj.py den --den dnes --n 10 --znacka fanpage ${{ vars.OSTRE == '1' && '--ostre' || '' }}
+        if: steps.zamek.outcome == 'success' && env.BUFFER_API_KEY_3 != '' && hashFiles('buffer_fanpage.json') != ''
+        run: python publikuj.py den --den dnes --n 10 --znacka fanpage ${{ inputs.jen_publikace == 'ano' && '--rychle' || '' }} ${{ vars.OSTRE == '1' && '--ostre' || '' }}
+
+      # the records go to origin in the same commit that frees the lock (merged per key, never lost)
+      - name: save publication records + release the lock
+        if: always() && steps.zamek.outcome == 'success'
+        run: |
+          pkill -f "publikuj.py zamek obnov" || true
+          cat zamek_obnov.log 2>/dev/null || true
+          python publikuj.py zamek pust --kdo "${{ github.run_id }}-${{ github.run_attempt }}" --uloz \
+            ${{ inputs.jen_publikace == 'ano' && 'publikovano_live.json publikovano_fanpage_live.json' || 'publikovano.json publikovano_fanpage.json' }}
 
       - name: experiment stats (Buffer post metrics 48 h after publishing, read-only; 1x per 20 h)
         if: inputs.jen_publikace != 'ano' && env.BUFFER_API_KEY_1 != ''
@@ -174,7 +215,7 @@ jobs:
         run: |
           git config user.name "gta6bananaclips-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          for f in state.json streamers.json publikovano.json buffer.json publikovano_fanpage.json buffer_fanpage.json long_pool.json experimenty.json netlify_extra.json; do [ -f "$f" ] && git add "$f"; done
+          for f in state.json streamers.json publikovano.json buffer.json publikovano_fanpage.json buffer_fanpage.json publikovano_live.json publikovano_fanpage_live.json long_pool.json experimenty.json netlify_extra.json; do [ -f "$f" ] && git add "$f"; done
           git diff --cached --quiet && exit 0
           git commit -q -m "stav: denni beh $(date -u +%F)"
           # another workflow may push in between (denne / long / live dispatches): retry, never lose the state

@@ -407,7 +407,7 @@ def cmd_mer(a):
     for brand in [k for k, v in cfg.items() if isinstance(v, dict)]:
         P.set_brand(brand)
         chans = {c["id"]: c for c in load_json(P.CHANNELS, [])}
-        done = load_json(P.PUBLISHED, {})
+        done = P.records()                      # both record files (normal runs + live fast path)
         todo = []
         for key, rec in done.items():
             if rec.get("draft") or not rec.get("posts") or f"{brand}:{key}" in st["posts"]:
@@ -756,11 +756,12 @@ def build(plan, brand, day, dest=None, tmp_keep=False, suffix=""):
 # vyrob: today's experiment for one brand
 
 def published_sets(brand):
+    import publikuj as P
     cfg = load_json(BRANDS, {})
     mine, other = set(), set()
     for k, v in cfg.items():
         if isinstance(v, dict):
-            pub = load_json(HERE / v.get("published", "publikovano.json"), {})
+            pub = P.records(k)                  # both record files of that brand (normal + live fast path)
             ids = set(pub) | {i for rec in pub.values() for i in (rec.get("items") or [])}   # clips inside experiments
             (mine if k == brand else other).update(ids)
     return mine, other
@@ -768,13 +769,13 @@ def published_sets(brand):
 def exps_today(brand, day):
     import publikuj as P
     P.set_brand(brand)
-    return sum(1 for k, rec in load_json(P.PUBLISHED, {}).items() if k.startswith("exp_") and P.in_day(rec, day))
+    return sum(1 for k, rec in P.records().items() if k.startswith("exp_") and P.in_day(rec, day))
 
 def waiting(brand, day):
     """Rendered experiments of this day not published yet."""
     import publikuj as P
     P.set_brand(brand)
-    done = load_json(P.PUBLISHED, {})
+    done = P.records()
     out = []
     for mf in sorted((OUT / brand).glob(f"{day:%Y%m%d}_*/meta.json")):
         m = load_json(mf, {})
@@ -812,7 +813,8 @@ def make_ctx(brand, a, now, heavy):
 def cmd_vyrob(a):
     import klipuj as K
     now = time.time()
-    day = date.fromisoformat(a.den) if a.den else datetime.now(TZ).date()
+    import publikuj as P
+    day = date.fromisoformat(a.den) if a.den else P.pub_day()   # the publishing day 12:00-11:59, as `den`
     brand = a.znacka
     cfg = load_json(BRANDS, {})
     st = load_state()
@@ -834,7 +836,7 @@ def cmd_vyrob(a):
         if P.budget_level() >= 1:
             log(f"{brand}: Netlify budget tight, no experiment today")
             return
-        taken = {rec.get("slot") for k, rec in load_json(P.PUBLISHED, {}).items() if k.startswith("exp_")}
+        taken = {rec.get("slot") for k, rec in P.records().items() if k.startswith("exp_")}
         soon = datetime.now(TZ) + timedelta(minutes=45)        # render + deploy before the slot
         if not any(t > soon and b.isoformat() not in taken for b, t in P.exp_slots(day)):
             log(f"{brand}: no experiment slot left today")
