@@ -66,16 +66,26 @@ def split_video(path, names):
     import subprocess
     fr, fps = frames(path)
     diff = np.abs(fr - fr[0]).mean(axis=(1, 2))
-    n = len(fr)
-    for i, name in enumerate(names):
-        a, b = i * n // len(names), (i + 1) * n // len(names)
-        k = a + int(np.argmax(diff[a:b])) if b > a else a
+    diff = np.convolve(diff, np.ones(5) / 5, mode="same")          # smooth over 0.5 s
+    # peaks: the strongest frames at least 1.6 s apart (neutral pauses separate the reactions)
+    gap, picked = int(1.6 * fps), []
+    for k in np.argsort(diff)[::-1]:
+        if k < fps * 0.4 or k > len(fr) - 2:
+            continue
+        if all(abs(k - p) >= gap for p in picked):
+            picked.append(int(k))
+        if len(picked) == len(names):
+            break
+    picked.sort()
+    for name, k in zip(names, picked):
         t = k / fps
+        # a sticker is a reaction: head, hands and shoulders (top ~58 % of the waist-up shot), 900 px tall
+        crop = "crop=iw:ih*0.58:0:0,scale=-2:900"
         subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", f"{t:.2f}", "-i", str(path), "-frames:v", "1",
-                        str(DIR / f"{name}.png")], check=True)
+                        "-vf", crop, str(DIR / f"{name}.png")], check=True)
         t0 = max(0.0, t - 0.6)                            # ~1.2 s clip around the peak, green keyed to alpha
         subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", f"{t0:.2f}", "-t", "1.2", "-i", str(path),
-                        "-vf", "chromakey=0x00FF00:0.18:0.08,despill=type=green,format=yuva420p", "-an",
+                        "-vf", f"{crop},chromakey=0x00FF00:0.18:0.08,despill=type=green,format=yuva420p", "-an",
                         "-c:v", "libvpx-vp9", "-b:v", "0", "-crf", "32", "-auto-alt-ref", "0",
                         str(DIR / f"{name}.webm")], check=True)
         print(f"{Path(path).name} {t:.1f}s -> {name}.png + {name}.webm")
