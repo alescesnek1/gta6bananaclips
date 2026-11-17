@@ -129,7 +129,8 @@
     "twitch_BeautifulHotPterodactylNomNom-R0JkDT3JxwoiAyqQ": "Just Chatting",
     "twitch_SmellyDullVanillaRickroll-p5MTVp8EKjfO-j3o": "Fortnite",
     "twitch_BumblingDistinctDotterelTakeNRG-qwI603G23Iias0nu": "World of Warcraft",
-    "twitch_GracefulSpeedyShallotKAPOW-RnuCcWQ6Vms8-I7H": "ROB RUN"
+    "twitch_GracefulSpeedyShallotKAPOW-RnuCcWQ6Vms8-I7H": "ROB RUN",
+    "kick_clip_01M7KECPEW9P1Y63PHKN8KZ0W8": "Just Chatting"
   },
   "views": {
     "twitch_SeductiveScaryArtichokeMikeHogu-ilokmbgy1N7dF3Gp": [
@@ -379,6 +380,10 @@
     "twitch_GracefulSpeedyShallotKAPOW-RnuCcWQ6Vms8-I7H": [
       1794875937,
       520
+    ],
+    "kick_clip_01M7KECPEW9P1Y63PHKN8KZ0W8": [
+      1794879250,
+      914
     ]
   }
 }
