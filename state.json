@@ -130,7 +130,10 @@
     "twitch_SmellyDullVanillaRickroll-p5MTVp8EKjfO-j3o": "Fortnite",
     "twitch_BumblingDistinctDotterelTakeNRG-qwI603G23Iias0nu": "World of Warcraft",
     "twitch_GracefulSpeedyShallotKAPOW-RnuCcWQ6Vms8-I7H": "ROB RUN",
-    "kick_clip_01M7KECPEW9P1Y63PHKN8KZ0W8": "Just Chatting"
+    "kick_clip_01M7KECPEW9P1Y63PHKN8KZ0W8": "Just Chatting",
+    "twitch_AntsyClearEchidnaVoHiYo-djKaNjZ3dn238s_5": "World of Warcraft",
+    "twitch_LivelyProtectiveWasabiKevinTurtle-n3Ho6MVOov3gaUEP": "DayZ",
+    "kick_clip_01M7KESG9PK6RNGP21YWGGBX9X": "Just Chatting"
   },
   "views": {
     "twitch_SeductiveScaryArtichokeMikeHogu-ilokmbgy1N7dF3Gp": [
@@ -384,6 +387,18 @@
     "kick_clip_01M7KECPEW9P1Y63PHKN8KZ0W8": [
       1794879250,
       914
+    ],
+    "twitch_AntsyClearEchidnaVoHiYo-djKaNjZ3dn238s_5": [
+      1794889111,
+      920
+    ],
+    "twitch_LivelyProtectiveWasabiKevinTurtle-n3Ho6MVOov3gaUEP": [
+      1794889111,
+      576
+    ],
+    "kick_clip_01M7KESG9PK6RNGP21YWGGBX9X": [
+      1794889111,
+      600
     ]
   }
 }
