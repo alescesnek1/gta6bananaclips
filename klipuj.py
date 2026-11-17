@@ -1109,7 +1109,7 @@ FAN_LOOK = "colorbalance=rs=-0.07:gs=0.0:bs=0.09:rh=0.09:gh=0.02:bh=-0.08,eq=con
 # the original account; used as is when brands.json is missing (then every clip is only 'bananas')
 DEFAULT_BRAND = {"name": BRAND, "short": "short_9x16.mp4", "banana": True, "score_card": True, "music": None,
                  "caption": None, "grade": GRADE, "hook": "flash", "punch": 1.08, "crop_shift": 0.0,
-                 "watermark": BRAND}
+                 "watermark": BRAND, "follow": "assets/follow/follow_bananas.webm"}
 
 def brands():
     """brands.json (docs/dva-ucty.md); missing or broken -> only 'bananas', the look of before."""
@@ -1360,7 +1360,8 @@ def music_cfg(seed, total, music=None):
     return path, float(cfg.get("music_volume", 0.18)), rnd.uniform(lo, max(lo, hi - total))
 
 def audio_mix(clip_audio, total, card_idx=None, card_at=0.0, music_idx=None, music_vol=0.4, sfx_idx=None, sfx_at=0.0,
-              replay=None, mute=(), riser_idx=None, hit_idx=None, peak=None):
+              replay=None, mute=(), riser_idx=None, hit_idx=None, peak=None,
+              clip_end=None, outro_idx=None, follow_idx=None, follow_at=0.0):
     """
     The short's sound: the clip's own audio + our music at one steady level (Aleš: always the
     same volume) + the score card's landing 'tups' + the hook flash whoosh (sfx, at sfx_at s).
@@ -1368,6 +1369,8 @@ def audio_mix(clip_audio, total, card_idx=None, card_at=0.0, music_idx=None, mus
     main_end, then r0..r1 again slowed to 0.6x (atempo) and quieter, under the music.
     Tension (HPC): a quiet riser in the 1.2 s before the payoff (peak), a deep hit on it, and the
     music drops to 20 % for 0.6 s there (sudden silence). mute = (start, end) of swears -> silent.
+    clip_end = the clip's own sound stops there (an outro follows; its sound = outro_idx, from
+    clip_end on). follow_idx = the Follow card's soft click at follow_at. Music runs to `total`.
     """
     parts, f = [], ""
     fmt = "aformat=sample_rates=48000:channel_layouts=stereo"
@@ -1382,8 +1385,15 @@ def audio_mix(clip_audio, total, card_idx=None, card_at=0.0, music_idx=None, mus
               f"[ram1][rar1]concat=n=2:v=0:a=1,apad=whole_dur={total:.3f}[a0]")
         parts.append("[a0]")
     elif clip_audio:
-        f += f";[0:a]{fmt0},apad=whole_dur={total:.3f}[a0]"
+        end = f",atrim=0:{clip_end:.3f},afade=t=out:st={max(0.0, clip_end - 0.05):.3f}:d=0.05" if clip_end else ""
+        f += f";[0:a]{fmt0}{end},apad=whole_dur={total:.3f}[a0]"
         parts.append("[a0]")
+    if outro_idx is not None and clip_end:
+        f += f";[{outro_idx}:a]{fmt},adelay={int(clip_end * 1000)}:all=1,apad=whole_dur={total:.3f}[ou]"
+        parts.append("[ou]")
+    if follow_idx is not None:
+        f += f";[{follow_idx}:a]volume=0.6,{fmt},adelay={int(follow_at * 1000)}:all=1,apad=whole_dur={total:.3f}[fo]"
+        parts.append("[fo]")
     if music_idx is not None:                  # adeclick: the generated track has a little crackle
         duck = (f",volume='if(between(t\\,{peak:.2f}\\,{peak + 0.6:.2f})\\,0.2\\,1)':eval=frame"
                 if peak is not None and hit_idx is not None else "")
@@ -1412,17 +1422,31 @@ def audio_mix(clip_audio, total, card_idx=None, card_at=0.0, music_idx=None, mus
     f += f";{''.join(parts)}amix=inputs={len(parts)}:duration=longest:normalize=0,atrim=0:{total:.3f},alimiter=limit=0.95[aud]"
     return f
 
-def card_overlay(f, idx, at, pad):
+def card_overlay(f, idx, at, pad, tag=""):
     """
     The banana score card starts where the clip's story ends (`at`, after the payoff, never
     over a moment) and the footage keeps running underneath; only when the source has no more
     footage the last frame holds for `pad` s. Bananas drop into the 'jar' of the short.
+    Also lays the Follow card (tag='f': its own labels) over whatever is running.
     """
-    f = f[: -len("[v]")] + "[pre]"
+    f = f[: -len("[v]")] + f"[pre{tag}]"
     hold = f"tpad=stop_mode=clone:stop_duration={pad:.3f}," if pad > 0.01 else ""
-    f += (f";[pre]{hold}null[pz];"
-          f"[{idx}:v]setpts=PTS-STARTPTS+{at:.3f}/TB[rc];[pz][rc]overlay=0:0:eof_action=pass[v]")
+    f += (f";[pre{tag}]{hold}null[pz{tag}];"
+          f"[{idx}:v]setpts=PTS-STARTPTS+{at:.3f}/TB[rc{tag}];[pz{tag}][rc{tag}]overlay=0:0:eof_action=pass[v]")
     return f
+
+# Follow card (tools/follow/follow.py -> assets/follow/follow_<brand>.webm, brands.json 'follow'):
+# a profile card whose Follow button gets clicked, laid over the last FOLLOW_DUR s of the short
+# (bananas: over the running score card; fanpage: over the running outro). It never makes the
+# short longer. KLIPY_NO_FOLLOW=1 turns it off.
+FOLLOW_DUR = 2.2
+
+def outro_append(f, idx, at):
+    """The brand's outro (brands.json 'outro', input idx) joined AFTER the clip, which ends at `at` s."""
+    f = f[: -len("[v]")] + "[mo]"
+    return f + (f";[mo]trim=0:{at:.3f},setpts=PTS-STARTPTS,fps={FPS},format=yuv420p,setsar=1[mv];"
+                f"[{idx}:v]fps={FPS},scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},"
+                f"setpts=PTS-STARTPTS,format=yuv420p,setsar=1[ov];[mv][ov]concat=n=2:v=1:a=0[v]")
 
 def extras_ass(path, reactions, rating, dur, cam, seed):
     """
@@ -1842,6 +1866,14 @@ def render(clip, src=None, clean=False):
                         push.append(e)
             total = (card_at + RATING_DUR if use_card else
                      main_end + (replay[2] - replay[1]) / 0.6 if replay else main_end)
+            # ending: the brand's outro joined after the clip; the Follow card over the last
+            # FOLLOW_DUR s of what is running then (outro / banana score card), never longer
+            outro = HERE / b["outro"] if b.get("outro") else None
+            outro = outro if outro and outro.exists() else None
+            clip_total = total
+            total += duration(outro) if outro else 0.0
+            follow = HERE / b["follow"] if b.get("follow") and not os.environ.get("KLIPY_NO_FOLLOW") else None
+            follow = follow if follow and follow.exists() and total > FOLLOW_DUR + 1 else None
             mpath, mvol, mstart = music_cfg(clip["id"], total, b.get("music"))
             mvol = float(b.get("music_volume", mvol))
             beat = beat_grid(mpath, mstart, total) if mpath and not fan else None
@@ -1870,10 +1902,21 @@ def render(clip, src=None, clean=False):
             if peak is not None and peak < main_end and riser.exists() and hit.exists():
                 inputs += ["-i", str(riser), "-i", str(hit)]
                 riser_idx, hit_idx = idx + (sfx_idx is not None), idx + (sfx_idx is not None) + 1
+            nxt = idx + (sfx_idx is not None) + (2 if riser_idx is not None else 0)
+            outro_idx = follow_idx = None
+            if outro:
+                flt = outro_append(flt, nxt, clip_total)
+                inputs += ["-i", str(outro)]
+                outro_idx, nxt = nxt if has_audio(outro) else None, nxt + 1
+            if follow:
+                flt = card_overlay(flt, nxt, total - FOLLOW_DUR, 0.0, tag="f")
+                inputs += ["-c:v", "libvpx-vp9", "-i", str(follow)]
+                follow_idx = nxt
             mix = audio_mix(has_audio(src), total, card_idx, card_at, music_idx, mvol, sfx_idx, sfx_at, replay,
-                            mute, riser_idx, hit_idx, peak)
+                            mute, riser_idx, hit_idx, peak, clip_end=clip_total if outro else None,
+                            outro_idx=outro_idx, follow_idx=follow_idx, follow_at=total - FOLLOW_DUR)
             maps = inputs + ["-filter_complex", flt + (mix or ""), "-map", "[v]"] + (["-map", "[aud]"] if mix else [])
-            if not use_card and not replay and total < dur - 0.01:
+            if not outro and not use_card and not replay and total < dur - 0.01:
                 maps += ["-t", f"{total:.3f}"]
             enc = encode(ff + reaction_inputs(rx) + maps, out)
             problems = [x for x in quality_check(out, cam, cam_h, until=card_at)

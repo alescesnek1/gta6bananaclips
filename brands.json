@@ -33,6 +33,7 @@
     "punch": 1.08,
     "crop_shift": 0.0,
     "watermark": "gta6bananaclips",
+    "follow": "assets/follow/follow_bananas.webm",
     "ramp": {
       "2026-11-19": 8,
       "2026-12-03": 10
@@ -70,6 +71,8 @@
     "punch": 1.12,
     "crop_shift": 0.07,
     "watermark": "gta6fanpageclip",
+    "outro": "assets/outro/fanpage_outro_cap.mp4",
+    "follow": "assets/follow/follow_fanpage.webm",
     "ramp": {
       "2026-11-17": 2,
       "2026-11-19": 6,
