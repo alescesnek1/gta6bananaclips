@@ -1422,7 +1422,7 @@ def audio_mix(clip_audio, total, card_idx=None, card_at=0.0, music_idx=None, mus
     f += f";{''.join(parts)}amix=inputs={len(parts)}:duration=longest:normalize=0,atrim=0:{total:.3f},alimiter=limit=0.95[aud]"
     return f
 
-def card_overlay(f, idx, at, pad, tag=""):
+def card_overlay(f, idx, at, pad, tag="", fade_out=None):
     """
     The banana score card starts where the clip's story ends (`at`, after the payoff, never
     over a moment) and the footage keeps running underneath; only when the source has no more
@@ -1432,7 +1432,7 @@ def card_overlay(f, idx, at, pad, tag=""):
     f = f[: -len("[v]")] + f"[pre{tag}]"
     hold = f"tpad=stop_mode=clone:stop_duration={pad:.3f}," if pad > 0.01 else ""
     f += (f";[pre{tag}]{hold}null[pz{tag}];"
-          f"[{idx}:v]setpts=PTS-STARTPTS+{at:.3f}/TB[rc{tag}];[pz{tag}][rc{tag}]overlay=0:0:eof_action=pass[v]")
+          f"[{idx}:v]{fade_out or ''}setpts=PTS-STARTPTS+{at:.3f}/TB[rc{tag}];[pz{tag}][rc{tag}]overlay=0:0:eof_action=pass[v]")
     return f
 
 # Follow card (tools/follow/follow.py -> assets/follow/follow_<brand>.webm, brands.json 'follow'):
@@ -1605,9 +1605,11 @@ def trim_points(words, peak, dur, hi=35.0, lo=8.0):
     talk_after = [w for w in words if w[0] > (peak or 0) + 5]
     if peak is not None and not (peak < dur / 3 and talk_after):   # a shout early on is not the payoff
         end_sent = next((w[1] for w in words if w[0] >= peak - 0.5 and w[2][-1:] in ".?!"), None)
-        end_word = next((w[1] for w in words if w[1] >= peak + 0.6), None)       # no punctuation: end of a word
-        end = end_sent if end_sent and end_sent <= peak + 4 else (end_word if end_word and end_word <= peak + 4 else peak + 0.6)
-        b = min(dur, max(end + 0.3, peak + 1.8))          # the banana (1.5 s) must fit after the payoff
+        end_word = next((w[1] for w in words if w[1] >= peak + 2.5), None)       # no punctuation: end of a word
+        # Aleš 17. 11.: after the climax leave a few seconds - the reaction and the sentence that is
+        # running finish, never cut mid-sentence (the xQc test ended just barely)
+        end = end_sent if end_sent and end_sent <= peak + 6 else (end_word if end_word and end_word <= peak + 6 else peak + 3.0)
+        b = min(dur, max(end + 0.5, peak + 3.0))
     elif words and dur - words[-1][1] > 2:
         b = words[-1][1] + 0.8
     if b - a > hi:                                 # too long: keep the 35 s around the payoff, never cut it off
@@ -1909,7 +1911,9 @@ def render(clip, src=None, clean=False):
                 inputs += ["-i", str(outro)]
                 outro_idx, nxt = nxt if has_audio(outro) else None, nxt + 1
             if follow:
-                flt = card_overlay(flt, nxt, total - FOLLOW_DUR, 0.0, tag="f")
+                # over the outro the card darkens with it (the outro fades to black in its last ~0.45 s)
+                fade = f"fade=t=out:st={FOLLOW_DUR - 0.45:.2f}:d=0.45:alpha=1," if outro else None
+                flt = card_overlay(flt, nxt, total - FOLLOW_DUR, 0.0, tag="f", fade_out=fade)
                 inputs += ["-c:v", "libvpx-vp9", "-i", str(follow)]
                 follow_idx = nxt
             mix = audio_mix(has_audio(src), total, card_idx, card_at, music_idx, mvol, sfx_idx, sfx_at, replay,
