@@ -50,7 +50,8 @@ def attachments(m):
     out = []
     d = Path(m["nahled_vstup"]) if m.get("nahled_vstup") else None
     if d and d.exists():
-        for src, name in (("face.jpg", "1_tvar.jpg"), ("frame.jpg", "2_scena.jpg"), ("face2.jpg", "3_tvar2.jpg")):
+        for src, name in (("face.jpg", "1_tvar.jpg"), ("frame.jpg", "2_scena.jpg"), ("znacka.png", "3_znacka.png"),
+                          ("face2.jpg", "4_tvar2.jpg")):
             if (d / src).exists():
                 out.append((name, d / src))
     if m.get("thumbnail") and Path(m["thumbnail"]).exists():
@@ -63,17 +64,20 @@ def texts_for(m):
     files = attachments(m)
     names = [n for n, _ in files]
     has = lambda n: n in names
+    den = ["pondělí", "úterý", "středa", "čtvrtek", "pátek", "sobota", "neděle"][when.weekday()]
     lines = [
-        f"Kanál: {kanal}",
-        f"Nahrát: {when:%d.%m.%Y %H:%M} (Praha)   Délka: {m.get('duration_s', 0) / 60:.1f} min",
+        f"KANÁL: YouTube {kanal}",
+        f"NAPLÁNOVAT NA: {den} {when:%d.%m.%Y} v {when:%H:%M} (čas Praha)",
+        *([f"POZNÁMKA: {m['poznamka']}"] if m.get("poznamka") else []),
+        f"Délka: {m.get('duration_s', 0) / 60:.1f} min",
         f"Video ke stažení (platí 3 dny, potřeba přihlášení na GitHub): {m.get('_odkaz') or '(chybí odkaz na artefakt)'}",
         "",
         f"Ve Studiu: nahraj video, vlož název, popis a tagy, miniaturu z Gemini/ChatGPT, naplánuj na "
         f"{when:%d.%m. %H:%M} (Praha), playlist \"{m.get('playlist', m['serie'])}\", kategorie Hry, pro děti NE.",
         "",
         "===== NÁHLED – Gemini/ChatGPT =====",
-        "1) Nahraj přílohy " + " a ".join(n for n in ("1_tvar.jpg", "2_scena.jpg") if has(n))
-        + (" (3_tvar2.jpg jen když chceš místo ženy druhého streamera)" if has("3_tvar2.jpg") else "") + ".",
+        "1) Nahraj přílohy " + ", ".join(n for n in ("1_tvar.jpg", "2_scena.jpg", "3_znacka.png") if has(n))
+        + (" (4_tvar2.jpg jen když chceš druhého streamera)" if has("4_tvar2.jpg") else "") + ".",
         "2) Vlož prompt níže.",
         "3) Nech vygenerovat 3 varianty.",
         "4) Nejlepší dej do YouTube Studia jako miniaturu, další dvě do Test & Compare.",
@@ -92,7 +96,7 @@ def texts_for(m):
         lines += ["", "Záloha: zaloha_nahled_ai.jpg je automatický náhled (Cloudflare), kdyby nebyl čas."]
     lines += ["", "===== NÁZEV =====", m["title"], "", "===== POPIS =====", m["description"], "",
               "===== TAGY =====", ", ".join(m.get("tags", []))]
-    subject = f"[{kanal}] {m['title']} – nahrát {when:%d.%m. %H:%M}"
+    subject = f"[YouTube {kanal}] naplánovat {den} {when:%d.%m. %H:%M} – {m['title']}"
     return subject, "\n".join(lines), files
 
 def as_html(body):
@@ -157,7 +161,16 @@ def main():
     keys = [os.environ.get(k) for k in ("MAIL_FROM", "MAIL_APP_PASSWORD", "MAIL_TO")]
     for mp in a.meta:
         m = json.loads(Path(mp).read_text(encoding="utf-8"))
-        msg, body, files = build(m, a.odkaz)
+        if mp.endswith(".failed.json"):                   # QA stopped the video: a short note, no link
+            msg = EmailMessage(policy=SMTP)
+            kanal = "gta6bananaclips" if m.get("znacka") == "bananas" else "gta6fanpageclip"
+            msg["Subject"] = f"[{kanal}] video na {m.get('publish_day')} se nepovedlo: {m.get('duvod', '')[:120]}"
+            body = (f"Long-form {m.get('serie')} na {m.get('publish_day')} neprošel automatickou kontrolou ani "
+                    f"bez tier listu, proto se neposílá.\nDůvod: {m.get('duvod')}\n")
+            msg.set_content(body)
+            files = []
+        else:
+            msg, body, files = build(m, a.odkaz)
         if a.uloz:
             save(msg, body, files, m, a.uloz)
             continue

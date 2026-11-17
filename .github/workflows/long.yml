@@ -3,8 +3,9 @@
 #   2. nahled / nahled_ai -> thumbnail inputs + AI thumbnail (Cloudflare Workers AI, if keys)
 #   3. artifact       -> the video for download (3 days)
 #   4. posli_mail.py  -> e-mail with title, description, tags, thumbnail(s) and the download link
-# Daily after the Prague day closes: bananas funny-day, fanpage wild-day (different series).
-# Sunday afternoon: top-week for both. Manual run: Actions -> long-form -> Run workflow.
+# Daily at ~00:25 Prague: the video for TOMORROW (the e-mail arrives a day ahead). Which series runs on
+# which day is the calendar in brands.json -> long_calendar (themed series fall back to the main one
+# when they lack verified moments; at most 1 video per channel per day). Manual: Actions -> Run workflow.
 #
 # Secrets: TWITCH_CLIENT_ID, TWITCH_CLIENT_SECRET (moments of the GTA VI category),
 #          CF_ACCOUNT_ID, CF_API_TOKEN (AI thumbnail; without: no thumbnail),
@@ -16,15 +17,17 @@ name: long-form
 
 on:
   schedule:
-    - cron: "25 23 * * *"          # 00:25 Prague (winter): the day that just ended
-    - cron: "10 15 * * 0"          # Sunday 16:10 Prague: top of the week
+    - cron: "25 23 * * *"          # 00:25 Prague (winter)
   workflow_dispatch:
     inputs:
       znacka:
         description: "obe / bananas / fanpage"
         default: "obe"
       serie:
-        description: "empty = daily series of the brand; or glitches, chases, top-week, streamer:<login>"
+        description: "empty = the calendar (brands.json long_calendar); or e.g. chases, top-week, streamer:<login>"
+        default: ""
+      den:
+        description: "publish day YYYY-MM-DD (empty = tomorrow)"
         default: ""
       od:
         description: "first day YYYY-MM-DD (empty = yesterday / last 7 days for top-week)"
@@ -86,7 +89,6 @@ jobs:
         run: |
           z="${{ inputs.znacka }}"; s="${{ inputs.serie }}"
           [ -z "$z" ] && z=obe
-          if [ "${{ github.event.schedule }}" = "10 15 * * 0" ]; then s=top-week; fi
           echo "brands=$([ "$z" = obe ] && echo 'bananas fanpage' || echo "$z")" >> "$GITHUB_OUTPUT"
           echo "serie=$s" >> "$GITHUB_OUTPUT"
           echo "plan: $z / ${s:-daily series}"
@@ -96,7 +98,8 @@ jobs:
           extra=""
           [ -n "${{ inputs.od }}" ] && extra="$extra --od ${{ inputs.od }}"
           [ -n "${{ inputs.do }}" ] && extra="$extra --do ${{ inputs.do }}"
-          [ -n "${{ inputs.delka }}" ] && extra="$extra --delka ${{ inputs.delka }} --min-delka 30 --min-momentu 3"
+          [ -n "${{ inputs.den }}" ] && extra="$extra --den ${{ inputs.den }}"
+          [ -n "${{ inputs.delka }}" ] && extra="$extra --delka ${{ inputs.delka }} --min-video 60 --min-momentu 6 --min-overeno 3"
           for z in ${{ steps.plan.outputs.brands }}; do
             s="${{ steps.plan.outputs.serie }}"
             if [ -n "${{ inputs.hra }}" ]; then
@@ -145,11 +148,15 @@ jobs:
         if: steps.art_f.outputs.artifact-url != ''
         run: python posli_mail.py out/_long/fanpage/*.meta.json --odkaz "${{ steps.art_f.outputs.artifact-url }}"
 
-      - name: save state (used moments, AI image budget)
+      - name: e-mail about a video that failed QA (no link)
+        if: hashFiles('out/_long/*/*.failed.json') != ''
+        run: python posli_mail.py out/_long/*/*.failed.json
+
+      - name: save state (used moments, episodes, reserve, AI budget)
         if: always()
         run: |
           git config user.name "gta6bananaclips-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -- long_pool.json streamers.json 2>/dev/null || true   # written by denne.yml, avoid conflicts
-          for f in long_used.json nahled_ai_budget.json; do [ -f "$f" ] && git add "$f"; done
+          for f in long_used.json long_episodes.json long_reserve.json nahled_ai_budget.json; do [ -f "$f" ] && git add "$f"; done
           git diff --cached --quiet || { git commit -q -m "stav: long-form $(date -u +%F)" && git pull -q --rebase && git push -q; }

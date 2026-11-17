@@ -39,7 +39,33 @@
       "2026-12-03": 10
     },
     "max_per_day": 10,
-    "top3": true
+    "top3": true,
+    "long_calendar": {
+      "_napoveda": "Long-form serie podle dne ZVEREJNENI (beh posila e-mail den predem). Ales 17. 11.: jen 3x tydne na kanal. Seznam = tydenni rotace. Den bez zaznamu = zadne video. Tematicka serie bez 15 overenych momentu -> hlavni serie.",
+      "special": {
+        "2026-11-20": "first-reactions"
+      },
+      "phases": [
+        {
+          "from": "2026-11-19",
+          "days": {
+            "tue": "funny-day",
+            "thu": "streamer-week",
+            "sun": "banana-league"
+          }
+        }
+      ]
+    },
+    "long_flags": {
+      "_napoveda": "Vypinace novych prvku long-formu (false = vypnuto).",
+      "tier_list": true,
+      "league": true,
+      "thumb_brand": true,
+      "multi_pov": true,
+      "banana_reaction": true,
+      "fanpage_story": true,
+      "model_cards": true
+    }
   },
   "fanpage": {
     "name": "gta6fanpageclip",
@@ -80,6 +106,35 @@
     },
     "max_per_day": 8,
     "top3": false,
-    "music_volume": 0.11
+    "music_volume": 0.11,
+    "long_calendar": {
+      "_napoveda": "Long-form serie podle dne ZVEREJNENI (beh posila e-mail den predem). Ales 17. 11.: jen 3x tydne na kanal. Seznam = tydenni rotace. Den bez zaznamu = zadne video. Tematicka serie bez 15 overenych momentu -> hlavni serie. Fanpage = THE STORY (bez poradi): Po noc jednoho streamera, St same-mission kdyz je multi-POV jinak After Dark, So After Dark.",
+      "special": {
+        "2026-11-20": "first-reactions"
+      },
+      "phases": [
+        {
+          "from": "2026-11-19",
+          "days": {
+            "mon": "streamer-night",
+            "wed": [
+              "after-dark"
+            ],
+            "sat": "after-dark"
+          }
+        }
+      ],
+      "same_mission_day": "wed"
+    },
+    "long_flags": {
+      "_napoveda": "Vypinace novych prvku long-formu (false = vypnuto).",
+      "tier_list": true,
+      "league": true,
+      "thumb_brand": true,
+      "multi_pov": true,
+      "banana_reaction": true,
+      "fanpage_story": true,
+      "model_cards": true
+    }
   }
 }

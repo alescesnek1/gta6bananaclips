@@ -221,6 +221,77 @@ def score(path, tbox):
 
 VISION = "@cf/meta/llama-3.2-11b-vision-instruct"   # ~10 neurons per call (one 640 px image, short answer)
 
+def vision_left():
+    """Vision calls left today (CF_MAX_VISION, default 60, shared by topic checks and the scene description)."""
+    day = datetime.now(timezone.utc).date().isoformat()
+    b = json.loads(BUDGET.read_text(encoding="utf-8")) if BUDGET.exists() else {}
+    return int(os.environ.get("CF_MAX_VISION", "60")) - b.get(day, {}).get("vision", 0)
+
+def vision_spend():
+    day = datetime.now(timezone.utc).date().isoformat()
+    b = json.loads(BUDGET.read_text(encoding="utf-8")) if BUDGET.exists() else {}
+    e = b.setdefault(day, {"images": 0, "neurons": 0})
+    e["vision"] = e.get("vision", 0) + 1
+    e["neurons"] = e.get("neurons", 0) + 10
+    BUDGET.write_text(json.dumps(b, indent=2), encoding="utf-8")
+
+def vision(jpg, prompt, max_tokens=80):
+    """One Workers AI vision call -> the answer text (str) or parsed dict, or None (no keys / budget / error)."""
+    load_env()
+    if not (os.environ.get("CF_ACCOUNT_ID") and os.environ.get("CF_API_TOKEN")) or os.environ.get("CF_VISION") == "0":
+        return None
+    if vision_left() <= 0:
+        log("  vision: today's budget used up")
+        return None
+    img = cv2.imread(str(jpg))
+    w = min(1024, img.shape[1])
+    img = cv2.resize(img, (w, int(img.shape[0] * w / img.shape[1])), interpolation=cv2.INTER_AREA)
+    b64 = base64.b64encode(cv2.imencode(".jpg", img, [cv2.IMWRITE_JPEG_QUALITY, 86])[1].tobytes()).decode()
+    url = f"https://api.cloudflare.com/client/v4/accounts/{os.environ['CF_ACCOUNT_ID']}/ai/run/{VISION}"
+    body = json.dumps({"prompt": prompt, "image": b64, "max_tokens": max_tokens, "temperature": 0.1}).encode()
+    req = urllib.request.Request(url, data=body, method="POST", headers={
+        "Authorization": f"Bearer {os.environ['CF_API_TOKEN']}", "Content-Type": "application/json"})
+    try:
+        with urllib.request.urlopen(req, timeout=90) as r:
+            res = json.load(r)
+    except urllib.error.HTTPError as e:
+        log(f"  vision {e.code}: {e.read().decode(errors='replace')[:160]}")
+        return None
+    except OSError as e:
+        log(f"  vision: {e}")
+        return None
+    vision_spend()
+    return (res.get("result") or {}).get("response")
+
+def ask_yes_no(jpg, question):
+    """Topic check: True / False, or None when the vision model is unavailable."""
+    ans = vision(jpg, "These are frames from a video game stream (top left: 1.5 s before, top right: the moment). "
+                      "Ignore chat, webcam and on-screen interface. " + question + " Answer with one word: yes or no.",
+                 max_tokens=5)
+    if ans is None:
+        return None
+    a = (json.dumps(ans) if isinstance(ans, dict) else str(ans)).strip().lower()
+    return a.startswith("yes") or '"yes"' in a
+
+def ask_gameplay(jpg, topic_question=None):
+    """
+    One vision call: (is it gameplay, topic yes/no or None). Returns (None, None) when unavailable.
+    """
+    import kategorie
+    q = ("These are four frames from a stream moment (top: 1.5 s before and the moment; bottom: its start and later). "
+         "Q1: " + kategorie.GAMEPLAY_Q + (" Q2: " + topic_question if topic_question else "")
+         + ' Reply with JSON only: {"q1": "yes" or "no"' + (', "q2": "yes" or "no"' if topic_question else "") + "}")
+    ans = vision(jpg, q, max_tokens=20)
+    if ans is None:
+        return None, None
+    txt = (json.dumps(ans) if isinstance(ans, dict) else str(ans)).lower()
+    pick = lambda k: (None if f'"{k}"' not in txt else
+                      txt.split(f'"{k}"', 1)[1].lstrip(' :"').startswith("yes"))
+    gp, tp = pick("q1"), pick("q2") if topic_question else None
+    if gp is None:                                     # answer not in JSON: read the first yes / no
+        gp = txt.strip().startswith("yes")
+    return gp, tp
+
 def describe_scene(frame_path):
     """
     One sentence for the thumbnail prompt: what happens in the game frame + the key object

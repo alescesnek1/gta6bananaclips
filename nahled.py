@@ -271,12 +271,43 @@ SCENE_FALLBACK = {   # no vision model: from the tags
 COLOR_NAME = {"bananas": ("banana yellow", "#FFE135"), "fanpage": ("hot pink", "#FF4FD8")}
 PROMPT = """Create a YouTube thumbnail, 16:9, 1280x720, in the style of the biggest gaming YouTube channels: bold, ultra-saturated, high contrast, cinematic lighting, razor-sharp.
 Image 1 is the streamer. Keep their exact identity (face shape, hair, skin tone, headphones), same gender and age. Make the expression extremely exaggerated: {emotion}, eyes wide, mouth wide open, eyebrows up. Place them large on the {face_side} third, cut out with a thin white outline and a soft {color_name} rim glow, shoulders cropped by the bottom edge.
-Image 2 is the game moment: {scene}. Keep the location and the action, but render it as a polished, sun-drenched Vice City-style screenshot: golden-hour sunset, palm trees, neon, wet reflective asphalt, motion blur, sparks and debris. Make {key_object} big and unmistakable in the middle of the picture.
-Add ONE thick bright red arrow with a white outline pointing at {key_object}{circle_line}.
-Text: "{text}" in huge heavy sans-serif capitals, white with the last word in {color_name} ({hex}), thick black outline, across the top, readable at 168x94 px. No other text, no logos, no UI, no watermarks.
-{woman_line}
-Layout: the streamer's face big on the {face_side} third, the woman on the {other_side} third, the action and the red arrow in the middle, the text across the top.
-Keep it simple: face, woman, action, arrow, text. Nothing else. Do not invent anything that did not happen in image 2."""
+Image 2 is the game moment from GTA 6 (Grand Theft Auto VI): {scene}. Keep the location and the action, but render it as a polished GTA 6 screenshot that anyone recognises at first glance as GTA 6 in Vice City: pastel art-deco buildings of Ocean Drive, pink and teal neon signs, palm trees, golden-hour sunset with a pink-orange sky, GTA-style cars and police cruisers, wet reflective asphalt, motion blur, sparks and debris. Make {key_object} big and unmistakable in the middle of the picture.
+Only if it makes the action clearer, add ONE thick bright red arrow with a white outline pointing at {key_object}.
+Text: "{text}" in huge heavy sans-serif capitals, white with the last word in {color_name} ({hex}), thick black outline, across the top, readable at 168x94 px.{episode_line}
+Add a bold "GTA 6" badge in the bottom {other_side} corner: chunky italic letters filled with the game's pink-orange-purple sunset gradient, white outline, slight drop shadow, about 1/6 of the image width. No other text, no other logos, no UI, no watermarks.
+{brand_line}
+{badge_line}
+Layout: the streamer's face big on the {face_side} third, {brand_who} on the {other_side} third, the action in the middle, the text across the top.
+Keep it simple: face, {brand_who}, action, badges, text. Nothing else. Do not invent anything that did not happen in image 2."""
+# the account's own face on every thumbnail (Aleš 17. 11.: the invented woman + red arrow is what everybody does)
+BRAND_LINE = {
+    "bananas": ("Image 3 is our banana mascot: put it big next to the streamer, reacting with the same {emotion} "
+                "expression, same cartoon art style as image 3, clean outline."),
+    "fanpage": ("Image 3 is our presenter, the same woman on every thumbnail of this channel: keep her face exactly as "
+                "in image 3. Put her on the {other_side} third reacting to the action with a shocked gasp, stylish and "
+                "confident, fully dressed in a Vice City outfit: {outfit}. Tasteful, no suggestive pose, no focus on "
+                "body parts."),
+}
+BRAND_WHO = {"bananas": "the banana mascot", "fanpage": "our presenter"}
+PRESENTER_OUTFITS = [
+    "a cropped denim jacket over a white tee, high-waisted jeans, gold hoops",
+    "an oversized pastel pink blazer, white tee, wide trousers, sunglasses pushed up",
+    "a teal bomber jacket, black turtleneck, cargo pants, chunky sneakers",
+    "a white tracksuit with pink stripes, gold chain, cap",
+    "a palm-print shirt dress with a belt, denim jacket over the shoulders",
+    "a black leather jacket, neon pink hoodie underneath, straight jeans",
+]
+BADGE = {   # data, not copy: the tier of the #1 moment / its heat
+    "bananas": ('In the top {other_side} corner a big tier badge: a rounded square with the letter "{tier}" '
+                '(tier list style), in the same font and colours as the text.'),
+    "fanpage": ('In the top {other_side} corner a sleek badge "HEAT {heat}/5" with small neon flames, hot pink and '
+                'white, in the same font as the text.'),
+}
+
+def brand_line(znacka, seed, other_side, emotion):
+    import random as _r
+    outfit = _r.Random(f"outfit:{seed}").choice(PRESENTER_OUTFITS)
+    return BRAND_LINE[znacka].format(other_side=other_side, emotion=emotion, outfit=outfit)
 # second figure on every thumbnail (Aleš 17. 11.): an invented Vice City woman, never a real person and
 # never the brand's model / mascot. Outfit, hair and pose vary per video (seeded), always ad-friendly.
 WOMAN_LINE = ("Add a second character: a fictional, attractive, curvy woman in sun-soaked Vice City style ({look}), "
@@ -335,13 +366,21 @@ def scene_text(frame_path, tags):
     tag = next((t for t in tags or [] if t in SCENE_FALLBACK), "wow")
     return SCENE_FALLBACK[tag][0], SCENE_FALLBACK[tag][1], "tags"
 
-def build_prompt(znacka, tags, text, scene, key_object, face_side, seed=""):
+def thumb_brand(z):
+    """brands.json -> <brand> -> long_flags -> thumb_brand (default on)."""
+    return bool(((K.load_json(K.BRANDS, {}).get(z) or {}).get("long_flags") or {}).get("thumb_brand", True))
+
+def build_prompt(znacka, tags, text, scene, key_object, face_side, seed="", episode=None, tier="S", heat=5):
     other = "left" if face_side == "right" else "right"
     color_name, hx = COLOR_NAME[znacka]
     emotion = next((EMO_PROMPT[t] for t in tags or [] if t in EMO_PROMPT), "pure shock")
     return PROMPT.format(emotion=emotion, face_side=face_side, other_side=other, text_side=other, color_name=color_name,
                          hex=hx, scene=scene.rstrip("."), key_object=key_object, circle_line="", text=text.upper(),
-                         woman_line=woman_line(seed, other))
+                         brand_line=brand_line(znacka, seed, other, emotion) if thumb_brand(znacka) else "",
+                         brand_who=BRAND_WHO[znacka] if thumb_brand(znacka) else "the action",
+                         badge_line=BADGE[znacka].format(other_side=other, tier=tier, heat=heat),
+                         episode_line=(f' Next to the text a big "#{episode}" badge in the same font, colours and '
+                                       f'outline, as part of the headline.' if episode else ""))
 
 def date_ord(s):
     from datetime import date as _d
@@ -359,7 +398,16 @@ def prepare_long(meta_path):
     meta_path = Path(meta_path)
     m = json.loads(meta_path.read_text(encoding="utf-8"))
     out = meta_path.with_name(meta_path.name.replace(".meta.json", ""))
-    top = sorted(m["moments"], key=lambda x: x["rank"])[:3]
+    # the most viral streamer of the video first (followers / views), within him the moment with the
+    # strongest emotion (loudest payoff), then the next streamers
+    loud = lambda x: (x.get("tag_scores") or {}).get("_loud") or 0
+    by_reach = sorted(m["moments"], key=lambda x: (-(x.get("reach") or 0), -loud(x), x["rank"]))
+    top, seen = [], set()
+    for mo in by_reach:
+        if mo["channel"] not in seen:
+            seen.add(mo["channel"])
+            top.append(mo)
+    top = top[:3]
     res, used = None, None
     for mo in top:
         res = prepare(mo["source"], mo.get("peak"), mo["channel"], m["znacka"], out, mo.get("tags"), m.get("serie"),
@@ -370,7 +418,7 @@ def prepare_long(meta_path):
     d = out / "nahled_vstup"
     face2 = None
     (d / "face2.jpg").unlink(missing_ok=True)
-    for mo in top:                                    # a second streamer's face, if one of the top 3 has one
+    for mo in top:                                    # a second streamer's face (next by reach)
         if mo["channel"] == used["channel"]:
             continue
         cam = cam_for(mo["channel"], Path(mo["source"]))
@@ -380,15 +428,23 @@ def prepare_long(meta_path):
                 cv2.imwrite(str(d / "face2.jpg"), f2, [cv2.IMWRITE_JPEG_QUALITY, 94])
                 face2 = mo["channel"]
                 break
-    (d / "znacka.png").unlink(missing_ok=True)      # Aleš 17. 11.: no mascot / brand model on thumbnails
+    if thumb_brand(m["znacka"]):                     # Aleš 17. 11.: our banana / our presenter on every thumbnail
+        brand_ref(m["znacka"], d / "znacka.png")
+    else:
+        (d / "znacka.png").unlink(missing_ok=True)
+    one = min(m["moments"], key=lambda x: x["rank"])
+    tier, heat = one.get("tier") or "S", max(1, min(5, round(5 * (one.get("fun") or 0.8) + 0.5)))
     scene, key, how = scene_text(d / "frame.jpg", used.get("tags"))
     face_side = "right" if (date_ord(m.get("datum")) + (0 if m["znacka"] == "bananas" else 1)) % 2 else "left"
     texts = res["texts"]
     seed = meta_path.name
     other = "left" if face_side == "right" else "right"
     res.update(face2=("face2.jpg" if face2 else None), face2_channel=face2,
-               scene=scene, key_object=key, scene_from=how, face_side=face_side, woman=woman_line(seed, other),
-               prompt=build_prompt(m["znacka"], used.get("tags"), texts[0], scene, key, face_side, seed))
+               scene=scene, key_object=key, scene_from=how, face_side=face_side, tier=tier, heat=heat,
+               prompt=build_prompt(m["znacka"], used.get("tags"), texts[0], scene, key, face_side, seed,
+                                   tier=tier, heat=heat, episode=m.get("episode")) if False else
+                   build_prompt(m["znacka"], used.get("tags"), texts[0], scene, key, face_side, seed,
+                                   m.get("episode"), tier, heat))
     (d / "meta.json").write_text(json.dumps(res, indent=2, ensure_ascii=False), encoding="utf-8")
     m.update(nahled_vstup=str(d), nahled_prompt=res["prompt"], nahled_texts=texts)
     meta_path.write_text(json.dumps(m, indent=2, ensure_ascii=False), encoding="utf-8")

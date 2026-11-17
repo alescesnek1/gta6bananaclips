@@ -1972,8 +1972,10 @@ def render(clip, src=None, clean=False):
     try:                                     # long-form (docs/long-form.md): 16:9 source, payoff, tags
         tags, scores = moment_tags(words0, orig, hpc.get("peak"), clip.get("title"), clip.get("created") or 0)
         meta.update(source_16x9=str(orig), peak_src=hpc.get("peak"), cut_src=hpc.get("cut"), tags=tags, tag_scores=scores)
+        cut = hpc.get("cut") or [None, None]
         pool_add(pool_row(clip, source=str(orig), peak=hpc.get("peak"), cut=hpc.get("cut"), dur=hpc.get("dur"),
-                          tags=tags, tag_scores=scores, quote=meta["quote"], rendered=list(shorts)), replace=True)
+                          tags=tags, tag_scores=scores, quote=meta["quote"], rendered=list(shorts),
+                          **classify_moment(words0, orig, hpc.get("peak"), clip, cut[0], cut[1])), replace=True)
     except Exception as e:                   # tags are a bonus: never lose a finished short over them
         log(f"  tags failed: {str(e)[-120:]}")
     save_json(d / "meta.json", meta)
@@ -2403,10 +2405,21 @@ def collect(clip, force=False):
     tags, scores = moment_tags(words, src, peak, clip.get("title"), clip.get("created") or 0)
     row = pool_row(clip, source=str(src), peak=peak, cut=[round(a, 2), round(b, 2)], dur=round(dur, 2),
                    tags=tags, tag_scores=scores, quote=pick_quote(words, peak))
+    row.update(classify_moment(words, src, peak, clip, a, b))
     save_json(mf, {**row, "words": words})
     pool_add(row, replace=True)
     log(f"  pool: {clip['channel']} {clip['id']} tags {tags} peak {peak}")
     return row
+
+def classify_moment(words, src, peak, clip, a=None, b=None):
+    """Categories + evidence + entertainment score (kategorie.py) for long-form series; {} on error."""
+    try:
+        import kategorie
+        return kategorie.classify(words, src, peak, clip.get("title"), clip.get("created") or 0,
+                                  clip.get("views") or 0, a, b)
+    except Exception as e:
+        log(f"  categories failed: {str(e)[-120:]}")
+        return {}
 
 def game_clips(name, t0, t1, pages=3):
     """Clips of a Twitch category made between t0 and t1 (unix), English, best first (Helix)."""
