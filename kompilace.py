@@ -265,6 +265,12 @@ def qualifies(r, serie, z, verify=True, vis_cache=None):
         r.setdefault("signals", {})["static"] = static
     if static is not None and static > kategorie.STATIC_MAX:
         return False, "not gameplay (static screen)"
+    sig = r.setdefault("signals", {})
+    if "dark" not in sig and r.get("source"):
+        a0, b0 = r.get("seg") or segment_times(r)
+        sig["luma"], sig["dark"] = kategorie.darkness(r["source"], a0, b0)
+    if (sig.get("dark") or 0) > 0.5:
+        return False, "too dark"
     if (r.get("fun") or 0) < FUN_MIN:
         return False, "boring"
     need = cfg.get("cats")
@@ -756,6 +762,19 @@ def zoom_marks(words, jumps, length, peak):
         z = f"if(between(t,{peak:.2f},{peak + 0.6:.2f}),1.12,{z})"
     return z
 
+def story_grade(m, src, a, b):
+    """
+    Adaptive story look: normally lit footage gets the cinematic grade (teal/orange + vignette); dim
+    footage (night, interiors) is NOT darkened further - its shadows are lifted instead.
+    """
+    import kategorie
+    luma = (m.get("signals") or {}).get("luma")
+    if luma is None:
+        luma, _ = kategorie.darkness(src, a, b)
+    if luma is not None and luma < kategorie.DIM_LUMA:
+        return f"eq=gamma={kategorie.LIFT_GAMMA}:brightness=0.03:saturation=1.1:contrast=1.04"
+    return K.FAN_LOOK
+
 def render_moment(m, out, z, rank, idx, tmp, venc, teaser=False, banana=False, card_on=False, intro_extra="",
                   story=False, cut_to=None, badge=None):
     """
@@ -832,7 +851,7 @@ def render_moment(m, out, z, rank, idx, tmp, venc, teaser=False, banana=False, c
          + f"scale=w='{W}*{zexpr}':h=-2:eval=frame,crop={W}:{H}:(iw-ow)/2:(ih-oh)/2,setsar=1"
          + (f",drawbox=enable='between(t,{pk:.2f},{pk + 0.12:.2f})':color={flash_col}:t=fill" if pk is not None else "")
          + f",subtitles=filename='{K.ff_path(ass)}':fontsdir='{K.ff_path(K.CAP_FONTS)}'"
-         + (f",{K.FAN_LOOK}" if story else "")
+         + (f",{story_grade(m, src, s, e)}" if story else "")
          + (f",drawbox=x=0:y=0:w=iw:h={LETTERBOX}:color=black:t=fill:enable='lt(t,0.45)+gt(t,{length - 0.45:.2f})'"
             f",drawbox=x=0:y=ih-{LETTERBOX}:w=iw:h={LETTERBOX}:color=black:t=fill:enable='lt(t,0.45)+gt(t,{length - 0.45:.2f})'"
             if story else "")

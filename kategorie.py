@@ -184,11 +184,14 @@ def classify(words, src, peak=None, title="", created=0, views=0, a=None, b=None
         fun = 0.0                                   # cutscene: identical for everybody, and a spoiler risk
     if podobnost.canned_words(text + " " + tl):
         fun *= 0.7                                  # barber / shop / outfit / menu: soft penalty
+    luma, dark = darkness(src, a, b)
+    if dark > 0.5:
+        fun = 0.0                                   # too dark to watch even after the lift: never in a video
     return {"cats": cats, "primary": primary, "proven": proven, "evidence": {c: ev[c] for c in CATS if ev[c]},
             "fun": round(max(0.0, fun), 2),
             "signals": {"siren": siren, "impact": trans, "loud": round(loud, 1), "motion": round(mot_mean, 1),
                         "sustained": round(sustained, 2), "spike": round(spike, 1), "laugh": laugh,
-                        "static": static, "letterbox": letterbox}}
+                        "static": static, "letterbox": letterbox, "luma": luma, "dark": dark}}
 
 def primary_for(row, brand):
     """Never 'unsorted': no category -> funny (bananas) / wow (fanpage)."""
@@ -286,3 +289,27 @@ def static_share(src, a=None, b=None):
 
 GAMEPLAY_Q = ("Do ALL four frames show someone playing a 3D video game (not a menu, loading or black screen, "
               "webpage, browser window, award show or real-life camera)?")
+
+# ---------------------------------------------------------------------------
+# darkness (17. 11.: a night rooftop went almost black for 40 s under the cinematic grade)
+DARK_LUMA = 35                    # mean luma (0-255) under which a frame counts as too dark ...
+LIFT_GAMMA = 1.35                 # ... even after our shadow lift (eq gamma) for dark footage
+DIM_LUMA = 70                     # below this mean the story grade lifts instead of darkening
+
+def luma_series(src, a=None, b=None):
+    """Mean luma (0-255) per frame at 1 fps."""
+    cmd = ["ffmpeg", "-nostdin", "-v", "error"] + (["-ss", f"{a:.2f}", "-t", f"{(b or 0) - a:.2f}"] if a is not None and b else []) \
+        + ["-i", str(src), "-vf", "fps=1,scale=64:36,format=gray", "-f", "rawvideo", "-"]
+    raw = subprocess.run(cmd, capture_output=True, timeout=300).stdout
+    n = len(raw) // (64 * 36)
+    return np.frombuffer(raw[: n * 64 * 36], np.uint8).reshape(n, 36, 64).mean(axis=(1, 2)) if n else np.zeros(0)
+
+def lifted(l):
+    return 255.0 * (np.asarray(l, np.float64) / 255.0) ** (1 / LIFT_GAMMA) + 6
+
+def darkness(src, a=None, b=None):
+    """(mean luma, share of frames still too dark after the lift)."""
+    s = luma_series(src, a, b)
+    if not s.size:
+        return None, 0.0
+    return round(float(s.mean()), 1), round(float((lifted(s) < DARK_LUMA).mean()), 2)
