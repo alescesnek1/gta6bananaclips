@@ -35,11 +35,22 @@
     "watermark": "gta6bananaclips",
     "follow": "assets/follow/follow_bananas.webm",
     "ramp": {
-      "2026-11-19": 8,
+      "2026-11-19": 5,
+      "2026-11-26": 8,
       "2026-12-03": 10
     },
+    "extra_ramp": {
+      "2026-11-19": 1000,
+      "2026-11-26": 5000
+    },
     "max_per_day": 10,
-    "top3": true
+    "top3": true,
+    "_flags": "Prepinace launch prvku (17. 11.): false = hned vypnuto, bez zmeny kodu. qa = automaticka kontrola shortu pred publikaci. league = radek \"#N in the Banana League this week\" v popisku, league_chip = cip \"#N THIS WEEK\" na karte skore (top 10).",
+    "hook_v2": true,
+    "golden10": true,
+    "league": true,
+    "league_chip": true,
+    "qa": true
   },
   "fanpage": {
     "name": "gta6fanpageclip",
@@ -75,11 +86,20 @@
     "follow": "assets/follow/follow_fanpage.webm",
     "ramp": {
       "2026-11-17": 2,
-      "2026-11-19": 6,
+      "2026-11-19": 5,
       "2026-11-26": 8
+    },
+    "extra_ramp": {
+      "2026-11-19": 1000,
+      "2026-11-26": 5000
     },
     "max_per_day": 8,
     "top3": false,
-    "music_volume": 0.11
+    "music_volume": 0.11,
+    "_flags": "Prepinace launch prvku (17. 11.): false = hned vypnuto, bez zmeny kodu. qa = automaticka kontrola shortu pred publikaci. league = radek \"#N in the Banana League this week\" v popisku, league_chip = cip \"#N THIS WEEK\" na karte skore (top 10).",
+    "hook_v2": true,
+    "model_sticker": true,
+    "heat": true,
+    "qa": true
   }
 }

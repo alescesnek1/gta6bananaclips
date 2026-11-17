@@ -1,12 +1,13 @@
 """
 sestav.py - sound + final files for the banana score cards rendered by banany.py.
 
-  python tools/rating/sestav.py <render_dir>       # -> assets/rating/score_N.webm (VP9 + alpha, Opus)
+  python tools/rating/sestav.py <render_dir> [score_10_gold ...]   # -> assets/rating/<name>.webm (VP9 + alpha, Opus)
 
 Sound is synthesized (numpy, no samples, no licences) and kept SOFT (Aleš: not disturbing,
 it sits under the clip's own audio): every banana that lands = a muted low 'tup', the score =
 a gentle two-to-four note chime whose mood follows the score (down for 1-3, up for 7-10),
-8+ a faint sparkle.
+8+ a faint sparkle. The rare GOLDEN 10/10 (banany.py --gold -> score_10_gold.json) gets its own
+sparkle: a fast run of high glass bells climbing two octaves over a warm shimmer.
 """
 import json
 import subprocess
@@ -134,6 +135,18 @@ def score_tune(style, score):
         return out
     return tune(score)
 
+def gold_sparkle(rnd):
+    """The golden 10/10's own sound: 9 high bells climbing fast (pentatonic, two octaves), a warm
+    low shimmer under them and fine glitter noise - unlike any other card, still soft."""
+    out = np.zeros(int(SR * 1.8))
+    for i, f in enumerate([1047, 1175, 1319, 1568, 1760, 2093, 2349, 2637, 3136]):
+        put(out, bell(f, 0.07), i * 0.055)
+    t = np.arange(int(SR * 1.6)) / SR
+    shimmer = 0.05 * (np.sin(2 * np.pi * 262 * t) + 0.6 * np.sin(2 * np.pi * 392 * t)) * np.exp(-2.2 * t) * np.minimum(1, t * 20)
+    put(out, shimmer * (1 + 0.3 * np.sin(2 * np.pi * 7 * t)), 0.0)
+    put(out, crackle(rnd, 1.4) * 0.8, 0.1)
+    return out
+
 def sound(meta, style="jemne"):
     """jemne = current default; marimba, bubliny, plys, arkada = alternatives to choose from."""
     rnd = np.random.default_rng(meta["score"])
@@ -157,6 +170,8 @@ def sound(meta, style="jemne"):
             k += 1
         elif kind == "num":
             put(buf, score_tune(style, meta["score"]), t)
+            if meta.get("gold"):
+                put(buf, gold_sparkle(rnd), t + 0.05)
         elif kind == "burst":
             put(buf, crackle(rnd), t)
     buf = buf[: int(SR * meta["dur"])]
@@ -172,15 +187,18 @@ def main():
     for js in sorted(src.glob("score_*.json")):
         meta = json.loads(js.read_text())
         n = meta["score"]
-        wav = src / f"score_{n}.wav"
+        name = f"score_{n}_gold" if meta.get("gold") else f"score_{n}"
+        if len(sys.argv) > 2 and name not in sys.argv[2:]:
+            continue                                     # only the names asked for (e.g. score_10_gold)
+        wav = src / f"{name}.wav"
         pcm = (sound(meta, STYLE) * 32767).astype(np.int16)
         with wave.open(str(wav), "wb") as w:
             w.setnchannels(1)
             w.setsampwidth(2)
             w.setframerate(SR)
             w.writeframes(pcm.tobytes())
-        out = DEST / f"score_{n}.webm"
-        subprocess.run(["ffmpeg", "-nostdin", "-y", "-v", "error", "-framerate", "30", "-i", str(src / f"score_{n}" / "%04d.png"),
+        out = DEST / f"{name}.webm"
+        subprocess.run(["ffmpeg", "-nostdin", "-y", "-v", "error", "-framerate", "30", "-i", str(src / name / "%04d.png"),
                         "-i", str(wav), "-c:v", "libvpx-vp9", "-pix_fmt", "yuva420p", "-b:v", "0", "-crf", "34",
                         "-row-mt", "1", "-c:a", "libopus", "-b:a", "96k", "-shortest", str(out)], check=True)
         print(f"{out.name}: {out.stat().st_size / 1e6:.1f} MB")

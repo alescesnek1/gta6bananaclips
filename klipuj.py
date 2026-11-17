@@ -31,6 +31,7 @@ Usage (from this folder):
 import argparse
 from concurrent.futures import ThreadPoolExecutor
 import json
+import math
 import os
 import random
 import re
@@ -1177,7 +1178,7 @@ def beat_grid(path, start, dur):
 
 def build_filter(cam, cmds_file, x0, crop_w, game_h, crop_h=SH, y0=0, ass_file=None, mark_file=None, nf=NORM,
                  zoom_at=None, beat=None, punch=None, grade=GRADE, punch_z=0.08, wm_text=BRAND, hook=None,
-                 cam_h=CAM_H, push=None, replay=None):
+                 cam_h=CAM_H, push=None, replay=None, cam_punch=None):
     """
     Filter graph ending in [v]. Without ass/mark it returns the clean 9:16 base.
     hook = (kind, T): the cold-start hook ends at T s. 'flash' = slow white flash there (the
@@ -1186,6 +1187,8 @@ def build_filter(cam, cmds_file, x0, crop_w, game_h, crop_h=SH, y0=0, ass_file=N
     instead of the alternating punch and the beat pulses).
     replay = (main_end, r0, r1): the short ends at main_end, then r0..r1 again at 0.6x speed with
     a slight zoom - an instant replay of the payoff (fanpage, instead of the flash + shake).
+    cam_punch = (tp, T): HOOK v2 - the facecam snaps to 1.15x on the streamer's peak reaction at
+    tp s and eases back before the hook ends at T (only inside the hook).
     """
     flash = ""
     if hook and hook[0] == "flash" and hook[1] > 0:
@@ -1216,7 +1219,16 @@ def build_filter(cam, cmds_file, x0, crop_w, game_h, crop_h=SH, y0=0, ass_file=N
     f += f"[b]sendcmd=f='{cmds_file}',crop@g={crop_w}:{crop_h}:{x0}:{y0},scale={W}:{game_h}{grade}{zoom}[game];"
     if cam:
         x, y, w, h = [round(v / 100 * d) for v, d in zip(cam, (SW, SH, SW, SH))]
-        f += f"[a]crop={w}:{h}:{x}:{y},scale={W}:{cam_h}:force_original_aspect_ratio=increase,crop={W}:{cam_h}[cam];"
+        cz = ""
+        if cam_punch and mark_file and cam_punch[1] > 0:
+            tp, T = cam_punch
+            # a visible snap (never already zoomed on frame 0): in over 0.08 s at the reaction (>= 0.25 s),
+            # hold ~0.9 s, out over 0.25 s, all before the hook's transition at T
+            a0 = min(max(0.25, tp - 0.04), max(0.25, T - 1.3))
+            e0 = min(a0 + 0.9, T - 0.3)
+            cz = (f",zoompan=z='1+0.15*clip((it-{a0:.3f})/0.08\\,0\\,1)*clip(({e0 + 0.25:.3f}-it)/0.25\\,0\\,1)'"
+                  f":d=1:x='iw/2-iw/zoom/2':y='ih/2-ih/zoom/2':s={W}x{cam_h}:fps={FPS}")
+        f += f"[a]crop={w}:{h}:{x}:{y},scale={W}:{cam_h}:force_original_aspect_ratio=increase,crop={W}:{cam_h}{cz}[cam];"
         f += "[cam][game]vstack=inputs=2[base];"
     else:
         f += "[a]nullsink;[game]null[base];"
@@ -1361,7 +1373,7 @@ def music_cfg(seed, total, music=None):
 
 def audio_mix(clip_audio, total, card_idx=None, card_at=0.0, music_idx=None, music_vol=0.4, sfx_idx=None, sfx_at=0.0,
               replay=None, mute=(), riser_idx=None, hit_idx=None, peak=None,
-              clip_end=None, outro_idx=None, follow_idx=None, follow_at=0.0):
+              clip_end=None, outro_idx=None, follow_idx=None, follow_at=0.0, extras=()):
     """
     The short's sound: the clip's own audio + our music at one steady level (Aleš: always the
     same volume) + the score card's landing 'tups' + the hook flash whoosh (sfx, at sfx_at s).
@@ -1371,6 +1383,8 @@ def audio_mix(clip_audio, total, card_idx=None, card_at=0.0, music_idx=None, mus
     music drops to 20 % for 0.6 s there (sudden silence). mute = (start, end) of swears -> silent.
     clip_end = the clip's own sound stops there (an outro follows; its sound = outro_idx, from
     clip_end on). follow_idx = the Follow card's soft click at follow_at. Music runs to `total`.
+    extras = [(input idx, at s, volume)]: more of our sounds (Heat whooshes).
+    The limiter keeps the true peak under -1 dBTP (qa_short checks it).
     """
     parts, f = [], ""
     fmt = "aformat=sample_rates=48000:channel_layouts=stereo"
@@ -1417,9 +1431,12 @@ def audio_mix(clip_audio, total, card_idx=None, card_at=0.0, music_idx=None, mus
     if sfx_idx is not None:
         f += f";[{sfx_idx}:a]volume=0.7,adelay={int(sfx_at * 1000)}:all=1,{fmt},apad=whole_dur={total:.3f}[sx]"
         parts.append("[sx]")
+    for k, (ix, at, vol) in enumerate(extras):
+        f += f";[{ix}:a]volume={vol},adelay={int(at * 1000)}:all=1,{fmt},apad=whole_dur={total:.3f}[ex{k}]"
+        parts.append(f"[ex{k}]")
     if not parts:
         return None
-    f += f";{''.join(parts)}amix=inputs={len(parts)}:duration=longest:normalize=0,atrim=0:{total:.3f},alimiter=limit=0.95[aud]"
+    f += f";{''.join(parts)}amix=inputs={len(parts)}:duration=longest:normalize=0,atrim=0:{total:.3f},alimiter=limit=0.7:level=0:attack=2:release=40[aud]"
     return f
 
 def card_overlay(f, idx, at, pad, tag="", fade_out=None):
@@ -1448,13 +1465,365 @@ def outro_append(f, idx, at):
                 f"[{idx}:v]fps={FPS},scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},"
                 f"setpts=PTS-STARTPTS,format=yuv420p,setsar=1[ov];[mv][ov]concat=n=2:v=1:a=0[v]")
 
+# -----------------------------------------------------------------------------
+# launch layer (17. 11., before GTA 6 on 19. 11.): HOOK v2, the fanpage model's reaction
+# stickers, HEAT 1-5 (fanpage), the golden 10/10 (bananas) and an automatic QA of every short.
+# Each sits behind a brands.json flag (hook_v2, model_sticker, heat, golden10, qa) and can be
+# switched off without touching the code. Restraint (Aleš 17. 11.: "nepřeplácat, struktura
+# musí být bezchybná"): hook -> progression -> climax (+ one sticker on the payoff) -> >= 3 s
+# after it -> score card (bananas) / Heat then the outro (fanpage). At most ONE extra element
+# on screen at a time, never over the face, the payoff action or the captions. A short that
+# fails QA is re-rendered in the proven old look; if even that fails it is not published.
+
+MODEL_DIR = Path(os.environ.get("KLIPY_MODEL_REAKCE") or HERE / "assets" / "model_reakce")
+STICKER_DUR = 0.9                      # s on screen, spring pop-in with overshoot, silent
+STICKER_W, STICKER_H = 300, 340        # the still is fitted into this box
+SLOT_X, SLOT_BOTTOM = 40, 1516         # bottom-left corner of the game band (the banana's place):
+                                       # under the captions, left of TikTok's buttons, above its caption bar
+HEAT_W, HEAT_H = 470, 150
+HEAT_DUR = 2.5                         # s before the outro
+GOLD_TOP = 97                          # golden 10/10 / Heat 5: top 3 % of recently rendered clips (views)
+GOLD_MIN_HIST = 30                     # fewer rendered clips than this: only a raw 10 (500k views) is gold
+GOLD_MIN_RAW = 7                       # ... and never for a small clip on a quiet day
+GOLD_CARD = "score_10_gold.webm"
+LAUNCH_FLAGS = ("hook_v2", "model_sticker", "heat", "golden10", "league_chip")
+
+def spring_pop(t, freq=1.8, damp=8.0):
+    """0 -> overshoot ~1.1 -> 1 (closed-form spring, no timers)."""
+    return 0.0 if t <= 0 else 1 - math.exp(-damp * t) * math.cos(2 * math.pi * freq * t)
+
+def golden_rating(clip, raw):
+    """
+    (rating, gold): 10/10 is rare (~1 in 30): only a clip in the top 3 % of the last 300 rendered
+    clips by views (the number the score comes from) gets 10 - the golden one; every other clip
+    is capped at 9. YouTube windows carry the whole video's views: never gold.
+    """
+    if clip.get("platform") == "youtube":
+        return min(raw, 9), False
+    v = clip.get("views") or 0
+    hist = [x for x in load_json(STATE, {}).get("rating_hist") or [] if isinstance(x, (int, float))]
+    if len(hist) >= GOLD_MIN_HIST:
+        top = v > 0 and raw >= GOLD_MIN_RAW and sum(x >= v for x in hist) <= len(hist) * (100 - GOLD_TOP) / 100
+    else:
+        top = raw >= 10
+    return (10, True) if top else (min(raw, 9), False)
+
+def record_rating(clip):
+    """Remember the clip's views for the golden 10/10 percentile (state.json rating_hist, last 300)."""
+    if clip.get("platform") == "youtube" or not clip.get("views"):
+        return
+    state = load_json(STATE, {"done": {}, "failed": {}})
+    state["rating_hist"] = (state.get("rating_hist") or [])[-299:] + [int(clip["views"])]
+    save_json(STATE, state)
+
+def heat_level(raw, gold):
+    """Fanpage HEAT 1-5 from the same score as the banana rating; 5 only for the golden top 3 %."""
+    return 5 if gold else max(1, min(4, 1 + (raw - 1) * 4 // 9))
+
+# the model's reaction for a moment: what was said around it -> fitting stills (file stems:
+# gasp, laugh, wink, shocked, smirk, eyeroll; laugh_2.png etc. counts as 'laugh')
+MODEL_KINDS = [
+    (r"\b(lmao|lmfao|lol|ha(ha)+|i'?m dead|crying)\b", ["laugh", "smirk"]),
+    (r"\b(no way|what|wait|huh|how|oh my god|omg|wtf)\b", ["shocked", "gasp"]),
+    (r"\b(fuck(ing)?|shit|bruh|why|are you serious)\b", ["eyeroll", "smirk"]),
+    (r"\b(let'?s go|yes+|clutch|easy|gg|w)\b", ["wink", "smirk"]),
+]
+
+def model_stills():
+    """The model's keyed reaction stills (transparent PNG); none -> no stickers, silently."""
+    try:
+        return sorted(p for p in MODEL_DIR.glob("*.png") if p.is_file())
+    except OSError:
+        return []
+
+def pick_still(stills, words, t, seed, avoid=None, prefer=None):
+    rnd = random.Random(f"{seed}:{t:.1f}")
+    near = " ".join(w.lower() for s0, e0, w in words if t - 3 <= e0 <= t + 2)
+    kinds = prefer or next((k for rx, k in MODEL_KINDS if re.search(rx, near)), ["shocked", "gasp", "smirk"])
+    by_kind = lambda k: [p for p in stills if p.stem.lower().split("_")[0] == k and p != avoid]
+    for k in kinds:
+        if by_kind(k):
+            return rnd.choice(by_kind(k))
+    rest = [p for p in stills if p != avoid] or stills
+    return rnd.choice(rest)
+
+def sticker_frames(png, out_dir):
+    """
+    The still as a silent 0.9 s sprite: spring pop-in with overshoot (anchored bottom centre),
+    fades out over the last 0.15 s. Returns (frame pattern, x, y) for the overlay.
+    """
+    from PIL import Image
+    im = Image.open(png).convert("RGBA")
+    im.thumbnail((STICKER_W, STICKER_H), Image.LANCZOS)
+    w, h = im.size
+    cw, ch = int(STICKER_W * 1.25), int(STICKER_H * 1.25)          # room for the overshoot
+    out_dir.mkdir(parents=True, exist_ok=True)
+    n = int(round(STICKER_DUR * FPS))
+    for i in range(n):
+        t = i / FPS
+        s = max(0.02, spring_pop(t))
+        a = max(0.0, min(1.0, (STICKER_DUR - t) / 0.15))
+        sp = im.resize((max(1, int(w * s)), max(1, int(h * s))), Image.LANCZOS)
+        if a < 1:
+            sp.putalpha(sp.getchannel("A").point(lambda v: int(v * a)))
+        canvas = Image.new("RGBA", (cw, ch), (0, 0, 0, 0))
+        canvas.alpha_composite(sp, (max(0, (cw - sp.width) // 2), max(0, ch - sp.height)))
+        canvas.save(out_dir / f"{i:03d}.png")
+    x = SLOT_X + STICKER_W // 2 - cw // 2
+    return str(out_dir / "%03d.png"), max(0, x), SLOT_BOTTOM - ch
+
+def flame(size, glow=True, dim=False):
+    """A procedural flame icon (Pillow): neon pink outside, orange, yellow core; dim = empty slot."""
+    from PIL import Image, ImageDraw, ImageFilter
+    S = size * 2
+    img = Image.new("RGBA", (S, S), (0, 0, 0, 0))
+
+    def drop(scale, dy):
+        pts = []
+        for k in range(64):
+            t = 2 * math.pi * k / 64
+            x = math.sin(t) * math.sin(t / 2) ** 1.4 * 0.62
+            y = -math.cos(t)
+            x += 0.12 * math.sin(3 * (y + 1)) * (1 - y) / 2           # a small curl at the tip
+            pts.append((S / 2 + x * size * 0.5 * scale, S / 2 + 0.1 * size + dy + y * size * 0.55 * scale))
+        return pts
+
+    d = ImageDraw.Draw(img)
+    if dim:
+        d.polygon(drop(1.0, 0), outline=(255, 255, 255, 90), width=max(2, size // 22))
+        return img.crop(img.getbbox())
+    if glow:
+        g = Image.new("RGBA", (S, S), (0, 0, 0, 0))
+        ImageDraw.Draw(g).polygon(drop(1.08, 0), fill=(255, 40, 170, 200))
+        img.alpha_composite(g.filter(ImageFilter.GaussianBlur(size / 9)))
+    d.polygon(drop(1.0, 0), fill=(255, 61, 168, 255))                  # neon pink
+    d.polygon(drop(0.72, size * 0.1), fill=(255, 128, 31, 255))        # orange
+    d.polygon(drop(0.42, size * 0.2), fill=(255, 214, 77, 255))        # yellow core
+    return img.crop(img.getbbox())
+
+def heat_frames(n, dur, out_dir):
+    """
+    HEAT badge (a data graphic: the label + N of 5 flames) for the last `dur` s before the
+    outro: the dark pill pops in, then the flames one by one (spring), each with a soft whoosh.
+    Writes PNG frames + heat.wav (the whooshes). Returns (pattern, x, y, wav, pop times).
+    """
+    from PIL import Image, ImageDraw, ImageFont
+    out_dir.mkdir(parents=True, exist_ok=True)
+    font = ImageFont.truetype(str(CAP_FONTS / "anton.ttf"), 64)
+    fl = flame(70)
+    empty = flame(70, dim=True)
+    nf = int(round(dur * FPS))
+    gap = min(0.28, max(0.12, (dur - 0.9) / max(n, 1)))
+    pops = [0.35 + i * gap for i in range(n)]
+    pad = 40
+    cw, ch = HEAT_W + 2 * pad, HEAT_H + 2 * pad
+    for i in range(nf):
+        t = i / FPS
+        canvas = Image.new("RGBA", (cw, ch), (0, 0, 0, 0))
+        s = max(0.02, spring_pop(t, 2.2, 9.0))
+        a = max(0.0, min(1.0, (dur - t) / 0.2))                        # out just before the outro
+        pill = Image.new("RGBA", (HEAT_W, HEAT_H), (0, 0, 0, 0))
+        pd = ImageDraw.Draw(pill)
+        pd.rounded_rectangle((0, 0, HEAT_W - 1, HEAT_H - 1), radius=HEAT_H // 2, fill=(14, 10, 22, 175),
+                             outline=(255, 61, 168, 230), width=4)
+        pd.text((36, HEAT_H // 2), "HEAT", font=font, fill=(255, 255, 255, 255), anchor="lm")
+        for k in range(5):
+            cx = 196 + k * 58
+            u = t - pops[k] if k < n else -1
+            if k < n and u > 0:
+                fs = spring_pop(u, 2.4, 8.0)
+                f = fl.resize((max(1, int(fl.width * 0.92 * fs)), max(1, int(fl.height * 0.92 * fs))), Image.LANCZOS)
+            else:
+                f = empty.resize((int(empty.width * 0.92), int(empty.height * 0.92)), Image.LANCZOS)
+            pill.alpha_composite(f, (max(0, min(HEAT_W - f.width, cx - f.width // 2)),
+                                     max(0, min(HEAT_H - f.height, HEAT_H // 2 - f.height // 2))))
+        pill = pill.resize((max(1, int(HEAT_W * s)), max(1, int(HEAT_H * s))), Image.LANCZOS)
+        if a < 1:
+            pill.putalpha(pill.getchannel("A").point(lambda v: int(v * a)))
+        canvas.alpha_composite(pill, (max(0, pad + (HEAT_W - pill.width) // 2), max(0, pad + (HEAT_H - pill.height) // 2)))
+        canvas.save(out_dir / f"{i:03d}.png")
+    # soft whooshes (synthesized, no samples): filtered noise swelling into each flame
+    sr = 48000
+    rnd = np.random.default_rng(n)
+    buf = np.zeros(int(sr * (dur + 0.5)))
+    for p in pops:
+        m = int(sr * 0.22)
+        noise = np.convolve(rnd.normal(0, 1, m), np.ones(18) / 18, mode="same")
+        env = np.linspace(0, 1, m) ** 2 * np.exp(-np.linspace(0, 1, m) * 0.5)
+        i0 = max(0, int((p - 0.18) * sr))
+        buf[i0: i0 + m] += (noise * env)[: buf.size - i0]
+    buf = buf / (np.abs(buf).max() + 1e-9) * 0.35
+    import wave
+    wav = out_dir / "heat.wav"
+    with wave.open(str(wav), "wb") as w:
+        w.setnchannels(1)
+        w.setsampwidth(2)
+        w.setframerate(sr)
+        w.writeframes((buf * 32767).astype(np.int16).tobytes())
+    return str(out_dir / "%03d.png"), SLOT_X - pad, SLOT_BOTTOM - HEAT_H - pad, wav, pops
+
+CHIP_Y = 690                           # top of the league chip: just under the card's big N/10
+
+def league_rank(channel):
+    """The streamer's Banana League rank this week (liga.table, real data) or None."""
+    try:
+        import liga
+        return next((r["rank"] for r in liga.table(7) if r["channel"] == (channel or "").lower()), None)
+    except Exception as e:
+        log(f"  league rank: {str(e)[-80:]}")
+        return None
+
+def chip_frames(text, out_dir, dur):
+    """
+    The league chip on the banana score card ('#2 THIS WEEK', data only): the card's own dark
+    label style, pops in with a spring after the score lands, stays to the end of the card.
+    Returns (pattern, x, y).
+    """
+    from PIL import Image, ImageDraw, ImageFont
+    font = ImageFont.truetype(str(CAP_FONTS / "montserrat-900.ttf"), 44)
+    tw = int(font.getlength(text))
+    w, h = tw + 72, 86
+    pill = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    d = ImageDraw.Draw(pill)
+    d.rounded_rectangle((0, 0, w - 1, h - 1), radius=18, fill=(46, 50, 64, 240), outline=(96, 102, 118, 255), width=4)
+    d.text((w / 2, h / 2 + 1), text, font=font, fill=(255, 255, 255, 255), anchor="mm")
+    cw, ch = int(w * 1.25), int(h * 1.25)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    for i in range(max(1, int(round(dur * FPS)))):
+        s = max(0.02, spring_pop(i / FPS, 2.2, 8.0))
+        sp = pill.resize((max(1, int(w * s)), max(1, int(h * s))), Image.LANCZOS)
+        canvas = Image.new("RGBA", (cw, ch), (0, 0, 0, 0))
+        canvas.alpha_composite(sp, (max(0, (cw - sp.width) // 2), max(0, (ch - sp.height) // 2)))
+        canvas.save(out_dir / f"{i:03d}.png")
+    return str(out_dir / "%03d.png"), (W - cw) // 2, CHIP_Y - (ch - h) // 2
+
+def sprite_inputs(sprites):
+    """ffmpeg inputs of the sprite sequences (PNG frames with alpha)."""
+    args = []
+    for t0, pattern, x, y in sprites:
+        args += ["-framerate", str(FPS), "-i", pattern]
+    return args
+
+def sprite_overlay(f, sprites, base):
+    """Overlay sprite sequences (inputs base, base+1 ...) at their times onto a graph ending in [v]."""
+    if not sprites:
+        return f
+    f = f[: -len("[v]")] + "[s_in]"
+    prev = "s_in"
+    for i, (t0, pattern, x, y) in enumerate(sprites):
+        f += (f";[{base + i}:v]format=rgba,setpts=PTS-STARTPTS+{t0:.3f}/TB[sp{i}];"
+              f"[{prev}][sp{i}]overlay={x}:{y}:eof_action=pass[so{i}]")
+        prev = f"so{i}"
+    return f + f";[{prev}]null[v]"
+
+def loud_start(src, peak, lo=0.9, hi=0.05):
+    """HOOK v2: start of the hook in [peak-lo, peak-hi] whose first 300 ms are the loudest (the scream)."""
+    s0 = max(0.0, peak - lo - 0.1)
+    try:
+        raw = subprocess.run(["ffmpeg", "-nostdin", "-v", "error", "-ss", f"{s0:.3f}", "-t", f"{lo + 0.6:.3f}", "-i", str(src),
+                              "-vn", "-ac", "1", "-ar", "8000", "-f", "s16le", "-"], capture_output=True, timeout=120).stdout
+    except subprocess.TimeoutExpired:
+        return max(0.0, peak - 0.3)
+    a = np.frombuffer(raw, np.int16).astype(np.float64)
+    if a.size < 8000 * 0.6:
+        return max(0.0, peak - 0.3)
+    best, best_e = max(0.0, peak - 0.3), -1.0
+    for s in np.arange(max(0.0, peak - lo), peak - hi + 1e-6, 0.05):
+        i = int((s - s0) * 8000)
+        seg = a[i: i + 2400]
+        if seg.size < 2000:
+            continue
+        e = float(np.sqrt((seg * seg).mean()))
+        if e > best_e * 1.03:                  # an earlier start wins only if clearly louder
+            best, best_e = float(s), e
+    return best
+
+def ff_stats(path, until=None):
+    """ffmpeg probes of a finished short: black/frozen stretches (video up to `until`), loudness, true peak."""
+    vt = ["-t", f"{until:.3f}"] if until else []
+    r = subprocess.run(["ffmpeg", "-nostdin", "-v", "info", *vt, "-i", str(path), "-vf",
+                        "blackdetect=d=1.0:pix_th=0.06,freezedetect=n=0.003:d=2.5", "-an", "-f", "null", "-"],
+                       capture_output=True, text=True, timeout=600)
+    black = re.findall(r"black_start:\s*([\d.]+)", r.stderr)
+    frozen = re.findall(r"freeze_start:\s*([\d.]+)", r.stderr)
+    r = subprocess.run(["ffmpeg", "-nostdin", "-v", "info", "-i", str(path), "-vn", "-af", "ebur128=peak=true",
+                        "-f", "null", "-"], capture_output=True, text=True, timeout=600)
+    tail = r.stderr[r.stderr.rfind("Summary:"):] if "Summary:" in r.stderr else r.stderr
+    li = re.search(r"I:\s*(-?[\d.]+|-inf)\s*LUFS", tail)
+    tp = re.search(r"True peak:\s*Peak:\s*(-?[\d.]+|-inf)\s*dBFS", tail)
+    num = lambda m: (float("-inf") if m.group(1) == "-inf" else float(m.group(1))) if m else None
+    return black, frozen, num(li), num(tp)
+
+def hook_is_loud(path, main_end):
+    """The first 300 ms are at least as loud as the short's median (50 ms windows up to main_end)."""
+    raw = subprocess.run(["ffmpeg", "-nostdin", "-v", "error", "-t", f"{main_end:.3f}", "-i", str(path), "-vn",
+                          "-ac", "1", "-ar", "8000", "-f", "s16le", "-"], capture_output=True, timeout=300).stdout
+    a = np.frombuffer(raw, np.int16).astype(np.float64)
+    if a.size < 8000:
+        return False
+    fr = np.sqrt((a[: a.size // 400 * 400].reshape(-1, 400) ** 2).mean(axis=1))
+    first = float(np.sqrt((a[:2400] ** 2).mean()))
+    return first >= float(np.median(fr))
+
+def boxes_hit(a, b):
+    return a[0] < b[2] and b[0] < a[2] and a[1] < b[3] and b[1] < a[3]
+
+def qa_short(path, plan):
+    """
+    Automatic QA of a finished short (Aleš 17. 11.: no room for mistakes). Returns problems:
+      - duration as planned and in 6..95 s
+      - no black / frozen stretch before the end card or outro (intentional ones are after it)
+      - sound: not silent (integrated > -35 LUFS) and true peak <= -1 dBTP
+      - one extra element at a time; none over the face band or the captions (timeline boxes)
+      - HOOK v2: the first 300 ms are at least as loud as the short's median
+      - the end card / Heat planned is really there
+    """
+    probs = []
+    try:
+        d = duration(path)
+    except Exception as e:
+        return [f"unreadable ({str(e)[-80:]})"]
+    if abs(d - plan["total"]) > 0.4:
+        probs.append(f"duration {d:.1f} s, planned {plan['total']:.1f} s")
+    if not 6 <= d <= 95:
+        probs.append(f"duration {d:.1f} s out of range")
+    black, frozen, lufs, tp = ff_stats(path, max(1.0, plan["main_end"] - 0.3))
+    if black:
+        probs.append(f"black frames at {', '.join(black[:3])} s")
+    if frozen:
+        probs.append(f"frozen picture at {', '.join(frozen[:3])} s")
+    if lufs is None or lufs < -35:
+        probs.append(f"audio silent ({lufs} LUFS)")
+    if tp is None and lufs is not None:
+        probs.append("true peak not measured")
+    if tp is not None and tp > -1.0:
+        probs.append(f"true peak {tp:.1f} dBTP (> -1)")
+    els = plan.get("elements") or []
+    for i, (t0, t1, name, box) in enumerate(els):
+        if box[1] < plan["face_bottom"]:
+            probs.append(f"{name} over the face band")
+        # (the score card is the approved full-frame end card; the last caption may fade under it)
+        if (name != "score card" and any(t0 < e1 and e0 < t1 for e0, e1 in plan.get("cap_times") or [])
+                and boxes_hit(box, plan["cap_box"])):
+            probs.append(f"{name} over the captions")
+        for u0, u1, other, _ in els[i + 1:]:
+            if t0 < u1 - 0.02 and u0 < t1 - 0.02:
+                probs.append(f"{name} and {other} on screen at once")
+    if plan.get("loud_hook") and not hook_is_loud(path, plan["main_end"]):
+        probs.append("hook does not start with the loud part")
+    if plan.get("card") and not (Path(plan["card"]).exists() and d >= plan["card_at"] + RATING_DUR - 0.3):
+        probs.append("score card missing")
+    if plan.get("heat_on") and not plan.get("heat"):
+        probs.append("heat missing")
+    return probs
+
 def extras_ass(path, reactions, rating, dur, cam, seed):
     """
     Our own layer on top of the captions (Aleš 15. 11.): a short speech bubble next to every
     banana reaction, and the banana's score for the clip in the last 1.6 s.
     """
     rnd = random.Random(seed)
-    y0 = (CAM_H if cam else 0) + 520                   # banana's top edge (see reaction_overlay)
+    y0 = (CAM_H if cam else 600) + 520                   # banana's top edge (see reaction_overlay)
     style = (f"Style: Bub,{CAP_FONT},50,&H00000000,&H00000000,&H00FFFFFF,&H00FFFFFF,0,0,0,0,100,100,1,0,3,10,0,4,0,0,0,1\n"
              f"Style: Rate,{CAP_FONT},76,&H0035E1FF,&H0035E1FF,&H00000000,&H64000000,0,0,0,0,100,100,1,0,1,0,5,5,0,0,0,1\n")
     txt = path.read_text(encoding="utf-8").replace("\n\n[Events]", "\n" + style.rstrip("\n") + "\n\n[Events]", 1)
@@ -1483,7 +1852,7 @@ def reaction_overlay(f, reactions, cam):
     if not reactions:
         return f
     f = f[: -len("[v]")] + "[r_in]"
-    y = (CAM_H if cam else 0) + 520                  # left side of the game band, above TikTok's caption bar
+    y = (CAM_H if cam else 600) + 520                # left side of the game band, under the captions (no facecam: they sit at y 600)
     prev = "r_in"
     for i, (t, name) in enumerate(reactions):
         # setpts moves the reaction to its moment (-itsoffset does not work together with -ss)
@@ -1497,10 +1866,15 @@ def encode(cmd_base, out_path):
     """Try NVIDIA NVENC first, fall back to CPU x264."""
     # capped at 6 Mb/s: plenty for phones, and every MB is fetched 5x from Netlify by Buffer
     cap = ["-maxrate", "4M", "-bufsize", "8M"]     # 4 Mb/s: the networks re-encode to ~2-3 anyway; keeps Netlify < 1000 credits
+    if os.environ.get("KLIPY_DEBUG"):
+        (Path(os.environ["KLIPY_DEBUG"]) / f"cmd_{Path(out_path).stem}_{int(time.time())}.txt").write_text(
+            "\n".join(map(str, cmd_base)), encoding="utf-8")
+    # -cutoff 18000: ffmpeg's AAC at 128k with its default low-pass overshot a -3 dB limited mix to
+    # +0.3 dBTP (measured 17. 11.); with the cutoff it stays at -2.4 dBTP (qa_short wants <= -1)
     for venc in (["-c:v", "h264_nvenc", "-preset", "p5", "-rc", "vbr", "-cq", "23", "-b:v", "0"] + cap,
                  ["-c:v", "libx264", "-preset", "veryfast", "-crf", "22"] + cap):
         try:
-            run(cmd_base + venc + ["-c:a", "aac", "-b:a", "128k", "-movflags", "+faststart", str(out_path)], timeout=900)
+            run(cmd_base + venc + ["-c:a", "aac", "-b:a", "128k", "-cutoff", "18000", "-movflags", "+faststart", str(out_path)], timeout=900)
             return venc[1]
         except RuntimeError as e:
             log(f"  encoder {venc[1]} failed ({str(e)[-200:]})")
@@ -1656,7 +2030,7 @@ def dead_air(words, src, a, b, peak):
     keep.append((cur, b))
     return [(x, y) for x, y in keep if y - x > 0.05]
 
-def edit_cut(src, words, d, clip, hpc=None):
+def edit_cut(src, words, d, clip, hpc=None, v2=False, info=None):
     """
     Cut the source before rendering: trim (Twitch/Kick; YouTube windows are already cut on
     sentences) and a COLD START - the payoff flashes for 1 s first, then the clip plays from
@@ -1665,6 +2039,9 @@ def edit_cut(src, words, d, clip, hpc=None):
     Returns (source, words, payoff time, where the card starts, jump cuts, T) in the new
     timeline; T = where the hook ends and the clip starts (0 = no hook). The transition itself
     (flash or whip cut) is the brand's and is added in the final encode (build_filter).
+    v2 = HOOK v2 (brands.json hook_v2): frame 0 is already the most intense moment - the hook
+    starts where the next 300 ms are the loudest (the payoff reaction), just before the payoff,
+    and lasts <= 2.3 s; info['hook_peak'] = the payoff inside the hook (facecam punch there).
     """
     dur = duration(src)
     peak = audio_peak(src)
@@ -1685,6 +2062,11 @@ def edit_cut(src, words, d, clip, hpc=None):
     # hook (Aleš: 1 s looked like a cut by mistake; the rewind he did not like): ~2.7 s of the
     # payoff, then the transition (bananas: white FLASH + whoosh) and the clip from its start
     ps, pe = (max(0.0, peak - 1.8), min(dur, peak + 0.9)) if tease else (0, 0)
+    if tease and v2:
+        ps = loud_start(src, peak)
+        pe = min(dur, ps + 2.3, b + RATING_DUR)
+        if info is not None:
+            info["hook_peak"] = round(peak - ps, 3)
     T = pe - ps if tease else 0.0
     if tease:
         flt = (f"[0:v]trim={ps:.2f}:{pe:.2f},setpts=PTS-STARTPTS[v0];[0:a]atrim={ps:.2f}:{pe:.2f},asetpts=PTS-STARTPTS[a0];"
@@ -1724,11 +2106,12 @@ def pieces(segs):
 def pairs(n):
     return "".join(f"[v{i}][a{i}]" for i in range(1, n + 1))
 
-def zoom_jumps(words, jumps, dur):
+def zoom_jumps(words, jumps, dur, hook=None):
     """
     Alternating punch-in (1.0 <-> 1.08) for the game band: switches on every jump cut and on
     new phrases, at most every 1.6 s - the picture never sits still (ADHD-proof pacing).
-    Returns the zoomed-in intervals.
+    hook = end of a HOOK v2 (s): nothing inside the hook (its facecam punch is the change there),
+    then a forced switch every 1.2 s until 5 s. Returns the zoomed-in intervals.
     """
     marks = set(jumps)
     prev_end = None
@@ -1736,9 +2119,13 @@ def zoom_jumps(words, jumps, dur):
         if prev_end is None or w0 - prev_end > 0.35:
             marks.add(round(w0, 2))
         prev_end = w1
-    out, last = [], -9.0
-    for t in sorted(marks):
-        if t - last >= 1.6 and 0.3 < t < dur - 0.3:
+    forced = set()
+    if hook:
+        marks = {m for m in marks if m >= hook + 0.3}
+        forced = {round(hook + 1.2 * k, 2) for k in range(1, 4) if hook + 1.2 * k < 5.0}
+    out, last = [], (hook if hook else -9.0)
+    for t in sorted(marks | forced):
+        if t - last >= (1.0 if t in forced else 1.6) and 0.3 < t < dur - 0.3:
             out.append(t)
             last = t
     edges = out + [dur]
@@ -1774,177 +2161,346 @@ def render(clip, src=None, clean=False):
     (d / "mark.txt").write_text(f"@{clip['channel']}", encoding="utf-8")
     orig = src                                         # facecam is found on the uncut source (the edit fooled it)
     words0, hpc = words, {}
-    src, words, peak, card_at, jumps, hook_t = edit_cut(src, words, d, clip, hpc)
-    dur = duration(src)
-    card_at = min(card_at, dur)
-    words = [w for w in words if w[0] < card_at]      # no captions / banana under the score card
-    words, mute = mask_swears(words)                  # swears in the first 3 s: F*** and silent
-    rating = (int(round(5 + 5 * clip["signal_score"])) if clip.get("platform") == "youtube" and "signal_score" in clip
-              else banana_rating(clip.get("views")))
-    reactions = pick_reactions(words, card_at, clip["id"], peak) if (BANANA / "reakce1.mp4").exists() else []
-    ff = ["ffmpeg", "-nostdin", "-y", "-hide_banner", "-loglevel", "error", "-i", str(src)]
     # which accounts get it (docs/dva-ucty.md); each gets its own final encode in its own style,
-    # everything above (download, Whisper, cut, hook) and the player detection are done once
+    # everything above (download, Whisper) and the player detection are done once
     bcfg = brands()
     blist = [brand_cfg(bcfg, n) for n in assign_brands(clip, bcfg)]
     log(f"  brands: {', '.join(b['key'] for b in blist)}")
+    raw = (int(round(5 + 5 * clip["signal_score"])) if clip.get("platform") == "youtube" and "signal_score" in clip
+           else banana_rating(clip.get("views")))
+    rating, gold = raw, False
+    if any(b.get("golden10") or b.get("heat") for b in blist):
+        try:                                           # golden 10/10 = top 3 %, every other clip max 9
+            r10, gold = golden_rating(clip, raw)
+            if any(b.get("golden10") for b in blist):
+                rating = r10
+        except Exception as e:
+            log(f"  golden rating failed ({str(e)[-80:]}), plain score")
+    heat_n = heat_level(raw, gold)
+    rank = league_rank(clip["channel"]) if any(b.get("league_chip") for b in blist) else None
+    rank = rank if rank and rank <= 10 else None       # the chip only for this week's top 10
     _detections.clear()
     whoosh = HERE / "assets" / "sfx" / "flash.wav"
+    whip = HERE / "assets" / "sfx" / "whip.wav"
     riser, hit = HERE / "assets" / "sfx" / "riser.wav", HERE / "assets" / "sfx" / "hit.wav"
-
-    # Render, check, and REPAIR instead of giving up (Aleš: a cut face or black bars must be fixed):
-    #   1) normal: saved/auto facecam box, detected bars and subtitles cropped
-    #   2) facecam detected again with a wider box, bars found with looser limits, 6 % extra zoom
-    #   3) only for a clip with viral potential: no facecam band, the game fills the short
-    # No facecam = no short, unless the clip is big (Aleš 15. 11.: "pustit i bez kamery, pokud má
-    # potenciál být virální"): sources.json nocam_min_views, or several viewers clipped it.
     cfg = load_json(SOURCES, {})
     nocam_ok = (clip.get("views") or 0) >= cfg.get("nocam_min_views", 5000) or (clip.get("cluster") or 1) >= 2
-    #   (between 2 and 3) "content": big black areas of any size cut off by the ever-not-black box
-    #   (Aleš: a viral clip is a shame to throw away because of a black bar)
-    modes = [("saved", False, 0.0), ("again", True, 0.06), ("content", True, 0.03)] + ([("none", True, 0.0)] if nocam_ok else [])
-    problems, shorts = [], {}
-    for attempt, (cam_mode, loose, zoom) in enumerate(modes):
-        cam = (get_cam(clip["channel"], orig) if cam_mode == "saved" else
-               detect_cam(orig, mult=3.4) if cam_mode == "again" else
-               (get_cam(clip["channel"], orig) or detect_cam(orig, mult=3.4)) if cam_mode == "content" else None)
-        if not cam and cam_mode != "none":
-            if cam_mode in ("saved", "content") or nocam_ok:
-                continue                                  # wider detection / game-only layout next
-            raise NotGameplay("no facecam - every short needs the streamer's face on top")
-        xlim = None
-        if cam_mode == "content":
-            x0, y0, x1, y1 = content_box(src)
-            top, bot, xlim = y0, SH - y1, (x0, x1)
-            log(f"  content box {x0},{y0}-{x1},{y1}: black area cut off")
-        else:
-            top, bot = game_bars(src, loose=loose)        # black bars inside the game picture
-        bot = max(bot, subtitle_band(src, top, bot))      # burned-in subtitles of the source video
-        crop_h = SH - top - bot
-        cut = int(crop_h * zoom / 2)
-        top, crop_h = top + cut, crop_h - 2 * cut
-        problems, shorts = [], {}
-        for bi, b in enumerate(blist):
-            fan = b.get("style", "fanpage" if b["key"] == "fanpage" else "bananas") == "fanpage"
-            sfx = "" if b["key"] == "bananas" else f"_{b['key']}"
-            out = d / b["short"]
-            # fanpage (Aleš 17. 11.: a different edit, not a recolour): taller facecam, one-word
-            # captions low in the game band, slow push-in per shot, instant replay of the payoff
-            cam_h = 720 if fan else CAM_H
-            game_h = H - cam_h if cam else H
-            crop_w = round(W * crop_h / game_h)           # source width that fills the game band at full height
-            xs, lo, hi, cuts = track_path(src, cam, crop_w, dur, xlim)
-            track = "".join(f"{i / FPS:.4f} crop@g x {x};\n" for i, x in enumerate(xs))
-            if bi == 0:                                   # unshifted path of the first brand: the clean base
-                (d / "track.cmd").write_text(track, encoding="utf-8")
-                base_args = (cam, ff_path(d / "track.cmd"), int(xs[0]), crop_w, game_h, crop_h, top)
-            shift = float(b.get("crop_shift") or 0.0)
-            if shift:                                     # the second account's frame sits elsewhere
-                xs = shift_path(xs, shift * crop_w, lo, hi)
-                track = "".join(f"{i / FPS:.4f} crop@g x {x};\n" for i, x in enumerate(xs))
-            cmds = d / ("track.cmd" if not shift and bi == 0 else f"track{sfx}.cmd")
-            cmds.write_text(track, encoding="utf-8")
-            ass = d / f"captions{sfx}.ass"
-            if fan:   # Anton white, neon green highlight, thin dark outline (sleek, not the banana look)
-                n_chunks = captions_ass(words, ass, y=cam_h if cam else 600,     # on the seam (Aleš)
-                                        cap={**(b.get("caption") or {}), "outline": 3, "shadow": 0},
-                                        per=1, anim="bounce")
-            else:
-                n_chunks = captions_ass(words, ass, y=CAM_H if cam else 600, cap=b.get("caption"))   # face/game seam
-            card = RATING / f"score_{rating}.webm"
-            use_card = bool(b.get("score_card")) and card.exists()
-            if b.get("score_card"):
-                extras_ass(ass, reactions, None if card.exists() else rating, card_at, cam, clip["id"])   # (+ text score)
-            rx = reactions if b.get("banana") else []
-            args = (cam, ff_path(cmds), int(xs[0]), crop_w, game_h, crop_h, top)
-            replay, push = None, None
-            main_end = dur if b.get("score_card") else min(dur, card_at + 0.4)   # no card: ends with the story
-            if fan:
-                r0, r1 = (max(0.0, peak - 1.0), min(card_at, peak + 0.5)) if peak is not None else (0.0, 0.0)
-                if False and r1 - r0 >= 0.8:              # replay off (Aleš 17. 11.: looked like the hook again + a freeze)
-                    main_end = card_at
-                    replay = (main_end, r0, r1)
-                edges = sorted({0.0, round(hook_t, 2), *jumps, *(round(c, 2) for c in cuts), round(main_end, 2)})
-                push = []
-                for e in edges:
-                    if e <= main_end and (not push or e - push[-1] >= 0.5):
-                        push.append(e)
-            total = (card_at + RATING_DUR if use_card else
-                     main_end + (replay[2] - replay[1]) / 0.6 if replay else main_end)
-            # ending: the brand's outro joined after the clip; the Follow card over the last
-            # FOLLOW_DUR s of what is running then (outro / banana score card), never longer
-            outro = HERE / b["outro"] if b.get("outro") else None
-            outro = outro if outro and outro.exists() else None
-            clip_total = total
-            total += duration(outro) if outro else 0.0
-            follow = HERE / b["follow"] if b.get("follow") and not os.environ.get("KLIPY_NO_FOLLOW") else None
-            follow = follow if follow and follow.exists() and total > FOLLOW_DUR + 1 else None
-            mpath, mvol, mstart = music_cfg(clip["id"], total, b.get("music"))
-            mvol = float(b.get("music_volume", mvol))
-            beat = beat_grid(mpath, mstart, total) if mpath and not fan else None
-            flt = reaction_overlay(build_filter(
-                *args, ass_file=ff_path(ass), zoom_at=None if fan else peak, beat=beat,
-                punch=None if fan else zoom_jumps(words, jumps, card_at),
-                mark_file=ff_path(d / "mark.txt"), nf=src_norm(src),
-                grade=",".join(x for x in (b.get("grade"), FAN_LOOK if fan else "") if x),
-                punch_z=float(b.get("punch") or 1.08) - 1, wm_text=b.get("watermark") or BRAND,
-                hook=(b.get("hook") or "flash", hook_t) if hook_t else None, cam_h=cam_h, push=push,
-                replay=replay), rx, cam)
-            inputs, idx = [], 1 + len(rx)
-            card_idx = music_idx = sfx_idx = None
-            sfx_at = 0.0
-            if use_card:
-                flt = card_overlay(flt, idx, card_at, max(0.0, card_at + RATING_DUR - dur))
-                inputs += ["-c:v", "libvpx-vp9", "-i", str(card)]
-                card_idx, idx = idx, idx + 1
-            if mpath:                                     # each short starts the track somewhere else
-                inputs += ["-ss", f"{mstart:.2f}", "-i", str(mpath)]
-                music_idx, idx = idx, idx + 1
-            if hook_t and (b.get("hook") or "flash") == "flash" and whoosh.exists():
-                inputs += ["-i", str(whoosh)]             # whoosh into a soft boom on the white (impact 0.45 s in)
-                sfx_idx, sfx_at = idx, max(0.0, hook_t - 0.45)
-            riser_idx = hit_idx = None
-            if peak is not None and peak < main_end and riser.exists() and hit.exists():
-                inputs += ["-i", str(riser), "-i", str(hit)]
-                riser_idx, hit_idx = idx + (sfx_idx is not None), idx + (sfx_idx is not None) + 1
-            nxt = idx + (sfx_idx is not None) + (2 if riser_idx is not None else 0)
-            outro_idx = follow_idx = None
-            if outro:
-                flt = outro_append(flt, nxt, clip_total)
-                inputs += ["-i", str(outro)]
-                outro_idx, nxt = nxt if has_audio(outro) else None, nxt + 1
-            if follow:
-                # over the outro the card darkens with it (the outro fades to black in its last ~0.45 s)
-                fade = f"fade=t=out:st={FOLLOW_DUR - 0.45:.2f}:d=0.45:alpha=1," if outro else None
-                flt = card_overlay(flt, nxt, total - FOLLOW_DUR, 0.0, tag="f", fade_out=fade)
-                inputs += ["-c:v", "libvpx-vp9", "-i", str(follow)]
-                follow_idx = nxt
-            mix = audio_mix(has_audio(src), total, card_idx, card_at, music_idx, mvol, sfx_idx, sfx_at, replay,
-                            mute, riser_idx, hit_idx, peak, clip_end=clip_total if outro else None,
-                            outro_idx=outro_idx, follow_idx=follow_idx, follow_at=total - FOLLOW_DUR)
-            maps = inputs + ["-filter_complex", flt + (mix or ""), "-map", "[v]"] + (["-map", "[aud]"] if mix else [])
-            if not outro and not use_card and not replay and total < dur - 0.01:
-                maps += ["-t", f"{total:.3f}"]
-            enc = encode(ff + reaction_inputs(rx) + maps, out)
-            problems = [x for x in quality_check(out, cam, cam_h, until=card_at)
-                        if not (x == "no facecam" and cam_mode == "none")]
-            if problems:
-                break
-            shorts[b["key"]] = str(out)
-            log(f"  {b['key']}: captions {len(words)} words, {n_chunks} chunks; "
-                f"banana: {', '.join(f'{n} @{t:.1f}s' for t, n in rx) or 'none'}"
-                + (f"; replay {replay[1]:.1f}-{replay[2]:.1f} s" if replay else ""))
-        if not problems:
+
+    # Look passes: first the launch look (brands with any LAUNCH_FLAGS on), then - only for the
+    # brands whose short failed QA - the proven old look; a short failing even that is dropped.
+    shorts, qa_log, todo = {}, {}, list(blist)
+    looks = [True, False] if any(b.get(k) for b in blist for k in LAUNCH_FLAGS) else [False]
+    cuts = {}
+    for v2 in looks:
+        if not todo:
             break
-        log(f"  quality check: {'; '.join(problems)} -> repair attempt {attempt + 1}")
-    if problems:
-        for b in blist:
-            (d / b["short"]).unlink(missing_ok=True)
-        raise NotGameplay(f"quality check failed after repairs: {'; '.join(problems)}")
+        hv2_cut = v2 and all(b.get("hook_v2") for b in todo)   # one cut for all: any brand off -> proven hook
+        if hv2_cut not in cuts:
+            info = {}
+            cuts[hv2_cut] = (edit_cut(orig, words0, d, clip, hpc, v2=hv2_cut, info=info), info)
+        (src, words, peak, card_at, jumps, hook_t), info = cuts[hv2_cut]
+        dur = duration(src)
+        card_at = min(card_at, dur)
+        words = [w for w in words if w[0] < card_at]      # no captions / banana under the score card
+        words, mute = mask_swears(words)                  # swears in the first 3 s: F*** and silent
+        reactions = pick_reactions(words, card_at, clip["id"], peak) if (BANANA / "reakce1.mp4").exists() else []
+        if hv2_cut and hook_t:                            # hook = teaser -> flash -> start, nothing else in it
+            reactions = [r for r in reactions if r[0] >= hook_t + 0.2]
+        ff = ["ffmpeg", "-nostdin", "-y", "-hide_banner", "-loglevel", "error", "-i", str(src)]
+
+        # Render, check, and REPAIR instead of giving up (Aleš: a cut face or black bars must be fixed):
+        #   1) normal: saved/auto facecam box, detected bars and subtitles cropped
+        #   2) facecam detected again with a wider box, bars found with looser limits, 6 % extra zoom
+        #   3) only for a clip with viral potential: no facecam band, the game fills the short
+        # No facecam = no short, unless the clip is big (Aleš 15. 11.: "pustit i bez kamery, pokud má
+        # potenciál být virální"): sources.json nocam_min_views, or several viewers clipped it.
+        #   (between 2 and 3) "content": big black areas of any size cut off by the ever-not-black box
+        #   (Aleš: a viral clip is a shame to throw away because of a black bar)
+        modes = [("saved", False, 0.0), ("again", True, 0.06), ("content", True, 0.03)] + ([("none", True, 0.0)] if nocam_ok else [])
+        problems, made, plans = [], {}, {}
+        try:                                          # a crash in the launch look -> the old look, never a lost clip
+            for attempt, (cam_mode, loose, zoom) in enumerate(modes):
+                cam = (get_cam(clip["channel"], orig) if cam_mode == "saved" else
+                       detect_cam(orig, mult=3.4) if cam_mode == "again" else
+                       (get_cam(clip["channel"], orig) or detect_cam(orig, mult=3.4)) if cam_mode == "content" else None)
+                if not cam and cam_mode != "none":
+                    if cam_mode in ("saved", "content") or nocam_ok:
+                        continue                                  # wider detection / game-only layout next
+                    raise NotGameplay("no facecam - every short needs the streamer's face on top")
+                xlim = None
+                if cam_mode == "content":
+                    x0, y0, x1, y1 = content_box(src)
+                    top, bot, xlim = y0, SH - y1, (x0, x1)
+                    log(f"  content box {x0},{y0}-{x1},{y1}: black area cut off")
+                else:
+                    top, bot = game_bars(src, loose=loose)        # black bars inside the game picture
+                bot = max(bot, subtitle_band(src, top, bot))      # burned-in subtitles of the source video
+                crop_h = SH - top - bot
+                cut = int(crop_h * zoom / 2)
+                top, crop_h = top + cut, crop_h - 2 * cut
+                problems, made, plans = [], {}, {}
+                for bi, b in enumerate(todo):
+                    fan = b.get("style", "fanpage" if b["key"] == "fanpage" else "bananas") == "fanpage"
+                    sfx = "" if b["key"] == "bananas" else f"_{b['key']}"
+                    # the launch elements of this brand in this pass (brands.json flags)
+                    hv2 = v2 and hv2_cut and bool(b.get("hook_v2")) and hook_t > 0
+                    use_sticker = v2 and bool(b.get("model_sticker")) and fan
+                    use_heat = v2 and bool(b.get("heat")) and fan
+                    use_gold = v2 and gold and bool(b.get("golden10")) and rating == 10
+                    out = d / b["short"]
+                    # fanpage (Aleš 17. 11.: a different edit, not a recolour): taller facecam, one-word
+                    # captions low in the game band, slow push-in per shot, instant replay of the payoff
+                    cam_h = 720 if fan else CAM_H
+                    game_h = H - cam_h if cam else H
+                    crop_w = round(W * crop_h / game_h)           # source width that fills the game band at full height
+                    xs, lo, hi, cuts_ = track_path(src, cam, crop_w, dur, xlim)
+                    track = "".join(f"{i / FPS:.4f} crop@g x {x};\n" for i, x in enumerate(xs))
+                    if bi == 0:                                   # unshifted path of the first brand: the clean base
+                        (d / "track.cmd").write_text(track, encoding="utf-8")
+                        base_args = (cam, ff_path(d / "track.cmd"), int(xs[0]), crop_w, game_h, crop_h, top)
+                    shift = float(b.get("crop_shift") or 0.0)
+                    if shift:                                     # the second account's frame sits elsewhere
+                        xs = shift_path(xs, shift * crop_w, lo, hi)
+                        track = "".join(f"{i / FPS:.4f} crop@g x {x};\n" for i, x in enumerate(xs))
+                    cmds = d / ("track.cmd" if not shift and bi == 0 else f"track{sfx}.cmd")
+                    cmds.write_text(track, encoding="utf-8")
+                    ass = d / f"captions{sfx}.ass"
+                    cap_y = cam_h if cam else 600
+                    if fan:   # Anton white, neon green highlight, thin dark outline (sleek, not the banana look)
+                        n_chunks = captions_ass(words, ass, y=cap_y,     # on the seam (Aleš)
+                                                cap={**(b.get("caption") or {}), "outline": 3, "shadow": 0},
+                                                per=1, anim="bounce")
+                    else:
+                        cap_y = CAM_H if cam else 600
+                        n_chunks = captions_ass(words, ass, y=cap_y, cap=b.get("caption"))   # face/game seam
+                    card = RATING / (GOLD_CARD if use_gold and (RATING / GOLD_CARD).exists() else f"score_{rating}.webm")
+                    use_card = bool(b.get("score_card")) and card.exists()
+                    if b.get("score_card"):
+                        extras_ass(ass, reactions, None if card.exists() else rating, card_at, cam, clip["id"])   # (+ text score)
+                    rx = reactions if b.get("banana") else []
+                    args = (cam, ff_path(cmds), int(xs[0]), crop_w, game_h, crop_h, top)
+                    replay, push = None, None
+                    main_end = dur if b.get("score_card") else min(dur, card_at + 0.4)   # no card: ends with the story
+                    # HOOK v2 pacing: a visual change at least every ~1.2 s in the first 5 s
+                    pace = [round(hook_t + 1.2 * k, 2) for k in range(1, 4) if hook_t + 1.2 * k < 5.0] if hv2 else []
+                    if fan:
+                        r0, r1 = (max(0.0, peak - 1.0), min(card_at, peak + 0.5)) if peak is not None else (0.0, 0.0)
+                        if False and r1 - r0 >= 0.8:              # replay off (Aleš 17. 11.: looked like the hook again + a freeze)
+                            main_end = card_at
+                            replay = (main_end, r0, r1)
+                        edges = sorted({0.0, round(hook_t, 2), *jumps, *(round(c, 2) for c in cuts_), *pace, round(main_end, 2)})
+                        push = []
+                        for e in edges:
+                            if e <= main_end and (not push or e - push[-1] >= 0.5):
+                                push.append(e)
+                    total = (card_at + RATING_DUR if use_card else
+                             main_end + (replay[2] - replay[1]) / 0.6 if replay else main_end)
+                    # ending: the brand's outro joined after the clip; the Follow card over the last
+                    # FOLLOW_DUR s of what is running then (outro / banana score card), never longer
+                    outro = HERE / b["outro"] if b.get("outro") else None
+                    outro = outro if outro and outro.exists() else None
+                    clip_total = total
+                    total += duration(outro) if outro else 0.0
+                    follow = HERE / b["follow"] if b.get("follow") and not os.environ.get("KLIPY_NO_FOLLOW") else None
+                    follow = follow if follow and follow.exists() and total > FOLLOW_DUR + 1 else None
+                    mpath, mvol, mstart = music_cfg(clip["id"], total, b.get("music"))
+                    mvol = float(b.get("music_volume", mvol))
+                    beat = beat_grid(mpath, mstart, total) if mpath and not fan else None
+                    # the timeline of extra elements: one at a time, each in the bottom-left slot
+                    elements, sprites, heat_plan = [], [], None
+                    y_ban = (CAM_H if cam else 600) + 520
+                    for t, name in rx:
+                        elements.append((t, t + REACTIONS[name][2] - REACTIONS[name][1], f"banana {name}",
+                                         (BANANA_X, y_ban, BANANA_X + BANANA_W, y_ban + BANANA_H)))
+                    if use_card:
+                        elements.append((card_at, total, "score card", (0, cam_h if cam else 0, W, H)))
+                    sticker_box = (SLOT_X, SLOT_BOTTOM - STICKER_H, SLOT_X + STICKER_W, SLOT_BOTTOM)
+                    plan_stickers = []
+                    heat_end = main_end if outro or not follow else min(main_end, total - FOLLOW_DUR - 0.1)
+                    if use_heat:                                  # HEAT over the last 2.5 s before the outro
+                        hs = max(heat_end - HEAT_DUR, (peak + 0.6) if peak is not None else 0.0, hook_t + 0.5)
+                        if heat_end - hs >= 1.6:
+                            heat_plan = (hs, heat_end - hs)
+                        else:
+                            log(f"  heat: no room after the climax ({heat_end - hs:.1f} s), skipped")
+                            use_heat = False
+                    if use_sticker:
+                        stills = model_stills()
+                        if stills:
+                            hook_still = None
+                            if hv2 and hook_t >= 1.2:             # in the hook, on the scream
+                                hook_still = pick_still(stills, words, 0.0, clip["id"], prefer=["shocked", "gasp"])
+                                plan_stickers.append((0.12, hook_still))
+                            if peak is not None and peak >= hook_t + 0.3:
+                                t0 = peak - 0.1
+                                if t0 + STICKER_DUR < main_end - 0.3 and (not heat_plan or t0 + STICKER_DUR + 0.2 <= heat_plan[0]):
+                                    plan_stickers.append((t0, pick_still(stills, words, peak, clip["id"], avoid=hook_still)))
+                        for k, (t0, png) in enumerate(plan_stickers):
+                            try:
+                                pattern, sx, sy = sticker_frames(png, d / f"_sticker{sfx}_{k}")
+                                sprites.append((t0, pattern, sx, sy))
+                                elements.append((t0, t0 + STICKER_DUR, f"model {png.stem}", sticker_box))
+                            except Exception as e:
+                                log(f"  model sticker {png.name} failed ({str(e)[-80:]}), skipped")
+                    if v2 and use_card and rank and b.get("league_chip") and total - (card_at + 1.75) > 0.4:
+                        try:                                  # part of the score card (same element), after the score lands
+                            cp, cx, cy = chip_frames(f"#{rank} THIS WEEK", d / f"_sticker{sfx}_chip", total - (card_at + 1.75))
+                            sprites.append((card_at + 1.75, cp, cx, cy))
+                        except Exception as e:
+                            log(f"  league chip failed ({str(e)[-80:]})")
+                    heat_wav = heat_pops = None
+                    if heat_plan:
+                        try:
+                            hp, hx, hy, heat_wav, heat_pops = heat_frames(heat_n, heat_plan[1], d / f"_heat{sfx}")
+                            sprites.append((heat_plan[0], hp, hx, hy))
+                            elements.append((heat_plan[0], heat_plan[0] + heat_plan[1], f"heat {heat_n}",
+                                             (SLOT_X, SLOT_BOTTOM - HEAT_H, SLOT_X + HEAT_W, SLOT_BOTTOM)))
+                        except Exception as e:
+                            log(f"  heat failed ({str(e)[-80:]})")
+                            heat_plan = None
+                    hook_peak = info.get("hook_peak") if hv2 else None
+                    flt = reaction_overlay(build_filter(
+                        *args, ass_file=ff_path(ass), zoom_at=None if fan else peak, beat=beat,
+                        punch=None if fan else zoom_jumps(words, jumps, card_at, hook=hook_t if hv2 else None),
+                        mark_file=ff_path(d / "mark.txt"), nf=src_norm(src),
+                        grade=",".join(x for x in (b.get("grade"), FAN_LOOK if fan else "") if x),
+                        punch_z=float(b.get("punch") or 1.08) - 1, wm_text=b.get("watermark") or BRAND,
+                        hook=(b.get("hook") or "flash", hook_t) if hook_t else None, cam_h=cam_h, push=push,
+                        replay=replay, cam_punch=(hook_peak, hook_t) if hook_peak is not None else None), rx, cam)
+                    inputs, idx = [], 1 + len(rx)
+                    card_idx = music_idx = sfx_idx = None
+                    sfx_at = 0.0
+                    if use_card:
+                        flt = card_overlay(flt, idx, card_at, max(0.0, card_at + RATING_DUR - dur))
+                        inputs += ["-c:v", "libvpx-vp9", "-i", str(card)]
+                        card_idx, idx = idx, idx + 1
+                    if mpath:                                     # each short starts the track somewhere else
+                        inputs += ["-ss", f"{mstart:.2f}", "-i", str(mpath)]
+                        music_idx, idx = idx, idx + 1
+                    if hook_t and (b.get("hook") or "flash") == "flash" and whoosh.exists():
+                        inputs += ["-i", str(whoosh)]             # whoosh into a soft boom on the white (impact 0.45 s in)
+                        sfx_idx, sfx_at = idx, max(0.0, hook_t - 0.45)
+                    elif hv2 and (b.get("hook") or "flash") == "cut" and whip.exists():
+                        inputs += ["-i", str(whip)]               # HOOK v2: a short air swish on the hard cut
+                        sfx_idx, sfx_at = idx, max(0.0, hook_t - 0.12)
+                    riser_idx = hit_idx = None
+                    if peak is not None and peak < main_end and riser.exists() and hit.exists():
+                        inputs += ["-i", str(riser), "-i", str(hit)]
+                        riser_idx, hit_idx = idx + (sfx_idx is not None), idx + (sfx_idx is not None) + 1
+                    nxt = idx + (sfx_idx is not None) + (2 if riser_idx is not None else 0)
+                    outro_idx = follow_idx = None
+                    if outro:
+                        flt = outro_append(flt, nxt, clip_total)
+                        inputs += ["-i", str(outro)]
+                        outro_idx, nxt = nxt if has_audio(outro) else None, nxt + 1
+                    if follow:
+                        # over the outro the card darkens with it (the outro fades to black in its last ~0.45 s)
+                        fade = f"fade=t=out:st={FOLLOW_DUR - 0.45:.2f}:d=0.45:alpha=1," if outro else None
+                        flt = card_overlay(flt, nxt, total - FOLLOW_DUR, 0.0, tag="f", fade_out=fade)
+                        inputs += ["-c:v", "libvpx-vp9", "-i", str(follow)]
+                        follow_idx, nxt = nxt, nxt + 1
+                    extra_audio = []
+                    if sprites:                                   # model stickers + Heat (times < the outro)
+                        flt = sprite_overlay(flt, sprites, nxt)
+                        inputs += sprite_inputs(sprites)
+                        nxt += len(sprites)
+                    if heat_plan and heat_wav:
+                        inputs += ["-i", str(heat_wav)]
+                        extra_audio.append((nxt, heat_plan[0], 0.8))
+                        nxt += 1
+                    mix = audio_mix(has_audio(src), total, card_idx, card_at, music_idx, mvol, sfx_idx, sfx_at, replay,
+                                    mute, riser_idx, hit_idx, peak, clip_end=clip_total if outro else None,
+                                    outro_idx=outro_idx, follow_idx=follow_idx, follow_at=total - FOLLOW_DUR,
+                                    extras=extra_audio)
+                    maps = inputs + ["-filter_complex", flt + (mix or ""), "-map", "[v]"] + (["-map", "[aud]"] if mix else [])
+                    if not outro and not use_card and not replay and total < dur - 0.01:
+                        maps += ["-t", f"{total:.3f}"]
+                    enc = encode(ff + reaction_inputs(rx) + maps, out)
+                    problems = [x for x in quality_check(out, cam, cam_h, until=card_at)
+                                if not (x == "no facecam" and cam_mode == "none")]
+                    if problems:
+                        break
+                    made[b["key"]] = str(out)
+                    plans[b["key"]] = dict(
+                        total=total, main_end=card_at if use_card else clip_total, card_at=card_at,
+                        card=str(card) if use_card else None, heat_on=use_heat, heat=bool(heat_plan),
+                        loud_hook=hv2, elements=sorted(elements), face_bottom=cam_h if cam else 0,
+                        cap_times=[(w0, w1 + 0.6) for w0, w1, _ in words],
+                        cap_box=(40, cap_y - int(int((b.get("caption") or {}).get("size", CAP_SIZE)) * 0.65),
+                                 1040, cap_y + int(int((b.get("caption") or {}).get("size", CAP_SIZE)) * 0.65)),
+                        look="launch" if v2 else "old", gold=use_gold, heat_n=heat_n if heat_plan else None, peak=peak,
+                        stickers=[Path(p).stem for _, p in plan_stickers])
+                    log(f"  {b['key']}: captions {len(words)} words, {n_chunks} chunks; "
+                        f"banana: {', '.join(f'{n} @{t:.1f}s' for t, n in rx) or 'none'}"
+                        + (f"; replay {replay[1]:.1f}-{replay[2]:.1f} s" if replay else "")
+                        + (f"; look {'launch' if v2 else 'old'}" if looks != [False] else "")
+                        + (f"; stickers {', '.join(f'{Path(p).stem} @{t:.1f}s' for t, p in plan_stickers)}" if plan_stickers else "")
+                        + (f"; heat {heat_n} @{heat_plan[0]:.1f}s" if heat_plan else "") + ("; GOLDEN 10" if use_gold else ""))
+                if not problems:
+                    break
+                log(f"  quality check: {'; '.join(problems)} -> repair attempt {attempt + 1}")
+        except NotGameplay:
+            raise
+        except Exception as e:
+            for b in todo:
+                (d / b["short"]).unlink(missing_ok=True)
+            if v2 and False in looks:
+                log(f"  launch look crashed ({str(e)[-160:]}) -> old look")
+                continue
+            if shorts:                                # another brand's version already passed: keep it
+                log(f"  {', '.join(b['key'] for b in todo)}: render failed ({str(e)[-160:]}), dropped")
+                break
+            raise
+        if problems:
+            for b in todo:
+                (d / b["short"]).unlink(missing_ok=True)
+            if v2 and False in looks:
+                log(f"  launch look failed the quality check ({'; '.join(problems)}) -> old look")
+                continue
+            if shorts:                                    # another brand's version already passed: keep it
+                log(f"  {', '.join(b['key'] for b in todo)}: quality check failed ({'; '.join(problems)}), dropped")
+                break
+            raise NotGameplay(f"quality check failed after repairs: {'; '.join(problems)}")
+        # QA of every finished short (brands.json 'qa'): a failing launch look -> the old look; a
+        # failing old look -> not published (the file is deleted, the reason logged in meta 'qa')
+        retry = []
+        for b in todo:
+            if b["key"] not in made:
+                continue
+            probs = []
+            if b.get("qa", True):
+                try:
+                    probs = qa_short(made[b["key"]], plans[b["key"]])
+                except Exception as e:                    # a broken probe must not cost the short
+                    log(f"  QA {b['key']}: probe failed ({str(e)[-120:]}), accepted")
+            look = plans[b["key"]]["look"]
+            if not probs:
+                shorts[b["key"]] = made[b["key"]]
+                qa_log[b["key"]] = {"ok": True, "look": look, "gold": plans[b["key"]]["gold"],
+                                    "heat": plans[b["key"]]["heat_n"], "stickers": plans[b["key"]]["stickers"],
+                                    "peak": plans[b["key"]]["peak"]}
+                continue
+            log(f"  QA {b['key']} ({look} look): {'; '.join(probs)}")
+            if os.environ.get("KLIPY_DEBUG"):
+                shutil.copy(made[b["key"]], Path(os.environ["KLIPY_DEBUG"]) / f"qa_failed_{b['key']}_{look}_{int(time.time())}.mp4")
+            Path(made[b["key"]]).unlink(missing_ok=True)
+            qa_log[b["key"]] = {"ok": False, "look": look, "problems": probs}
+            if v2 and False in looks:
+                retry.append(b)
+        todo = retry
+    for tmp in list(d.glob("_sticker*")) + list(d.glob("_heat*")):   # sprite frames: only needed for the encode
+        shutil.rmtree(tmp, ignore_errors=True)
+    if not shorts:
+        raise NotGameplay(f"QA failed: {qa_log}")
     base = d / "base_9x16.mp4"               # clean, no captions: input for the editor (OpenMotion)
     if clean:
         encode(ff + ["-filter_complex", build_filter(*base_args, nf=src_norm(src)), "-map", "[v]", "-map", "0:a?"], base)
     out = Path(shorts.get("bananas") or next(iter(shorts.values())))
+    try:
+        if any(b.get("golden10") or b.get("heat") for b in blist):
+            record_rating(clip)
+    except Exception as e:
+        log(f"  rating history: {str(e)[-80:]}")
 
     meta = {
         **clip,
@@ -1959,8 +2515,12 @@ def render(clip, src=None, clean=False):
         "source": str(src),
         "quote": pick_quote(words, peak),    # publikuj.py builds a different post text per platform from it
         "peak": peak,                        # payoff (s): thumbnail frame, banana, zoom
+        "peaks": {k: v.get("peak") for k, v in qa_log.items() if v.get("ok")},   # per brand (the hook differs)
         "card_at": round(card_at, 2),        # where the banana score card starts
         "rating": rating,
+        "golden": bool(qa_log.get("bananas", {}).get("gold")),   # the rare golden 10/10 card is in the bananas short
+        "heat": qa_log.get("fanpage", {}).get("heat"),           # fanpage HEAT 1-5 shown (None = none)
+        "qa": qa_log,                        # QA per brand: look (launch / old), problems of a dropped look
         "caption": f"🎮 {home_url(clip)}\n#gta6 #{BRAND}",
         "rendered_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "checklist": [
@@ -2479,7 +3039,7 @@ class ChatMeter:
         import socket, threading
         self.sock = socket.create_connection(("irc.chat.twitch.tv", 6667), timeout=10)
         self.sock.send(f"NICK justinfan{random.randint(10000, 99999)}\r\n".encode())
-        self.counts, self.joined, self.lock = {}, set(), threading.Lock()
+        self.counts, self.raw, self.joined, self.lock = {}, {}, set(), threading.Lock()
         threading.Thread(target=self._read, daemon=True).start()
 
     def join(self, logins):
@@ -2514,22 +3074,33 @@ class ChatMeter:
                 with self.lock:
                     c = self.counts.setdefault(chan, {})
                     c[b5] = c.get(b5, 0) + w
+                    r = self.raw.setdefault(chan, {})       # plain message count (the "chat went N×" line)
+                    r[b5] = r.get(b5, 0) + 1
 
     def spike(self, chan, z_min, cool):
-        """(z, msgs) when the last finished 5 s bin explodes over the channel's last 5 minutes."""
+        """
+        (z, msgs, x) when the last finished 5 s bin explodes over the channel's last 5 minutes;
+        x = plain messages in that bin / their 5-minute median (a real ratio, for the post text).
+        """
         now = int(time.time() // 5) - 1
         with self.lock:
             c = self.counts.get(chan, {})
+            r = self.raw.get(chan, {})
             for old in [k for k in c if k < now - 80]:
                 del c[old]
+            for old in [k for k in r if k < now - 80]:
+                del r[old]
             hist = [c.get(i, 0) for i in range(now - 60, now)]
             cur = c.get(now, 0)
+            rmed = float(np.median([r.get(i, 0) for i in range(now - 60, now)]))
+            rcur = r.get(now, 0)
         if sum(1 for x in hist if x) < 20:            # not enough chat history yet
             return None
         med = float(np.median(hist))
         mad = float(np.median([abs(x - med) for x in hist])) + 1
         z = (cur - med) / mad
-        return (round(z, 1), cur) if z >= z_min and cur >= max(8, 3 * med) else None
+        x = round(rcur / rmed) if rmed >= 1 else None
+        return (round(z, 1), cur, x) if z >= z_min and cur >= max(8, 3 * med) else None
 
 def vod_section(login, user_id, started_at, t_spike, before=32, after=6):
     """The window around a chat spike from the running stream's live VOD (no login needed)."""
@@ -2585,7 +3156,7 @@ def cmd_live(a):
                 queue.append((time.time() - 2.5, lg, streams[lg], hit))
                 log(f"live: SPIKE {lg} z={hit[0]} msgs={hit[1]} -> cut in ~70 s")
         while queue and time.time() >= queue[0][0] + 70:   # the live VOD has caught up
-            t_spike, lg, st, (z, msgs) = queue.pop(0)
+            t_spike, lg, st, (z, msgs, chat_x) = queue.pop(0)
             try:
                 sec = vod_section(lg, st["user_id"], st["started_at"], t_spike)
                 if not sec:
@@ -2595,7 +3166,8 @@ def cmd_live(a):
                 clip = {"id": f"live_{lg}_{int(t_spike)}", "url": url, "title": st.get("title") or "",
                         "views": int(st["viewer_count"]), "duration": s1 - s0, "created": int(t_spike),
                         "channel": lg, "platform": "twitch", "category": games[0]["name"],
-                        "live": True, "spike_z": z, "cluster": 2}     # a chat explosion = a strong moment
+                        "live": True, "spike_z": z, "cluster": 2,     # a chat explosion = a strong moment
+                        "chat_x": chat_x}                             # messages vs the 5 min median (post text)
                 d = OUT / lg / f"{datetime.fromtimestamp(clip['created'], tz=timezone.utc):%Y%m%d}_{clip['id']}"   # = render()'s folder
                 d.mkdir(parents=True, exist_ok=True)
                 src = d / "source.mp4"

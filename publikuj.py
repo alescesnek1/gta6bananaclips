@@ -377,46 +377,83 @@ def home(m):
     return {"kick": f"kick.com/{m['channel']}", "youtube": f"youtube.com/@{m['channel']}"}.get(
         m.get("platform"), f"twitch.tv/{m['channel']}")
 
-# caption lines (SlopMonster lint 5/5, 16. 11.); {s} = the streamer
-HOOKS = [
-    "{s} was NOT ready for this 💀", "GTA 6 had {s} crying 😭", "{s} found the worst way to play GTA 6",
-    "Nobody warned {s} about this part", "{s} vs GTA 6 physics. Physics won.", "This is why {s} can't have nice things",
-    "{s} said it before we could 😭", "Watch the end 👀", "{s} really thought this would work",
-    "Day one and {s} is already losing it", "{s} was one second from greatness", "{s} picked violence today",
-]
-CTAS = [
-    "W or L? 👇", "Rate it 1-10 🍌", "Would you have done the same?", "Send this to the friend who drives like this",
-    "What would you have done? 👇", "Clip of the day or nah?", "Is {s} cooked? 👇",
-]
-
 # gta6fanpageclip: a curator of streamer reactions - no bananas, no score, its own hashtags
-# (SlopMonster lint 5/5, 17. 11.); {s} = the streamer
-FAN_HOOKS = [
-    "Wait for {s}'s face", "{s} did not see that coming", "{s} lost it at this part",
-    "Chat saw it before {s} did", "{s} went quiet for a second", "How {s} took this GTA 6 moment",
-    "{s} had one job in Vice City", "Leonida keeps testing {s}", "{s} needed a minute after this",
-    "The reaction from {s} says it all",
-]
-FAN_CTAS = [
-    "Best reaction you've seen today?", "Would you react the same way?", "Which streamer should we clip next?",
-    "Fair reaction or overreaction?", "Could you have done it better?", "Rewatch or skip?",
-]
 FAN_HASHTAGS = ["#gtavi", "#gta6gameplay", "#gta6reaction", "#streamerclips", "#twitchclips",
                 "#vicecitygta6", "#gamingshorts", "#leonida"]
+
+# Launch captions (17. 11.): built for COMMENTS and SHARES instead of generic hooks.
+# BAIT = a question people answer in the comments, SHARE = a reason to send it to someone
+# (streamer-fan lines with the name). Rotated without repeats (the brand's post counter),
+# every network of one post gets a different line. No @ mentions. SlopMonster lint 5/5 + Codex cleanse.
+BAIT = [
+    "Guess the banana score before the end 🍌", "S tier or D tier? 👇", "Rate this 1-10 before the bananas drop 🍌",
+    "Was {s} right here? Yes or no 👇", "Call the score in the comments before it lands 🍌", "W or L for {s}? 👇",
+    "Higher or lower than 7 bananas? 👇", "Which second got you? 👇", "Could you have saved this? Be honest 👇",
+    "What score would you give {s}? 👇",
+]
+SHARE = [
+    "Send this to the friend who drives like this", "Your boy needs to see the ending",
+    "Send this to whoever you're playing GTA 6 with tonight", "{s} fans, this one is for you",
+    "Show this to your {s} friend and watch them defend it", "Send this to someone who still hasn't bought GTA 6",
+    "Every group chat has someone who plays like this. Send it to them", "{s} fans will say this was planned",
+    "Forward this to your co-op partner. No explanation needed", "Your friend who screams at games needs this one",
+]
+FAN_BAIT = [
+    "Rate the heat 1-5 🔥", "How hot was that on a scale of 1 to 5? 🔥", "Too much or just enough? 👇",
+    "Did {s} handle that well? Be honest 👇", "One word for that reaction 👇", "Guess the heat level before the end 🔥",
+    "Would you watch this twice? 👀", "Smooth or messy? 👇", "Heat check. What's your number? 🔥",
+    "Did that make you rewind? 👇",
+]
+FAN_SHARE = [
+    "Send this to the friend who says GTA is boring", "Your GTA 6 partner needs to see this",
+    "{s} fans, you'll want to save this one", "Send this to someone who needs a laugh tonight",
+    "Show this to your {s} friend and watch their face", "Save it, then drop it in the group chat",
+    "Send this to whoever you'll ride with in Vice City", "{s} fans saw this coming. Did you?",
+    "Send this to the friend who rewinds everything", "Your Leonida crew should see this one",
+]
+NETS = ["instagram", "tiktok", "youtube", "facebook", "twitter", "threads"]
+
+def rot(pool, m, service, salt=0):
+    """Line for this post: the brand's post counter moves through the pool (no repeats in a row),
+    each network one step further, so one clip's posts never share a line."""
+    k = int(m.get("_seq") or 0) + (NETS.index(service) if service in NETS else 0) + salt
+    return pool[k % len(pool)]
+
+_league = {}
+
+def league_line(m):
+    """'#2 in the Banana League this week' for a top 10 streamer (data line, bananas only)."""
+    if ZNACKA != "bananas" or not BRAND.get("league") or m.get("platform") == "top3":
+        return ""
+    try:
+        if "rows" not in _league:
+            import liga
+            _league["rows"] = {r["channel"]: r["rank"] for r in liga.table(7)}
+        rank = _league["rows"].get(m.get("channel"))
+    except Exception as e:                        # the league is a bonus: never cost a post
+        log(f"  league: {e}")
+        return ""
+    return f"#{rank} in the Banana League this week" if rank and rank <= 10 else ""
+
+def chat_line(m):
+    """Live chat clips: 'Chat went 14× during this' - the measured ratio only, nothing estimated."""
+    x = m.get("chat_x")
+    return f"Chat went {int(x)}× during this" if isinstance(x, (int, float)) and x >= 3 else ""
 
 def caption_fanpage(m, service):
     rnd = random.Random(f"{m['id']}:{service}:fanpage")
     s = (m.get("channel") or "they")[:1].upper() + (m.get("channel") or "they")[1:]
-    hook = rnd.choice(FAN_HOOKS).format(s=s)
+    hook = rot(FAN_BAIT, m, service).format(s=s)          # comment bait first, a share trigger after
     q = (m.get("quote") or "").strip()
     q = f"\"{q}\"" if q else ""
-    cta = rnd.choice(FAN_CTAS).format(s=s)
+    cta = rot(FAN_SHARE, m, service, 3).format(s=s)
+    chat = chat_line(m)
     src = f"Streamer: {home(m)}"
     if service in ("twitter", "threads"):
-        text = "\n\n".join(x for x in (hook, q, cta, f"{src} #GTA6") if x)
+        text = "\n\n".join(x for x in (hook, q, chat, cta, f"{src} #GTA6") if x)
         return text if len(text) <= 270 else "\n\n".join(x for x in (hook, f"{src} #GTA6") if x)
-    rot = rnd.sample(FAN_HASHTAGS, 2)
-    return "\n\n".join(x for x in (hook, q, cta, src, " ".join(["#gta6", "#gta6clips"] + rot)) if x)
+    tags = rnd.sample(FAN_HASHTAGS, 2)
+    return "\n\n".join(x for x in (hook, q, chat, cta, src, " ".join(["#gta6", "#gta6clips"] + tags)) if x)
 
 def caption(m, service):
     if ZNACKA == "fanpage" and m.get("platform") != "top3":
@@ -429,20 +466,25 @@ def caption(m, service):
                 + "\n\n#gta6 #gta6bananaclips #gaming #gta6clips")
     # Aleš 16. 11.: more entertaining and engaging. hook line + the streamer's own words + banana
     # score + a question for the comments + credit; a different combination per clip AND network
+    # 17. 11.: comment bait first, the streamer's own words, banana score + league rank (data),
+    # a share trigger, credit; a different line per post AND network (rot)
     rnd = random.Random(f"{m['id']}:{service}")
     s = (m.get("channel") or "they")[:1].upper() + (m.get("channel") or "they")[1:]
-    hook = rnd.choice(HOOKS).format(s=s)
+    hook = rot(BAIT, m, service).format(s=s)
     q = (m.get("quote") or "").strip()
     q = f"“{q}”" if q else ""
-    score = f"🍌 Banana score: {m['rating']}/10" if m.get("rating") else ""
-    cta = rnd.choice(CTAS).format(s=s)
+    score = (f"🍌 Banana score: {m['rating']}/10" + (" GOLDEN" if m.get("golden") else "")) if m.get("rating") else ""
+    if re.search(r"score|bananas|1-10", hook, re.I):  # a guessing question: never spoil the answer in the text
+        score = ""
+    data = " · ".join(y for y in (score, league_line(m), chat_line(m)) if y)
+    cta = rot(SHARE, m, service, 3).format(s=s)
     src = f"🎮 {home(m)}"
     if service in ("twitter", "threads"):            # short: X counts 280 characters
-        text = "\n\n".join(x for x in (hook, q, cta, f"{src} #GTA6") if x)
+        text = "\n\n".join(x for x in (hook, q, chat_line(m), cta, f"{src} #GTA6") if x)
         return text if len(text) <= 270 else "\n\n".join(x for x in (hook, f"{src} #GTA6") if x)
-    rot = rnd.sample(HASHTAGS, 2)
-    return "\n\n".join(x for x in (hook, q, " · ".join(y for y in (score, cta) if y), src,
-                                   " ".join(["#gta6", "#gta6bananaclips"] + rot)) if x)
+    tags = rnd.sample(HASHTAGS, 2)
+    return "\n\n".join(x for x in (hook, q, data, cta, src,
+                                   " ".join(["#gta6", "#gta6bananaclips"] + tags)) if x)
 
 def youtube_title(m):
     """
@@ -509,7 +551,17 @@ def budget_level():
     return 2 if gb >= cfg.get("netlify_gb_hard", 1e9) else 1 if gb >= cfg["netlify_gb_soft"] else 0
 
 def used_today(day):
+    """Posts of the quota today (the Top 3 is an extra, never counted)."""
     return sum(in_day(rec, day) for k, rec in load_json(PUBLISHED, {}).items() if not k.startswith("top3_"))
+
+def extra_score(day, src_cfg):
+    """Score a clip needs to go out OVER the obligatory quota: the brand's extra_ramp (launch week
+    19.-25. 11.: good_score, every good clip up to max_per_day), else sources.json extra_score."""
+    n = None
+    for d, k in sorted((BRAND.get("extra_ramp") or {}).items()):
+        if date.fromisoformat(d) <= day:
+            n = k
+    return n if n is not None else src_cfg.get("extra_score", 5000)
 
 def remaining(day):
     """Today's obligatory quota (ramp) minus what earlier runs already scheduled (hot posts count, Top 3 not)."""
@@ -534,7 +586,8 @@ def post_input(ch, m, video_url, due, draft):
     else:
         inp["saveToDraft"] = True
     if service in ("instagram", "tiktok"):            # cover = the payoff frame (banana + reaction)
-        inp["assets"][0]["video"]["metadata"] = {"thumbnailOffset": int(max(0.5, m.get("peak") or 1.0) * 1000)}
+        pk = (m.get("peaks") or {}).get(ZNACKA) or m.get("peak") or 1.0     # the brand's own cut (hooks differ)
+        inp["assets"][0]["video"]["metadata"] = {"thumbnailOffset": int(max(0.5, pk) * 1000)}
     if service == "youtube":
         inp["metadata"] = {"youtube": {"title": youtube_title(m), "categoryId": "20"}}   # 20 = Gaming
     elif service == "instagram":
@@ -624,7 +677,7 @@ def cmd_den(a):
     free = [t for t in slot_times(day, len(SLOTS))
             if jittered(t, day) > now + timedelta(minutes=20) and t.isoformat() not in taken]
     src_cfg = load_json(HERE / "sources.json", {})
-    good, extra = src_cfg.get("good_score", 1000), src_cfg.get("extra_score", 5000)
+    good, extra = src_cfg.get("good_score", 1000), extra_score(day, src_cfg)
     # Aleš: do not burn the 8 on average clips. An average one only goes out when the 8 would
     # otherwise be missed (no more free slots than posts still owed today).
     owed_now = must >= len(free)
@@ -659,8 +712,12 @@ def cmd_den(a):
         times[0], slots[0] = hot_due, None          # hot post: takes no slot (as before)
         log(f"HOT: {picks[0]['channel']} '{picks[0].get('title', '')[:40]}' -> {hot_due:%H:%M}")
     chans = load_json(CHANNELS, [])
+    seq0 = len(load_json(PUBLISHED, {}))     # caption rotation: the brand's post counter (no line twice in a row)
+    for i, m in enumerate(picks):
+        m["_seq"] = seq0 + i
     mode = "ZKOUŠKA" if a.zkouska else ("NAOSTRO" if a.ostre else "koncepty")
-    log(f"{day} [{ZNACKA}]: {len(picks)} shorts (quota {quota}) x {len(chans) or '?'} channels ({mode})")
+    log(f"{day} [{ZNACKA}]: {len(picks)} shorts (quota {quota}, over it only score >= {extra}, up to {cap})"
+        f" x {len(chans) or '?'} channels ({mode})")
     if os.environ.get("GITHUB_ACTIONS") and not a.ostre and not a.zkouska:
         print("::warning::Buffer: jen KONCEPTY, nic nevyjde. Na GitHubu nastav promennou OSTRE=1.")
     if a.zkouska:
@@ -672,7 +729,7 @@ def cmd_den(a):
             print("   ", gql_value(post_input(fake, m, "https://media.example/clip.mp4", due, not a.ostre))[:400])
         return
     if not picks:
-        if not a.zkouska and load_json(CHANNELS, []) and f"top3_{day}" not in load_json(PUBLISHED, {}):
+        if not a.zkouska and load_json(CHANNELS, []):
             top3_only(a, day, now)                   # the day's quota is full: the Top 3 may still be due
         return
     load_env()
@@ -737,7 +794,8 @@ def cmd_den(a):
         mb = round(Path(size).stat().st_size / 1e6, 1) if size and Path(size).exists() else None
         done[m["id"]] = {"url": url, "path": rel, "due": due.isoformat(), "draft": not a.ostre, "posts": posts, "mb": mb,
                          "channel": m.get("channel"), "platform": m.get("platform"), "score": round(m.get("score") or 0, 1),
-                         "hot": bool(m.get("hot"))}
+                         "hot": bool(m.get("hot")), "rating": m.get("rating"), "views": m.get("views"),   # Banana League (liga.py)
+                         "golden": bool(m.get("golden"))}
         if slot_of.get(m["id"]):
             done[m["id"]]["slot"] = slot_of[m["id"]]
         save_json(PUBLISHED, done)

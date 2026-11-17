@@ -13,6 +13,10 @@ the count, the faces, how they fall (1 = one lonely sad banana ... 10 = a pile u
 and a golden king banana with a crown + confetti). Transparent, 1080x1920, 30 fps, 2.6 s.
 
 Writes <out_dir>/score_N/0001.png ... and <out_dir>/score_N.json (impact times for the sound).
+
+  blender -b --factory-startup -P tools/rating/banany.py -- <out_dir> 10 --gold
+GOLDEN 10/10 (rare, ~1 in 30 clips, klipuj.golden_ten): every banana is gold, gold number,
+gold + white sparkle confetti -> <out_dir>/score_10_gold/ and score_10_gold.json.
 """
 import json
 import math
@@ -28,6 +32,7 @@ from mathutils import Euler, Vector
 ARGS = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
 OUT = Path(ARGS[0]) if ARGS else Path("out_rating")
 SCORES = [int(x) for x in ARGS[1:] if x.isdigit()] or list(range(1, 11))
+GOLD = "--gold" in ARGS                       # the rare golden 10/10 variant
 FONT = Path(__file__).resolve().parents[2] / "fonts" / "cap" / "montserrat-900.ttf"
 FPS, FRAMES = 30, 78                          # 2.6 s
 W, H = 1080, 1920
@@ -47,13 +52,15 @@ def srgb(h):
     c = [int(h[i:i + 2], 16) / 255 for i in (1, 3, 5)]
     return tuple(x / 12.92 if x <= 0.04045 else ((x + 0.055) / 1.055) ** 2.4 for x in c)
 
-def mat(name, hexc, emit=0.0, rough=0.55):
+def mat(name, hexc, emit=0.0, rough=0.55, metal=0.0):
     m = bpy.data.materials.new(name)
     m.use_nodes = True
     b = m.node_tree.nodes["Principled BSDF"]
     rgb = srgb(hexc)
     b.inputs["Base Color"].default_value = (*rgb, 1)
     b.inputs["Roughness"].default_value = rough
+    if metal:
+        b.inputs["Metallic"].default_value = metal
     if emit:
         b.inputs["Emission Color"].default_value = (*rgb, 1)
         b.inputs["Emission Strength"].default_value = emit
@@ -367,10 +374,16 @@ def setup(n):
              yellow=mat("y", "#FFD43B", rough=0.38), pale=mat("p", "#D8CB86"), gold=mat("g", "#FFC21A", emit=0.8, rough=0.25),
              brown=mat("b", "#5B3A1E"), black=mat("k", "#141414", rough=0.3), white=mat("w", "#FFFFFF"),
              crown=mat("cr", "#FFB000", emit=1.2, rough=0.2), navy=mat("n", "#1E2230", rough=0.4),
-             num=mat("num", col, emit=0.3), numback=mat("nb", "#1B1B22"), blue=mat("bl", "#5AB0FF", emit=0.6),
+             num=mat("num", "#FFC21A", emit=1.4, rough=0.2) if GOLD else mat("num", col, emit=0.3),
+             spark=mat("spk", "#FFF6D0", emit=3.0), numback=mat("nb", "#1B1B22"), blue=mat("bl", "#5AB0FF", emit=0.6),
              conf1=mat("c1", "#FF4D6D", emit=0.6), conf2=mat("c2", "#4DD4FF", emit=0.6), conf3=mat("c3", "#8CFF4D", emit=0.6),
              neck=mat("ne", "#C9D24A"), speck=mat("sp", "#7A5A2A"), stem=mat("st", "#5E4B25"), browc=mat("bc", "#3B2414"),
              mouthc=mat("mc", "#3A1010", rough=0.3), tongue=mat("tg", "#FF6F91"))
+    if GOLD:                                          # polished metal gold: clearly not the yellow peel
+        M.update(gold=mat("g", "#C98A0B", emit=0.25, rough=0.18, metal=1.0),
+                 neck=mat("ne", "#8A5A06", emit=0.1, rough=0.25, metal=1.0),
+                 numback=mat("nb", "#4A2E00"))
+        world.node_tree.nodes["Background"].inputs[0].default_value = (1.0, 0.86, 0.55, 1)   # warm reflections
     # the jar: floor + walls at the frame edges, front/back glass keeps them in a slab
     if sc.rigidbody_world is None:
         bpy.ops.rigidbody.world_add()
@@ -401,7 +414,7 @@ def build(n):
     guys, faces = [], []
     floor = bpy.data.objects["floor"]
     for i in range(n):
-        g, parts = banana_guy(f"b{i}", n, i, rnd, gold=(i == king), crown=(i == king))
+        g, parts = banana_guy(f"b{i}", n, i, rnd, gold=(i == king) or GOLD, crown=(i == king))
         faces.append(parts)
         side = (-1) ** i
         g.location = (side * rnd.uniform(0.2, 1.4) if n > 1 else 0.3, 0, HALF_H + 4.5 + i * (L_BAN + 0.6))   # a standing banana is 7 long: no overlap at spawn
@@ -464,9 +477,9 @@ def build(n):
 
     # confetti for 8+
     if n >= 8:
-        mats = [M["conf1"], M["conf2"], M["conf3"], M["gold"]]
-        for c in range(24 if n < 10 else 60):
-            q = cube(f"cf{c}", rnd.uniform(0.14, 0.3), mats[c % 4])
+        mats = [M["gold"], M["crown"], M["spark"]] if GOLD else [M["conf1"], M["conf2"], M["conf3"], M["gold"]]
+        for c in range(24 if n < 10 else 90 if GOLD else 60):
+            q = cube(f"cf{c}", rnd.uniform(0.14, 0.3), mats[c % len(mats)])
             ang = rnd.uniform(0.1 * math.pi, 0.9 * math.pi)
             sp, spin = rnd.uniform(6, 13), rnd.uniform(5, 14)
             ox = rnd.choice((-HALF_W + 0.5, HALF_W - 0.5)) if n == 10 else 0
@@ -508,11 +521,12 @@ def main():
             (OUT / f"score_{n}.json").write_text(json.dumps({"score": n, "pops": pops, "dur": FRAMES / FPS}))
             print(f"score {n}: {sum(k == 'thud' for _, k in pops)} landings")
             continue
-        d = OUT / f"score_{n}"
+        name = f"score_{n}_gold" if GOLD else f"score_{n}"
+        d = OUT / name
         d.mkdir(exist_ok=True)
         bpy.context.scene.render.filepath = str(d) + "/"
         bpy.ops.render.render(animation=True)
-        (OUT / f"score_{n}.json").write_text(json.dumps({"score": n, "pops": pops, "dur": FRAMES / FPS}))
+        (OUT / f"{name}.json").write_text(json.dumps({"score": n, "pops": pops, "dur": FRAMES / FPS, "gold": GOLD}))
         print(f"score {n}: done, impacts {[round(t, 2) for t, k in pops if k == 'thud']}")
 
 main()
