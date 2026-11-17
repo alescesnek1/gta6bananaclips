@@ -133,7 +133,9 @@
     "kick_clip_01M7KECPEW9P1Y63PHKN8KZ0W8": "Just Chatting",
     "twitch_AntsyClearEchidnaVoHiYo-djKaNjZ3dn238s_5": "World of Warcraft",
     "twitch_LivelyProtectiveWasabiKevinTurtle-n3Ho6MVOov3gaUEP": "DayZ",
-    "kick_clip_01M7KESG9PK6RNGP21YWGGBX9X": "Just Chatting"
+    "kick_clip_01M7KESG9PK6RNGP21YWGGBX9X": "Just Chatting",
+    "twitch_ConsiderateSolidOrangePhilosoraptor-yRf8WwY-OyiJFh6e": "Just Chatting",
+    "twitch_SourSparklingEyeballPeteZaroll-XJ3litYr3F6LBUhZ": "Just Chatting"
   },
   "views": {
     "twitch_SeductiveScaryArtichokeMikeHogu-ilokmbgy1N7dF3Gp": [
@@ -399,6 +401,14 @@
     "kick_clip_01M7KESG9PK6RNGP21YWGGBX9X": [
       1794889111,
       600
+    ],
+    "twitch_SourSparklingEyeballPeteZaroll-XJ3litYr3F6LBUhZ": [
+      1794890645,
+      534
+    ],
+    "twitch_ConsiderateSolidOrangePhilosoraptor-yRf8WwY-OyiJFh6e": [
+      1794890645,
+      515
     ]
   }
 }
