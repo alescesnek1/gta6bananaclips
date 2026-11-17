@@ -152,7 +152,8 @@
     "twitch_ThankfulSoftChipmunkStoneLightning-wBWh0Sf79DxSXtCv": "Just Chatting",
     "twitch_RudeDelightfulWebKevinTurtle-UVmmrFp_1NAZNayz": "Just Chatting",
     "twitch_LongFuriousGarlicDendiFace-C43HKo8gkc7BKTXl": "Trees Hate You",
-    "twitch_AmericanBelovedSpindleHassaanChop-wCPv3BkqjLbYiznx": "ROB RUN"
+    "twitch_AmericanBelovedSpindleHassaanChop-wCPv3BkqjLbYiznx": "ROB RUN",
+    "twitch_ResoluteTolerantDuckKappaWealth-qyC2FmCSQzQsvWkm": "Just Chatting"
   },
   "views": {
     "twitch_DelightfulMoralFlyHassanChop-lRz8MZfOUnILozsz": [
@@ -422,6 +423,10 @@
     "twitch_AmericanBelovedSpindleHassaanChop-wCPv3BkqjLbYiznx": [
       1794937135,
       509
+    ],
+    "twitch_ResoluteTolerantDuckKappaWealth-qyC2FmCSQzQsvWkm": [
+      1794938646,
+      511
     ]
   },
   "rr": "bananas"
