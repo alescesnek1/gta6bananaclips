@@ -7,7 +7,9 @@
     "youtube_ClI-eATridI_1483": 1794670233,
     "youtube_EfX_QR_knWs_360": 1794673965
   },
-  "failed": {},
+  "failed": {
+    "twitch_IntelligentAbstemiousBasenjiOMGScoots-6o4BuG8nzW3K8qWx": 1
+  },
   "other_game": {
     "twitch_3007922283": "World of Warcraft",
     "twitch_3119456291": "Minecraft",
@@ -406,6 +408,11 @@
     "twitch_RudeDelightfulWebKevinTurtle-UVmmrFp_1NAZNayz": [
       1794930834,
       509
+    ],
+    "twitch_IntelligentAbstemiousBasenjiOMGScoots-6o4BuG8nzW3K8qWx": [
+      1794934136,
+      500
     ]
-  }
+  },
+  "rr": "bananas"
 }
