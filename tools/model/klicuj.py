@@ -79,12 +79,12 @@ def split_video(path, names):
     picked.sort()
     for name, k in zip(names, picked):
         t = k / fps
-        # a sticker is a reaction: head, hands and shoulders (top ~58 % of the waist-up shot), 900 px tall
-        crop = "crop=iw:ih*0.58:0:0,scale=-2:900"
+        # Aleš 17. 11.: the whole waist-up shot (face and belly), like the banana; 1100 px tall
+        crop = "scale=-2:1100"
         subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", f"{t:.2f}", "-i", str(path), "-frames:v", "1",
                         "-vf", crop, str(DIR / f"{name}.png")], check=True)
-        t0 = max(0.0, t - 0.6)                            # ~1.2 s clip around the peak, green keyed to alpha
-        subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", f"{t0:.2f}", "-t", "1.2", "-i", str(path),
+        t0 = max(0.0, t - 0.9)                            # ~1.8 s clip: build-up, peak, settle; green keyed to alpha
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", f"{t0:.2f}", "-t", "1.8", "-i", str(path),
                         "-vf", f"{crop},chromakey=0x00FF00:0.18:0.08,despill=type=green,format=yuva420p", "-an",
                         "-c:v", "libvpx-vp9", "-b:v", "0", "-crf", "32", "-auto-alt-ref", "0",
                         str(DIR / f"{name}.webm")], check=True)

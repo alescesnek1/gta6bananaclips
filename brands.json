@@ -79,7 +79,7 @@
     "qa": true,
     "_exp": "Experimenty (experimenty.py, docs/dva-ucty.md): max exp_max_per_day denne navic ke kvote, zapina je az data (dost silneho materialu), meri se 48 h po vydani; koncept pod 60 % klasiky po 5 postech se sam vypne (experimenty.json), nad 100 % smi 2x denne. false = vypnuto hned.",
     "exp_first": true,
-    "exp_tier3": true,
+    "exp_tier3": false,
     "exp_max_per_day": 1
   },
   "fanpage": {
