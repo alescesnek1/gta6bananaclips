@@ -8,7 +8,7 @@
     "youtube_EfX_QR_knWs_360": 1794673965
   },
   "failed": {
-    "twitch_IntelligentAbstemiousBasenjiOMGScoots-6o4BuG8nzW3K8qWx": 1
+    "twitch_IntelligentAbstemiousBasenjiOMGScoots-6o4BuG8nzW3K8qWx": 2
   },
   "other_game": {
     "twitch_3007922283": "World of Warcraft",
@@ -150,7 +150,8 @@
     "twitch_ClumsySlickOcelotRlyTho-nehW7hS7DKuGtHR5": "Just Chatting",
     "twitch_DependableSilkyCookieNerfBlueBlaster-gBHIs1QP17cFm35f": "Just Chatting",
     "twitch_ThankfulSoftChipmunkStoneLightning-wBWh0Sf79DxSXtCv": "Just Chatting",
-    "twitch_RudeDelightfulWebKevinTurtle-UVmmrFp_1NAZNayz": "Just Chatting"
+    "twitch_RudeDelightfulWebKevinTurtle-UVmmrFp_1NAZNayz": "Just Chatting",
+    "twitch_LongFuriousGarlicDendiFace-C43HKo8gkc7BKTXl": "Trees Hate You"
   },
   "views": {
     "twitch_DelightfulMoralFlyHassanChop-lRz8MZfOUnILozsz": [
@@ -410,9 +411,13 @@
       509
     ],
     "twitch_IntelligentAbstemiousBasenjiOMGScoots-6o4BuG8nzW3K8qWx": [
-      1794934136,
-      500
+      1794935622,
+      528
+    ],
+    "twitch_LongFuriousGarlicDendiFace-C43HKo8gkc7BKTXl": [
+      1794935622,
+      554
     ]
   },
-  "rr": "bananas"
+  "rr": "fanpage"
 }
