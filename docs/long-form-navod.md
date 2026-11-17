@@ -23,7 +23,7 @@ Běh je každý den kolem 00:25 a dělá video na **zítřek**. E-mail tedy při
 - Video kratší než 5 min se nedělá.
 
 ## Stavba videa bananas (pevná)
-Tier board má vzhled banánového skóre: žlutý papír s pihami, tmavé řádky s ručně „vystřiženými“ okraji, velká písmena S–D se silným obrysem.
+Tier board je klasický TierMaker (`tools/long/tier.py`): černá plocha, pastelové štítky S–D, čtvercové náhledy momentů, které do řádku přiletí s pružinou a vlastním zvukem. Závěrečná karta je z `tools/long/endcard.py`; hotové kopie jsou v `assets/long/end_*.mp4`. Fanpage si sama vezme `assets/outro/fanpage_outro_16x9.mp4`, až bude existovat. Naše hudba se pod závěrečnou kartou ztiší, karta má vlastní.
 1. Cold open 10–12 s ze tří nejlepších pointe.
 2. Prázdný tier board na 2 s.
 3. Momenty #N…#1. Každý má úvodní kartu 0,6 s, pak moment (střih hluchých míst, střídavý zoom, titulky klíčových hlášek, zoom + záblesk na pointě, u bananas banán u top 5). Pak 1,5 s „let“ do tier listu (S = top 10 %, A, B, C, D).

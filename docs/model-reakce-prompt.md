@@ -21,6 +21,12 @@ Use the attached photo as the exact same woman: same face, same hair, same skin 
 - `smirk.png`: teasing smirk, one eyebrow raised, chin slightly down
 - `eyeroll.png`: dramatic eye roll, unimpressed, arms crossed
 
+## Outro na šířku pro long-form (16:9)
+Vygeneruj ve video generátoru (Gemini/Veo apod.) se stejnou referencí, 16:9, 5–8 s. Ulož jako `assets/outro/fanpage_outro_16x9.mp4`. Program na něj sám přidá jméno účtu a místo pro koncové prvky YouTube (2 videa + odběr) na stranu, kde není její obličej. Když soubor chybí, long-form skončí neonovou kartou bez modelky.
+```
+Use the attached photo as the exact same woman: same face, same hair, same skin tone, same makeup. Cinematic 16:9 landscape shot, 6 seconds. Golden-hour Vice City beach boulevard with palm trees and pink neon signs behind her, slight camera push-in. She stands on the left third of the frame, waist-up, wearing a stylish fitted Vice City outfit (cropped jacket over a fitted top), tasteful and fully clothed. She looks into the camera, smiles, winks and says "Follow for more", then playfully waves. Keep the right half of the frame calm and uncluttered. Photorealistic, sharp, natural skin, warm light.
+```
+
 ## Pravidla
 - Žádná nahota ani lechtivé pózy (TikTok/IG/YouTube jinak omezí dosah).
 - Pozadí musí být čistě zelené, jinak vystřižení nebude čisté.

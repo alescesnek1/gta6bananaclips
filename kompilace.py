@@ -920,7 +920,7 @@ def render_moment(m, out, z, rank, idx, tmp, venc, teaser=False, banana=False, c
         + [str(out)])
     return length
 
-def music_pass(video, out, z, music, mstart, louder, vol=None):
+def music_pass(video, out, z, music, mstart, louder, vol=None, stop_at=None):
     """
     Our music under the WHOLE video, quietly (bananas 0.06, fanpage 0.05), ducked under speech
     (sidechaincompress keyed by the stream audio), 3x louder on transitions (`louder` = (start, end)).
@@ -932,8 +932,9 @@ def music_pass(video, out, z, music, mstart, louder, vol=None):
     vol = vol or MUSIC_VOL[z]
     boost = "+".join(f"2*between(t,{a:.2f},{b:.2f})" for a, b in louder) or "0"
     total = K.duration(video)
+    fade = f"*if(gt(t,{stop_at:.2f}),max(0,1-(t-{stop_at:.2f})/0.6),1)" if stop_at else ""   # stop under the end card
     g = (f"[1:a]aresample=48000,aformat=channel_layouts=stereo,aloop=loop=-1:size=2147483647,atrim=0:{total:.2f},"
-         f"volume='{vol}*(1+{boost})':eval=frame[mu];"
+         f"volume='{vol}*(1+{boost}){fade}':eval=frame[mu];"
          "[0:a]asplit=2[sa][sc];"
          "[mu][sc]sidechaincompress=threshold=0.02:ratio=6:attack=15:release=350[duck];"
          f"[sa][duck]amix=inputs=2:duration=first:normalize=0,loudnorm=I=-16:TP=-1.5:LRA=11,aresample=48000[a]")
@@ -950,10 +951,7 @@ def music_pass(video, out, z, music, mstart, louder, vol=None):
 
 TIERS = ["S", "A", "B", "C", "D"]
 TIER_SHARE = [0.10, 0.20, 0.30, 0.25, 1.0]          # S = top 10 %, A next 20 %, B 30 %, C 25 %, D the rest
-TIER_COL = {"bananas": {"S": "FF3B3B", "A": "FF9F1C", "B": "FFE135", "C": "9BE15D", "D": "5DADE2"},
-            "fanpage": {"S": "FF4FD8", "A": "D24BFF", "B": "8E5CFF", "C": "4F8CFF", "D": "2EE6D6"}}
 TIER_ANIM = 1.5
-BOARD_TOP, ROW_H, ROW_GAP, LETTER_W, GRID_X = 70, 182, 8, 170, 230
 
 def assign_tiers(ranked):
     """ranked = best first -> m["tier"] by position (S top 10 %, at least one)."""
@@ -967,18 +965,6 @@ def assign_tiers(ranked):
             i += 1
         m["tier"] = TIERS[i]
 
-def tier_layout(ranked):
-    """Fixed slot (x, y, w, h) for every moment, sized so each row fits all of its moments."""
-    rows = {t: [m for m in ranked if m["tier"] == t] for t in TIERS}
-    for ti, t in enumerate(TIERS):
-        ms = list(reversed(rows[t]))                    # filled in countdown order: weakest first, left to right
-        c = max(1, len(ms))
-        w = int(min(256, (W - GRID_X - 30) / c - 10))
-        h = int(w * 9 / 16)
-        y = BOARD_TOP + ti * (ROW_H + ROW_GAP) + (ROW_H - h - 26) // 2
-        for j, m in enumerate(ms):
-            m["slot"] = (GRID_X + j * (w + 10), y, w, h)
-
 def tier_thumb(m, tmp):
     """The moment's payoff frame, small."""
     p = tmp / f"th_{m['rank']}.jpg"
@@ -988,117 +974,33 @@ def tier_thumb(m, tmp):
              "-vf", "scale=512:288:force_original_aspect_ratio=increase,crop=512:288", str(p)])
     return p
 
-CARD_SLATE = (59, 49, 46)                            # BGR of the score card's dark pill (#2E313B)
-CARD_TIER = {"S": "8BE04E", "A": "FFE135", "B": "FFB238", "C": "FF8FB8", "D": "8FD3FF"}   # card's lime 7/10, banana, ...
+sys.path.insert(0, str(HERE / "tools" / "long"))       # Fable's modules: tier list + end cards
 
-def board_bg(z, tmp):
+def tier_entry(m, tmp):
+    return {"tier": m["tier"], "thumb": str(tier_thumb(m, tmp)), "label": "@" + m["channel"]}
+
+def with_teaser(seg, tmp, venc):
+    """The teaser "#1 is insane, stay till the end" in the free strip under the board (y 1030+)."""
+    out = seg.with_name(seg.stem + "_t.mp4")
+    run(["ffmpeg", "-nostdin", "-y", "-hide_banner", "-loglevel", "error", "-i", str(seg), "-vf",
+         f"drawtext=fontfile='{K.ff_path(FONT_B)}':textfile='{text_file(tmp, 'teaser', TEASER.upper())}':"
+         f"fontsize=40:fontcolor=white:borderw=3:bordercolor=black:x=(w-tw)/2:y=1030"]
+        + VOUT + venc + ["-c:a", "copy", str(out)])
+    return out
+
+def end_card(z, out, venc):
     """
-    bananas: banana-yellow paper (grain + a few brown freckles like the banana skins), the rows are dark
-    slate pills like the score card's label, hand-cut (slightly rough) edges and a soft drop shadow.
+    The brand's end card (tools/long/endcard.py, already at -16 LUFS: no separate normalising). The
+    prebuilt assets/long/end_<brand>.mp4 is used when it fits (fanpage only while there is no 16:9 model
+    outro); its picture is re-encoded with our encoder so the concat stays seamless, the sound is copied.
     """
-    import cv2
-    path = tmp / f"board_bg_{z}.png"
-    if path.exists():
-        return path
-    rnd = np.random.default_rng(7)
-    img = np.zeros((H, W, 3), np.float32)
-    img[:] = (53, 225, 255)                              # #FFE135
-    img += rnd.normal(0, 7, (H, W, 1))                   # paper grain
-    img *= np.clip(1.06 - 0.25 * ((np.mgrid[0:H, 0:W][0] / H - 0.5) ** 2 + (np.mgrid[0:H, 0:W][1] / W - 0.5) ** 2), 0, 1)[..., None]
-    for _ in range(140):                                 # banana freckles
-        cv2.circle(img, (int(rnd.uniform(0, W)), int(rnd.uniform(0, H))), int(rnd.uniform(2, 6)), (30, 70, 110), -1)
-    img = np.clip(img, 0, 255).astype(np.uint8)
-
-    def rough(x0, y0, x1, y1, step=36, j=3.5):
-        pts = [(x, y0 + rnd.uniform(-j, j)) for x in np.arange(x0, x1, step)]
-        pts += [(x1 + rnd.uniform(-j, j), y) for y in np.arange(y0, y1, step)]
-        pts += [(x, y1 + rnd.uniform(-j, j)) for x in np.arange(x1, x0, -step)]
-        pts += [(x0 + rnd.uniform(-j, j), y) for y in np.arange(y1, y0, -step)]
-        return np.array(pts, np.int32)
-
-    shadow = np.zeros((H, W), np.uint8)
-    for ti in range(len(TIERS)):
-        y = BOARD_TOP + ti * (ROW_H + ROW_GAP)
-        cv2.fillPoly(shadow, [rough(36, y + 8, W - 24, y + ROW_H + 8)], 255)
-    shadow = cv2.GaussianBlur(shadow, (0, 0), 9)[..., None] / 255.0
-    img = (img * (1 - 0.45 * shadow)).astype(np.uint8)
-    for ti in range(len(TIERS)):
-        y = BOARD_TOP + ti * (ROW_H + ROW_GAP)
-        cv2.fillPoly(img, [rough(30, y, W - 30, y + ROW_H)], CARD_SLATE, cv2.LINE_AA)
-        cv2.polylines(img, [rough(30, y, W - 30, y + ROW_H, j=2)], True, (20, 20, 20), 3, cv2.LINE_AA)
-    cv2.imwrite(str(path), img)
-    return path
-
-def board_graph(z, placed, tmp, base_label="[bg]", length=2.0, bg_index=None):
-    """ffmpeg filter pieces drawing the board (rows, letters) + the already placed moments."""
-    col = TIER_COL[z]
-    if bg_index is not None:                             # bananas: the score card look
-        draw = ""
-        for ti, t in enumerate(TIERS):
-            y = BOARD_TOP + ti * (ROW_H + ROW_GAP)
-            draw += (f",drawtext=fontfile='{K.ff_path(FONT_B)}':text='{t}':fontsize=140:fontcolor=0x{CARD_TIER[t]}:"
-                     f"borderw=9:bordercolor=0x1E4A12:shadowx=4:shadowy=6:shadowcolor=black@0.5:"
-                     f"x=30+({LETTER_W}-tw)/2:y={y}+({ROW_H}-th)/2")
-        return [f"[{bg_index}:v]format=rgb24{draw}{base_label}"]
-    g = [f"color=0x{DARK[z]}:s={W}x{H}:r={FPS}:d={length:.2f}[bg0]"]
-    draw = ""
-    for ti, t in enumerate(TIERS):
-        y = BOARD_TOP + ti * (ROW_H + ROW_GAP)
-        draw += (f",drawbox=x=30:y={y}:w={W - 60}:h={ROW_H}:color=0x{col[t]}@0.16:t=fill"
-                 f",drawbox=x=30:y={y}:w={LETTER_W}:h={ROW_H}:color=0x{col[t]}:t=fill"
-                 f",drawtext=fontfile='{K.ff_path(FONT_B)}':text='{t}':fontsize=120:fontcolor=0x111111:"
-                 f"x=30+({LETTER_W}-tw)/2:y={y}+({ROW_H}-th)/2")
-    g.append(f"[bg0]{draw[1:]}{base_label}")
-    return g
-
-def render_board(z, placed, new, out, tmp, venc, length, caption=None):
-    """
-    A board segment: placed moments sit in their rows; `new` (or None) flies from the centre into its
-    slot in 0.55 s with a swoosh and lands with a hit. `placed` + `new` keep their fixed slots.
-    """
-    ins = ["-f", "lavfi", "-t", f"{length:.2f}", "-i", f"anullsrc=r=48000:cl=stereo"]
-    if z == "bananas":
-        ins += ["-loop", "1", "-framerate", str(FPS), "-t", f"{length:.2f}", "-i", str(board_bg(z, tmp))]
-        g = board_graph(z, placed, tmp, "[b0]", length, bg_index=1)
-        last, n = "[b0]", 2
-    else:
-        g = board_graph(z, placed, tmp, "[b0]", length)
-        last, n = "[b0]", 1
-    items = list(placed) + ([new] if new else [])
-    for i, m in enumerate(items):
-        x, y, w, h = m["slot"]
-        ins += ["-loop", "1", "-t", f"{length:.2f}", "-i", str(tier_thumb(m, tmp))]
-        if m is new:
-            cx, cy, bw = (W - w * 2) // 2, (H - h * 2) // 2, w * 2
-            ease = "min(1,t/0.55)"
-            g.append(f"[{n}:v]scale={w - 8}:{h - 8},pad={w}:{h}:4:4:white,setsar=1[t{i}]")
-            g.append(f"{last}[t{i}]overlay=x='{cx}+({x}-{cx})*{ease}':y='{cy}+({y}-{cy})*{ease}':eval=frame[o{i}]")
-        else:
-            g.append(f"[{n}:v]scale={w - 8}:{h - 8},pad={w}:{h}:4:4:white,setsar=1[t{i}]")
-            g.append(f"{last}[t{i}]overlay=x={x}:y={y}[o{i}]")
-        name = text_file(tmp, f"bn{m['rank']}", "@" + m["channel"])
-        fs = max(14, min(24, w // 9))
-        en = ":enable='gte(t,0.55)'" if m is new else ""
-        g.append(f"[o{i}]drawtext=fontfile='{K.ff_path(FONT_M)}':textfile='{name}':fontsize={fs}:fontcolor=white:"
-                 f"x={x}:y={y + h + 3}{en}[n{i}]")
-        last, n = f"[n{i}]", n + 1
-    if caption:                                            # "#1 is insane, stay till the end" (max 2x)
-        g.append(f"{last}drawtext=fontfile='{K.ff_path(FONT_B)}':textfile='{text_file(tmp, 'teaser', caption.upper())}':"
-                 f"fontsize=40:fontcolor=white:borderw=4:bordercolor=0x1E1E1E:x=(w-tw)/2:y=1030[cap]")
-        last = "[cap]"
-    g.append(f"{last}format=yuv420p[v]")
-    mixes = ["[0:a]"]
-    for name, at, vol in (("flash.wav", 0.0, 0.35), ("hit.wav", 0.55, 0.5)) if new else (("flash.wav", 0.0, 0.3),):
-        f = SFX / name
-        if f.exists():
-            ins += ["-i", str(f)]
-            g.append(f"[{n}:a]aresample=48000,aformat=channel_layouts=stereo,volume={vol},adelay={int(at * 1000)}:all=1[s{n}]")
-            mixes.append(f"[s{n}]")
-            n += 1
-    g.append(f"{''.join(mixes)}amix=inputs={len(mixes)}:duration=first:normalize=0[a]")
-    run(["ffmpeg", "-nostdin", "-y", "-hide_banner", "-loglevel", "error"] + ins +
-        ["-filter_complex", ";".join(g), "-map", "[v]", "-map", "[a]", "-t", f"{length:.2f}"] + VOUT + venc + AOUT + [str(out)])
-
+    import endcard
+    pre = HERE / "assets" / "long" / f"end_{z}.mp4"
+    if pre.exists() and (z == "bananas" or not endcard.OUTRO_16x9.exists()):
+        run(["ffmpeg", "-nostdin", "-y", "-hide_banner", "-loglevel", "error", "-i", str(pre), "-map", "0:v", "-map", "0:a"]
+            + VOUT + venc + ["-c:a", "copy", str(out)])
+        return {"path": str(out), "dur": K.duration(out)}
+    return (endcard.bananas if z == "bananas" else endcard.fanpage)(out, venc=venc)
 
 def render_silent(m, out, z, rank, idx, tmp, venc):
     s, e = m["seg"]
@@ -1107,59 +1009,6 @@ def render_silent(m, out, z, rank, idx, tmp, venc):
          "-i", m["source"], "-f", "lavfi", "-i", "anullsrc=r=48000:cl=stereo", "-filter_complex",
          f"[0:v]{norm},fps={FPS},setsar=1,{overlays(tmp, z, m, rank, idx)}[v]", "-map", "[v]", "-map", "1:a",
          "-t", f"{e - s:.2f}"] + VOUT + venc + AOUT + [str(out)])
-
-def render_sweep(out, z, venc, music, mstart):
-    """fanpage transition: dark frame, a neon pink bar sweeps across, whoosh + a breath of our music."""
-    whoosh = HERE / "assets" / "sfx" / "flash.wav"
-    ins = ["-f", "lavfi", "-t", f"{SWEEP}", "-i", f"color=0x{DARK[z]}:s={W}x{H}:r={FPS}",
-           "-f", "lavfi", "-t", f"{SWEEP}", "-i", f"color=0x{COL[z]}:s=520x{H}:r={FPS}"]
-    graph = [f"[1:v]format=rgba,rotate=0.25:c=none:ow=rotw(0.25):oh=roth(0.25)[bar];"
-             f"[0:v][bar]overlay=x='-w+(W+w)*t/{SWEEP}':y='(H-h)/2':shortest=1,format=yuv420p[v]"]
-    mixes, n = [], 2
-    if music:
-        ins += ["-ss", f"{mstart:.2f}", "-i", str(music)]
-        graph.append(f"[{n}:a]atrim=0:{SWEEP},asetpts=PTS-STARTPTS,volume=0.16,aresample=48000[mu]")
-        mixes.append("[mu]")
-        n += 1
-    if whoosh.exists():
-        ins += ["-i", str(whoosh)]
-        graph.append(f"[{n}:a]atrim=0:{SWEEP},asetpts=PTS-STARTPTS,volume=0.5,aresample=48000[wh]")
-        mixes.append("[wh]")
-        n += 1
-    ins += ["-f", "lavfi", "-t", f"{SWEEP}", "-i", "anullsrc=r=48000:cl=stereo"]
-    mixes.append(f"[{n}:a]")
-    graph.append(f"{''.join(mixes)}amix=inputs={len(mixes)}:duration=longest:normalize=0,"
-                 f"aformat=channel_layouts=stereo,atrim=0:{SWEEP}[a]")
-    run(["ffmpeg", "-nostdin", "-y", "-hide_banner", "-loglevel", "error"] + ins +
-        ["-filter_complex", ";".join(graph), "-map", "[v]", "-map", "[a]", "-t", f"{SWEEP}"] + VOUT + venc + AOUT + [str(out)])
-
-def render_end(out, z, venc, music, mstart, tmp, length=8.0):
-    """End slate for YouTube end-screen elements: dark, brand name, (bananas: our banana), music."""
-    wm = "gta6bananaclips" if z == "bananas" else "gta6fanpageclip"
-    pfp = HERE / "assets" / "brand" / "pfp_bananas.webp"
-    ins = ["-f", "lavfi", "-t", f"{length}", "-i", f"color=0x{DARK[z]}:s={W}x{H}:r={FPS}"]
-    v = "[0:v]"
-    graph = []
-    n = 1
-    if z == "bananas" and pfp.exists():
-        ins += ["-loop", "1", "-t", f"{length}", "-i", str(pfp)]
-        graph.append(f"[1:v]scale=300:300,format=rgba,geq=r='r(X,Y)':g='g(X,Y)':b='b(X,Y)':"
-                     f"a='if(lt(hypot(X-150,Y-150),148),255,0)'[p];{v}[p]overlay=x=(W-w)/2:y=250[v1]")
-        v, n = "[v1]", 2
-    graph.append(f"{v}drawtext=fontfile='{K.ff_path(FONT_B)}':textfile='{text_file(tmp, 'end', wm)}':fontsize=84:"
-                 f"fontcolor=0x{COL[z]}:x=(w-tw)/2:y=600,fade=t=in:d=0.4,fade=t=out:st={length - 0.6:.2f}:d=0.6,"
-                 f"format=yuv420p[v]")
-    if music:
-        ins += ["-ss", f"{mstart:.2f}", "-i", str(music)]
-        graph.append(f"[{n}:a]atrim=0:{length},asetpts=PTS-STARTPTS,volume=0.3,afade=t=in:d=0.5,"
-                     f"afade=t=out:st={length - 1.5:.2f}:d=1.5,aresample=48000,aformat=channel_layouts=stereo,"
-                     f"apad=whole_dur={length},atrim=0:{length}[a]")
-        amap = "[a]"
-    else:
-        ins += ["-f", "lavfi", "-t", f"{length}", "-i", "anullsrc=r=48000:cl=stereo"]
-        amap = f"{n}:a"
-    run(["ffmpeg", "-nostdin", "-y", "-hide_banner", "-loglevel", "error"] + ins +
-        ["-filter_complex", ";".join(graph), "-map", "[v]", "-map", amap, "-t", f"{length}"] + VOUT + venc + AOUT + [str(out)])
 
 def render_cold_open(top3, out, z, tmp, venc):
     """10-12 s teaser: the payoffs of the best 3 (3.7 s each), hard cuts, credits, no numbers."""
@@ -1197,27 +1046,6 @@ def concat(parts, out):
 def flag(z, name, default=True):
     """Every new element can be switched off per brand: brands.json -> <brand> -> long_flags."""
     return bool(((K.load_json(K.BRANDS, {}).get(z) or {}).get("long_flags") or {}).get(name, default))
-
-def render_league_card(z, rows, out, tmp, venc, length=2.5):
-    """Banana League standings (real data: liga.table) between blocks of 5 moments."""
-    lines = [f"#{r['rank']}  @{r['channel']}   avg {r['avg']:.1f}   {__import__('liga').movement(r)}" for r in rows[:5]]
-    f = (f"drawtext=fontfile='{K.ff_path(FONT_B)}':textfile='{text_file(tmp, 'lg_t', 'BANANA LEAGUE')}':fontsize=96:"
-         f"fontcolor=0x{COL[z]}:x=(w-tw)/2:y=110")
-    for i, ln in enumerate(lines):
-        f += (f",drawtext=fontfile='{K.ff_path(FONT_M)}':textfile='{text_file(tmp, f'lg{i}', ln)}':fontsize=54:"
-              f"fontcolor=white:box=1:boxcolor=0x{COL[z]}@0.18:boxborderw=14:x=(w-tw)/2:y={300 + i * 120}")
-    ins = ["-f", "lavfi", "-t", f"{length}", "-i", f"color=0x{DARK[z]}:s={W}x{H}:r={FPS}",
-           "-f", "lavfi", "-t", f"{length}", "-i", "anullsrc=r=48000:cl=stereo"]
-    g = [f"[0:v]{f},fade=t=in:d=0.25,format=yuv420p[v]"]
-    mixes = ["[1:a]"]
-    if (SFX / "flash.wav").exists():
-        ins += ["-i", str(SFX / "flash.wav")]
-        g.append("[2:a]aresample=48000,aformat=channel_layouts=stereo,volume=0.3[s2]")
-        mixes.append("[s2]")
-    g.append(f"{''.join(mixes)}amix=inputs={len(mixes)}:duration=first:normalize=0[a]")
-    run(["ffmpeg", "-nostdin", "-y", "-hide_banner", "-loglevel", "error"] + ins +
-        ["-filter_complex", ";".join(g), "-map", "[v]", "-map", "[a]", "-t", f"{length}"] + VOUT + venc + AOUT + [str(out)])
-
 
 # ---------------------------------------------------------------------------
 # fanpage = "THE STORY / NIGHT IN VICE CITY" (Aleš 17. 11.: the two accounts test different concepts).
@@ -1271,33 +1099,6 @@ def render_model_card(z, out, tmp, venc, seed, length=1.0):
          "-loop", "1", "-t", f"{length}", "-i", str(img),
          "-f", "lavfi", "-t", f"{length}", "-i", "anullsrc=r=48000:cl=stereo",
          "-filter_complex", ";".join(g), "-map", "[v]", "-map", "2:a", "-t", f"{length}"] + VOUT + venc + AOUT + [str(out)])
-    return out
-
-def render_outro16(z, out, tmp, venc):
-    """The model's outro (vertical) centred on the brand's dark background + the Follow card over its end."""
-    b = (K.load_json(K.BRANDS, {}).get(z) or {})
-    outro = HERE / b["outro"] if b.get("outro") else None
-    if not outro or not outro.exists():
-        return None
-    length = K.duration(outro)
-    follow = HERE / b["follow"] if b.get("follow") else None
-    ins = ["-f", "lavfi", "-t", f"{length:.2f}", "-i", f"color=0x{DARK[z]}:s={W}x{H}:r={FPS}", "-i", str(outro)]
-    g = [f"[1:v]scale=-2:{H},setsar=1[o];[0:v][o]overlay=x=(W-w)/2:y=0:eof_action=pass[v0]"]
-    last = "[v0]"
-    if follow and follow.exists() and length > 3:
-        ins += ["-c:v", "libvpx-vp9", "-i", str(follow)]
-        g.append(f"[2:v]scale=-2:{H},setpts=PTS+{length - 2.2:.2f}/TB[f];{last}[f]overlay=x=(W-w)/2:y=0:eof_action=pass[v1]")
-        last = "[v1]"
-    g.append(f"{last}format=yuv420p[v]")
-    amap = "1:a" if K.has_audio(outro) else None
-    if amap is None:
-        ins += ["-f", "lavfi", "-t", f"{length:.2f}", "-i", "anullsrc=r=48000:cl=stereo"]
-        amap = f"{len([x for x in ins if x == '-i']) - 1}:a"
-    else:
-        g.append(f"[1:a]aresample=48000,aformat=channel_layouts=stereo,apad=whole_dur={length:.2f}[oa]")
-        amap = "[oa]"
-    run(["ffmpeg", "-nostdin", "-y", "-hide_banner", "-loglevel", "error"] + ins +
-        ["-filter_complex", ";".join(g), "-map", "[v]", "-map", amap, "-t", f"{length:.2f}"] + VOUT + venc + AOUT + [str(out)])
     return out
 
 def build_story(a, picked, d, tmp):
@@ -1362,9 +1163,8 @@ def build_story(a, picked, d, tmp):
             info["moments"].append({"rank": m["rank"], "channel": m["channel"], "at": t})
             add(seg, "moment")
     end = tmp / "outro.mp4"
-    if not render_outro16(z, end, tmp, venc):
-        render_end(end, z, venc, None, 0.0, tmp)
-    louder.append((t, t + K.duration(end)))
+    end_card(z, end, venc)
+    stop = t
     add(end, "end")
     if len(chapters) < 3 or any(b_[0] - a_[0] < 10 for a_, b_ in zip(chapters, chapters[1:])):
         chapters = [(0.0, "Start")] + [(mm["at"], f"{mm.get('name') or mm['channel']}") for mm in story[1:]]
@@ -1379,7 +1179,7 @@ def build_story(a, picked, d, tmp):
     out.parent.mkdir(parents=True, exist_ok=True)
     raw = tmp / "concat.mp4"
     concat(parts, raw)
-    music_pass(raw, out, z, music, m0, louder, vol=MUSIC_VOL_STORY)
+    music_pass(raw, out, z, music, m0, louder, vol=MUSIC_VOL_STORY, stop_at=stop)
     info.update(static=static, parts_total=round(t, 2), n_moments=len(story), order=[])
     return out, chapters, K.duration(out), info
 
@@ -1421,7 +1221,6 @@ def build(a, picked, d, tmp, tiers=True):
         m["rank"] = i
     order = list(reversed(ranked))                         # countdown: weakest first, #1 last
     assign_tiers(ranked)
-    tier_layout(ranked)
     league = []
     if SERIES[series_key(a.serie)].get("league") and flag(z, "league"):
         try:
@@ -1447,8 +1246,10 @@ def build(a, picked, d, tmp, tiers=True):
     add(cold, "cold")
     louder = [(max(0.0, t - 0.6), t + 0.4)]
     if tiers:
+        import tier
+        cap = tier.capacity([m["tier"] for m in ranked])
         b0 = tmp / "board0.mp4"                            # empty board: where does #1 go?
-        render_board(z, [], None, b0, tmp, venc, 2.0)
+        tier.render_hold([], b0, dur=2.0, brand=z, capacity=cap, venc=venc)
         louder.append((t, t + 2.0))
         add(b0, "board")
     placed, teasers, league_cards = [], {r for r in (6, 3) if r < len(ranked)}, 0
@@ -1467,8 +1268,10 @@ def build(a, picked, d, tmp, tiers=True):
         add(seg, "moment")
         if tiers:
             tb = tmp / f"tier{i:02d}.mp4"                  # the moment flies into its tier row
-            render_board(z, placed, m, tb, tmp, venc, TIER_ANIM,
-                         caption=TEASER if (m["rank"] in teasers and m["rank"] != 1) else None)
+            tier.render_fly_in([tier_entry(p, tmp) for p in placed], tier_entry(m, tmp), tb, dur=TIER_ANIM,
+                               brand=z, capacity=cap, venc=venc)
+            if m["rank"] in teasers and m["rank"] != 1:
+                tb = with_teaser(tb, tmp, venc)
             placed.append(m)
             louder.append((t, t + TIER_ANIM))
             add(tb, "board")
@@ -1478,18 +1281,18 @@ def build(a, picked, d, tmp, tiers=True):
     info["board_entries"] = len(placed)
     if tiers:
         full = tmp / "board_full.mp4"                      # the whole board before the end card
-        render_board(z, placed, None, full, tmp, venc, 3.0)
+        tier.render_hold([tier_entry(p, tmp) for p in placed], full, dur=3.0, brand=z, capacity=cap, venc=venc)
         louder.append((t, t + 3.0))
         add(full, "board")
-    louder.append((t, t + 8.0))
     end = tmp / "end.mp4"
-    render_end(end, z, venc, None, 0.0, tmp)
+    end_card(z, end, venc)
+    stop = t                                               # the end card has its own sound bed: ours stops
     add(end, "end")
     out = OUT / z / f"{d}_{a.serie.replace(':', '-')}.mp4"
     out.parent.mkdir(parents=True, exist_ok=True)
     raw = tmp / "concat.mp4"
     concat(parts, raw)
-    music_pass(raw, out, z, music, mpos(1), louder)
+    music_pass(raw, out, z, music, mpos(1), louder, stop_at=stop)
     info.update(static=static, parts_total=round(t, 2), n_moments=len(order), order=[m["rank"] for m in order])
     return out, chapters, K.duration(out), info
 
