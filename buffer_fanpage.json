@@ -1,0 +1,44 @@
+[
+  {
+    "id": "6afc4355ece6dfde5ff6769a",
+    "service": "youtube",
+    "name": "GTA 6 Fanpage Clip",
+    "paused": false,
+    "key": "BUFFER_API_KEY_3"
+  },
+  {
+    "id": "6afc433aece6dfde5ff6749b",
+    "service": "twitter",
+    "name": "gta6fanpageclip",
+    "paused": false,
+    "key": "BUFFER_API_KEY_3"
+  },
+  {
+    "id": "6afc42e6ece6dfde5ff66dca",
+    "service": "instagram",
+    "name": "gta6fanpageclip",
+    "paused": false,
+    "key": "BUFFER_API_KEY_3"
+  },
+  {
+    "id": "6afc4429ece6dfde5ff683db",
+    "service": "threads",
+    "name": "gta6fanpageclip",
+    "paused": false,
+    "key": "BUFFER_API_KEY_4"
+  },
+  {
+    "id": "6afc4413ece6dfde5ff68286",
+    "service": "tiktok",
+    "name": "gta6fanpageclip",
+    "paused": false,
+    "key": "BUFFER_API_KEY_4"
+  },
+  {
+    "id": "6afc43ffece6dfde5ff68162",
+    "service": "facebook",
+    "name": "GTA 6 Fanpage Clip",
+    "paused": false,
+    "key": "BUFFER_API_KEY_4"
+  }
+]
