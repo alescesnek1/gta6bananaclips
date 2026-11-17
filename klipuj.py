@@ -34,6 +34,7 @@ import json
 import os
 import random
 import re
+import shutil
 import subprocess
 import sys
 import time
@@ -620,7 +621,7 @@ def pick_quote(words, peak=None):
     q = sents[0] if sents else " ".join(text.split()[:10])
     return q[:90]
 
-def quality_check(short, cam, cam_h=CAM_H):
+def quality_check(short, cam, cam_h=CAM_H, until=None):
     """
     Last gate before anything can be published (Aleš: no cut faces, no black bars, no errors):
       - black bars: full-width rows that are pure black on most frames
@@ -630,7 +631,9 @@ def quality_check(short, cam, cam_h=CAM_H):
     if _cascade is None:
         _cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
     n = black = face_ok = 0
-    for _, img in frames_raw(short, 1, 540, 960):
+    for i, (_, img) in enumerate(frames_raw(short, 1, 540, 960)):    # 1 fps: frame i = second i
+        if until is not None and i >= until:          # the score card covers the picture: not a facecam fault
+            break
         g = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         n += 1
         dark = (g.mean(axis=1) < 10) & (g.std(axis=1) < 2.5)     # true letterbox black, not a dark scene
@@ -648,12 +651,15 @@ def quality_check(short, cam, cam_h=CAM_H):
         if cam:
             band = g[: cam_h // 2]
             faces = _cascade.detectMultiScale(band, scaleFactor=1.1, minNeighbors=5, minSize=(40, 40))
-            face_ok += any(y > 4 and y + h < cam_h // 2 - 4 and x > 4 and x + w < 536 for x, y, w, h in faces)
+            # hair cut at the top edge is fine; a chin or cheek cut off is not
+            face_ok += any(y + h < cam_h // 2 - 4 and x > 4 and x + w < 536 for x, y, w, h in faces)
     problems = [] if cam else ["no facecam"]
     if n and black / n >= 0.3:
         problems.append("black bars")
     if cam and n and face_ok / n < 0.4:
-        problems.append("face in the top band missing or cut")
+        problems.append(f"face in the top band missing or cut ({face_ok}/{n} frames)")
+        if os.environ.get("KLIPY_DEBUG"):
+            shutil.copy(short, Path(os.environ["KLIPY_DEBUG"]) / f"failed_{int(time.time())}.mp4")
     return problems
 
 def frames_raw(src, fps, w, h):
@@ -1015,8 +1021,8 @@ def word_emotions(words):
             out[i] = "drama"
     return out
 
-def mask_swears(words, until=3.0):
-    """Swears said in the first `until` s of the short: caption F***, and their times to mute."""
+def mask_swears(words, until=1e9):
+    """Hard swears anywhere in the short (Aleš 17. 11.): caption F***, and their times to BLEEP."""
     out, mute = [], []
     for s0, e0, t in words:
         core = _tok(t)
@@ -1394,6 +1400,10 @@ def audio_mix(clip_audio, total, card_idx=None, card_at=0.0, music_idx=None, mus
     if hit_idx is not None and peak is not None:
         f += f";[{hit_idx}:a]volume=0.8,adelay={int(peak * 1000)}:all=1,{fmt},apad=whole_dur={total:.3f}[ht]"
         parts.append("[ht]")
+    if mute:                                    # the bleep over every masked swear
+        on = "+".join(f"between(t\\,{a:.2f}\\,{b:.2f})" for a, b in mute)
+        f += (f";aevalsrc='0.22*sin(2*PI*1000*t)*({on})':s=48000:d={total:.3f},{fmt}[bp]")
+        parts.append("[bp]")
     if sfx_idx is not None:
         f += f";[{sfx_idx}:a]volume=0.7,adelay={int(sfx_at * 1000)}:all=1,{fmt},apad=whole_dur={total:.3f}[sx]"
         parts.append("[sx]")
@@ -1542,9 +1552,22 @@ def audio_peak(src):
     c = np.concatenate([[0.0], np.cumsum(a * a)])
     rms = np.sqrt((c[4000:] - c[:-4000]) / 4000)[::800]          # 0.5 s windows, every 0.1 s
     t = np.arange(len(rms)) * 0.1 + 0.25
-    rms[t < 1.0] = 0
-    i = int(np.argmax(rms))
-    return float(t[i]) if rms[i] > 0 else None
+    # Aleš: the hook must be the real payoff (e.g. flying out of the car + his line), not just the
+    # loudest second -> loudness + how much the picture changes, weighted towards the clip's end
+    mot, prev = np.zeros_like(rms), None
+    for tt, img in frames(src, 5, 160, 90):
+        g = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY).astype(np.float32)
+        k = int(round((tt - 0.25) / 0.1))
+        if prev is not None and 0 <= k < len(mot):
+            mot[k] = float(np.abs(g - prev).mean())
+        prev = g
+    mot = np.convolve(mot, np.ones(5) / 5, mode="same")
+    score = 0.6 * rms / (rms.max() + 1e-9) + 0.4 * mot / (mot.max() + 1e-9)
+    pos = t / max(t[-1], 1e-9)
+    score *= np.where(pos < 0.3, 0.35, 0.75 + 0.5 * pos)
+    score[t < 1.0] = 0
+    i = int(np.argmax(score))
+    return float(t[i]) if score[i] > 0 else None
 
 def trim_points(words, peak, dur, hi=35.0, lo=8.0):
     """
@@ -1721,6 +1744,7 @@ def render(clip, src=None, clean=False):
         raise NotGameplay("slur in the speech - not worth a strike or a ban")
     (d / "transcript.txt").write_text(speech, encoding="utf-8")
     (d / "mark.txt").write_text(f"@{clip['channel']}", encoding="utf-8")
+    orig = src                                         # facecam is found on the uncut source (the edit fooled it)
     src, words, peak, card_at, jumps, hook_t = edit_cut(src, words, d, clip)
     dur = duration(src)
     card_at = min(card_at, dur)
@@ -1752,9 +1776,9 @@ def render(clip, src=None, clean=False):
     modes = [("saved", False, 0.0), ("again", True, 0.06), ("content", True, 0.03)] + ([("none", True, 0.0)] if nocam_ok else [])
     problems, shorts = [], {}
     for attempt, (cam_mode, loose, zoom) in enumerate(modes):
-        cam = (get_cam(clip["channel"], src) if cam_mode == "saved" else
-               detect_cam(src, mult=3.4) if cam_mode == "again" else
-               (get_cam(clip["channel"], src) or detect_cam(src, mult=3.4)) if cam_mode == "content" else None)
+        cam = (get_cam(clip["channel"], orig) if cam_mode == "saved" else
+               detect_cam(orig, mult=3.4) if cam_mode == "again" else
+               (get_cam(clip["channel"], orig) or detect_cam(orig, mult=3.4)) if cam_mode == "content" else None)
         if not cam and cam_mode != "none":
             if cam_mode in ("saved", "content") or nocam_ok:
                 continue                                  # wider detection / game-only layout next
@@ -1793,7 +1817,7 @@ def render(clip, src=None, clean=False):
             cmds.write_text(track, encoding="utf-8")
             ass = d / f"captions{sfx}.ass"
             if fan:   # Anton white, neon green highlight, thin dark outline (sleek, not the banana look)
-                n_chunks = captions_ass(words, ass, y=(cam_h + 760) if cam else 1300,
+                n_chunks = captions_ass(words, ass, y=cam_h if cam else 600,     # on the seam (Aleš)
                                         cap={**(b.get("caption") or {}), "outline": 3, "shadow": 0},
                                         per=1, anim="bounce")
             else:
@@ -1851,7 +1875,8 @@ def render(clip, src=None, clean=False):
             if not use_card and not replay and total < dur - 0.01:
                 maps += ["-t", f"{total:.3f}"]
             enc = encode(ff + reaction_inputs(rx) + maps, out)
-            problems = [x for x in quality_check(out, cam, cam_h) if not (x == "no facecam" and cam_mode == "none")]
+            problems = [x for x in quality_check(out, cam, cam_h, until=card_at)
+                        if not (x == "no facecam" and cam_mode == "none")]
             if problems:
                 break
             shorts[b["key"]] = str(out)

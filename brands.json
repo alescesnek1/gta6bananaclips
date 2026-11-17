@@ -52,7 +52,8 @@
     "banana": false,
     "score_card": false,
     "music": [
-      "assets/hudba/fanpage/*.mp3"
+      "assets/hudba/fanpage/*.mp3",
+      "assets/hudba/dalsi/*.mp3"
     ],
     "caption": {
       "font": "Anton",
