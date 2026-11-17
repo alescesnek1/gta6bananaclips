@@ -1,0 +1,323 @@
+{
+  "posts": {
+    "bananas:youtube_miGclAow9KI_1983": {
+      "brand": "bananas",
+      "concept": "classic",
+      "due": "2026-11-14T18:30:00+01:00",
+      "due_ts": 1794677400.0,
+      "age_h": 74.0,
+      "views": 891.0,
+      "eng": 10.0,
+      "nets": {
+        "instagram": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 0.27,
+          "averageTimeWatched": 8.04,
+          "reach": 0
+        },
+        "twitter": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "reposts": 0,
+          "impressions": 0,
+          "clicks": 0
+        },
+        "youtube": {
+          "reactions": 10,
+          "comments": 0,
+          "engagementRate": 1.81,
+          "views": 552
+        },
+        "facebook": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "impressions": 326,
+          "reach": 295,
+          "shares": 0,
+          "clicks": 0
+        },
+        "tiktok": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "shares": 0,
+          "reach": 0,
+          "totalTimeWatched": 0,
+          "averageTimeWatched": 0
+        },
+        "threads": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 13,
+          "quotes": 0,
+          "reposts": 0
+        }
+      }
+    },
+    "bananas:youtube_miGclAow9KI_2923": {
+      "brand": "bananas",
+      "concept": "classic",
+      "due": "2026-11-14T20:00:00+01:00",
+      "due_ts": 1794682800.0,
+      "age_h": 72.5,
+      "views": 296.0,
+      "eng": 1.0,
+      "nets": {
+        "instagram": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 0.39,
+          "averageTimeWatched": 11.68,
+          "reach": 0
+        },
+        "twitter": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "reposts": 0,
+          "impressions": 0,
+          "clicks": 0
+        },
+        "youtube": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 48
+        },
+        "facebook": {
+          "reactions": 1,
+          "comments": 0,
+          "engagementRate": 0.42,
+          "impressions": 239,
+          "reach": 221,
+          "shares": 0,
+          "clicks": 0
+        },
+        "tiktok": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "shares": 0,
+          "reach": 0,
+          "totalTimeWatched": 0,
+          "averageTimeWatched": 0
+        },
+        "threads": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 9,
+          "quotes": 0,
+          "reposts": 0
+        }
+      }
+    },
+    "bananas:youtube_ClI-eATridI_1483": {
+      "brand": "bananas",
+      "concept": "classic",
+      "due": "2026-11-14T21:30:00+01:00",
+      "due_ts": 1794688200.0,
+      "age_h": 71.0,
+      "views": 461.0,
+      "eng": 1.0,
+      "nets": {
+        "instagram": {
+          "reactions": 1,
+          "comments": 0,
+          "engagementRate": 0.6,
+          "views": 201,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 31.46,
+          "averageTimeWatched": 11.04,
+          "reach": 168
+        },
+        "twitter": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "reposts": 0,
+          "impressions": 0,
+          "clicks": 0
+        },
+        "youtube": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 9
+        },
+        "facebook": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "impressions": 251,
+          "reach": 216,
+          "shares": 0,
+          "clicks": 0
+        },
+        "tiktok": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "shares": 0,
+          "reach": 0,
+          "totalTimeWatched": 0,
+          "averageTimeWatched": 0
+        },
+        "threads": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "quotes": 0,
+          "reposts": 0
+        }
+      }
+    },
+    "bananas:youtube_ClI-eATridI_943": {
+      "brand": "bananas",
+      "concept": "classic",
+      "due": "2026-11-15T14:00:00+01:00",
+      "due_ts": 1794747600.0,
+      "age_h": 54.5,
+      "views": 449.0,
+      "eng": 1.0,
+      "nets": {
+        "instagram": {
+          "reactions": 1,
+          "comments": 0,
+          "engagementRate": 0.52,
+          "views": 241,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 43.41,
+          "averageTimeWatched": 13.36,
+          "reach": 194
+        },
+        "twitter": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "reposts": 0,
+          "impressions": 0,
+          "clicks": 0
+        },
+        "youtube": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0
+        },
+        "facebook": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0.97,
+          "impressions": 206,
+          "reach": 177,
+          "shares": 0,
+          "clicks": 2
+        },
+        "tiktok": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "shares": 0,
+          "reach": 0,
+          "totalTimeWatched": 0,
+          "averageTimeWatched": 0
+        },
+        "threads": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 2,
+          "quotes": 0,
+          "reposts": 0
+        }
+      }
+    },
+    "bananas:youtube_nMmtSIsOZOA_70": {
+      "brand": "bananas",
+      "concept": "classic",
+      "due": "2026-11-15T17:00:00+01:00",
+      "due_ts": 1794758400.0,
+      "age_h": 51.5,
+      "views": 466.0,
+      "eng": 4.0,
+      "nets": {
+        "instagram": {
+          "reactions": 4,
+          "comments": 0,
+          "engagementRate": 2.35,
+          "views": 254,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 65.83,
+          "averageTimeWatched": 22.83,
+          "reach": 170
+        },
+        "twitter": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "reposts": 0,
+          "impressions": 0,
+          "clicks": 0
+        },
+        "youtube": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 1
+        },
+        "facebook": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0.47,
+          "impressions": 211,
+          "reach": 168,
+          "shares": 0,
+          "clicks": 1
+        },
+        "tiktok": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "shares": 0,
+          "reach": 0,
+          "totalTimeWatched": 0,
+          "averageTimeWatched": 0
+        },
+        "threads": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "quotes": 0,
+          "reposts": 0
+        }
+      }
+    }
+  },
+  "concepts": {},
+  "tries": {},
+  "measured_ts": 1794943730.616316,
+  "measured_at": "2026-11-17T19:28:50+00:00"
+}
