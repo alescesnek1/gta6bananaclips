@@ -146,7 +146,8 @@ def save(msg, body, files, m, target):
     target.with_suffix(".html").write_text(as_html(body), encoding="utf-8")
     for name, path in files:
         (target / name).write_bytes(path.read_bytes())
-    (target / "popis.txt").write_text(popis(m), encoding="utf-8")
+    if m.get("title"):                                   # a .failed.json note has no texts
+        (target / "popis.txt").write_text(popis(m), encoding="utf-8")
     if m.get("nahled_prompt"):
         (target / "prompt.txt").write_text(m["nahled_prompt"], encoding="utf-8")
     print(f"e-mail uložen: {target.with_suffix('.eml')} (+ .html, přílohy v {target})")

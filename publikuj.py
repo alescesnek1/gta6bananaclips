@@ -367,6 +367,8 @@ def inbox_short(m, znacka):
     f = m.get("file" if znacka == "bananas" else f"file_{znacka}")
     return f"{m['base']}/{f}" if f else None
 
+PLAN_DAY = None                          # the publishing day `den` plans (trailer cut-off uses it, not the clock)
+
 def candidates(znacka=None):
     """
     Rendered shorts of this brand not yet published by it, best first: virality = views per hour
@@ -376,6 +378,11 @@ def candidates(znacka=None):
     znacka = znacka or ZNACKA
     game = load_json(HERE / "sources.json", {}).get("game", "Grand Theft Auto VI|GTA ?VI|GTA ?6")
     done = load_json(PUBLISHED, {})
+    # Aleš 17. 11.: one clip = one account. A clip the other brand already posted never goes out here
+    # (render gives each clip one brand; this also covers the inbox and a clip rendered for both).
+    for z, b in brands_cfg().items():
+        if isinstance(b, dict) and z != znacka:
+            done = {**load_json(HERE / b.get("published", "publikovano.json"), {}), **done}
     now = time.time()
     out, local = [], []
     for meta_file in OUT.glob("*/*/meta.json"):
@@ -393,7 +400,7 @@ def candidates(znacka=None):
     for m in local:
         if not m or not m.get("short") or m.get("id") in done or not (m.get("remote") or Path(m["short"]).exists()):
             continue
-        if (m.get("platform") == "youtube" and date.today() >= date.fromisoformat(
+        if (m.get("platform") == "youtube" and (PLAN_DAY or date.today()) >= date.fromisoformat(
                 (load_json(HERE / "sources.json", {}).get("youtube_prelaunch") or {}).get("until", "2026-11-19"))
                 and re.search(r"trailer|extended look|showcase", m.get("title") or "", re.I)):
             continue                                 # from the launch on: gameplay, no trailer reactions
@@ -667,10 +674,10 @@ def post_input(ch, m, video_url, due, draft):
         "mode": Enum("addToQueue" if draft else "shareNow" if m.get("now") else "customScheduled"),
         "assets": [{"video": {"url": video_url}}],
     }
-    if not draft and not m.get("now"):
-        inp["dueAt"] = due.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
-    else:
+    if draft:
         inp["saveToDraft"] = True
+    elif not m.get("now"):                            # hot path (shareNow) needs neither dueAt nor a draft flag:
+        inp["dueAt"] = due.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")   # saveToDraft made it a draft
     if service in ("instagram", "tiktok"):            # cover = the payoff frame (banana + reaction)
         pk = (m.get("peaks") or {}).get(ZNACKA) or m.get("peak") or 1.0     # the brand's own cut (hooks differ)
         inp["assets"][0]["video"]["metadata"] = {"thumbnailOffset": int(max(0.5, pk) * 1000)}
@@ -681,6 +688,18 @@ def post_input(ch, m, video_url, due, draft):
     elif service == "facebook":
         inp["metadata"] = {"facebook": {"type": Enum("reel")}}
     return inp
+
+def day_service_counts(done, chans, day):
+    """{service: posts already made this publishing day} over every record (classics, hot, Top 3,
+    experiments) - the X / Threads caps are per day, and a day has many runs."""
+    svc = {c["id"]: c["service"].lower() for c in chans}
+    used = {}
+    for rec in done.values():
+        if in_day(rec, day):
+            for cid in rec.get("posts") or {}:
+                s = svc.get(cid)
+                used[s] = used.get(s, 0) + 1
+    return used
 
 def create_post(inp, key):
     q = ("mutation { createPost(input: " + gql_value(inp) + ") { "
@@ -749,6 +768,8 @@ def cmd_den(a):
     TAKE_LONG = not a.zkouska                    # a dry run writes nothing (long_pool.json either)
     now = datetime.now(TZ)
     day = now.date() if a.den == "dnes" else date.fromisoformat(a.den) if a.den else now.date() + timedelta(days=1)
+    global PLAN_DAY
+    PLAN_DAY = day
     # slots still ahead of us (+20 min for the deploy and for Buffer to fetch the video); a slot is
     # taken by its base time ('slot'; older records and hot posts only have 'due')
     taken = {rec.get("slot") or rec.get("due") for rec in load_json(PUBLISHED, {}).values()}   # an earlier run today
@@ -855,9 +876,10 @@ def cmd_den(a):
     base = inbox_deploy(files, b"[]", MEDIA_TITLE)
     prune_drafts()
 
-    # 2) Buffer posts, one time slot per short, every channel (X/Threads capped per day)
+    # 2) Buffer posts, one time slot per short, every channel (X/Threads capped per day: the cap
+    # counts the posts of earlier runs of this publishing day too, not only this run's)
     caps = load_json(HERE / "sources.json", {}).get("caps") or {}
-    used, ok, failed = {}, 0, 0
+    used, ok, failed = day_service_counts(done, chans, day), 0, 0
     for m, due, rel in plan:
         url = f"{base}/{rel}"
         log(f"{due:%H:%M} {m['platform']}/{m['channel']} '{m.get('title', '')[:50]}' -> {url}")
@@ -956,12 +978,7 @@ def exp_post(a, day, now):
             print("::warning::exp: not reachable after deploy")
             return
         caps = load_json(HERE / "sources.json", {}).get("caps") or {}
-        svc = {c["id"]: c["service"].lower() for c in chans}
-        used = {}
-        for rec in done.values():                      # X / Threads: the day's cap counts every post
-            if in_day(rec, day):
-                for cid in rec.get("posts") or {}:
-                    used[svc.get(cid)] = used.get(svc.get(cid), 0) + 1
+        used = day_service_counts(done, chans, day)    # X / Threads: the day's cap counts every post
         m["_seq"] = len(done)
         posts = {}
         for ch in chans:
@@ -1005,9 +1022,13 @@ def top3_only(a, day, now):
     if not is_public(url):
         print("::warning::Top 3: not reachable after deploy")
         return
-    posts, caps, used = {}, load_json(HERE / "sources.json", {}).get("caps") or {}, {}
-    for i, ch in enumerate(load_json(CHANNELS, [])):
+    chans = load_json(CHANNELS, [])
+    posts, caps, used = {}, load_json(HERE / "sources.json", {}).get("caps") or {}, day_service_counts(done, chans, day)
+    for i, ch in enumerate(chans):
         service = ch["service"].lower()
+        if used.get(service, 0) >= caps.get(service, 99):   # X / Threads daily cap applies to the Top 3 too
+            log(f"  top3 {service}: daily cap reached, skipped")
+            continue
         try:
             posts[ch["id"]] = create_post(post_input(ch, m, url, net_due(due, day, service), not a.ostre),
                                           ch.get("key", "BUFFER_API_KEY"))

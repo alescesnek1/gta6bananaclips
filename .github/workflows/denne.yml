@@ -175,4 +175,8 @@ jobs:
           git config user.name "gta6bananaclips-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           for f in state.json streamers.json publikovano.json buffer.json publikovano_fanpage.json buffer_fanpage.json long_pool.json experimenty.json netlify_extra.json; do [ -f "$f" ] && git add "$f"; done
-          git diff --cached --quiet || { git commit -q -m "stav: denni beh $(date -u +%F)" && git pull -q --rebase && git push -q; }
+          git diff --cached --quiet && exit 0
+          git commit -q -m "stav: denni beh $(date -u +%F)"
+          # another workflow may push in between (denne / long / live dispatches): retry, never lose the state
+          for i in 1 2 3 4 5; do git pull -q --rebase --autostash && git push -q && exit 0; sleep $((i * 7)); done
+          echo "::error::stav se nepodarilo pushnout (5 pokusu)"; exit 1

@@ -141,14 +141,17 @@ jobs:
           retention-days: 7
 
       - name: e-mail bananas
+        continue-on-error: true            # one failed e-mail must not swallow the next one
         if: steps.art_b.outputs.artifact-url != ''
         run: python posli_mail.py out/_long/bananas/*.meta.json --odkaz "${{ steps.art_b.outputs.artifact-url }}"
 
       - name: e-mail fanpage
+        continue-on-error: true            # one failed e-mail must not swallow the next one
         if: steps.art_f.outputs.artifact-url != ''
         run: python posli_mail.py out/_long/fanpage/*.meta.json --odkaz "${{ steps.art_f.outputs.artifact-url }}"
 
       - name: e-mail about a video that failed QA (no link)
+        continue-on-error: true            # one failed e-mail must not swallow the next one
         if: hashFiles('out/_long/*/*.failed.json') != ''
         run: python posli_mail.py out/_long/*/*.failed.json
 
@@ -159,4 +162,8 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -- long_pool.json streamers.json 2>/dev/null || true   # written by denne.yml, avoid conflicts
           for f in long_used.json long_episodes.json long_reserve.json nahled_ai_budget.json; do [ -f "$f" ] && git add "$f"; done
-          git diff --cached --quiet || { git commit -q -m "stav: long-form $(date -u +%F)" && git pull -q --rebase && git push -q; }
+          git diff --cached --quiet && exit 0
+          git commit -q -m "stav: long-form $(date -u +%F)"
+          # another workflow may push in between (denne / long / live dispatches): retry, never lose the state
+          for i in 1 2 3 4 5; do git pull -q --rebase --autostash && git push -q && exit 0; sleep $((i * 7)); done
+          echo "::error::stav se nepodarilo pushnout (5 pokusu)"; exit 1

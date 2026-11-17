@@ -771,6 +771,12 @@ def quality_check(short, cam, cam_h=CAM_H, until=None):
             run, i = 0, e0
             while 0 <= i < g.shape[0] and dark[i]:
                 run, i = run + 1, i + step
+            # a bar ends in a visible edge: the picture right after it is clearly brighter. A night scene
+            # that fades into black (the fanpage vignette crushes its bottom rows to 0) is not a bar
+            # (17. 11. audit: every dark fanpage clip failed QA twice and was thrown away)
+            nxt = (g[i: i + 10] if step > 0 else g[max(0, i - 9): i + 1]) if 0 <= i < g.shape[0] else g[:0]
+            if run and nxt.size and nxt.mean() < 12:
+                run = 0
             best = max(best, run)
         black += best >= 10                       # 10 rows here = 20 px in the 1080x1920 short
         if cam:
@@ -1634,6 +1640,9 @@ SLOT_X, SLOT_BOTTOM = 40, 1516         # bottom-left corner of the game band (th
                                        # under the captions, left of TikTok's buttons, above its caption bar
 HEAT_W, HEAT_H = 470, 150
 HEAT_DUR = 2.5                         # s before the outro
+HEAT_OUTRO_DUR = 2.0                   # no room before the outro: over its first ~2 s instead...
+HEAT_OUTRO_Y = 40                      # ...at the top (the model's head starts ~y 200 in the outro)
+HEAT_GROW, HEAT_EXIT, HEAT_SLIDE = 0.015, 0.3, 70   # slow growth over the badge's life; exit: s, px down
 GOLD_TOP = 97                          # golden 10/10 / Heat 5: top 3 % of recently rendered clips (views)
 GOLD_MIN_HIST = 30                     # fewer rendered clips than this: only a raw 10 (500k views) is gold
 GOLD_MIN_RAW = 7                       # ... and never for a small clip on a quiet day
@@ -1643,6 +1652,13 @@ LAUNCH_FLAGS = ("hook_v2", "model_sticker", "heat", "golden10", "league_chip")
 def spring_pop(t, freq=1.8, damp=8.0):
     """0 -> overshoot ~1.1 -> 1 (closed-form spring, no timers)."""
     return 0.0 if t <= 0 else 1 - math.exp(-damp * t) * math.cos(2 * math.pi * freq * t)
+
+def ease_crit(t, w=14.0):
+    """0 -> 1 without overshoot (critically damped spring, closed form): 1 - e^(-wt)(1 + wt).
+    Motion audit 17. 11.: our graphics never overshoot; w=14 is ~99 % there after 0.47 s."""
+    return 0.0 if t <= 0 else 1 - math.exp(-w * t) * (1 + w * t)
+
+SLIDE_IN, SLIDE_OUT = 0.32, 0.26       # the model's reaction video slides in / out (s)
 
 def golden_rating(clip, raw):
     """
@@ -1742,7 +1758,7 @@ def sticker_frames(png, out_dir):
     n = int(round(STICKER_DUR * FPS))
     for i in range(n):
         t = i / FPS
-        s = max(0.02, spring_pop(t))
+        s = max(0.02, ease_crit(t, 16.0))                 # (fallback still) motion audit: no overshoot
         a = max(0.0, min(1.0, (STICKER_DUR - t) / 0.15))
         sp = im.resize((max(1, int(w * s)), max(1, int(h * s))), Image.LANCZOS)
         if a < 1:
@@ -1785,8 +1801,9 @@ def flame(size, glow=True, dim=False):
 def heat_frames(n, dur, out_dir):
     """
     HEAT badge (a data graphic: the label + N of 5 flames) for the last `dur` s before the
-    outro: the dark pill pops in, then the flames one by one (spring), each with a soft whoosh.
-    Writes PNG frames + heat.wav (the whooshes). Returns (pattern, x, y, wav, pop times).
+    outro (or over the outro's start): the dark pill eases in (no overshoot), the flames light one by
+    one, each with a soft rising tick; the badge keeps growing slowly and leaves by sliding down.
+    Writes PNG frames + heat.wav (the ticks). Returns (pattern, x, y, wav, pop times).
     """
     from PIL import Image, ImageDraw, ImageFont
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -1797,12 +1814,18 @@ def heat_frames(n, dur, out_dir):
     gap = min(0.28, max(0.12, (dur - 0.9) / max(n, 1)))
     pops = [0.35 + i * gap for i in range(n)]
     pad = 40
-    cw, ch = HEAT_W + 2 * pad, HEAT_H + 2 * pad
+    cw, ch = HEAT_W + 2 * pad, HEAT_H + 2 * pad + HEAT_SLIDE         # room below for the exit slide
+    out_t = min(HEAT_EXIT, dur / 4)
     for i in range(nf):
         t = i / FPS
         canvas = Image.new("RGBA", (cw, ch), (0, 0, 0, 0))
-        s = max(0.02, spring_pop(t, 2.2, 9.0))
-        a = max(0.0, min(1.0, (dur - t) / 0.2))                        # out just before the outro
+        # motion audit 17. 11.: no overshoot, never standing still, no hard end. In: from 80 % size and
+        # transparent, critically damped. Hold: a slow ~1.5 % growth the whole time. Out: slides down.
+        e_in = ease_crit(t, 16.0)
+        s = (0.8 + 0.2 * e_in) * (1 + HEAT_GROW * t / dur)
+        u_out = max(0.0, t - (dur - out_t)) / out_t                    # 0 -> 1 over the exit
+        drop = int(round(HEAT_SLIDE * u_out * u_out))                  # eases in: starts slow, leaves fast
+        a = min(e_in, 1 - u_out)
         pill = Image.new("RGBA", (HEAT_W, HEAT_H), (0, 0, 0, 0))
         pd = ImageDraw.Draw(pill)
         pd.rounded_rectangle((0, 0, HEAT_W - 1, HEAT_H - 1), radius=HEAT_H // 2, fill=(14, 10, 22, 175),
@@ -1812,7 +1835,7 @@ def heat_frames(n, dur, out_dir):
             cx = 196 + k * 58
             u = t - pops[k] if k < n else -1
             if k < n and u > 0:
-                fs = spring_pop(u, 2.4, 8.0)
+                fs = max(0.02, ease_crit(u, 18.0))
                 f = fl.resize((max(1, int(fl.width * 0.92 * fs)), max(1, int(fl.height * 0.92 * fs))), Image.LANCZOS)
             else:
                 f = empty.resize((int(empty.width * 0.92), int(empty.height * 0.92)), Image.LANCZOS)
@@ -1820,20 +1843,24 @@ def heat_frames(n, dur, out_dir):
                                      max(0, min(HEAT_H - f.height, HEAT_H // 2 - f.height // 2))))
         pill = pill.resize((max(1, int(HEAT_W * s)), max(1, int(HEAT_H * s))), Image.LANCZOS)
         if a < 1:
-            pill.putalpha(pill.getchannel("A").point(lambda v: int(v * a)))
-        canvas.alpha_composite(pill, (max(0, pad + (HEAT_W - pill.width) // 2), max(0, pad + (HEAT_H - pill.height) // 2)))
+            pill.putalpha(pill.getchannel("A").point(lambda v: int(v * max(0.0, a))))
+        px = pad + (HEAT_W - pill.width) // 2
+        py = pad + (HEAT_H - pill.height) // 2 + drop
+        canvas.alpha_composite(pill, (max(0, px), max(0, min(ch - pill.height, py))))
         canvas.save(out_dir / f"{i:03d}.png")
-    # soft whooshes (synthesized, no samples): filtered noise swelling into each flame
+    # a soft tick per flame, each a little higher (a flame does not move, so no whoosh): a short
+    # sine with its octave, 3 ms attack, ~90 ms decay; synthesized, no samples
     sr = 48000
-    rnd = np.random.default_rng(n)
     buf = np.zeros(int(sr * (dur + 0.5)))
-    for p in pops:
-        m = int(sr * 0.22)
-        noise = np.convolve(rnd.normal(0, 1, m), np.ones(18) / 18, mode="same")
-        env = np.linspace(0, 1, m) ** 2 * np.exp(-np.linspace(0, 1, m) * 0.5)
-        i0 = max(0, int((p - 0.18) * sr))
-        buf[i0: i0 + m] += (noise * env)[: buf.size - i0]
-    buf = buf / (np.abs(buf).max() + 1e-9) * 0.35
+    m = int(sr * 0.12)
+    tt = np.arange(m) / sr
+    env = np.minimum(1.0, tt / 0.003) * np.exp(-tt / 0.03)
+    for k, p in enumerate(pops):
+        f0 = 880 * 1.122 ** k                                          # +2 semitones per flame
+        tick = (np.sin(2 * np.pi * f0 * tt) + 0.3 * np.sin(4 * np.pi * f0 * tt)) * env
+        i0 = max(0, int(p * sr))
+        buf[i0: i0 + m] += tick[: buf.size - i0]
+    buf = buf / (np.abs(buf).max() + 1e-9) * 0.25
     import wave
     wav = out_dir / "heat.wav"
     with wave.open(str(wav), "wb") as w:
@@ -1857,10 +1884,10 @@ def league_rank(channel):
 def chip_frames(text, out_dir, dur):
     """
     The league chip on the banana score card ('#2 THIS WEEK', data only): the card's own dark
-    label style, pops in with a spring after the score lands, stays to the end of the card.
-    Returns (pattern, x, y).
+    label style. Motion audit 17. 11.: comes out of a blur with a small lift (no spring overshoot),
+    then drifts up slowly to the end of the card (never standing still). Returns (pattern, x, y).
     """
-    from PIL import Image, ImageDraw, ImageFont
+    from PIL import Image, ImageDraw, ImageFilter, ImageFont
     font = ImageFont.truetype(str(CAP_FONTS / "montserrat-900.ttf"), 44)
     tw = int(font.getlength(text))
     w, h = tw + 72, 86
@@ -1868,15 +1895,25 @@ def chip_frames(text, out_dir, dur):
     d = ImageDraw.Draw(pill)
     d.rounded_rectangle((0, 0, w - 1, h - 1), radius=18, fill=(46, 50, 64, 240), outline=(96, 102, 118, 255), width=4)
     d.text((w / 2, h / 2 + 1), text, font=font, fill=(255, 255, 255, 255), anchor="mm")
-    cw, ch = int(w * 1.25), int(h * 1.25)
+    lift, drift, blur = 16, 8, 10                     # px up during the entrance, px up over the rest, max blur
+    m = blur * 2                                      # room for the blur halo
+    cw, ch = w + 2 * m, h + 2 * m + lift + drift
     out_dir.mkdir(parents=True, exist_ok=True)
-    for i in range(max(1, int(round(dur * FPS)))):
-        s = max(0.02, spring_pop(i / FPS, 2.2, 8.0))
-        sp = pill.resize((max(1, int(w * s)), max(1, int(h * s))), Image.LANCZOS)
+    padded = Image.new("RGBA", (w + 2 * m, h + 2 * m), (0, 0, 0, 0))
+    padded.alpha_composite(pill, (m, m))
+    nf = max(1, int(round(dur * FPS)))
+    for i in range(nf):
+        t = i / FPS
+        e = ease_crit(t, 12.0)
+        sp = padded if e > 0.985 else padded.filter(ImageFilter.GaussianBlur(blur * (1 - e)))
+        if e < 1:
+            sp = sp.copy()
+            sp.putalpha(sp.getchannel("A").point(lambda v: int(v * e)))
+        y = drift + int(round(lift * (1 - e) - drift * (t / max(dur, 0.1))))   # top of the padded sprite
         canvas = Image.new("RGBA", (cw, ch), (0, 0, 0, 0))
-        canvas.alpha_composite(sp, (max(0, (cw - sp.width) // 2), max(0, (ch - sp.height) // 2)))
+        canvas.alpha_composite(sp, (0, max(0, min(ch - sp.height, y))))
         canvas.save(out_dir / f"{i:03d}.png")
-    return str(out_dir / "%03d.png"), (W - cw) // 2, CHIP_Y - (ch - h) // 2
+    return str(out_dir / "%03d.png"), (W - cw) // 2, CHIP_Y - m - drift
 
 def sprite_inputs(sprites):
     """ffmpeg inputs of the sprites: PNG frame sequences with alpha, or a VP9+alpha .webm (t0, path, x, y, dur, w, h)."""
@@ -1896,8 +1933,17 @@ def sprite_overlay(f, sprites, base):
     prev = "s_in"
     for i, (t0, pattern, x, y, *rest) in enumerate(sprites):
         size = f"scale={rest[1]}:{rest[2]}:flags=lanczos," if len(rest) >= 3 else ""
+        xe = x
+        if len(rest) >= 3:
+            # the model's reaction video (motion audit 17. 11.: no pop): slides in from the left edge
+            # of the frame (ease-out, no overshoot) and leaves the same way, like kompilace's sticker
+            t1, w = t0 + rest[0], rest[1]
+            ti, to = min(SLIDE_IN, rest[0] / 3), min(SLIDE_OUT, rest[0] / 3)
+            e = (f"if(lt(t,{t0 + ti:.3f}),1-pow(1-max(0,t-{t0:.3f})/{ti:.3f},3),"
+                 f"if(gt(t,{t1 - to:.3f}),1-pow(1-max(0,{t1:.3f}-t)/{to:.3f},2),1))")
+            xe = f"'{x + w}*({e})-{w}'"
         f += (f";[{base + i}:v]{size}format=rgba,setpts=PTS-STARTPTS+{t0:.3f}/TB[sp{i}];"
-              f"[{prev}][sp{i}]overlay={x}:{y}:eof_action=pass[so{i}]")
+              f"[{prev}][sp{i}]overlay={xe}:{y}:eof_action=pass[so{i}]")
         prev = f"so{i}"
     return f + f";[{prev}]null[v]"
 
@@ -2667,6 +2713,18 @@ def render(clip, src=None, clean=False):
                                  rx_end + 0.2 if rx_end else 0.0)
                         if heat_end - hs >= 1.6:
                             heat_plan = (hs, heat_end - hs)
+                        elif outro:
+                            # Aleš 17. 11.: the payoff reaction pushed Heat out -> the badge goes over the
+                            # first ~2 s of the outro instead, at the top (her face sits lower in the outro),
+                            # and is gone before the Follow card comes at the outro's end: one at a time
+                            o0 = clip_total + 0.15
+                            o1 = min(o0 + HEAT_OUTRO_DUR, (total - FOLLOW_DUR if follow else total) - 0.25)
+                            if o1 - o0 >= 1.6:
+                                heat_plan = (o0, o1 - o0, "outro")
+                                log(f"  heat: no room before the outro ({heat_end - hs:.1f} s) -> over the outro's start")
+                            else:
+                                log("  heat: no room before or in the outro, skipped")
+                                use_heat = False
                         else:
                             log(f"  heat: no room after the climax / the model's reaction ({heat_end - hs:.1f} s), skipped")
                             use_heat = False
@@ -2695,9 +2753,12 @@ def render(clip, src=None, clean=False):
                     if heat_plan:
                         try:
                             hp, hx, hy, heat_wav, heat_pops = heat_frames(heat_n, heat_plan[1], d / f"_heat{sfx}")
+                            hb = (SLOT_X, SLOT_BOTTOM - HEAT_H, SLOT_X + HEAT_W, SLOT_BOTTOM)
+                            if heat_plan[2:] == ("outro",):           # same badge, moved to the top band
+                                hy, hb = hy - (SLOT_BOTTOM - HEAT_H - HEAT_OUTRO_Y), (SLOT_X, HEAT_OUTRO_Y, SLOT_X + HEAT_W,
+                                                                                     HEAT_OUTRO_Y + HEAT_H)
                             sprites.append((heat_plan[0], hp, hx, hy))
-                            elements.append((heat_plan[0], heat_plan[0] + heat_plan[1], f"heat {heat_n}",
-                                             (SLOT_X, SLOT_BOTTOM - HEAT_H, SLOT_X + HEAT_W, SLOT_BOTTOM)))
+                            elements.append((heat_plan[0], heat_plan[0] + heat_plan[1], f"heat {heat_n}", hb))
                         except Exception as e:
                             log(f"  heat failed ({str(e)[-80:]})")
                             heat_plan = None
@@ -3439,35 +3500,73 @@ class ChatMeter:
     per 5 s for every joined channel, laughs / hype emotes count double.
     """
     def __init__(self):
-        import socket, threading
-        self.sock = socket.create_connection(("irc.chat.twitch.tv", 6667), timeout=10)
-        self.sock.send(f"NICK justinfan{random.randint(10000, 99999)}\r\n".encode())
+        import threading
         self.counts, self.raw, self.joined, self.lock = {}, {}, set(), threading.Lock()
+        self._connect()
         threading.Thread(target=self._read, daemon=True).start()
 
-    def join(self, logins):
-        for lg in set(logins) - self.joined:
+    def _connect(self):
+        import socket
+        self.sock = socket.create_connection(("irc.chat.twitch.tv", 6667), timeout=10)
+        self.sock.send(f"NICK justinfan{random.randint(10000, 99999)}\r\n".encode())
+        for lg in self.joined:                        # after a reconnect: the same chats again
             self.sock.send(f"JOIN #{lg}\r\n".encode())
-            self.joined.add(lg)
-        for lg in self.joined - set(logins):
-            self.sock.send(f"PART #{lg}\r\n".encode())
+
+    def _reconnect(self, why):
+        """Twitch drops IRC connections (restarts, RECONNECT): never go deaf for the rest of the 5.7 h job."""
+        log(f"live: chat connection lost ({why}), reconnecting")
+        try:
+            self.sock.close()
+        except Exception:
+            pass
+        for wait in (2, 5, 10, 30, 60, 60, 60):
+            time.sleep(wait)
+            try:
+                self._connect()
+                return True
+            except Exception as e:
+                log(f"live: chat reconnect failed ({str(e)[-80:]})")
+        return False
+
+    def join(self, logins):
+        try:
+            for lg in set(logins) - self.joined:
+                self.sock.send(f"JOIN #{lg}\r\n".encode())
+            for lg in self.joined - set(logins):
+                self.sock.send(f"PART #{lg}\r\n".encode())
+        except OSError as e:                          # the reader reconnects and joins self.joined again
+            log(f"live: chat join failed ({str(e)[-80:]})")
         self.joined = set(logins)
 
     def _read(self):
+        import socket
         buf = b""
         while True:
             try:
-                data = self.sock.recv(65536)
-            except Exception:
-                continue
+                data, why = self.sock.recv(65536), "closed by Twitch"
+            except socket.timeout:
+                continue                              # a quiet 10 s: the connection is fine
+            except OSError as e:                      # reset / broken: was a silent busy loop before
+                data, why = b"", e
             if not data:
-                return
+                if not self._reconnect(why):
+                    log("live: chat gone for good, no more spikes this run")
+                    return
+                buf = b""
+                continue
             buf += data
             *lines, buf = buf.split(b"\r\n")
             for ln in lines:
                 if ln.startswith(b"PING"):
-                    self.sock.send(b"PONG :tmi.twitch.tv\r\n")
+                    try:
+                        self.sock.send(b"PONG :tmi.twitch.tv\r\n")
+                    except OSError:
+                        pass                          # the next recv notices it and reconnects
                     continue
+                if b" RECONNECT" in ln[:40]:          # Twitch asks for a reconnect (server restart)
+                    self._reconnect("RECONNECT")
+                    buf = b""
+                    break
                 if b" PRIVMSG #" not in ln:
                     continue
                 head, _, text = ln.decode("utf-8", "replace").partition(" :")

@@ -56,12 +56,17 @@ def moments():
         if "long" in f.name:
             continue
         for cid, rec in _load(f).items():
+            if cid.startswith(("top3_", "exp_")) or rec.get("platform") in ("top3", "exp"):
+                continue                          # our own formats, not a streamer's moment
+            # on GitHub the runner's out/ is gone by the next run: the record itself carries channel,
+            # rating and views (publikuj.py saves them for the league)
             m = metas.get(cid) or {}
-            ch = m.get("channel") or (out.get(cid) or {}).get("channel")
+            ch = m.get("channel") or rec.get("channel") or (out.get(cid) or {}).get("channel")
             if not ch:
                 continue
             out[cid] = {"channel": ch.lower(), "ts": m.get("created") or _ts(rec.get("due")),
-                        "score": m.get("rating") or banana_rating(m.get("views") or (out.get(cid) or {}).get("views"))}
+                        "score": m.get("rating") or rec.get("rating")
+                        or banana_rating(m.get("views") or rec.get("views") or (out.get(cid) or {}).get("views"))}
     return out
 
 def _rank(rows):
