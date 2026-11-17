@@ -8,7 +8,7 @@
     "youtube_EfX_QR_knWs_360": 1794673965
   },
   "failed": {
-    "twitch_IntelligentAbstemiousBasenjiOMGScoots-6o4BuG8nzW3K8qWx": 2
+    "twitch_IntelligentAbstemiousBasenjiOMGScoots-6o4BuG8nzW3K8qWx": 3
   },
   "other_game": {
     "twitch_3007922283": "World of Warcraft",
@@ -151,7 +151,9 @@
     "twitch_DependableSilkyCookieNerfBlueBlaster-gBHIs1QP17cFm35f": "Just Chatting",
     "twitch_ThankfulSoftChipmunkStoneLightning-wBWh0Sf79DxSXtCv": "Just Chatting",
     "twitch_RudeDelightfulWebKevinTurtle-UVmmrFp_1NAZNayz": "Just Chatting",
-    "twitch_LongFuriousGarlicDendiFace-C43HKo8gkc7BKTXl": "Trees Hate You"
+    "twitch_LongFuriousGarlicDendiFace-C43HKo8gkc7BKTXl": "Trees Hate You",
+    "twitch_AmericanBelovedSpindleHassaanChop-wCPv3BkqjLbYiznx": "ROB RUN",
+    "twitch_ResoluteTolerantDuckKappaWealth-qyC2FmCSQzQsvWkm": "Just Chatting"
   },
   "views": {
     "twitch_DelightfulMoralFlyHassanChop-lRz8MZfOUnILozsz": [
@@ -411,13 +413,21 @@
       509
     ],
     "twitch_IntelligentAbstemiousBasenjiOMGScoots-6o4BuG8nzW3K8qWx": [
-      1794935622,
-      528
+      1794937135,
+      541
     ],
     "twitch_LongFuriousGarlicDendiFace-C43HKo8gkc7BKTXl": [
       1794935622,
       554
+    ],
+    "twitch_AmericanBelovedSpindleHassaanChop-wCPv3BkqjLbYiznx": [
+      1794937135,
+      509
+    ],
+    "twitch_ResoluteTolerantDuckKappaWealth-qyC2FmCSQzQsvWkm": [
+      1794938646,
+      511
     ]
   },
-  "rr": "fanpage"
+  "rr": "bananas"
 }

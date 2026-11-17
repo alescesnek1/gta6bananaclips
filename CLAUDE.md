@@ -13,3 +13,4 @@ Závazná pravidla klipu:
 - **žádný nudný klip, −14 LUFS (17. 11.):** `boredom` před renderem (pointa nad zbytkem klipu, žádné mrtvé místo > 2,5 s) a znovu v `qa_short`; neprojde = nepublikuje se, dávka vezme dalšího kandidáta. Každý short `loudness_fix` na −14 LUFS, TP ≤ −1 dBTP
 - vodoznak streamera jen nenápadné `@kanál`, kredit a odkaz do popisku
 - po sobě uklízet testovací soubory
+- experimenty (`experimenty.py`, `docs/dva-ucty.md`): max 1 denně na účet ve vlastním slotu mimo kvótu, zapínají je data, vypínají čísla (Buffer metriky 48 h, < 60 % klasiky po 5 postech = vypnuto); každý úsek musí obstát jako klasický klip

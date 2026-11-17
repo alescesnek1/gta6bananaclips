@@ -134,6 +134,16 @@ jobs:
           echo "youtube moments this run: $yt"
           if [ "$n" -gt 0 ]; then python klipuj.py --whisper small.en batch --max "$n" --yt "$yt"; fi
 
+      # experiments (experimenty.py): at most 1 a day per account, outside the quota, only when the day's data
+      # has strong material of the right kind; `den` posts it in its own slot. Never on the live hot path.
+      - name: experiment of the day (data-gated)
+        if: inputs.url == '' && inputs.jen_publikace != 'ano'
+        continue-on-error: true
+        timeout-minutes: 25
+        run: |
+          python experimenty.py vyrob --znacka bananas
+          python experimenty.py vyrob --znacka fanpage
+
       - name: publish to Buffer
         if: (inputs.url == '' || inputs.publikovat == 'ano') && env.BUFFER_API_KEY_1 != '' && env.NETLIFY_AUTH_TOKEN != ''
         run: python publikuj.py den --den dnes --n 10 ${{ vars.OSTRE == '1' && '--ostre' || '' }}
@@ -141,6 +151,11 @@ jobs:
       - name: publish to Buffer, fanpage account
         if: (inputs.url == '' || inputs.publikovat == 'ano') && env.BUFFER_API_KEY_3 != '' && env.NETLIFY_AUTH_TOKEN != '' && hashFiles('buffer_fanpage.json') != ''
         run: python publikuj.py den --den dnes --n 10 --znacka fanpage ${{ vars.OSTRE == '1' && '--ostre' || '' }}
+
+      - name: experiment stats (Buffer post metrics 48 h after publishing, read-only; 1x per 20 h)
+        if: inputs.jen_publikace != 'ano' && env.BUFFER_API_KEY_1 != ''
+        continue-on-error: true
+        run: python experimenty.py mer
 
       - name: keep the shorts for 3 days (download from the run page)
         if: always()
@@ -150,6 +165,7 @@ jobs:
           path: |
             out/*/*/short_9x16.mp4
             out/*/*/short_fanpage.mp4
+            out/_exp/*/*/exp.mp4
           retention-days: 3
           if-no-files-found: ignore
 
@@ -158,5 +174,5 @@ jobs:
         run: |
           git config user.name "gta6bananaclips-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          for f in state.json streamers.json publikovano.json buffer.json publikovano_fanpage.json buffer_fanpage.json long_pool.json netlify_extra.json; do [ -f "$f" ] && git add "$f"; done
+          for f in state.json streamers.json publikovano.json buffer.json publikovano_fanpage.json buffer_fanpage.json long_pool.json experimenty.json netlify_extra.json; do [ -f "$f" ] && git add "$f"; done
           git diff --cached --quiet || { git commit -q -m "stav: denni beh $(date -u +%F)" && git pull -q --rebase && git push -q; }
