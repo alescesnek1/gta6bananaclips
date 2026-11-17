@@ -158,5 +158,5 @@ jobs:
         run: |
           git config user.name "gta6bananaclips-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          for f in state.json streamers.json publikovano.json buffer.json publikovano_fanpage.json buffer_fanpage.json long_pool.json; do [ -f "$f" ] && git add "$f"; done
+          for f in state.json streamers.json publikovano.json buffer.json publikovano_fanpage.json buffer_fanpage.json long_pool.json netlify_extra.json; do [ -f "$f" ] && git add "$f"; done
           git diff --cached --quiet || { git commit -q -m "stav: denni beh $(date -u +%F)" && git pull -q --rebase && git push -q; }

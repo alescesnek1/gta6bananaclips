@@ -300,8 +300,51 @@ def inbox_items():
         for m in items:                               # `file` = bananas, `file_fanpage` = fanpage
             m["base"], m["remote"] = base, True
         log(f"inbox {title}: {len(items)} shorts ({d.get('created_at', '')[:16]})")
+        if TAKE_LONG:
+            try:                                      # long-form must never break the shorts
+                take_long(items, base)
+            except Exception as e:
+                log(f"inbox {title}: long-form rows skipped ({e})")
         out += items
     return out
+
+# YouTube moments for long-form (worker PC): the inbox item carries a 16:9 720p cut of the source
+# (`long_file`) and its long_pool.json row (`pool_row`). GitHub can't download from YouTube, so the
+# row's source AND url become that file's Netlify draft URL (kompilace.ready downloads `url` with
+# yt-dlp; no `section`, the file is already the cut). The draft is pruned after 4 days with the
+# inbox (prune_drafts) - a row older than that is skipped by kompilace (download fails).
+POOL_FILE = Path(os.environ.get("KLIPY_POOL") or HERE / "long_pool.json")
+EXTRA_MB = HERE / "netlify_extra.json"   # {id: {due, mb}}: Netlify transfer that is not a short (month_gb)
+LONG_FETCHES = 2                         # kompilace may fetch a source once per brand
+TAKE_LONG = True                         # den --zkouska: off (a dry run touches nothing)
+
+def take_long(items, base):
+    pool = load_json(POOL_FILE, {})
+    extra = load_json(EXTRA_MB, {})
+    added = 0
+    for m in items:
+        row, rel = m.get("pool_row"), m.get("long_file")
+        if not row or not rel or not row.get("id"):
+            continue
+        old = pool.get(row["id"]) or {}
+        if str(old.get("source", "")).startswith("https://"):
+            continue                                  # taken in by an earlier run
+        url = f"{base}/{rel}"
+        pool[row["id"]] = {**old, **{k: v for k, v in row.items() if v is not None and k != "section"},
+                           "source": url, "url": url, "yt_url": row.get("url"), "added": int(time.time())}
+        pool[row["id"]].pop("section", None)
+        extra[f"long_{row['id']}"] = {"due": datetime.now(TZ).isoformat(timespec="seconds"),
+                                      "mb": round((m.get("long_mb") or row.get("src_mb") or 10) * LONG_FETCHES, 1)}
+        added += 1
+    if added:
+        tmp = POOL_FILE.with_name(f"{POOL_FILE.name}.{os.getpid()}.tmp")   # same compact format as klipuj.pool_add
+        tmp.write_text(json.dumps(dict(sorted(pool.items())), ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+        tmp.replace(POOL_FILE)
+        cutoff = time.time() - 40 * 86400             # the ledger only needs this month
+        extra = {k: v for k, v in extra.items()
+                 if datetime.fromisoformat(v["due"]).timestamp() >= cutoff}
+        save_json(EXTRA_MB, extra)
+        log(f"inbox: {added} YouTube moments -> long_pool.json")
 
 # -----------------------------------------------------------------------------
 # what to post
@@ -532,6 +575,12 @@ def month_gb():
                 mb += (rec.get("mb") or 20) * 7
         except ValueError:
             pass
+    for rec in load_json(EXTRA_MB, {}).values():     # long-form sources from the inbox (mb already x fetches)
+        try:
+            if datetime.fromisoformat(rec.get("due", "")) >= start:
+                mb += rec.get("mb") or 0
+        except ValueError:
+            pass
     return mb / 1024
 
 def over_budget(share=0.9):
@@ -659,6 +708,8 @@ def cmd_kanaly(a):
     log(f"saved {len(chans)} channels to {CHANNELS.name} (delete the ones we should not post to)")
 
 def cmd_den(a):
+    global TAKE_LONG
+    TAKE_LONG = not a.zkouska                    # a dry run writes nothing (long_pool.json either)
     now = datetime.now(TZ)
     day = now.date() if a.den == "dnes" else date.fromisoformat(a.den) if a.den else now.date() + timedelta(days=1)
     # slots still ahead of us (+20 min for the deploy and for Buffer to fetch the video); a slot is
@@ -943,11 +994,23 @@ def cmd_schranka(a):
             files[rel] = Path(short)
             item["file" if z == "bananas" else f"file_{z}"] = rel
         if any(k == "file" or k.startswith("file_") for k in item):
+            # long-form: the 16:9 720p cut of the moment + its pool row (GitHub can't fetch YouTube)
+            try:
+                long_src = meta_file.parent / (m.get("long_src") or "")
+                if m.get("long_src") and m.get("pool_row") and long_src.is_file():
+                    rel = f"yt/{safe_name(m['id'])}_16x9.mp4"
+                    files[rel] = long_src
+                    item["long_file"] = rel
+                else:
+                    item.pop("pool_row", None)
+            except Exception as e:                    # never at the cost of the shorts inbox
+                log(f"inbox: long-form source of {m.get('id')} skipped ({e})")
+                item.pop("long_file", None)
             items.append(item)
     now = time.time()                                # only the best few: `den` takes a handful a day anyway
     items.sort(key=lambda m: -(m.get("views") or 0) / (max((now - (m.get("created") or now)) / 3600, 0) + 1) ** 0.5)
     items = items[: a.max]
-    files = {m[k]: files[m[k]] for m in items for k in m if k == "file" or k.startswith("file_")}
+    files = {m[k]: files[m[k]] for m in items for k in m if k in ("file", "long_file") or k.startswith("file_")}
     sent = HERE / f"schranka_{a.nazev}.json"          # ids of the live inbox (local, not in git)
     live = set(load_json(sent, []))
     new = [m["id"] for m in items if m["id"] not in live]

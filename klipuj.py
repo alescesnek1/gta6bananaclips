@@ -62,7 +62,7 @@ WHISPER_DIR = HERE / "models" / "whisper"
 # open fonts shipped in the repo, so Windows and the Linux runner render the same
 CAP_FONTS = HERE / "fonts" / "cap"                 # libass looks here for the caption font
 CAP_FONT = "Montserrat Black"                      # family name inside fonts/cap/montserrat-900.ttf
-CAP_SIZE = 130                                     # big captions (Aleš 13.+14. 11.: "mnohem větší", "větší")
+CAP_SIZE = 130                                     # big captions (AleĹˇ 13.+14. 11.: "mnohem vÄ›tĹˇĂ­", "vÄ›tĹˇĂ­")
 CAP_CHARS = 11                                     # max letters on a line at that size (2 words max)
 WM_FONT_FILE = HERE / "fonts" / "montserrat-600.ttf"  # watermarks
 
@@ -296,7 +296,7 @@ def list_kick(channel, limit=100):
 # No audience signal -> the video is skipped. Each candidate is (centre of the clip, score 0..1).
 
 TS_RE = re.compile(r"(?<![\d:])(?:(\d{1,2}):)?(\d{1,2}):(\d{2})(?![\d:])")
-LAUGH_RE = re.compile(r"lmao|lmfao|\blol\b|kekw|omegalul|icant|💀|😂|🤣|no way|\bw\b|\?\?\?|holy", re.I)
+LAUGH_RE = re.compile(r"lmao|lmfao|\blol\b|kekw|omegalul|icant|đź’€|đź‚|đź¤Ł|no way|\bw\b|\?\?\?|holy", re.I)
 
 def norm(cands):
     m = max((s for _, s in cands), default=0)
@@ -395,7 +395,7 @@ def launched():
     return datetime.now().date() >= date.fromisoformat(until)
 
 def exclude_re():
-    """Titles we never take; from the launch on also trailers and their reactions (Aleš 17. 11.)."""
+    """Titles we never take; from the launch on also trailers and their reactions (AleĹˇ 17. 11.)."""
     bad = load_json(SOURCES, {}).get("exclude_titles") or ""
     return bad + ("|trailer|extended look|showcase" if launched() else "")
 
@@ -499,34 +499,135 @@ def youtube_search_clips(queries, days, per_video, min_followers, skip_ids=(), m
 
 _cascade = None
 
-def faces_on(src, n, w=960, h=540):
-    """Haar face boxes (x, y, w, h in w x h pixels) on ~n frames spread over the clip."""
+# A real facecam is a STATIC overlay rectangle: same spot and size the whole clip, and what is inside
+# it (the streamer's room) does not move with the game. A face of a GTA character in a close-up can
+# also sit still for a while (garek, 17. 11.: an RP conversation went into the top band as "webcam"),
+# but it moves with the scene: when the game camera pans or cuts, the pixels around that face change
+# together with the rest of the frame. So a box is only a facecam when, on the samples where the game
+# clearly moved, the room around the face stayed put. Low confidence = no facecam.
+CAM_SAMPLES = 24        # frames over the whole clip
+CAM_MIN_FRAC = 0.25     # face at that spot on at least this share of the samples ...
+CAM_MIN_MOVING = 4      # ... and the game must have moved on at least this many sample pairs to judge
+CAM_DECOUPLED = 0.6     # share of those pairs on which the room around the face stayed still
+CAM_ALIVE = 5.0         # median change of the face pixels between samples: webcams 11-26, avatar 0.6, posters 2-2.6
+_cam_cache = {}
+
+def cam_samples(src, n=CAM_SAMPLES):
+    """
+    ~n frames spread over the whole clip: gray 960x540 (for motion) and Haar faces found on the full
+    1920x1080 picture (a small webcam face is ~26 px at 960 wide and Haar missed it), in 960x540 px.
+    Cached per file: render asks several times (saved box, wider box, content box).
+    """
     global _cascade
+    key = (str(src), os.path.getmtime(src))
+    if key in _cam_cache:
+        return _cam_cache[key]
     if _cascade is None:
         _cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
-    out = []
-    for _, img in frames(src, n / max(duration(src), 1.0), w, h):
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        out.append(_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30)))
+    grays, faces = [], []
+    for _, img in frames(src, n / max(duration(src), 1.0), SW, SH):
+        g = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        found = _cascade.detectMultiScale(g, scaleFactor=1.1, minNeighbors=5, minSize=(44, 44))
+        faces.append([tuple(v / 2 for v in f) for f in found])
+        grays.append(cv2.resize(g, (960, 540), interpolation=cv2.INTER_AREA).astype(np.float32))
+    _cam_cache.clear()
+    _cam_cache[key] = (np.stack(grays) if grays else np.zeros((0, 540, 960), np.float32), faces)
+    return _cam_cache[key]
+
+def cam_evidence(grays, faces, hits):
+    """
+    Is the face cluster `hits` ({sample index: (x, y, w, h)} in 960x540 px) a webcam in the overlay?
+    Returns ("yes" | "no" | "unsure", reason).
+    """
+    n = len(faces)
+    if not n or len(hits) < max(3, CAM_MIN_FRAC * n):
+        return "no", f"face on {len(hits)}/{n} samples"
+    idx = sorted(hits)
+    if len({i * 3 // n for i in idx}) < 2:                   # only in one third of the clip: a passing face
+        return "no", "face only in one part of the clip"
+    arr = np.array([hits[i] for i in idx], np.float32)
+    fx, fy, fw, fh = (float(v) for v in np.median(arr, axis=0))
+    cx, cy = fx + fw / 2, fy + fh / 2
+    size_cv = float(arr[:, 2].std() / max(arr[:, 2].mean(), 1))
+    pos_sd = float(max((arr[:, 0] + arr[:, 2] / 2).std(), (arr[:, 1] + arr[:, 3] / 2).std()))
+    # (a streamer leans and turns inside his webcam; the strong test is the motion one below)
+    if size_cv > 0.25:
+        return "no", f"face size changes (cv {size_cv:.2f})"
+    if pos_sd > max(8.0, 0.3 * fw):
+        return "no", f"face moves around ({pos_sd:.0f} px)"
+    if 0.3 * 960 < cx < 0.7 * 960 and 0.3 * 540 < cy < 0.7 * 540:
+        return "no", "face in the middle of the picture (cutscene / close-up)"
+    # the room around the face (inside the webcam: wall behind the streamer), in 4 patches: above,
+    # left, right of the head and below the chin. The streamer's own hair/hands may move one or two of
+    # them, so per sample pair the 2nd stillest patch counts; a game camera move changes all four.
+    def patch(y0, y1, x0, x1):
+        y0, y1, x0, x1 = int(max(0, y0)), int(min(540, y1)), int(max(0, x0)), int(min(960, x1))
+        return (y0, y1, x0, x1) if (y1 - y0) * (x1 - x0) >= 60 else None
+    sides = [p for p in (patch(fy - 0.6 * fh, fy - 0.05 * fh, fx - fw, fx + 2 * fw),
+                         patch(fy - 0.6 * fh, fy + 1.8 * fh, fx - fw, fx - 0.15 * fw),
+                         patch(fy - 0.6 * fh, fy + 1.8 * fh, fx + 1.15 * fw, fx + 2 * fw),
+                         patch(fy + 1.2 * fh, fy + 1.8 * fh, fx - fw, fx + 2 * fw)) if p]
+    game = np.ones((540, 960), bool)                         # the rest of the frame, well away from the cam
+    game[int(max(0, fy - 2 * fh)):int(min(540, fy + 4 * fh)), int(max(0, fx - 3 * fw)):int(min(960, fx + 4 * fw))] = False
+    if len(sides) < 2 or game.sum() < 20000:
+        return "unsure", "box too big to compare with the game"
+    d = np.abs(np.diff(grays, axis=0))
+    # two still patches needed (one flat sky / HUD next to an NPC must not be enough)
+    per = np.sort([d[:, y0:y1, x0:x1].mean(axis=(1, 2)) for y0, y1, x0, x1 in sides], axis=0)
+    c_ring = per[1] if len(sides) >= 3 else per[0]
+    c_game = d[:, game].mean(axis=1)
+    # alive: a streamer talks, blinks, turns - the face pixels change. A profile picture in a
+    # browser tab, an avatar or a HUD icon Haar took for a face is static AND still "decoupled".
+    y0, y1, x0, x1 = int(max(0, fy)), int(min(540, fy + fh)), int(max(0, fx)), int(min(960, fx + fw))
+    alive = float(np.median(d[:, y0:y1, x0:x1].mean(axis=(1, 2)))) if y1 > y0 and x1 > x0 else 0.0
+    if alive < CAM_ALIVE:
+        return "no", f"face does not move ({alive:.1f}) - a picture, not a webcam"
+    moving = c_game > 8                                      # the game clearly changed between samples
+    if moving.sum() < CAM_MIN_MOVING:
+        return "unsure", f"game too still to tell ({int(moving.sum())} moving samples)"
+    dec = float(np.mean(c_ring[moving] < 0.5 * c_game[moving]))   # test clips: webcams 67-96 %, in-game faces <= 38 %
+    if dec < CAM_DECOUPLED:
+        return "no", f"moves with the game ({dec:.0%} of {int(moving.sum())} moving samples still) - in-game face"
+    return "yes", f"static box, face {len(hits)}/{n} alive {alive:.1f}, still while the game moved {dec:.0%}"
+
+def face_clusters(faces):
+    """Face hits grouped by spot (centres within 25 px), biggest group first, one group per spot."""
+    hits = [(i, f) for i, found in enumerate(faces) for f in found]
+    groups = []
+    for _, (x, y, w, h) in hits:
+        cx, cy = x + w / 2, y + h / 2
+        agree = {}
+        for i, f in hits:
+            if abs(f[0] + f[2] / 2 - cx) < 25 and abs(f[1] + f[3] / 2 - cy) < 25:
+                if i not in agree or abs(f[0] - x) < abs(agree[i][0] - x):
+                    agree[i] = f
+        groups.append(agree)
+    groups.sort(key=len, reverse=True)
+    out, spots = [], []
+    for g in groups:
+        m = np.median(np.array(list(g.values())), axis=0)
+        spot = (m[0] + m[2] / 2, m[1] + m[3] / 2)
+        if all(abs(spot[0] - s[0]) > 25 or abs(spot[1] - s[1]) > 25 for s in spots):
+            spots.append(spot)
+            out.append(g)
     return out
 
 def detect_cam(src, mult=3.0):
     """
-    Guess the facecam box. The webcam is a static part of the overlay, so the
-    real face sits at (almost) the same spot on most frames, while false hits
-    in the game jump around. Keep the location that repeats most, take its
-    median box and grow it into a box with the aspect of the top band.
-    Returns [x, y, w, h] in percent of the frame, or None.
+    Find the facecam box: among the spots where a face repeats, the first (biggest) one that passes
+    cam_evidence. Then grow the median face into a box with the aspect of the top band.
+    Returns [x, y, w, h] in percent of the frame, or None (also when unsure).
     """
-    per_frame = faces_on(src, 16)
-    hits = [(i, f) for i, found in enumerate(per_frame) for f in found]
-    best = []
-    for _, (x, y, w, h) in hits:                  # each hit proposes a location; count frames that agree
-        cx, cy = x + w / 2, y + h / 2
-        agree = {i: f for i, f in hits if abs(f[0] + f[2] / 2 - cx) < 25 and abs(f[1] + f[3] / 2 - cy) < 25}
-        if len(agree) > len(best):
-            best = list(agree.values())
-    if len(best) < max(3, len(per_frame) // 3):   # not stable enough to be a webcam
+    grays, faces = cam_samples(src)
+    best, why = None, []
+    for hits in face_clusters(faces)[:6]:
+        verdict, reason = cam_evidence(grays, faces, hits)
+        why.append(reason)
+        if verdict == "yes":
+            best = list(hits.values())
+            break
+    if best is None:
+        log(f"  facecam: none ({'; '.join(why[:3]) or 'no face'})")
         return None
     fx, fy, fw, fh = (float(v) for v in np.median(np.array(best), axis=0))
     bw = min(fw * mult, 960)                      # ~3 face-widths: stays inside the cam overlay (no borders)
@@ -543,6 +644,7 @@ def detect_cam(src, mult=3.0):
         y = head_top - 0.06 * bh
     x = float(np.clip(cx - bw / 2, 0, 960 - bw))
     y = float(np.clip(y, 0, 540 - bh))
+    log(f"  facecam: {why[-1]}")
     return [round(x / 9.6, 2), round(y / 5.4, 2), round(bw / 9.6, 2), round(bh / 5.4, 2)]
 
 def person_tops(src, fcx, fcy, n=8):
@@ -558,19 +660,29 @@ def person_tops(src, fcx, fcy, n=8):
                 break
     return tops if len(tops) >= 3 else []
 
-def face_in_box(src, cam):
-    """Is there a face inside the cam box on at least a third of ~8 frames?"""
+def box_evidence(src, cam):
+    """cam_evidence for a saved box: the faces whose centre is inside it."""
+    grays, faces = cam_samples(src)
     bx, by, bw, bh = cam[0] * 9.6, cam[1] * 5.4, cam[2] * 9.6, cam[3] * 5.4
-    per_frame = faces_on(src, 8)
-    ok = sum(any(bx <= x + w / 2 <= bx + bw and by <= y + h / 2 <= by + bh for x, y, w, h in found)
-             for found in per_frame)
-    return ok >= max(2, len(per_frame) // 3)
+    hits = {}
+    for i, found in enumerate(faces):
+        inside = [f for f in found if bx <= f[0] + f[2] / 2 <= bx + bw and by <= f[1] + f[3] / 2 <= by + bh]
+        if inside:
+            hits[i] = max(inside, key=lambda f: f[2])
+    return cam_evidence(grays, faces, hits) + (len(hits), len(faces))
+
+def face_in_box(src, cam):
+    """Kept for callers outside: is the saved box a real facecam on this clip?"""
+    return box_evidence(src, cam)[0] == "yes"
 
 def get_cam(channel, src):
     """
-    Facecam box for this clip. A hand-set box is trusted. An auto-detected box
-    is only used when a face is really inside it on this clip (just chatting,
-    cutscene or a different overlay -> no cam band, game fills the frame).
+    Facecam box for this clip. A hand-set box is trusted. An auto box (streamers.json "auto": true)
+    is re-validated on EVERY clip - a wrong cached box must not survive:
+      yes    -> used, and counted as proven ("ok": n)
+      unsure -> (game too still to judge) used only if this box was proven on an earlier clip and
+                the face is in it on most samples of this one
+      no     -> dropped, detection again (and nothing at all when that is not sure either)
     """
     db = load_json(STREAMERS, {})
     cfg = db.get(channel, {})
@@ -578,16 +690,28 @@ def get_cam(channel, src):
         return None
     if cfg.get("cam") and not cfg.get("auto"):
         return cfg["cam"]
-    if cfg.get("cam") and face_in_box(src, cfg["cam"]):
-        return cfg["cam"]
-    # no box yet, or the auto box has no face on this clip: detect again (a wrong first guess
-    # - a cutscene face, an overlay avatar - must not stick forever)
+    wrong = False
+    if cfg.get("cam"):
+        verdict, reason, k, n = box_evidence(src, cfg["cam"])
+        # proven not a webcam (moves, changes size, centre, moves with the game); a face simply missing
+        # on this clip (streamer away, just chatting) keeps the box for the next one
+        wrong = verdict == "no" and not reason.startswith("face on") and "one part" not in reason
+        if verdict == "yes" or (verdict == "unsure" and cfg.get("ok", 0) >= 1 and n and k >= 0.5 * n):
+            if verdict == "yes":
+                db = load_json(STREAMERS, {})
+                db[channel] = {**cfg, "ok": cfg.get("ok", 0) + 1}
+                save_json(STREAMERS, db)
+            return cfg["cam"]
+        log(f"  saved facecam of {channel} not confirmed on this clip ({reason})")
     cam = detect_cam(src)
+    db = load_json(STREAMERS, {})
     if cam:
-        db = load_json(STREAMERS, {})
-        db[channel] = {"cam": cam, "auto": True}
-        save_json(STREAMERS, db)
+        db[channel] = {"cam": cam, "auto": True, "ok": 1}
         log(f"  facecam auto-detected for {channel}: {cam} (check it, then remove 'auto')")
+    elif wrong and db.get(channel, {}).get("auto"):
+        db.pop(channel)                           # the cached guess is an in-game face: never again
+        log(f"  saved facecam of {channel} removed from streamers.json")
+    save_json(STREAMERS, db)
     return cam
 
 # -----------------------------------------------------------------------------
@@ -624,7 +748,7 @@ def pick_quote(words, peak=None):
 
 def quality_check(short, cam, cam_h=CAM_H, until=None):
     """
-    Last gate before anything can be published (Aleš: no cut faces, no black bars, no errors):
+    Last gate before anything can be published (AleĹˇ: no cut faces, no black bars, no errors):
       - black bars: full-width rows that are pure black on most frames
       - facecam band: a whole face (not touching the band edges) on at least half the frames
     """
@@ -935,7 +1059,7 @@ def transcribe(src):
     audio = whisper.load_audio(str(src))              # 16 kHz mono, for the singing check
     words, dropped = [], 0
     for seg in res["segments"]:
-        # captions = what the STREAMER says (Aleš: they were lyrics of the in-game radio):
+        # captions = what the STREAMER says (AleĹˇ: they were lyrics of the in-game radio):
         # drop segments Whisper itself doubts, repetitive ones (choruses) and sung ones
         sung = singing(audio[int(seg["start"] * 16000): int(seg["end"] * 16000)])
         if (seg.get("no_speech_prob", 0) > 0.5 or seg.get("avg_logprob", 0) < -0.9
@@ -996,7 +1120,7 @@ def cap_font(cap):
     key = name.lower().split()[0]
     return name if any(p.stem.lower().startswith(key) for p in fdir.glob("*.[ot]tf")) else CAP_FONT
 
-# caption colour by the emotion of the word (HPC frame, Aleš 17. 11., both accounts)
+# caption colour by the emotion of the word (HPC frame, AleĹˇ 17. 11., both accounts)
 EMO_WIN = ["lol", "lmao", "lmfao", "let's go", "lets go", "w", "yes", "gg", "clutch", "easy"]
 EMO_DRAMA = ["what", "no", "wtf", "dead", "died", "run", "help", "oh my god", "fuck", "fucking", "shit"]
 EMO_COL = {"win": "39FF88", "drama": "FF3B3B"}
@@ -1023,7 +1147,7 @@ def word_emotions(words):
     return out
 
 def mask_swears(words, until=1e9):
-    """Hard swears anywhere in the short (Aleš 17. 11.): caption F***, and their times to BLEEP."""
+    """Hard swears anywhere in the short (AleĹˇ 17. 11.): caption F***, and their times to BLEEP."""
     out, mute = [], []
     for s0, e0, t in words:
         core = _tok(t)
@@ -1053,14 +1177,14 @@ def captions_ass(words, path, y, cap=None, per=2, anim="pop"):
         "[V4+ Styles]\nFormat: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, "
         "BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, "
         "Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding\n"
-        # bananas: thin outline + a soft drop shadow (Aleš: no thick outlined captions)
+        # bananas: thin outline + a soft drop shadow (AleĹˇ: no thick outlined captions)
         f"Style: Cap,{font},{size},&H00{col},&H00{col},&H00000000,&H64000000,0,0,0,0,100,100,1,0,1,"
         f"{cap.get('outline', 4)},{cap.get('shadow', 4)},5,40,40,0,1\n\n"
         "[Events]\nFormat: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\n"
     )
     up = cap.get("upper", True)
     clean = lambda s: (lambda x: x.upper() if up else x)(s.replace("\\", "").replace("{", "(").replace("}", ")"))
-    emo = [None] * len(words)                          # emotion colours off (Aleš 17. 11.): one steady highlight
+    emo = [None] * len(words)                          # emotion colours off (AleĹˇ 17. 11.): one steady highlight
     ecol = lambda k, default: ass_col(EMO_COL[k]) if k else default
     chunks, cur = [], []
     for wi, wd in enumerate(words):       # break on 2 words / `chars` letters, a pause, or sentence end
@@ -1104,7 +1228,7 @@ def captions_ass(words, path, y, cap=None, per=2, anim="pop"):
 GRADE = "eq=contrast=1.06:brightness=0.02:saturation=1.3"   # edit look: punchier colours in the game band
 
 # fanpage night-drive look on top of its brands.json grade: teal shadows, orange highlights,
-# more contrast and a soft vignette (Aleš 17. 11.: "teasing, sexy, vrrr", a sleek edit)
+# more contrast and a soft vignette (AleĹˇ 17. 11.: "teasing, sexy, vrrr", a sleek edit)
 FAN_LOOK = "colorbalance=rs=-0.07:gs=0.0:bs=0.09:rh=0.09:gh=0.02:bh=-0.08,eq=contrast=1.08,vignette=angle=PI/5"
 
 # the original account; used as is when brands.json is missing (then every clip is only 'bananas')
@@ -1192,7 +1316,7 @@ def build_filter(cam, cmds_file, x0, crop_w, game_h, crop_h=SH, y0=0, ass_file=N
     """
     flash = ""
     if hook and hook[0] == "flash" and hook[1] > 0:
-        # slow flash (Aleš: the first was far too fast): fade to white over 0.35 s, hold 0.1 s, back over 0.4 s
+        # slow flash (AleĹˇ: the first was far too fast): fade to white over 0.35 s, hold 0.1 s, back over 0.4 s
         T = hook[1]
         t0, t1 = T - 0.35, T + 0.1
         flash = (f",eq=eval=frame:brightness='0.85*if(lt(t\\,{T:.3f})\\,clip((t-{t0:.3f})/0.35\\,0\\,1)"
@@ -1286,7 +1410,7 @@ TRIGGERS = [                        # what was said -> fitting reactions (only t
     (r"\b(bruh|why|cringe|dude)\b", ["facepalm", "sideeye", "shrug"]),
 ]
 LOUD = ["shock", "mindblown", "laugh", "hype", "scared"]    # payoff without a trigger word
-# the banana's one-line comment next to it (Aleš 15. 11.: banana as a commentator, our own layer)
+# the banana's one-line comment next to it (AleĹˇ 15. 11.: banana as a commentator, our own layer)
 PHRASES = {
     "laugh": ["LMAOOO", "I'M DEAD", "HAHAHA"], "crylaugh": ["I'M CRYING", "STOPPP", "NOT AGAIN"],
     "shock": ["NO WAY", "WAIT WHAT", "HOLD ON"], "mindblown": ["WHAT?!", "HOW?!", "GTA 6 IS INSANE"],
@@ -1375,7 +1499,7 @@ def audio_mix(clip_audio, total, card_idx=None, card_at=0.0, music_idx=None, mus
               replay=None, mute=(), riser_idx=None, hit_idx=None, peak=None,
               clip_end=None, outro_idx=None, follow_idx=None, follow_at=0.0, extras=()):
     """
-    The short's sound: the clip's own audio + our music at one steady level (Aleš: always the
+    The short's sound: the clip's own audio + our music at one steady level (AleĹˇ: always the
     same volume) + the score card's landing 'tups' + the hook flash whoosh (sfx, at sfx_at s).
     A limiter keeps the sum from clipping. replay = (main_end, r0, r1): the clip's sound ends at
     main_end, then r0..r1 again slowed to 0.6x (atempo) and quieter, under the music.
@@ -1469,8 +1593,8 @@ def outro_append(f, idx, at):
 # launch layer (17. 11., before GTA 6 on 19. 11.): HOOK v2, the fanpage model's reaction
 # stickers, HEAT 1-5 (fanpage), the golden 10/10 (bananas) and an automatic QA of every short.
 # Each sits behind a brands.json flag (hook_v2, model_sticker, heat, golden10, qa) and can be
-# switched off without touching the code. Restraint (Aleš 17. 11.: "nepřeplácat, struktura
-# musí být bezchybná"): hook -> progression -> climax (+ one sticker on the payoff) -> >= 3 s
+# switched off without touching the code. Restraint (AleĹˇ 17. 11.: "nepĹ™eplĂˇcat, struktura
+# musĂ­ bĂ˝t bezchybnĂˇ"): hook -> progression -> climax (+ one sticker on the payoff) -> >= 3 s
 # after it -> score card (bananas) / Heat then the outro (fanpage). At most ONE extra element
 # on screen at a time, never over the face, the payoff action or the captions. A short that
 # fails QA is re-rendered in the proven old look; if even that fails it is not published.
@@ -1765,15 +1889,127 @@ def hook_is_loud(path, main_end):
     first = float(np.sqrt((a[:2400] ** 2).mean()))
     return first >= float(np.median(fr))
 
+LUFS_TARGET = -14.0      # every short (some came out at -22 LUFS, 17. 11.); YouTube/TikTok/IG play ~-14
+LUFS_TOL = 2.0           # qa_short: outside target +- this = a problem
+TP_TARGET = -2.0         # loudnorm target; AAC re-encode adds ~0.4 dB (measured -1.5 -> -1.1), qa_short wants <= -1 dBTP
+
+def loudness_fix(path):
+    """
+    Two-pass loudnorm of a finished short to LUFS_TARGET integrated, true peak <= TP_TARGET.
+    linear=true: one steady gain (no pumping); loudnorm falls back to dynamic only when that gain
+    would push the peaks over the limit. Video is copied, audio re-encoded like encode().
+    Returns (before, after) integrated LUFS, or None when there is nothing to fix.
+    """
+    probe = subprocess.run(["ffmpeg", "-nostdin", "-hide_banner", "-i", str(path), "-vn", "-af",
+                            f"loudnorm=I={LUFS_TARGET}:TP={TP_TARGET}:LRA=11:print_format=json", "-f", "null", "-"],
+                           capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=600)
+    m = re.search(r"\{[^{}]*\"input_i\"[^{}]*\}", probe.stderr)
+    if not m:
+        return None
+    js = json.loads(m.group(0))
+    if js["input_i"] in ("-inf", "inf") or float(js["input_i"]) < -60:
+        return None                                        # silent: qa_short reports it
+    if abs(float(js["input_i"]) - LUFS_TARGET) < 0.5 and float(js["input_tp"]) <= TP_TARGET:
+        return float(js["input_i"]), float(js["input_i"])
+    af = (f"loudnorm=I={LUFS_TARGET}:TP={TP_TARGET}:LRA=11:linear=true:measured_I={js['input_i']}:"
+          f"measured_TP={js['input_tp']}:measured_LRA={js['input_lra']}:measured_thresh={js['input_thresh']}:"
+          f"offset={js['target_offset']},aresample=48000")
+    tmp = Path(path).with_name(Path(path).stem + "_ln.mp4")
+    run(["ffmpeg", "-nostdin", "-y", "-hide_banner", "-loglevel", "error", "-i", str(path), "-map", "0:v", "-map", "0:a",
+         "-c:v", "copy", "-af", af, "-c:a", "aac", "-b:a", "128k", "-cutoff", "18000", "-movflags", "+faststart",
+         str(tmp)], timeout=600)
+    os.replace(tmp, path)
+    return float(js["input_i"]), LUFS_TARGET
+
+# Boredom gate (AleĹˇ 17. 11.: no clip where nothing happens, every short must hook). Conservative on
+# purpose: it only drops what is clearly flat - the payoff no louder and no busier than the rest of the
+# clip and nobody reacting - or a dead stretch the jump cuts left (quiet AND still for > 2.5 s).
+BORE_LOUD_DB = 6.0       # payoff 0.6 s loudness over the clip's median, dB
+BORE_MOTION_X = 3.0      # payoff picture change over the clip's median
+BORE_REACT = 0.4         # a laugh / shout word near the payoff adds this to the hook score
+BORE_DEAD_S = 2.5        # quiet + still for longer than this = dead air
+BORE_BUSY_MOTION = 12.0   # non-stop action: median picture change at least this (pool clips: 0.2-17) ...
+BORE_BUSY_DB = -26.0     # ... and median loudness at least this dBFS
+REACT_RE = re.compile(r"\b(ha(ha)+|lmao|lol|bro|what|wtf|no+|yo+|oh+|omg|holy|dude|run|go+)\b|!", re.I)
+
+def activity(path, a, b, crop=None):
+    """Every 0.2 s of [a, b]: audio loudness (dBFS, 0.6 s windows) and picture change (0-255)."""
+    n = max(1, int((b - a) / 0.2))
+    raw = subprocess.run(["ffmpeg", "-nostdin", "-v", "error", "-ss", f"{a:.3f}", "-t", f"{b - a:.3f}", "-i", str(path),
+                          "-vn", "-ac", "1", "-ar", "8000", "-f", "s16le", "-"], capture_output=True, timeout=300).stdout
+    x = np.frombuffer(raw, np.int16).astype(np.float64) / 32768
+    db = np.full(n, -90.0)
+    if x.size:
+        c = np.concatenate([[0.0], np.cumsum(x * x)])
+        for i in range(n):
+            lo, hi = max(0, int((i * 0.2 - 0.2) * 8000)), min(x.size, int((i * 0.2 + 0.4) * 8000))
+            if hi > lo:
+                db[i] = 10 * math.log10(max((c[hi] - c[lo]) / (hi - lo), 1e-9))
+    vf = (f"crop={crop}," if crop else "") + "fps=5,scale=160:90,format=gray"
+    raw = subprocess.run(["ffmpeg", "-nostdin", "-v", "error", "-ss", f"{a:.3f}", "-t", f"{b - a:.3f}", "-i", str(path),
+                          "-vf", vf, "-f", "rawvideo", "-"], capture_output=True, timeout=300).stdout
+    fr = np.frombuffer(raw, np.uint8)[: len(raw) // 14400 * 14400].reshape(-1, 90, 160).astype(np.float32)
+    mo = np.abs(np.diff(fr, axis=0)).mean(axis=(1, 2)) if len(fr) > 1 else np.zeros(1)
+    mo = np.interp(np.arange(n) * 0.2, np.arange(len(mo)) * 0.2 + 0.2, mo)   # frame i-1 -> i ends at 0.2 i
+    return db, mo
+
+def boredom(path, words, peak, a, b, viral=False, crop=None):
+    """
+    Problems (empty = it hooks) and the numbers, for the part [a, b] of `path` (s); peak = payoff
+    in the same timeline. viral = viewers already pushed it hard (virality/score): the payoff
+    contrast may be smaller, a dead stretch still is not allowed.
+    """
+    if b - a < 4:
+        return [], {}
+    db, mo = activity(path, a, b, crop)
+    t = a + np.arange(len(db)) * 0.2
+    base_db, base_mo = float(np.median(db)), float(np.median(mo))
+    smooth = lambda x: np.convolve(np.pad(x, 1, mode="edge"), np.ones(3) / 3, "valid")   # 0.6 s, no fake edge peaks
+    sdb, smo = smooth(db), smooth(mo)
+    win = (t >= (peak if peak is not None else a) - 1.5) & (t <= (peak if peak is not None else b) + 1.5)
+    if not win.any():
+        win = np.ones_like(t, bool)
+    loud_c = float(sdb[win].max() - base_db)
+    mot_c = float(smo[win].max() / max(base_mo, 0.5))
+    near = [w for w in words if peak is not None and peak - 2.5 <= w[0] <= peak + 2.5]
+    react = any(REACT_RE.search(w[2]) for w in near)
+    # one hook score from the three signals: 1.0 = e.g. +6 dB alone, or picture change x3 alone, or
+    # a reaction word with +3.6 dB (pool clips 17. 11.: real moments 1.2-6, flat talk 0.8)
+    hook = (max(0.0, loud_c) / BORE_LOUD_DB + min(max(0.0, mot_c - 1) / (BORE_MOTION_X - 1), 1.5)
+            + (BORE_REACT if react else 0.0))
+    # non-stop action (a chase, a shootout) has no contrast but is not boring: busy picture AND sound
+    busy = base_mo >= BORE_BUSY_MOTION and base_db >= BORE_BUSY_DB
+    payoff = busy or hook >= (0.6 if viral else 1.0)
+    # dead stretch: quiet (well under the clip's level, or near silence) AND still AND nobody talking
+    quiet = (db < max(base_db - 12, -45)) | (db < -50)
+    still = mo < max(0.35 * base_mo, 0.4)
+    talk = np.zeros_like(quiet)
+    for w0, w1, _ in words:
+        talk |= (t >= w0 - 0.2) & (t <= w1 + 0.2)
+    dead_mask, run_, dead = quiet & still & ~talk, 0, 0.0
+    for v in dead_mask:
+        run_ = run_ + 1 if v else 0
+        dead = max(dead, run_ * 0.2)
+    probs = []
+    if not payoff:
+        probs.append(f"flat payoff (hook {hook:.2f}: loudness +{loud_c:.1f} dB, motion x{mot_c:.1f}, "
+                     f"reaction {'yes' if react else 'no'})")
+    if dead > BORE_DEAD_S:
+        probs.append(f"dead stretch {dead:.1f} s (quiet and still)")
+    return probs, {"hook": round(hook, 2), "loud_db": round(loud_c, 1), "motion_x": round(mot_c, 2), "react": react,
+                   "busy": busy, "base_motion": round(base_mo, 1), "base_db": round(base_db, 1),
+                   "dead_s": round(dead, 1), "viral": viral}
+
 def boxes_hit(a, b):
     return a[0] < b[2] and b[0] < a[2] and a[1] < b[3] and b[1] < a[3]
 
 def qa_short(path, plan):
     """
-    Automatic QA of a finished short (Aleš 17. 11.: no room for mistakes). Returns problems:
+    Automatic QA of a finished short (AleĹˇ 17. 11.: no room for mistakes). Returns problems:
       - duration as planned and in 6..95 s
       - no black / frozen stretch before the end card or outro (intentional ones are after it)
-      - sound: not silent (integrated > -35 LUFS) and true peak <= -1 dBTP
+      - sound: not silent (integrated > -35 LUFS), -14 LUFS +- 2, true peak <= -1 dBTP
+      - boredom: the gate before render passed, no dead stretch (> 2.5 s quiet + still) left
       - one extra element at a time; none over the face band or the captions (timeline boxes)
       - HOOK v2: the first 300 ms are at least as loud as the short's median
       - the end card / Heat planned is really there
@@ -1798,6 +2034,17 @@ def qa_short(path, plan):
         probs.append("true peak not measured")
     if tp is not None and tp > -1.0:
         probs.append(f"true peak {tp:.1f} dBTP (> -1)")
+    if lufs is not None and lufs >= -35 and abs(lufs - LUFS_TARGET) > LUFS_TOL:
+        probs.append(f"loudness {lufs:.1f} LUFS (target {LUFS_TARGET:.0f})")
+    # boredom: the gate before render must have passed, and the finished short (what the viewer gets,
+    # with our music) must have no dead stretch left between the hook and the end card / outro
+    if plan.get("bore_probs"):
+        probs.append(f"boring: {'; '.join(plan['bore_probs'])}")
+    if plan.get("main_end", 0) - plan.get("hook_end", 0) >= 4:
+        dead = boredom(path, [(w0, w1 - 0.6, "") for w0, w1 in plan.get("cap_times") or []], None,
+                       plan.get("hook_end", 0.0), plan["main_end"], crop=plan.get("game_crop"))[1].get("dead_s", 0)
+        if dead > BORE_DEAD_S:
+            probs.append(f"dead stretch {dead:.1f} s in the short")
     els = plan.get("elements") or []
     for i, (t0, t1, name, box) in enumerate(els):
         if box[1] < plan["face_bottom"]:
@@ -1819,7 +2066,7 @@ def qa_short(path, plan):
 
 def extras_ass(path, reactions, rating, dur, cam, seed):
     """
-    Our own layer on top of the captions (Aleš 15. 11.): a short speech bubble next to every
+    Our own layer on top of the captions (AleĹˇ 15. 11.): a short speech bubble next to every
     banana reaction, and the banana's score for the clip in the last 1.6 s.
     """
     rnd = random.Random(seed)
@@ -1828,7 +2075,7 @@ def extras_ass(path, reactions, rating, dur, cam, seed):
              f"Style: Rate,{CAP_FONT},76,&H0035E1FF,&H0035E1FF,&H00000000,&H64000000,0,0,0,0,100,100,1,0,1,0,5,5,0,0,0,1\n")
     txt = path.read_text(encoding="utf-8").replace("\n\n[Events]", "\n" + style.rstrip("\n") + "\n\n[Events]", 1)
     lines = []
-    for t, name in []:                                  # bubble off (Aleš 15. 11.: the banana says nothing)
+    for t, name in []:                                  # bubble off (AleĹˇ 15. 11.: the banana says nothing)
         e = t + (REACTIONS[name][2] - REACTIONS[name][1])
         lines.append(f"Dialogue: 1,{ass_time(t + 0.1)},{ass_time(e)},Bub,,0,0,0,,"
                      f"{{\\pos({BANANA_X + BANANA_W + 6},{y0 + 110})\\fscx70\\fscy70\\t(0,120,\\fscx100\\fscy100)}}"
@@ -1950,7 +2197,7 @@ def audio_peak(src):
     c = np.concatenate([[0.0], np.cumsum(a * a)])
     rms = np.sqrt((c[4000:] - c[:-4000]) / 4000)[::800]          # 0.5 s windows, every 0.1 s
     t = np.arange(len(rms)) * 0.1 + 0.25
-    # Aleš: the hook must be the real payoff (e.g. flying out of the car + his line), not just the
+    # AleĹˇ: the hook must be the real payoff (e.g. flying out of the car + his line), not just the
     # loudest second -> loudness + how much the picture changes, weighted towards the clip's end
     mot, prev = np.zeros_like(rms), None
     for tt, img in frames(src, 5, 160, 90):
@@ -1980,7 +2227,7 @@ def trim_points(words, peak, dur, hi=35.0, lo=8.0):
     if peak is not None and not (peak < dur / 3 and talk_after):   # a shout early on is not the payoff
         end_sent = next((w[1] for w in words if w[0] >= peak - 0.5 and w[2][-1:] in ".?!"), None)
         end_word = next((w[1] for w in words if w[1] >= peak + 2.5), None)       # no punctuation: end of a word
-        # Aleš 17. 11.: after the climax leave a few seconds - the reaction and the sentence that is
+        # AleĹˇ 17. 11.: after the climax leave a few seconds - the reaction and the sentence that is
         # running finish, never cut mid-sentence (the xQc test ended just barely)
         end = end_sent if end_sent and end_sent <= peak + 6 else (end_word if end_word and end_word <= peak + 6 else peak + 3.0)
         b = min(dur, max(end + 0.5, peak + 3.0))
@@ -2010,7 +2257,7 @@ def rms_curve(src):
 def dead_air(words, src, a, b, peak):
     """
     Pieces of [a, b] to KEEP: pauses longer than 0.9 s between words that are also quiet (no
-    shouting, no explosion) are jump-cut out, never near the payoff (Aleš: built for ADHD
+    shouting, no explosion) are jump-cut out, never near the payoff (AleĹˇ: built for ADHD
     scrollers, no dead second). auto-editor idea, done with our own word times + loudness.
     """
     ts, rms = rms_curve(src)
@@ -2034,8 +2281,8 @@ def edit_cut(src, words, d, clip, hpc=None, v2=False, info=None):
     """
     Cut the source before rendering: trim (Twitch/Kick; YouTube windows are already cut on
     sentences) and a COLD START - the payoff flashes for 1 s first, then the clip plays from
-    its start (Aleš 15. 11.). Up to RATING_DUR s of the source after the cut are kept, so the
-    clip keeps running under the banana score card (Aleš: the background must not freeze).
+    its start (AleĹˇ 15. 11.). Up to RATING_DUR s of the source after the cut are kept, so the
+    clip keeps running under the banana score card (AleĹˇ: the background must not freeze).
     Returns (source, words, payoff time, where the card starts, jump cuts, T) in the new
     timeline; T = where the hook ends and the clip starts (0 = no hook). The transition itself
     (flash or whip cut) is the brand's and is added in the final encode (build_filter).
@@ -2059,7 +2306,7 @@ def edit_cut(src, words, d, clip, hpc=None, v2=False, info=None):
     if not has_audio(src):
         return src, words, peak, dur, [], 0.0
     out = d / "edit.mp4"
-    # hook (Aleš: 1 s looked like a cut by mistake; the rewind he did not like): ~2.7 s of the
+    # hook (AleĹˇ: 1 s looked like a cut by mistake; the rewind he did not like): ~2.7 s of the
     # payoff, then the transition (bananas: white FLASH + whoosh) and the clip from its start
     ps, pe = (max(0.0, peak - 1.8), min(dur, peak + 0.9)) if tease else (0, 0)
     if tease and v2:
@@ -2190,7 +2437,7 @@ def render(clip, src=None, clean=False):
     # brands whose short failed QA - the proven old look; a short failing even that is dropped.
     shorts, qa_log, todo = {}, {}, list(blist)
     looks = [True, False] if any(b.get(k) for b in blist for k in LAUNCH_FLAGS) else [False]
-    cuts = {}
+    cuts, bore = {}, None
     for v2 in looks:
         if not todo:
             break
@@ -2202,20 +2449,32 @@ def render(clip, src=None, clean=False):
         dur = duration(src)
         card_at = min(card_at, dur)
         words = [w for w in words if w[0] < card_at]      # no captions / banana under the score card
+        if bore is None:                                  # boredom gate, once per clip, on the cut it will show
+            viral = bool(virality(clip) >= cfg.get("extra_score", 5000) or (clip.get("cluster") or 1) >= 2
+                         or (clip.get("live") and (clip.get("spike_z") or 0) >= 10))
+            try:
+                bore_probs, bore = boredom(src, words, peak, hook_t, card_at, viral=viral)
+            except Exception as e:                        # a broken probe is not a boring clip
+                bore_probs, bore = [], {"error": str(e)[-120:]}
+            if os.environ.get("KLIPY_NO_BORE"):          # manual test renders only
+                bore_probs = []
+            log(f"  boredom: {bore}" + (f" -> {'; '.join(bore_probs)}" if bore_probs else " ok"))
+            if bore_probs:
+                raise NotGameplay(f"boring: {'; '.join(bore_probs)}")
         words, mute = mask_swears(words)                  # swears in the first 3 s: F*** and silent
         reactions = pick_reactions(words, card_at, clip["id"], peak) if (BANANA / "reakce1.mp4").exists() else []
         if hv2_cut and hook_t:                            # hook = teaser -> flash -> start, nothing else in it
             reactions = [r for r in reactions if r[0] >= hook_t + 0.2]
         ff = ["ffmpeg", "-nostdin", "-y", "-hide_banner", "-loglevel", "error", "-i", str(src)]
 
-        # Render, check, and REPAIR instead of giving up (Aleš: a cut face or black bars must be fixed):
+        # Render, check, and REPAIR instead of giving up (AleĹˇ: a cut face or black bars must be fixed):
         #   1) normal: saved/auto facecam box, detected bars and subtitles cropped
         #   2) facecam detected again with a wider box, bars found with looser limits, 6 % extra zoom
         #   3) only for a clip with viral potential: no facecam band, the game fills the short
-        # No facecam = no short, unless the clip is big (Aleš 15. 11.: "pustit i bez kamery, pokud má
-        # potenciál být virální"): sources.json nocam_min_views, or several viewers clipped it.
+        # No facecam = no short, unless the clip is big (AleĹˇ 15. 11.: "pustit i bez kamery, pokud mĂˇ
+        # potenciĂˇl bĂ˝t virĂˇlnĂ­"): sources.json nocam_min_views, or several viewers clipped it.
         #   (between 2 and 3) "content": big black areas of any size cut off by the ever-not-black box
-        #   (Aleš: a viral clip is a shame to throw away because of a black bar)
+        #   (AleĹˇ: a viral clip is a shame to throw away because of a black bar)
         modes = [("saved", False, 0.0), ("again", True, 0.06), ("content", True, 0.03)] + ([("none", True, 0.0)] if nocam_ok else [])
         problems, made, plans = [], {}, {}
         try:                                          # a crash in the launch look -> the old look, never a lost clip
@@ -2248,7 +2507,7 @@ def render(clip, src=None, clean=False):
                     use_heat = v2 and bool(b.get("heat")) and fan
                     use_gold = v2 and gold and bool(b.get("golden10")) and rating == 10
                     out = d / b["short"]
-                    # fanpage (Aleš 17. 11.: a different edit, not a recolour): taller facecam, one-word
+                    # fanpage (AleĹˇ 17. 11.: a different edit, not a recolour): taller facecam, one-word
                     # captions low in the game band, slow push-in per shot, instant replay of the payoff
                     cam_h = 720 if fan else CAM_H
                     game_h = H - cam_h if cam else H
@@ -2267,7 +2526,7 @@ def render(clip, src=None, clean=False):
                     ass = d / f"captions{sfx}.ass"
                     cap_y = cam_h if cam else 600
                     if fan:   # Anton white, neon green highlight, thin dark outline (sleek, not the banana look)
-                        n_chunks = captions_ass(words, ass, y=cap_y,     # on the seam (Aleš)
+                        n_chunks = captions_ass(words, ass, y=cap_y,     # on the seam (AleĹˇ)
                                                 cap={**(b.get("caption") or {}), "outline": 3, "shadow": 0},
                                                 per=1, anim="bounce")
                     else:
@@ -2285,7 +2544,7 @@ def render(clip, src=None, clean=False):
                     pace = [round(hook_t + 1.2 * k, 2) for k in range(1, 4) if hook_t + 1.2 * k < 5.0] if hv2 else []
                     if fan:
                         r0, r1 = (max(0.0, peak - 1.0), min(card_at, peak + 0.5)) if peak is not None else (0.0, 0.0)
-                        if False and r1 - r0 >= 0.8:              # replay off (Aleš 17. 11.: looked like the hook again + a freeze)
+                        if False and r1 - r0 >= 0.8:              # replay off (AleĹˇ 17. 11.: looked like the hook again + a freeze)
                             main_end = card_at
                             replay = (main_end, r0, r1)
                         edges = sorted({0.0, round(hook_t, 2), *jumps, *(round(c, 2) for c in cuts_), *pace, round(main_end, 2)})
@@ -2420,6 +2679,12 @@ def render(clip, src=None, clean=False):
                                 if not (x == "no facecam" and cam_mode == "none")]
                     if problems:
                         break
+                    try:                                  # -14 LUFS / TP <= -1.5 (qa_short checks it)
+                        ln = loudness_fix(out)
+                        if ln:
+                            log(f"  {b['key']}: loudness {ln[0]:.1f} -> {ln[1]:.1f} LUFS")
+                    except Exception as e:
+                        log(f"  {b['key']}: loudness fix failed ({str(e)[-120:]})")
                     made[b["key"]] = str(out)
                     plans[b["key"]] = dict(
                         total=total, main_end=card_at if use_card else clip_total, card_at=card_at,
@@ -2429,6 +2694,7 @@ def render(clip, src=None, clean=False):
                         cap_box=(40, cap_y - int(int((b.get("caption") or {}).get("size", CAP_SIZE)) * 0.65),
                                  1040, cap_y + int(int((b.get("caption") or {}).get("size", CAP_SIZE)) * 0.65)),
                         look="launch" if v2 else "old", gold=use_gold, heat_n=heat_n if heat_plan else None, peak=peak,
+                        hook_end=hook_t, bore=bore, bore_probs=bore_probs, game_crop=(f"{W}:{game_h}:0:{cam_h}" if cam else None),
                         stickers=[Path(p).stem for _, p in plan_stickers])
                     log(f"  {b['key']}: captions {len(words)} words, {n_chunks} chunks; "
                         f"banana: {', '.join(f'{n} @{t:.1f}s' for t, n in rx) or 'none'}"
@@ -2521,21 +2787,28 @@ def render(clip, src=None, clean=False):
         "golden": bool(qa_log.get("bananas", {}).get("gold")),   # the rare golden 10/10 card is in the bananas short
         "heat": qa_log.get("fanpage", {}).get("heat"),           # fanpage HEAT 1-5 shown (None = none)
         "qa": qa_log,                        # QA per brand: look (launch / old), problems of a dropped look
-        "caption": f"🎮 {home_url(clip)}\n#gta6 #{BRAND}",
+        "bore": bore,                        # boredom gate numbers (payoff loudness/motion contrast, dead air)
+        "caption": f"đźŽ® {home_url(clip)}\n#gta6 #{BRAND}",
         "rendered_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "checklist": [
-            "titulky sedí na řeč (jména, slang)",
-            "bez hudby z rádia ve hře (Content ID)",
-            "bez spoilerů: konec hry, velké cutscény",
+            "titulky sedĂ­ na Ĺ™eÄŤ (jmĂ©na, slang)",
+            "bez hudby z rĂˇdia ve hĹ™e (Content ID)",
+            "bez spoilerĹŻ: konec hry, velkĂ© cutscĂ©ny",
         ],
     }
     try:                                     # long-form (docs/long-form.md): 16:9 source, payoff, tags
         tags, scores = moment_tags(words0, orig, hpc.get("peak"), clip.get("title"), clip.get("created") or 0)
         meta.update(source_16x9=str(orig), peak_src=hpc.get("peak"), cut_src=hpc.get("cut"), tags=tags, tag_scores=scores)
         cut = hpc.get("cut") or [None, None]
-        pool_add(pool_row(clip, source=str(orig), peak=hpc.get("peak"), cut=hpc.get("cut"), dur=hpc.get("dur"),
-                          tags=tags, tag_scores=scores, quote=meta["quote"], rendered=list(shorts),
-                          **classify_moment(words0, orig, hpc.get("peak"), clip, cut[0], cut[1])), replace=True)
+        row = pool_row(clip, source=str(orig), peak=hpc.get("peak"), cut=hpc.get("cut"), dur=hpc.get("dur"),
+                       tags=tags, tag_scores=scores, quote=meta["quote"], rendered=list(shorts),
+                       **classify_moment(words0, orig, hpc.get("peak"), clip, cut[0], cut[1]))
+        pool_add(row, replace=True)
+        if clip.get("platform") == "youtube" and cut[0] is not None:
+            try:                             # the 24/7 PC: GitHub can't download YouTube -> the inbox carries it
+                meta.update(long_segment(orig, d, row))
+            except Exception as e:           # never costs the short
+                log(f"  long-form source failed: {str(e)[-120:]}")
     except Exception as e:                   # tags are a bonus: never lose a finished short over them
         log(f"  tags failed: {str(e)[-120:]}")
     save_json(d / "meta.json", meta)
@@ -2861,7 +3134,7 @@ POOL_KEYS = ("id", "url", "channel", "name", "platform", "title", "views", "crea
 
 # what a moment is about: transcript + the viewer's clip title (a person named it) + picture/sound
 TAG_WORDS = {
-    "funny": r"\b(ha(ha)+h?|lol|lmao|lmfao|bruh|bro what|i can'?t|i'?m crying|crying|dying|funny|hilarious)\b|💀|😂|🤣",
+    "funny": r"\b(ha(ha)+h?|lol|lmao|lmfao|bruh|bro what|i can'?t|i'?m crying|crying|dying|funny|hilarious)\b|đź’€|đź‚|đź¤Ł",
     "glitch": r"\b(bug|bugs|bugged|glitch\w*|broken|clipping|clipped|stuck|physics|t-?pose|floating|how did|what is happening|why is)\b",
     "chase": r"\b(cops?|police|chase|chasing|wanted|helicopter|heli|sirens?|getaway|escape|pursuit|go go|drive|run)\b",
     "crash": r"\b(crash\w*|wreck\w*|flipped|explod\w*|boom|ran (him )?over|run over|hit (me|him|her|us)|splat|launched|flew)\b",
@@ -2937,6 +3210,39 @@ def pool_row(clip, **kw):
     row["added"] = int(time.time())
     row.update(kw)
     return row
+
+LONG_SEG = "long_16x9.mp4"             # YouTube moments from the 24/7 PC: 720p cut of the source for the inbox
+LONG_PAD = 2.0                         # s kept on both sides of the HPC cut
+
+def long_segment(src, d, row):
+    """
+    YouTube moment rendered on the worker PC: GitHub (kompilace) cannot download from YouTube, so
+    a 16:9 720p cut of the source (HPC cut +- LONG_PAD s, ~2.5 Mb/s, AAC 96k) goes into the inbox
+    with the pool row (cut/peak/dur moved into the cut file's timeline). publikuj.py appends the
+    row to long_pool.json with source = the file's Netlify URL when GitHub reads the inbox.
+    Returns the meta fields: long_src (file in the clip folder), long_mb, pool_row.
+    """
+    a, b = row["cut"]
+    dur = row.get("dur") or duration(src)
+    s, e = max(0.0, a - LONG_PAD), min(dur, b + LONG_PAD)
+    out = d / LONG_SEG
+    base = ["ffmpeg", "-nostdin", "-y", "-hide_banner", "-loglevel", "error", "-ss", f"{s:.3f}", "-to", f"{e:.3f}",
+            "-i", str(src), "-vf", f"{src_norm(src)},scale=1280:720", "-map", "0:v:0", "-map", "0:a?"]
+    rate = ["-b:v", "2500k", "-maxrate", "2800k", "-bufsize", "5000k"]
+    for venc in (["-c:v", "h264_nvenc", "-preset", "p5", "-rc", "vbr"] + rate, ["-c:v", "libx264", "-preset", "veryfast"] + rate):
+        try:
+            run(base + venc + ["-c:a", "aac", "-b:a", "96k", "-ac", "2", "-movflags", "+faststart", str(out)], timeout=600)
+            break
+        except RuntimeError as err:
+            log(f"  long source: encoder {venc[1]} failed ({str(err)[-120:]})")
+    else:
+        raise RuntimeError("no encoder for the long-form source")
+    mb = round(out.stat().st_size / 1e6, 1)
+    pr = {k: v for k, v in row.items() if k not in ("source", "section")}
+    pr.update(cut=[round(a - s, 2), round(b - s, 2)], dur=round(e - s, 2),
+              peak=None if row.get("peak") is None else round(row["peak"] - s, 2), seg_from=round(s, 2), src_mb=mb)
+    log(f"  long-form source for the inbox: {e - s:.0f} s, {mb} MB")
+    return {"long_src": LONG_SEG, "long_mb": mb, "pool_row": pr}
 
 def collect(clip, force=False):
     """
@@ -3041,7 +3347,7 @@ def cmd_sber(a):
 # -----------------------------------------------------------------------------
 # live: chat explosion on a running GTA VI stream -> the last ~40 s from its live VOD -> short
 
-LAUGH_IRC = re.compile(r"KEKW|OMEGALUL|LUL|LMAO|ICANT|💀|😂|\bW\b|\?\?\?|HOLY|NO WAY|WTF", re.I)
+LAUGH_IRC = re.compile(r"KEKW|OMEGALUL|LUL|LMAO|ICANT|đź’€|đź‚|\bW\b|\?\?\?|HOLY|NO WAY|WTF", re.I)
 
 class ChatMeter:
     """
@@ -3087,7 +3393,7 @@ class ChatMeter:
                 with self.lock:
                     c = self.counts.setdefault(chan, {})
                     c[b5] = c.get(b5, 0) + w
-                    r = self.raw.setdefault(chan, {})       # plain message count (the "chat went N×" line)
+                    r = self.raw.setdefault(chan, {})       # plain message count (the "chat went NĂ—" line)
                     r[b5] = r.get(b5, 0) + 1
 
     def spike(self, chan, z_min, cool):
@@ -3126,7 +3432,7 @@ def vod_section(login, user_id, started_at, t_spike, before=32, after=6):
 
 def cmd_live(a):
     """
-    Launch conveyor belt (Aleš: be the fastest, clip it right away): every 2 min the biggest
+    Launch conveyor belt (AleĹˇ: be the fastest, clip it right away): every 2 min the biggest
     live English streams in the GTA VI category; their chats are watched live; a chat explosion
     -> ~70 s later (the live VOD lags about a minute) the window 32 s before .. 6 s after the
     spike is cut from the running stream (the payoff is often ~20 s before the chat reacts),
