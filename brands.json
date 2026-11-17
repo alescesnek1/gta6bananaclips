@@ -95,7 +95,7 @@
     "score_card": false,
     "music": [
       "assets/hudba/fanpage/*.mp3",
-      "assets/hudba/dalsi/*.mp3"
+      "assets/hudba/long/fanpage/*.mp3"
     ],
     "caption": {
       "font": "Anton",
