@@ -11,3 +11,4 @@ Závazná pravidla klipu:
 - **automatická kontrola (`qa_short`) před publikací:** délka, černé/zamrzlé snímky, ticho, true peak ≤ −1 dBTP, prvky přes titulky/obličej nebo dva najednou, hlasitý začátek hooku, karta/Heat na konci. Neprojde → znovu ve starém osvědčeném vzhledu; neprojde ani ten → nepublikuje se (důvod v `meta.json` → `qa`)
 - vodoznak streamera jen nenápadné `@kanál`, kredit a odkaz do popisku
 - po sobě uklízet testovací soubory
+- experimenty (`experimenty.py`, `docs/dva-ucty.md`): max 1 denně na účet ve vlastním slotu mimo kvótu, zapínají je data, vypínají čísla (Buffer metriky 48 h, < 60 % klasiky po 5 postech = vypnuto); každý úsek musí obstát jako klasický klip

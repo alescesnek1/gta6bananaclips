@@ -455,7 +455,40 @@ def caption_fanpage(m, service):
     tags = rnd.sample(FAN_HASHTAGS, 2)
     return "\n\n".join(x for x in (hook, q, chat, cta, src, " ".join(["#gta6", "#gta6clips"] + tags)) if x)
 
+# Experiments (experimenty.py, their own slot): one line about the format, every streamer credited.
+# SlopMonster lint 5/5 + Codex cleanse. {s} = the first streamer, {k} = how many.
+EXP_LINES = {
+    "multi_pov": ["Same moment, {k} streamers, {k} different endings. Which was best? 👇",
+                  "One spot in GTA 6, {k} streamers. Pick the run you'd copy 👇",
+                  "{k} streamers face the same moment. Which ending wins? 👇"],
+    "story": ["{s}'s stream in 3 moments. Which one was the peak? 👇",
+              "3 moments from {s}'s stream. Rate the night 1-5 🔥",
+              "How {s}'s GTA 6 stream went, in 3 clips 👇"],
+    "first": ["{s} found it first. Check the timestamps 🍌",
+              "{k} streamers found the same thing. {s} got there first 🍌",
+              "Same find, {k} streamers. Compare the timestamps 👇"],
+    "tier3": ["3 moments from today in one tier list 🍌 Agree with the rankings? 👇",
+              "Today's GTA 6 moments, ranked 🍌 Where would you put them? 👇",
+              "3 clips on one tier list. Would you move any of them? 👇"],
+}
+EXP_TITLES = {"multi_pov": "GTA 6: same moment, {k} streamers", "story": "GTA 6: {s}'s stream in 3 moments",
+              "first": "GTA 6: {s} found it first", "tier3": "GTA 6 moments of the day, ranked"}
+
+def caption_exp(m, service):
+    items = m.get("items") or []
+    s = (items[0]["channel"] if items else "they")
+    s = s[:1].upper() + s[1:]
+    hook = rot(EXP_LINES.get(m.get("concept"), ["GTA 6 👇"]), m, service).format(s=s, k=len(items))
+    credits = "\n".join(f"🎮 {home(x)}" for x in items)
+    if service in ("twitter", "threads"):
+        return f"{hook}\n\n{credits}\n\n#GTA6"
+    tags = ["#gta6", "#gta6bananaclips"] if ZNACKA == "bananas" else ["#gta6", "#gta6clips"]
+    return f"{hook}\n\n{credits}\n\n" + " ".join(tags + random.Random(f"{m['id']}:{service}").sample(
+        HASHTAGS if ZNACKA == "bananas" else FAN_HASHTAGS, 2))
+
 def caption(m, service):
+    if m.get("platform") == "exp":
+        return caption_exp(m, service)
     if ZNACKA == "fanpage" and m.get("platform") != "top3":
         return caption_fanpage(m, service)
     if m.get("platform") == "top3":                  # daily Top 3: credit every streamer
@@ -493,6 +526,10 @@ def youtube_title(m):
     """
     if m.get("platform") == "top3":
         return "Top 3 GTA 6 Moments Today 🍌 #shorts"
+    if m.get("platform") == "exp":
+        items = m.get("items") or [{"channel": "streamers"}]
+        t = EXP_TITLES.get(m.get("concept"), "GTA 6 moments").format(s=items[0]["channel"], k=len(items))
+        return t[:90] + " #shorts"
     t = (m.get("title") or "").strip()
     if len(t) < 12 or JUNK_RE.search(t) or sum(c.isalpha() for c in t) < len(t) / 2:
         t = (m.get("quote") or "").strip() or ("wild reaction" if ZNACKA == "fanpage" else "insane moment")
@@ -552,7 +589,7 @@ def budget_level():
 
 def used_today(day):
     """Posts of the quota today (the Top 3 is an extra, never counted)."""
-    return sum(in_day(rec, day) for k, rec in load_json(PUBLISHED, {}).items() if not k.startswith("top3_"))
+    return sum(in_day(rec, day) for k, rec in load_json(PUBLISHED, {}).items() if not k.startswith(("top3_", "exp_")))
 
 def extra_score(day, src_cfg):
     """Score a clip needs to go out OVER the obligatory quota: the brand's extra_ramp (launch week
@@ -727,10 +764,12 @@ def cmd_den(a):
                                   for c in chans))
             fake = {"id": "CHANNEL_ID", "service": "youtube"}
             print("   ", gql_value(post_input(fake, m, "https://media.example/clip.mp4", due, not a.ostre))[:400])
+        exp_post(a, day, now)                        # experiment of the day: plan only
         return
     if not picks:
         if not a.zkouska and load_json(CHANNELS, []):
             top3_only(a, day, now)                   # the day's quota is full: the Top 3 may still be due
+            exp_post(a, day, now)                    # experiment: own slot, outside the quota
         return
     load_env()
     need("NETLIFY_AUTH_TOKEN", "NETLIFY_SITE_ID", "MEDIA_BASE_URL")
@@ -799,12 +838,102 @@ def cmd_den(a):
         if slot_of.get(m["id"]):
             done[m["id"]]["slot"] = slot_of[m["id"]]
         save_json(PUBLISHED, done)
+    exp_post(a, day, now)                            # experiment: own slot, outside the quota, after the classics
     # make failures visible: a red run = an e-mail from GitHub
     if failed:
         print(f"::warning::Buffer: {failed} postu se nepovedlo, {ok} ok")
     if plan and not ok:
         print("::error::Buffer: nevysel ani jeden post (klic, Netlify nebo Buffer API)")
         sys.exit(1)
+
+# Experiments (experimenty.py, Aleš 17. 11.): max exp_max_per_day a day per brand (2 when a concept beats
+# the classics), their own slots between the classic ones, never in the quota, X/Threads caps kept.
+EXP_SLOTS = ["19:15", "22:15", "01:15"]       # UK evening, US east prime, US west after work
+
+def exp_slots(day):
+    """(base, due) of the experiment slots: due moves -10..+10 min (per day + brand), never :00 / :30."""
+    rnd = random.Random(f"{day}:{ZNACKA}:exp")
+    out = []
+    for s in EXP_SLOTS:
+        t = datetime.strptime(s, "%H:%M").time()
+        base = datetime.combine(day + timedelta(days=1 if t.hour < 12 else 0), t, TZ)
+        d = rnd.choice([x for x in range(-10, 11) if (base + timedelta(minutes=x)).minute not in (0, 30)])
+        out.append((base, base + timedelta(minutes=d)))
+    return out
+
+def exp_post(a, day, now):
+    """Post today's rendered experiment (out/_exp/<brand>/) in a free experiment slot. Never raises."""
+    try:
+        import experimenty as E
+        ready = E.waiting(ZNACKA, day)
+        if a.zkouska:
+            for line in E.preview(ZNACKA, day):
+                log(line)
+        if not ready:
+            return
+        if budget_level():
+            print(f"::warning::Netlify: ~{month_gb():.0f} GB this month, experiment {ready[0]['concept']} paused")
+            return
+        done = load_json(PUBLISHED, {})
+        m = ready[0]
+        n_today = sum(1 for k, rec in done.items() if k.startswith("exp_") and in_day(rec, day))
+        if n_today >= E.per_day(ZNACKA, m["concept"]) or not E.enabled(ZNACKA, m["concept"]):
+            return                                     # limit reached, or switched off since it was rendered
+        game = load_json(HERE / "sources.json", {}).get("game", "Grand Theft Auto VI|GTA ?VI|GTA ?6")
+        if not re.search(game, m.get("category") or "", re.I):
+            log(f"exp: not published (category '{m.get('category')}' is not {game})")
+            return
+        taken = {rec.get("slot") for k, rec in done.items() if k.startswith("exp_")}
+        free = [(b, t) for b, t in exp_slots(day) if t > now + timedelta(minutes=20) and b.isoformat() not in taken]
+        if not free:
+            log("exp: no experiment slot left today")
+            return
+        base, due = free[0]
+        chans = load_json(CHANNELS, [])
+        log(f"exp {m['concept']} ({', '.join(x['channel'] for x in m['items'])}) -> {due:%H:%M}"
+            f" x {len(chans)} channels{' (ZKOUSKA)' if a.zkouska else ''}")
+        if a.zkouska:
+            fake = {"id": "CHANNEL_ID", "service": "youtube"}
+            print("   ", gql_value(post_input(fake, m, "https://media.example/exp.mp4", due, not a.ostre))[:400])
+            return
+        load_env()
+        if not (brand_keys() and chans and os.environ.get("NETLIFY_AUTH_TOKEN")):
+            return
+        rel = f"{day:%Y%m%d}/{safe_name(m['id'])}.mp4"
+        url = f"{inbox_deploy({rel: Path(m['file'])}, b'[]', MEDIA_TITLE)}/{rel}"
+        if not is_public(url):
+            print("::warning::exp: not reachable after deploy")
+            return
+        caps = load_json(HERE / "sources.json", {}).get("caps") or {}
+        svc = {c["id"]: c["service"].lower() for c in chans}
+        used = {}
+        for rec in done.values():                      # X / Threads: the day's cap counts every post
+            if in_day(rec, day):
+                for cid in rec.get("posts") or {}:
+                    used[svc.get(cid)] = used.get(svc.get(cid), 0) + 1
+        m["_seq"] = len(done)
+        posts = {}
+        for ch in chans:
+            service = ch["service"].lower()
+            if used.get(service, 0) >= caps.get(service, 99):
+                log(f"  exp {service}: daily cap reached, skipped")
+                continue
+            try:
+                posts[ch["id"]] = create_post(post_input(ch, m, url, net_due(due, day, service), not a.ostre),
+                                              ch.get("key", "BUFFER_API_KEY"))
+                log(f"  exp {service}: ok")
+            except Exception as e:
+                log(f"  exp {service}: FAILED {e}")
+        if not posts:                                  # nothing went out: stays pending, the next run retries
+            print("::warning::exp: no Buffer post succeeded")
+            return
+        done = load_json(PUBLISHED, {})
+        done[m["id"]] = {"url": url, "path": rel, "due": due.isoformat(), "slot": base.isoformat(), "draft": not a.ostre,
+                         "posts": posts, "mb": round(Path(m["file"]).stat().st_size / 1e6, 1), "channel": "exp",
+                         "platform": "exp", "concept": m["concept"], "items": [x["id"] for x in m["items"]]}
+        save_json(PUBLISHED, done)
+    except Exception as e:                            # an experiment never costs a classic post
+        print(f"::warning::exp: {str(e)[-200:]}")
 
 TOP3_FONT = HERE / "fonts" / "cap" / "montserrat-900.ttf"
 
@@ -850,7 +979,7 @@ def make_top3(day, done, plan, stage):
         return None
     items = []                                       # (score, meta-ish, local file or url, due)
     for k, rec in done.items():
-        if (not k.startswith("top3_") and in_day(rec, day) and rec.get("url") and rec.get("channel")
+        if (not k.startswith(("top3_", "exp_")) and in_day(rec, day) and rec.get("url") and rec.get("channel")
                 and rec.get("platform") != "youtube"):
             items.append((rec.get("score") or 0, {"channel": rec.get("channel") or "?", "platform": rec.get("platform")},
                           rec["url"], datetime.fromisoformat(rec["due"])))

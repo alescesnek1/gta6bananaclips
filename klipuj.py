@@ -1800,7 +1800,8 @@ def qa_short(path, plan):
         probs.append(f"true peak {tp:.1f} dBTP (> -1)")
     els = plan.get("elements") or []
     for i, (t0, t1, name, box) in enumerate(els):
-        if box[1] < plan["face_bottom"]:
+        # a full-frame end card after the story (experiments' tier board) may cover the face band
+        if box[1] < plan["face_bottom"] and t0 < plan["main_end"] - 0.05:
             probs.append(f"{name} over the face band")
         # (the score card is the approved full-frame end card; the last caption may fade under it)
         if (name != "score card" and any(t0 < e1 and e0 < t1 for e0, e1 in plan.get("cap_times") or [])

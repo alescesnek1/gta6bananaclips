@@ -76,7 +76,11 @@
     "golden10": true,
     "league": true,
     "league_chip": true,
-    "qa": true
+    "qa": true,
+    "_exp": "Experimenty (experimenty.py, docs/dva-ucty.md): max exp_max_per_day denne navic ke kvote, zapina je az data (dost silneho materialu), meri se 48 h po vydani; koncept pod 60 % klasiky po 5 postech se sam vypne (experimenty.json), nad 100 % smi 2x denne. false = vypnuto hned.",
+    "exp_first": true,
+    "exp_tier3": true,
+    "exp_max_per_day": 1
   },
   "fanpage": {
     "name": "gta6fanpageclip",
@@ -155,6 +159,10 @@
     "hook_v2": true,
     "model_sticker": true,
     "heat": true,
-    "qa": true
+    "qa": true,
+    "_exp": "Experimenty (experimenty.py, docs/dva-ucty.md): max exp_max_per_day denne navic ke kvote, zapina je az data (dost silneho materialu), meri se 48 h po vydani; koncept pod 60 % klasiky po 5 postech se sam vypne (experimenty.json), nad 100 % smi 2x denne. false = vypnuto hned.",
+    "exp_multi_pov": true,
+    "exp_story": true,
+    "exp_max_per_day": 1
   }
 }

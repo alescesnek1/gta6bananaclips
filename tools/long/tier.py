@@ -57,10 +57,16 @@ LAND = 0.55                                   # s: the thumbnail touches its slo
 def geometry(size=(1920, 1080)):
     """Board rectangle and row metrics for a frame size (all in px)."""
     w, h = size
+    if h > w:                                 # 9:16 board (experiment short): rows in the middle 56 %, clear of
+        k = w / 1080                          # the app's top bar and caption area, 3 big thumbs per row
+        mx, top, gap = round(48 * k), round(h * 0.22), max(2, round(4 * k))
+        row_h = int((round(h * 0.56) - gap * (len(TIERS) - 1)) / len(TIERS))
+        return {"w": w, "h": h, "k": k, "mx": mx, "top": top, "gap": gap, "row_h": row_h, "per_row": 3,
+                "items_x": mx + row_h + gap, "items_w": w - mx - (mx + row_h + gap)}
     k = h / 1080
     mx, top, gap = round(70 * k), round(72 * k), max(2, round(4 * k))
     row_h = int((h - top - round(52 * k) - gap * (len(TIERS) - 1)) / len(TIERS))
-    return {"w": w, "h": h, "k": k, "mx": mx, "top": top, "gap": gap, "row_h": row_h,
+    return {"w": w, "h": h, "k": k, "mx": mx, "top": top, "gap": gap, "row_h": row_h, "per_row": PER_ROW,
             "items_x": mx + row_h + gap, "items_w": w - mx - (mx + row_h + gap)}
 
 
@@ -76,7 +82,7 @@ def slots(entries, size=(1920, 1080), cap=None):
     count = {t: sum(1 for e in entries if e["tier"] == t) for t in TIERS}
     for e in entries:
         t = e["tier"]
-        n = max(PER_ROW, count[t], (cap or {}).get(t, 0))
+        n = max(g["per_row"], count[t], (cap or {}).get(t, 0))
         side = min(g["row_h"], g["items_w"] // n)
         y = g["top"] + TIERS.index(t) * (g["row_h"] + g["gap"]) + (g["row_h"] - side) // 2
         out.append((g["items_x"] + seen[t] * side, y, side))
