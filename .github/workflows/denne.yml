@@ -119,11 +119,11 @@ jobs:
         run: |
           n="${{ inputs.max }}"
           if [ -z "$n" ]; then
-            # the render makes a version for each brand, so render as many as the hungrier brand still needs
+            # each clip goes to ONE brand (alternating; very viral ones to both): render what both still need
             a=$(python publikuj.py zbyva --znacka bananas 2>/dev/null || python publikuj.py zbyva)
             b=$(python publikuj.py zbyva --znacka fanpage 2>/dev/null || echo 0)
             echo "quota left: bananas $a, fanpage $b"
-            n=$(( a > b ? a : b ))
+            n=$(( a + b ))
           fi
           echo "quota left today: $n"
           yt="${{ inputs.yt }}"
@@ -139,7 +139,7 @@ jobs:
         run: python publikuj.py den --den dnes --n 10 ${{ vars.OSTRE == '1' && '--ostre' || '' }}
 
       - name: publish to Buffer, fanpage account
-        if: (inputs.url == '' || inputs.publikovat == 'ano') && env.BUFFER_API_KEY_3 != '' && env.NETLIFY_AUTH_TOKEN != ''
+        if: (inputs.url == '' || inputs.publikovat == 'ano') && env.BUFFER_API_KEY_3 != '' && env.NETLIFY_AUTH_TOKEN != '' && hashFiles('buffer_fanpage.json') != ''
         run: python publikuj.py den --den dnes --n 10 --znacka fanpage ${{ vars.OSTRE == '1' && '--ostre' || '' }}
 
       - name: keep the shorts for 3 days (download from the run page)
