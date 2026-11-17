@@ -293,6 +293,10 @@ def candidates():
     for m in local + [m for m in inbox_items() if m.get("id") not in seen]:
         if not m or m.get("id") in done or not (m.get("remote") or Path(m.get("short", "")).exists()):
             continue
+        if (m.get("platform") == "youtube" and date.today() >= date.fromisoformat(
+                (load_json(HERE / "sources.json", {}).get("youtube_prelaunch") or {}).get("until", "2026-11-19"))
+                and re.search(r"trailer|extended look|showcase", m.get("title") or "", re.I)):
+            continue                                 # from the launch on: gameplay, no trailer reactions
         if not m.get("cam") and m.get("layout") != "game":   # no facecam only for viral-potential clips (render decides)
             continue
         if not re.search(game, m.get("category") or "", re.I):

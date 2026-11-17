@@ -386,13 +386,23 @@ def pick_windows(cands, dur, k, clip_len=YT_CLIP, skip_start=15):
             break
     return [(max(0.0, t - clip_len / 2), min(dur, t + clip_len / 2), s) for t, s in out]
 
+def launched():
+    """After the launch (sources.json youtube_prelaunch.until = 2026-11-19): gameplay only."""
+    until = (load_json(SOURCES, {}).get("youtube_prelaunch") or {}).get("until", "2026-11-19")
+    return datetime.now().date() >= date.fromisoformat(until)
+
+def exclude_re():
+    """Titles we never take; from the launch on also trailers and their reactions (Aleš 17. 11.)."""
+    bad = load_json(SOURCES, {}).get("exclude_titles") or ""
+    return bad + ("|trailer|extended look|showcase" if launched() else "")
+
 def video_moments(url, info, per_video, label):
     """One YouTube video (full yt-dlp info) -> clip dicts of its audience-marked moments."""
     vid, dur = info["id"], float(info.get("duration") or 0)
     about = " ".join([info.get("title") or ""] + (info.get("tags") or []))
     if dur < 60 or not re.search(game_re(), about, re.I):
         return []                                         # Shorts, or not a GTA 6 video
-    bad = load_json(SOURCES, {}).get("exclude_titles")
+    bad = exclude_re()
     if bad and re.search(bad, info.get("title") or "", re.I):
         log(f"  {label}: {vid} skipped (fake/leak/concept title)")
         return []                                         # fan-made, AI or leaked "GTA 6" would mislead viewers
@@ -1826,7 +1836,8 @@ def cmd_batch(a):
             yt += [c for r in ex.map(chan, handles) for c in r if not skip(c["id"])]
         try:
             seen = {c["id"].split("_")[1] for c in yt}
-            yt += [c for c in youtube_search_clips(src.get("youtube_search", []), max(a.days, 2), a.per_video,
+            queries = [q for q in src.get("youtube_search", []) if not (launched() and "trailer" in q.lower())]
+            yt += [c for c in youtube_search_clips(queries, max(a.days, 2), a.per_video,
                                                    src.get("youtube_min_followers", 300000), seen)
                    if not skip(c["id"]) and c["channel"] not in blocked]
         except Exception as e:
