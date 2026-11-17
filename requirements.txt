@@ -4,3 +4,4 @@ onnxruntime>=1.20
 openai-whisper  # install torch first with CUDA: pip install torch --index-url https://download.pytorch.org/whl/cu128
 # faster-whisper NEjde: Smart App Control blokuje ctranslate2.dll (WinError 4551)
 tzdata  # Europe/Prague on Windows
+pillow  # sprites: model stickers, Heat badge, Banana League table

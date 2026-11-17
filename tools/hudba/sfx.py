@@ -7,6 +7,7 @@ sfx.py - our own transition sound (no samples, no licences).
 little air), for the hook -> start-of-clip white flash. The impact lands at 0.45 s.
 'riser': 1.2 s of quiet tension before the payoff - filtered noise opening up + a tone gliding up.
 'hit': a short deep thump exactly on the payoff (starts at 0 s).
+'whip': a short fast air swish for the fanpage hook's hard cut (the cut lands at 0.12 s).
 """
 import wave
 from pathlib import Path
@@ -61,6 +62,18 @@ def hit():
     out[: int(SR * 0.002)] *= np.linspace(0, 1, int(SR * 0.002))
     return out / np.abs(out).max() * 0.85
 
+def whip():
+    rnd = np.random.default_rng(41)
+    n = int(SR * 0.3)
+    t = np.arange(n) / SR
+    noise = rnd.normal(0, 1, n)
+    k = np.clip(t / 0.12, 0, 1)                                           # brighter towards the cut
+    air = (1 - k) * lowpass(noise, 30) + k * lowpass(noise, 4)
+    env = np.where(t < 0.12, (t / 0.12) ** 2, np.exp(-(t - 0.12) / 0.05))
+    out = air * env
+    out[: int(SR * 0.004)] *= np.linspace(0, 1, int(SR * 0.004))
+    return out / np.abs(out).max() * 0.6
+
 def save(name, x):
     pcm = (x * 32767).astype(np.int16)
     with wave.open(str(DEST / name), "wb") as w:
@@ -75,6 +88,7 @@ def main():
     save("flash.wav", flash())
     save("riser.wav", riser())
     save("hit.wav", hit())
+    save("whip.wav", whip())
 
 if __name__ == "__main__":
     main()
