@@ -62,7 +62,7 @@ WHISPER_DIR = HERE / "models" / "whisper"
 # open fonts shipped in the repo, so Windows and the Linux runner render the same
 CAP_FONTS = HERE / "fonts" / "cap"                 # libass looks here for the caption font
 CAP_FONT = "Montserrat Black"                      # family name inside fonts/cap/montserrat-900.ttf
-CAP_SIZE = 130                                     # big captions (AleĹˇ 13.+14. 11.: "mnohem vÄ›tĹˇĂ­", "vÄ›tĹˇĂ­")
+CAP_SIZE = 130                                     # big captions (Aleš 13.+14. 11.: "mnohem větší", "větší")
 CAP_CHARS = 11                                     # max letters on a line at that size (2 words max)
 WM_FONT_FILE = HERE / "fonts" / "montserrat-600.ttf"  # watermarks
 
@@ -296,7 +296,7 @@ def list_kick(channel, limit=100):
 # No audience signal -> the video is skipped. Each candidate is (centre of the clip, score 0..1).
 
 TS_RE = re.compile(r"(?<![\d:])(?:(\d{1,2}):)?(\d{1,2}):(\d{2})(?![\d:])")
-LAUGH_RE = re.compile(r"lmao|lmfao|\blol\b|kekw|omegalul|icant|đź’€|đź‚|đź¤Ł|no way|\bw\b|\?\?\?|holy", re.I)
+LAUGH_RE = re.compile(r"lmao|lmfao|\blol\b|kekw|omegalul|icant|💀|😂|🤣|no way|\bw\b|\?\?\?|holy", re.I)
 
 def norm(cands):
     m = max((s for _, s in cands), default=0)
@@ -395,7 +395,7 @@ def launched():
     return datetime.now().date() >= date.fromisoformat(until)
 
 def exclude_re():
-    """Titles we never take; from the launch on also trailers and their reactions (AleĹˇ 17. 11.)."""
+    """Titles we never take; from the launch on also trailers and their reactions (Aleš 17. 11.)."""
     bad = load_json(SOURCES, {}).get("exclude_titles") or ""
     return bad + ("|trailer|extended look|showcase" if launched() else "")
 
@@ -748,7 +748,7 @@ def pick_quote(words, peak=None):
 
 def quality_check(short, cam, cam_h=CAM_H, until=None):
     """
-    Last gate before anything can be published (AleĹˇ: no cut faces, no black bars, no errors):
+    Last gate before anything can be published (Aleš: no cut faces, no black bars, no errors):
       - black bars: full-width rows that are pure black on most frames
       - facecam band: a whole face (not touching the band edges) on at least half the frames
     """
@@ -1059,7 +1059,7 @@ def transcribe(src):
     audio = whisper.load_audio(str(src))              # 16 kHz mono, for the singing check
     words, dropped = [], 0
     for seg in res["segments"]:
-        # captions = what the STREAMER says (AleĹˇ: they were lyrics of the in-game radio):
+        # captions = what the STREAMER says (Aleš: they were lyrics of the in-game radio):
         # drop segments Whisper itself doubts, repetitive ones (choruses) and sung ones
         sung = singing(audio[int(seg["start"] * 16000): int(seg["end"] * 16000)])
         if (seg.get("no_speech_prob", 0) > 0.5 or seg.get("avg_logprob", 0) < -0.9
@@ -1120,7 +1120,7 @@ def cap_font(cap):
     key = name.lower().split()[0]
     return name if any(p.stem.lower().startswith(key) for p in fdir.glob("*.[ot]tf")) else CAP_FONT
 
-# caption colour by the emotion of the word (HPC frame, AleĹˇ 17. 11., both accounts)
+# caption colour by the emotion of the word (HPC frame, Aleš 17. 11., both accounts)
 EMO_WIN = ["lol", "lmao", "lmfao", "let's go", "lets go", "w", "yes", "gg", "clutch", "easy"]
 EMO_DRAMA = ["what", "no", "wtf", "dead", "died", "run", "help", "oh my god", "fuck", "fucking", "shit"]
 EMO_COL = {"win": "39FF88", "drama": "FF3B3B"}
@@ -1147,7 +1147,7 @@ def word_emotions(words):
     return out
 
 def mask_swears(words, until=1e9):
-    """Hard swears anywhere in the short (AleĹˇ 17. 11.): caption F***, and their times to BLEEP."""
+    """Hard swears anywhere in the short (Aleš 17. 11.): caption F***, and their times to BLEEP."""
     out, mute = [], []
     for s0, e0, t in words:
         core = _tok(t)
@@ -1177,14 +1177,14 @@ def captions_ass(words, path, y, cap=None, per=2, anim="pop"):
         "[V4+ Styles]\nFormat: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, "
         "BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, "
         "Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding\n"
-        # bananas: thin outline + a soft drop shadow (AleĹˇ: no thick outlined captions)
+        # bananas: thin outline + a soft drop shadow (Aleš: no thick outlined captions)
         f"Style: Cap,{font},{size},&H00{col},&H00{col},&H00000000,&H64000000,0,0,0,0,100,100,1,0,1,"
         f"{cap.get('outline', 4)},{cap.get('shadow', 4)},5,40,40,0,1\n\n"
         "[Events]\nFormat: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\n"
     )
     up = cap.get("upper", True)
     clean = lambda s: (lambda x: x.upper() if up else x)(s.replace("\\", "").replace("{", "(").replace("}", ")"))
-    emo = [None] * len(words)                          # emotion colours off (AleĹˇ 17. 11.): one steady highlight
+    emo = [None] * len(words)                          # emotion colours off (Aleš 17. 11.): one steady highlight
     ecol = lambda k, default: ass_col(EMO_COL[k]) if k else default
     chunks, cur = [], []
     for wi, wd in enumerate(words):       # break on 2 words / `chars` letters, a pause, or sentence end
@@ -1228,7 +1228,7 @@ def captions_ass(words, path, y, cap=None, per=2, anim="pop"):
 GRADE = "eq=contrast=1.06:brightness=0.02:saturation=1.3"   # edit look: punchier colours in the game band
 
 # fanpage night-drive look on top of its brands.json grade: teal shadows, orange highlights,
-# more contrast and a soft vignette (AleĹˇ 17. 11.: "teasing, sexy, vrrr", a sleek edit)
+# more contrast and a soft vignette (Aleš 17. 11.: "teasing, sexy, vrrr", a sleek edit)
 FAN_LOOK = "colorbalance=rs=-0.07:gs=0.0:bs=0.09:rh=0.09:gh=0.02:bh=-0.08,eq=contrast=1.08,vignette=angle=PI/5"
 
 # the original account; used as is when brands.json is missing (then every clip is only 'bananas')
@@ -1316,7 +1316,7 @@ def build_filter(cam, cmds_file, x0, crop_w, game_h, crop_h=SH, y0=0, ass_file=N
     """
     flash = ""
     if hook and hook[0] == "flash" and hook[1] > 0:
-        # slow flash (AleĹˇ: the first was far too fast): fade to white over 0.35 s, hold 0.1 s, back over 0.4 s
+        # slow flash (Aleš: the first was far too fast): fade to white over 0.35 s, hold 0.1 s, back over 0.4 s
         T = hook[1]
         t0, t1 = T - 0.35, T + 0.1
         flash = (f",eq=eval=frame:brightness='0.85*if(lt(t\\,{T:.3f})\\,clip((t-{t0:.3f})/0.35\\,0\\,1)"
@@ -1410,7 +1410,7 @@ TRIGGERS = [                        # what was said -> fitting reactions (only t
     (r"\b(bruh|why|cringe|dude)\b", ["facepalm", "sideeye", "shrug"]),
 ]
 LOUD = ["shock", "mindblown", "laugh", "hype", "scared"]    # payoff without a trigger word
-# the banana's one-line comment next to it (AleĹˇ 15. 11.: banana as a commentator, our own layer)
+# the banana's one-line comment next to it (Aleš 15. 11.: banana as a commentator, our own layer)
 PHRASES = {
     "laugh": ["LMAOOO", "I'M DEAD", "HAHAHA"], "crylaugh": ["I'M CRYING", "STOPPP", "NOT AGAIN"],
     "shock": ["NO WAY", "WAIT WHAT", "HOLD ON"], "mindblown": ["WHAT?!", "HOW?!", "GTA 6 IS INSANE"],
@@ -1497,9 +1497,9 @@ def music_cfg(seed, total, music=None):
 
 def audio_mix(clip_audio, total, card_idx=None, card_at=0.0, music_idx=None, music_vol=0.4, sfx_idx=None, sfx_at=0.0,
               replay=None, mute=(), riser_idx=None, hit_idx=None, peak=None,
-              clip_end=None, outro_idx=None, follow_idx=None, follow_at=0.0, extras=()):
+              clip_end=None, outro_idx=None, follow_idx=None, follow_at=0.0, extras=(), hook_gain=None):
     """
-    The short's sound: the clip's own audio + our music at one steady level (AleĹˇ: always the
+    The short's sound: the clip's own audio + our music at one steady level (Aleš: always the
     same volume) + the score card's landing 'tups' + the hook flash whoosh (sfx, at sfx_at s).
     A limiter keeps the sum from clipping. replay = (main_end, r0, r1): the clip's sound ends at
     main_end, then r0..r1 again slowed to 0.6x (atempo) and quieter, under the music.
@@ -1516,6 +1516,8 @@ def audio_mix(clip_audio, total, card_idx=None, card_at=0.0, music_idx=None, mus
         fmt0 = fmt + ",volume=0:enable='" + "+".join(f"between(t\\,{a:.2f}\\,{b:.2f})" for a, b in mute) + "'"
     else:
         fmt0 = fmt
+    if hook_gain:                               # (hook end s, dB): the teaser no louder than HOOK_MAX_LU over the clip
+        fmt0 += f",volume={hook_gain[1]:.1f}dB:enable='lt(t\\,{hook_gain[0]:.2f})'"
     if clip_audio and replay:
         m_end, r0, r1 = replay
         f += (f";[0:a]{fmt0},asplit[ram][rar];[ram]atrim=0:{m_end:.3f},asetpts=PTS-STARTPTS[ram1];"
@@ -1563,6 +1565,32 @@ def audio_mix(clip_audio, total, card_idx=None, card_at=0.0, music_idx=None, mus
     f += f";{''.join(parts)}amix=inputs={len(parts)}:duration=longest:normalize=0,atrim=0:{total:.3f},alimiter=limit=0.7:level=0:attack=2:release=40[aud]"
     return f
 
+HOOK_MAX_LU = 4.0        # the hook teaser (the payoff's scream) may be this much louder than the clip, not more
+_hook_lvl = {}
+
+def hook_level(src, hook_t, end):
+    """
+    (hook_t, gain dB) when the teaser [0, hook_t] is more than HOOK_MAX_LU louder than the clip
+    [hook_t, end] (power mean): the whole short is -14 LUFS, but a quiet stream with one scream
+    would otherwise jump from loud hook to quiet clip (Aleš: same level everywhere). Else None.
+    """
+    key = (str(src), round(hook_t, 2), round(end, 2))
+    if key in _hook_lvl:
+        return _hook_lvl[key]
+    res = None
+    if hook_t >= 0.5 and end - hook_t >= 3:
+        raw = subprocess.run(["ffmpeg", "-nostdin", "-v", "error", "-t", f"{end:.3f}", "-i", str(src), "-vn", "-ac", "1",
+                              "-ar", "8000", "-f", "s16le", "-"], capture_output=True, timeout=300).stdout
+        x = np.frombuffer(raw, np.int16).astype(np.float64) / 32768
+        k = int(hook_t * 8000)
+        if x.size > k + 8000:
+            db = lambda a: 10 * math.log10(max(float((a * a).mean()), 1e-9))
+            diff = db(x[:k]) - db(x[k:])
+            if diff > HOOK_MAX_LU:
+                res = (hook_t, -min(diff - HOOK_MAX_LU, 10.0))
+    _hook_lvl[key] = res
+    return res
+
 def card_overlay(f, idx, at, pad, tag="", fade_out=None):
     """
     The banana score card starts where the clip's story ends (`at`, after the payoff, never
@@ -1593,8 +1621,8 @@ def outro_append(f, idx, at):
 # launch layer (17. 11., before GTA 6 on 19. 11.): HOOK v2, the fanpage model's reaction
 # stickers, HEAT 1-5 (fanpage), the golden 10/10 (bananas) and an automatic QA of every short.
 # Each sits behind a brands.json flag (hook_v2, model_sticker, heat, golden10, qa) and can be
-# switched off without touching the code. Restraint (AleĹˇ 17. 11.: "nepĹ™eplĂˇcat, struktura
-# musĂ­ bĂ˝t bezchybnĂˇ"): hook -> progression -> climax (+ one sticker on the payoff) -> >= 3 s
+# switched off without touching the code. Restraint (Aleš 17. 11.: "nepřeplácat, struktura
+# musí být bezchybná"): hook -> progression -> climax (+ one sticker on the payoff) -> >= 3 s
 # after it -> score card (bananas) / Heat then the outro (fanpage). At most ONE extra element
 # on screen at a time, never over the face, the payoff action or the captions. A short that
 # fails QA is re-rendered in the proven old look; if even that fails it is not published.
@@ -1652,6 +1680,35 @@ MODEL_KINDS = [
     (r"\b(fuck(ing)?|shit|bruh|why|are you serious)\b", ["eyeroll", "smirk"]),
     (r"\b(let'?s go|yes+|clutch|easy|gg|w)\b", ["wink", "smirk"]),
 ]
+
+# the model's reaction is a short VIDEO (Aleš 17. 11.: "not photos, short videos like the banana, face
+# and belly visible"): assets/model_reakce/<kind>.webm, VP9 with alpha, 1.8 s, 618x1100, played whole
+# in the banana's place and size. Picked by the moment's tag; the PNG still is only a fallback.
+MODEL_DUR = 1.8
+MODEL_BY_TAG = [("funny", ["laugh"]), ("crash", ["shocked", "omg"]), ("chase", ["shocked", "omg"]),
+                ("glitch", ["eyeroll"]), ("wow", ["gasp"])]
+MODEL_ELSE = ["wink", "smirk"]
+
+def model_kinds(tags):
+    """Reaction kinds for a moment's tags (moment_tags order = strongest first)."""
+    for t in tags or []:
+        for tag, kinds in MODEL_BY_TAG:
+            if t == tag:
+                return kinds
+    return MODEL_ELSE
+
+def model_reaction(kinds, seed, avoid=()):
+    """(kind, file): the reaction video of one of `kinds` (not in avoid), else its PNG; None if nothing."""
+    rnd = random.Random(seed)
+    for pool in (kinds, [k for k in kinds + MODEL_ELSE + ["gasp", "omg", "shocked"] if k not in kinds]):
+        opts = [k for k in pool if k not in avoid]
+        rnd.shuffle(opts)
+        for k in opts:
+            for ext in (".webm", ".png"):
+                f = MODEL_DIR / f"{k}{ext}"
+                if f.is_file():
+                    return k, f
+    return None
 
 def model_stills():
     """The model's keyed reaction stills (transparent PNG); none -> no stickers, silently."""
@@ -1822,10 +1879,13 @@ def chip_frames(text, out_dir, dur):
     return str(out_dir / "%03d.png"), (W - cw) // 2, CHIP_Y - (ch - h) // 2
 
 def sprite_inputs(sprites):
-    """ffmpeg inputs of the sprite sequences (PNG frames with alpha)."""
+    """ffmpeg inputs of the sprites: PNG frame sequences with alpha, or a VP9+alpha .webm (t0, path, x, y, dur, w, h)."""
     args = []
-    for t0, pattern, x, y in sprites:
-        args += ["-framerate", str(FPS), "-i", pattern]
+    for t0, pattern, x, y, *rest in sprites:
+        if str(pattern).endswith(".webm"):              # the model's reaction video: libvpx keeps the alpha
+            args += ["-c:v", "libvpx-vp9", "-t", f"{rest[0]:.3f}", "-i", str(pattern)]
+        else:
+            args += ["-framerate", str(FPS), "-i", pattern]
     return args
 
 def sprite_overlay(f, sprites, base):
@@ -1834,8 +1894,9 @@ def sprite_overlay(f, sprites, base):
         return f
     f = f[: -len("[v]")] + "[s_in]"
     prev = "s_in"
-    for i, (t0, pattern, x, y) in enumerate(sprites):
-        f += (f";[{base + i}:v]format=rgba,setpts=PTS-STARTPTS+{t0:.3f}/TB[sp{i}];"
+    for i, (t0, pattern, x, y, *rest) in enumerate(sprites):
+        size = f"scale={rest[1]}:{rest[2]}:flags=lanczos," if len(rest) >= 3 else ""
+        f += (f";[{base + i}:v]{size}format=rgba,setpts=PTS-STARTPTS+{t0:.3f}/TB[sp{i}];"
               f"[{prev}][sp{i}]overlay={x}:{y}:eof_action=pass[so{i}]")
         prev = f"so{i}"
     return f + f";[{prev}]null[v]"
@@ -1921,7 +1982,7 @@ def loudness_fix(path):
     os.replace(tmp, path)
     return float(js["input_i"]), LUFS_TARGET
 
-# Boredom gate (AleĹˇ 17. 11.: no clip where nothing happens, every short must hook). Conservative on
+# Boredom gate (Aleš 17. 11.: no clip where nothing happens, every short must hook). Conservative on
 # purpose: it only drops what is clearly flat - the payoff no louder and no busier than the rest of the
 # clip and nobody reacting - or a dead stretch the jump cuts left (quiet AND still for > 2.5 s).
 BORE_LOUD_DB = 6.0       # payoff 0.6 s loudness over the clip's median, dB
@@ -2005,7 +2066,7 @@ def boxes_hit(a, b):
 
 def qa_short(path, plan):
     """
-    Automatic QA of a finished short (AleĹˇ 17. 11.: no room for mistakes). Returns problems:
+    Automatic QA of a finished short (Aleš 17. 11.: no room for mistakes). Returns problems:
       - duration as planned and in 6..95 s
       - no black / frozen stretch before the end card or outro (intentional ones are after it)
       - sound: not silent (integrated > -35 LUFS), -14 LUFS +- 2, true peak <= -1 dBTP
@@ -2067,7 +2128,7 @@ def qa_short(path, plan):
 
 def extras_ass(path, reactions, rating, dur, cam, seed):
     """
-    Our own layer on top of the captions (AleĹˇ 15. 11.): a short speech bubble next to every
+    Our own layer on top of the captions (Aleš 15. 11.): a short speech bubble next to every
     banana reaction, and the banana's score for the clip in the last 1.6 s.
     """
     rnd = random.Random(seed)
@@ -2076,7 +2137,7 @@ def extras_ass(path, reactions, rating, dur, cam, seed):
              f"Style: Rate,{CAP_FONT},76,&H0035E1FF,&H0035E1FF,&H00000000,&H64000000,0,0,0,0,100,100,1,0,1,0,5,5,0,0,0,1\n")
     txt = path.read_text(encoding="utf-8").replace("\n\n[Events]", "\n" + style.rstrip("\n") + "\n\n[Events]", 1)
     lines = []
-    for t, name in []:                                  # bubble off (AleĹˇ 15. 11.: the banana says nothing)
+    for t, name in []:                                  # bubble off (Aleš 15. 11.: the banana says nothing)
         e = t + (REACTIONS[name][2] - REACTIONS[name][1])
         lines.append(f"Dialogue: 1,{ass_time(t + 0.1)},{ass_time(e)},Bub,,0,0,0,,"
                      f"{{\\pos({BANANA_X + BANANA_W + 6},{y0 + 110})\\fscx70\\fscy70\\t(0,120,\\fscx100\\fscy100)}}"
@@ -2198,7 +2259,7 @@ def audio_peak(src):
     c = np.concatenate([[0.0], np.cumsum(a * a)])
     rms = np.sqrt((c[4000:] - c[:-4000]) / 4000)[::800]          # 0.5 s windows, every 0.1 s
     t = np.arange(len(rms)) * 0.1 + 0.25
-    # AleĹˇ: the hook must be the real payoff (e.g. flying out of the car + his line), not just the
+    # Aleš: the hook must be the real payoff (e.g. flying out of the car + his line), not just the
     # loudest second -> loudness + how much the picture changes, weighted towards the clip's end
     mot, prev = np.zeros_like(rms), None
     for tt, img in frames(src, 5, 160, 90):
@@ -2228,7 +2289,7 @@ def trim_points(words, peak, dur, hi=35.0, lo=8.0):
     if peak is not None and not (peak < dur / 3 and talk_after):   # a shout early on is not the payoff
         end_sent = next((w[1] for w in words if w[0] >= peak - 0.5 and w[2][-1:] in ".?!"), None)
         end_word = next((w[1] for w in words if w[1] >= peak + 2.5), None)       # no punctuation: end of a word
-        # AleĹˇ 17. 11.: after the climax leave a few seconds - the reaction and the sentence that is
+        # Aleš 17. 11.: after the climax leave a few seconds - the reaction and the sentence that is
         # running finish, never cut mid-sentence (the xQc test ended just barely)
         end = end_sent if end_sent and end_sent <= peak + 6 else (end_word if end_word and end_word <= peak + 6 else peak + 3.0)
         b = min(dur, max(end + 0.5, peak + 3.0))
@@ -2258,7 +2319,7 @@ def rms_curve(src):
 def dead_air(words, src, a, b, peak):
     """
     Pieces of [a, b] to KEEP: pauses longer than 0.9 s between words that are also quiet (no
-    shouting, no explosion) are jump-cut out, never near the payoff (AleĹˇ: built for ADHD
+    shouting, no explosion) are jump-cut out, never near the payoff (Aleš: built for ADHD
     scrollers, no dead second). auto-editor idea, done with our own word times + loudness.
     """
     ts, rms = rms_curve(src)
@@ -2282,8 +2343,8 @@ def edit_cut(src, words, d, clip, hpc=None, v2=False, info=None):
     """
     Cut the source before rendering: trim (Twitch/Kick; YouTube windows are already cut on
     sentences) and a COLD START - the payoff flashes for 1 s first, then the clip plays from
-    its start (AleĹˇ 15. 11.). Up to RATING_DUR s of the source after the cut are kept, so the
-    clip keeps running under the banana score card (AleĹˇ: the background must not freeze).
+    its start (Aleš 15. 11.). Up to RATING_DUR s of the source after the cut are kept, so the
+    clip keeps running under the banana score card (Aleš: the background must not freeze).
     Returns (source, words, payoff time, where the card starts, jump cuts, T) in the new
     timeline; T = where the hook ends and the clip starts (0 = no hook). The transition itself
     (flash or whip cut) is the brand's and is added in the final encode (build_filter).
@@ -2307,7 +2368,7 @@ def edit_cut(src, words, d, clip, hpc=None, v2=False, info=None):
     if not has_audio(src):
         return src, words, peak, dur, [], 0.0
     out = d / "edit.mp4"
-    # hook (AleĹˇ: 1 s looked like a cut by mistake; the rewind he did not like): ~2.7 s of the
+    # hook (Aleš: 1 s looked like a cut by mistake; the rewind he did not like): ~2.7 s of the
     # payoff, then the transition (bananas: white FLASH + whoosh) and the clip from its start
     ps, pe = (max(0.0, peak - 1.8), min(dur, peak + 0.9)) if tease else (0, 0)
     if tease and v2:
@@ -2438,7 +2499,7 @@ def render(clip, src=None, clean=False):
     # brands whose short failed QA - the proven old look; a short failing even that is dropped.
     shorts, qa_log, todo = {}, {}, list(blist)
     looks = [True, False] if any(b.get(k) for b in blist for k in LAUNCH_FLAGS) else [False]
-    cuts, bore = {}, None
+    cuts, bore, mtags = {}, None, {}
     for v2 in looks:
         if not todo:
             break
@@ -2468,14 +2529,14 @@ def render(clip, src=None, clean=False):
             reactions = [r for r in reactions if r[0] >= hook_t + 0.2]
         ff = ["ffmpeg", "-nostdin", "-y", "-hide_banner", "-loglevel", "error", "-i", str(src)]
 
-        # Render, check, and REPAIR instead of giving up (AleĹˇ: a cut face or black bars must be fixed):
+        # Render, check, and REPAIR instead of giving up (Aleš: a cut face or black bars must be fixed):
         #   1) normal: saved/auto facecam box, detected bars and subtitles cropped
         #   2) facecam detected again with a wider box, bars found with looser limits, 6 % extra zoom
         #   3) only for a clip with viral potential: no facecam band, the game fills the short
-        # No facecam = no short, unless the clip is big (AleĹˇ 15. 11.: "pustit i bez kamery, pokud mĂˇ
-        # potenciĂˇl bĂ˝t virĂˇlnĂ­"): sources.json nocam_min_views, or several viewers clipped it.
+        # No facecam = no short, unless the clip is big (Aleš 15. 11.: "pustit i bez kamery, pokud má
+        # potenciál být virální"): sources.json nocam_min_views, or several viewers clipped it.
         #   (between 2 and 3) "content": big black areas of any size cut off by the ever-not-black box
-        #   (AleĹˇ: a viral clip is a shame to throw away because of a black bar)
+        #   (Aleš: a viral clip is a shame to throw away because of a black bar)
         modes = [("saved", False, 0.0), ("again", True, 0.06), ("content", True, 0.03)] + ([("none", True, 0.0)] if nocam_ok else [])
         problems, made, plans = [], {}, {}
         try:                                          # a crash in the launch look -> the old look, never a lost clip
@@ -2508,7 +2569,7 @@ def render(clip, src=None, clean=False):
                     use_heat = v2 and bool(b.get("heat")) and fan
                     use_gold = v2 and gold and bool(b.get("golden10")) and rating == 10
                     out = d / b["short"]
-                    # fanpage (AleĹˇ 17. 11.: a different edit, not a recolour): taller facecam, one-word
+                    # fanpage (Aleš 17. 11.: a different edit, not a recolour): taller facecam, one-word
                     # captions low in the game band, slow push-in per shot, instant replay of the payoff
                     cam_h = 720 if fan else CAM_H
                     game_h = H - cam_h if cam else H
@@ -2527,7 +2588,7 @@ def render(clip, src=None, clean=False):
                     ass = d / f"captions{sfx}.ass"
                     cap_y = cam_h if cam else 600
                     if fan:   # Anton white, neon green highlight, thin dark outline (sleek, not the banana look)
-                        n_chunks = captions_ass(words, ass, y=cap_y,     # on the seam (AleĹˇ)
+                        n_chunks = captions_ass(words, ass, y=cap_y,     # on the seam (Aleš)
                                                 cap={**(b.get("caption") or {}), "outline": 3, "shadow": 0},
                                                 per=1, anim="bounce")
                     else:
@@ -2545,7 +2606,7 @@ def render(clip, src=None, clean=False):
                     pace = [round(hook_t + 1.2 * k, 2) for k in range(1, 4) if hook_t + 1.2 * k < 5.0] if hv2 else []
                     if fan:
                         r0, r1 = (max(0.0, peak - 1.0), min(card_at, peak + 0.5)) if peak is not None else (0.0, 0.0)
-                        if False and r1 - r0 >= 0.8:              # replay off (AleĹˇ 17. 11.: looked like the hook again + a freeze)
+                        if False and r1 - r0 >= 0.8:              # replay off (Aleš 17. 11.: looked like the hook again + a freeze)
                             main_end = card_at
                             replay = (main_end, r0, r1)
                         edges = sorted({0.0, round(hook_t, 2), *jumps, *(round(c, 2) for c in cuts_), *pace, round(main_end, 2)})
@@ -2577,31 +2638,53 @@ def render(clip, src=None, clean=False):
                     sticker_box = (SLOT_X, SLOT_BOTTOM - STICKER_H, SLOT_X + STICKER_W, SLOT_BOTTOM)
                     plan_stickers = []
                     heat_end = main_end if outro or not follow else min(main_end, total - FOLLOW_DUR - 0.1)
+                    if use_sticker:
+                        # the model's reaction VIDEO in the banana's place and size (bottom-left of the
+                        # game band, under the captions), whole 1.8 s; in the hook (cut before the
+                        # transition) and on the payoff; the kind from the moment's tag
+                        if "tags" not in mtags:
+                            try:
+                                mtags["tags"] = moment_tags(words0, orig, hpc.get("peak"), clip.get("title"),
+                                                            clip.get("created") or 0)[0]
+                            except Exception:
+                                mtags["tags"] = []
+                        kinds = model_kinds(mtags["tags"])
+                        hook_k = None
+                        if hv2 and hook_t >= 1.0:             # in the hook, on the scream
+                            r = model_reaction(kinds, f"{clip['id']}:hook")
+                            if r:
+                                hook_k = r[0]
+                                plan_stickers.append((0.12, r[1], min(MODEL_DUR, hook_t - 0.17)))
+                        if peak is not None and peak >= hook_t + 0.3:
+                            t0 = peak - 0.1
+                            room = min(main_end - 0.3, heat_end - 0.2) - t0
+                            r = model_reaction(kinds, f"{clip['id']}:peak", avoid=(hook_k,))
+                            if r and room >= 1.2:             # the payoff reaction (Aleš) goes before Heat
+                                plan_stickers.append((t0, r[1], min(MODEL_DUR, room)))
+                    rx_end = max([t0 + dur_ for t0, _, dur_ in plan_stickers] + [0.0])
                     if use_heat:                                  # HEAT over the last 2.5 s before the outro
-                        hs = max(heat_end - HEAT_DUR, (peak + 0.6) if peak is not None else 0.0, hook_t + 0.5)
+                        hs = max(heat_end - HEAT_DUR, (peak + 0.6) if peak is not None else 0.0, hook_t + 0.5,
+                                 rx_end + 0.2 if rx_end else 0.0)
                         if heat_end - hs >= 1.6:
                             heat_plan = (hs, heat_end - hs)
                         else:
-                            log(f"  heat: no room after the climax ({heat_end - hs:.1f} s), skipped")
+                            log(f"  heat: no room after the climax / the model's reaction ({heat_end - hs:.1f} s), skipped")
                             use_heat = False
                     if use_sticker:
-                        stills = model_stills()
-                        if stills:
-                            hook_still = None
-                            if hv2 and hook_t >= 1.2:             # in the hook, on the scream
-                                hook_still = pick_still(stills, words, 0.0, clip["id"], prefer=["shocked", "gasp"])
-                                plan_stickers.append((0.12, hook_still))
-                            if peak is not None and peak >= hook_t + 0.3:
-                                t0 = peak - 0.1
-                                if t0 + STICKER_DUR < main_end - 0.3 and (not heat_plan or t0 + STICKER_DUR + 0.2 <= heat_plan[0]):
-                                    plan_stickers.append((t0, pick_still(stills, words, peak, clip["id"], avoid=hook_still)))
-                        for k, (t0, png) in enumerate(plan_stickers):
+                        for k, (t0, f_, dur_) in enumerate(plan_stickers):
                             try:
-                                pattern, sx, sy = sticker_frames(png, d / f"_sticker{sfx}_{k}")
-                                sprites.append((t0, pattern, sx, sy))
-                                elements.append((t0, t0 + STICKER_DUR, f"model {png.stem}", sticker_box))
+                                if f_.suffix == ".webm":
+                                    sy = SLOT_BOTTOM - BANANA_H
+                                    sprites.append((t0, str(f_), BANANA_X, sy, dur_, BANANA_W, BANANA_H))
+                                    box = (BANANA_X, sy, BANANA_X + BANANA_W, SLOT_BOTTOM)
+                                else:                         # fallback: the still with a spring pop
+                                    dur_ = STICKER_DUR
+                                    pattern, sx, sy = sticker_frames(f_, d / f"_sticker{sfx}_{k}")
+                                    sprites.append((t0, pattern, sx, sy))
+                                    box = sticker_box
+                                elements.append((t0, t0 + dur_, f"model {f_.stem}", box))
                             except Exception as e:
-                                log(f"  model sticker {png.name} failed ({str(e)[-80:]}), skipped")
+                                log(f"  model reaction {f_.name} failed ({str(e)[-80:]}), skipped")
                     if v2 and use_card and rank and b.get("league_chip") and total - (card_at + 1.75) > 0.4:
                         try:                                  # part of the score card (same element), after the score lands
                             cp, cx, cy = chip_frames(f"#{rank} THIS WEEK", d / f"_sticker{sfx}_chip", total - (card_at + 1.75))
@@ -2671,7 +2754,7 @@ def render(clip, src=None, clean=False):
                     mix = audio_mix(has_audio(src), total, card_idx, card_at, music_idx, mvol, sfx_idx, sfx_at, replay,
                                     mute, riser_idx, hit_idx, peak, clip_end=clip_total if outro else None,
                                     outro_idx=outro_idx, follow_idx=follow_idx, follow_at=total - FOLLOW_DUR,
-                                    extras=extra_audio)
+                                    extras=extra_audio, hook_gain=hook_level(src, hook_t, card_at) if hook_t else None)
                     maps = inputs + ["-filter_complex", flt + (mix or ""), "-map", "[v]"] + (["-map", "[aud]"] if mix else [])
                     if not outro and not use_card and not replay and total < dur - 0.01:
                         maps += ["-t", f"{total:.3f}"]
@@ -2696,12 +2779,12 @@ def render(clip, src=None, clean=False):
                                  1040, cap_y + int(int((b.get("caption") or {}).get("size", CAP_SIZE)) * 0.65)),
                         look="launch" if v2 else "old", gold=use_gold, heat_n=heat_n if heat_plan else None, peak=peak,
                         hook_end=hook_t, bore=bore, bore_probs=bore_probs, game_crop=(f"{W}:{game_h}:0:{cam_h}" if cam else None),
-                        stickers=[Path(p).stem for _, p in plan_stickers])
+                        stickers=[Path(p).stem for _, p, _ in plan_stickers])
                     log(f"  {b['key']}: captions {len(words)} words, {n_chunks} chunks; "
                         f"banana: {', '.join(f'{n} @{t:.1f}s' for t, n in rx) or 'none'}"
                         + (f"; replay {replay[1]:.1f}-{replay[2]:.1f} s" if replay else "")
                         + (f"; look {'launch' if v2 else 'old'}" if looks != [False] else "")
-                        + (f"; stickers {', '.join(f'{Path(p).stem} @{t:.1f}s' for t, p in plan_stickers)}" if plan_stickers else "")
+                        + (f"; stickers {', '.join(f'{Path(p).stem} @{t:.1f}s' for t, p, _ in plan_stickers)}" if plan_stickers else "")
                         + (f"; heat {heat_n} @{heat_plan[0]:.1f}s" if heat_plan else "") + ("; GOLDEN 10" if use_gold else ""))
                 if not problems:
                     break
@@ -2789,12 +2872,12 @@ def render(clip, src=None, clean=False):
         "heat": qa_log.get("fanpage", {}).get("heat"),           # fanpage HEAT 1-5 shown (None = none)
         "qa": qa_log,                        # QA per brand: look (launch / old), problems of a dropped look
         "bore": bore,                        # boredom gate numbers (payoff loudness/motion contrast, dead air)
-        "caption": f"đźŽ® {home_url(clip)}\n#gta6 #{BRAND}",
+        "caption": f"🎮 {home_url(clip)}\n#gta6 #{BRAND}",
         "rendered_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "checklist": [
-            "titulky sedĂ­ na Ĺ™eÄŤ (jmĂ©na, slang)",
-            "bez hudby z rĂˇdia ve hĹ™e (Content ID)",
-            "bez spoilerĹŻ: konec hry, velkĂ© cutscĂ©ny",
+            "titulky sedí na řeč (jména, slang)",
+            "bez hudby z rádia ve hře (Content ID)",
+            "bez spoilerů: konec hry, velké cutscény",
         ],
     }
     try:                                     # long-form (docs/long-form.md): 16:9 source, payoff, tags
@@ -3135,7 +3218,7 @@ POOL_KEYS = ("id", "url", "channel", "name", "platform", "title", "views", "crea
 
 # what a moment is about: transcript + the viewer's clip title (a person named it) + picture/sound
 TAG_WORDS = {
-    "funny": r"\b(ha(ha)+h?|lol|lmao|lmfao|bruh|bro what|i can'?t|i'?m crying|crying|dying|funny|hilarious)\b|đź’€|đź‚|đź¤Ł",
+    "funny": r"\b(ha(ha)+h?|lol|lmao|lmfao|bruh|bro what|i can'?t|i'?m crying|crying|dying|funny|hilarious)\b|💀|😂|🤣",
     "glitch": r"\b(bug|bugs|bugged|glitch\w*|broken|clipping|clipped|stuck|physics|t-?pose|floating|how did|what is happening|why is)\b",
     "chase": r"\b(cops?|police|chase|chasing|wanted|helicopter|heli|sirens?|getaway|escape|pursuit|go go|drive|run)\b",
     "crash": r"\b(crash\w*|wreck\w*|flipped|explod\w*|boom|ran (him )?over|run over|hit (me|him|her|us)|splat|launched|flew)\b",
@@ -3348,7 +3431,7 @@ def cmd_sber(a):
 # -----------------------------------------------------------------------------
 # live: chat explosion on a running GTA VI stream -> the last ~40 s from its live VOD -> short
 
-LAUGH_IRC = re.compile(r"KEKW|OMEGALUL|LUL|LMAO|ICANT|đź’€|đź‚|\bW\b|\?\?\?|HOLY|NO WAY|WTF", re.I)
+LAUGH_IRC = re.compile(r"KEKW|OMEGALUL|LUL|LMAO|ICANT|💀|😂|\bW\b|\?\?\?|HOLY|NO WAY|WTF", re.I)
 
 class ChatMeter:
     """
@@ -3394,7 +3477,7 @@ class ChatMeter:
                 with self.lock:
                     c = self.counts.setdefault(chan, {})
                     c[b5] = c.get(b5, 0) + w
-                    r = self.raw.setdefault(chan, {})       # plain message count (the "chat went NĂ—" line)
+                    r = self.raw.setdefault(chan, {})       # plain message count (the "chat went N×" line)
                     r[b5] = r.get(b5, 0) + 1
 
     def spike(self, chan, z_min, cool):
@@ -3433,7 +3516,7 @@ def vod_section(login, user_id, started_at, t_spike, before=32, after=6):
 
 def cmd_live(a):
     """
-    Launch conveyor belt (AleĹˇ: be the fastest, clip it right away): every 2 min the biggest
+    Launch conveyor belt (Aleš: be the fastest, clip it right away): every 2 min the biggest
     live English streams in the GTA VI category; their chats are watched live; a chat explosion
     -> ~70 s later (the live VOD lags about a minute) the window 32 s before .. 6 s after the
     spike is cut from the running stream (the payoff is often ~20 s before the chat reacts),
