@@ -72,6 +72,11 @@ class MultiPov(unittest.TestCase):
     def setUpClass(cls):
         cls.v = Videos()
 
+    @classmethod
+    def tearDownClass(cls):
+        import shutil
+        shutil.rmtree(cls.v.dir, ignore_errors=True)
+
     def pov(self, i, ch, f, **kw):
         return row(i, ch, source=str(f), seg=[0.0, 7.0], words=words(ANCHOR), title="", **kw)
 
