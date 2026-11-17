@@ -1059,7 +1059,7 @@ def captions_ass(words, path, y, cap=None, per=2, anim="pop"):
     )
     up = cap.get("upper", True)
     clean = lambda s: (lambda x: x.upper() if up else x)(s.replace("\\", "").replace("{", "(").replace("}", ")"))
-    emo = word_emotions(words)
+    emo = [None] * len(words)                          # emotion colours off (Aleš 17. 11.): one steady highlight
     ecol = lambda k, default: ass_col(EMO_COL[k]) if k else default
     chunks, cur = [], []
     for wi, wd in enumerate(words):       # break on 2 words / `chars` letters, a pause, or sentence end
@@ -1136,7 +1136,7 @@ def assign_brands(clip, cfg=None):
     if len(names) < 2:
         return names
     both = float(os.environ.get("KLIPY_BOTH_SCORE") or cfg.get("both_score", float("inf")))
-    if virality(clip) >= both or (clip.get("live") and (clip.get("spike_z") or 0) >= 10):
+    if virality(clip) >= both:                         # both_score is off in brands.json: one clip = one account
         return names
     state = load_json(STATE, {"done": {}, "failed": {}})
     last = state.get("rr")
@@ -1402,7 +1402,7 @@ def audio_mix(clip_audio, total, card_idx=None, card_at=0.0, music_idx=None, mus
         parts.append("[ht]")
     if mute:                                    # the bleep over every masked swear
         on = "+".join(f"between(t\\,{a:.2f}\\,{b:.2f})" for a, b in mute)
-        f += (f";aevalsrc='0.22*sin(2*PI*1000*t)*({on})':s=48000:d={total:.3f},{fmt}[bp]")
+        f += (f";aevalsrc='0.45*sin(2*PI*1000*t)*({on})':s=48000:d={total:.3f},afade=t=in:d=0.005,{fmt}[bp]")
         parts.append("[bp]")
     if sfx_idx is not None:
         f += f";[{sfx_idx}:a]volume=0.7,adelay={int(sfx_at * 1000)}:all=1,{fmt},apad=whole_dur={total:.3f}[sx]"
@@ -1832,7 +1832,7 @@ def render(clip, src=None, clean=False):
             main_end = dur if b.get("score_card") else min(dur, card_at + 0.4)   # no card: ends with the story
             if fan:
                 r0, r1 = (max(0.0, peak - 1.0), min(card_at, peak + 0.5)) if peak is not None else (0.0, 0.0)
-                if r1 - r0 >= 0.8:                        # payoff -> its last ~1.5 s again at 0.6x -> end
+                if False and r1 - r0 >= 0.8:              # replay off (Aleš 17. 11.: looked like the hook again + a freeze)
                     main_end = card_at
                     replay = (main_end, r0, r1)
                 edges = sorted({0.0, round(hook_t, 2), *jumps, *(round(c, 2) for c in cuts), round(main_end, 2)})
@@ -1843,6 +1843,7 @@ def render(clip, src=None, clean=False):
             total = (card_at + RATING_DUR if use_card else
                      main_end + (replay[2] - replay[1]) / 0.6 if replay else main_end)
             mpath, mvol, mstart = music_cfg(clip["id"], total, b.get("music"))
+            mvol = float(b.get("music_volume", mvol))
             beat = beat_grid(mpath, mstart, total) if mpath and not fan else None
             flt = reaction_overlay(build_filter(
                 *args, ass_file=ff_path(ass), zoom_at=None if fan else peak, beat=beat,

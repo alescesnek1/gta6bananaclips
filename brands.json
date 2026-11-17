@@ -1,6 +1,6 @@
 {
-  "_napoveda": "Dva ucty (znacky). Kazdy ma vlastni Buffer klice, kanaly, zaznam publikovaneho, kvotu, vzhled titulku, hudbu a strih. Kazdy klip jde na jeden ucet (stridave podle poradi); klip s viralitou >= both_score jde na oba, kazdy ve vlastni verzi (jiny hook, orez, barvy, titulky, hudba) - nikdy stejny soubor.",
-  "both_score": 20000,
+  "_napoveda": "Dva ucty (znacky). Kazdy ma vlastni Buffer klice, kanaly, zaznam publikovaneho, kvotu, vzhled titulku, hudbu a strih. Kazdy klip jde na jeden ucet (stridave podle poradi); Kazdy ucet ma JINE klipy (Ales 17. 11.: stejne klipy na obou by druhy ucet znehodnotily) - both_score je vypnuty.",
+  "both_score": 1000000000000.0,
   "netlify_gb_soft": 50,
   "netlify_gb_hard": 70,
   "bananas": {
@@ -60,7 +60,7 @@
       "fontdir": "fonts/cap",
       "size": 150,
       "color": "FFFFFF",
-      "highlight": "39FF88",
+      "highlight": "FF4FD8",
       "outline": 3,
       "shadow": 0,
       "upper": true
@@ -76,6 +76,7 @@
       "2026-11-26": 8
     },
     "max_per_day": 8,
-    "top3": false
+    "top3": false,
+    "music_volume": 0.11
   }
 }
