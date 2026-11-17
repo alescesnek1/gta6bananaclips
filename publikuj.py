@@ -491,7 +491,9 @@ def cmd_den(a):
     # Aleš: do not burn the 8 on average clips. An average one only goes out when the 8 would
     # otherwise be missed (no more free slots than posts still owed today).
     owed_now = must >= len(free)
-    yt_left = src_cfg.get("youtube_per_day", 1) - sum(
+    pre = src_cfg.get("youtube_prelaunch") or {}
+    yt_cap = pre.get("per_day", 3) if pre and day < date.fromisoformat(pre.get("until", "2000-01-01")) else src_cfg.get("youtube_per_day", 1)
+    yt_left = yt_cap - sum(
         k.startswith("youtube_") and in_day(rec, day) for k, rec in load_json(PUBLISHED, {}).items())
     picks = []
     for m in candidates():
