@@ -2,11 +2,13 @@
 klicuj.py - key the green background out of the fanpage model's reaction stills.
 
   python tools/model/klicuj.py            # assets/model_reakce/*.png|jpg|webp -> transparent *.png
+  python tools/model/klicuj.py --mrizka assets/model_reakce/mrizka.png   # split the 3x2 grid first
 
 Input: stills generated from docs/model-reakce-prompt.md on a pure green (#00FF00) background.
 Output: same name .png with alpha, trimmed to the subject, green spill removed. Already
 transparent PNGs are left alone, so it is safe to run again.
 """
+import sys
 from pathlib import Path
 
 import numpy as np
@@ -27,8 +29,26 @@ def key(img):
         out = out[max(0, ys.min() - 6): ys.max() + 6, max(0, xs.min() - 6): xs.max() + 6]
     return Image.fromarray(out, "RGBA")
 
+NAMES = ["gasp", "laugh", "wink", "shocked", "smirk", "eyeroll"]   # grid order: left to right, top row first
+
+def split_grid(path, cols=3, rows=2):
+    """One generated 3x2 grid (docs/model-reakce-prompt.md) -> six stills named by reaction."""
+    img = Image.open(path).convert("RGB")
+    w, h = img.size
+    cw, ch = w // cols, h // rows
+    pad = max(2, min(cw, ch) // 60)                       # drop the white gaps between panels
+    for i, name in enumerate(NAMES[: cols * rows]):
+        c, r = i % cols, i // cols
+        cell = img.crop((c * cw + pad, r * ch + pad, (c + 1) * cw - pad, (r + 1) * ch - pad))
+        cell.save(DIR / f"{name}.png")
+        print(f"grid -> {name}.png")
+    if Path(path).resolve().parent == DIR.resolve():
+        Path(path).unlink()                                # the grid itself is not a sticker
+
 def main():
     DIR.mkdir(parents=True, exist_ok=True)
+    if "--mrizka" in sys.argv:
+        split_grid(sys.argv[sys.argv.index("--mrizka") + 1])
     for f in sorted(DIR.iterdir()):
         if f.suffix.lower() not in (".png", ".jpg", ".jpeg", ".webp"):
             continue
