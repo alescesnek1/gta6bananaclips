@@ -144,7 +144,8 @@
     "twitch_CallousObedientKeyboardCopyThis-b8L6puKdc8y1bo66": "Minecraft",
     "twitch_CrazyOnerousKumquatFreakinStinkin-zCS1829mU6BvrsMK": "Fortnite",
     "twitch_KathishBombasticMallardBIRB-WRgEFTpDbu5IY4Jv": "Fortnite",
-    "twitch_MoldySuaveGaurVoteYea-8QAUGqpcKs6jntIL": "streamer's face fills the frame, no gameplay"
+    "twitch_MoldySuaveGaurVoteYea-8QAUGqpcKs6jntIL": "streamer's face fills the frame, no gameplay",
+    "twitch_ClumsySlickOcelotRlyTho-nehW7hS7DKuGtHR5": "Just Chatting"
   },
   "views": {
     "twitch_SeductiveScaryArtichokeMikeHogu-ilokmbgy1N7dF3Gp": [
@@ -454,6 +455,10 @@
     "twitch_MoldySuaveGaurVoteYea-8QAUGqpcKs6jntIL": [
       1794920349,
       510
+    ],
+    "twitch_ClumsySlickOcelotRlyTho-nehW7hS7DKuGtHR5": [
+      1794922139,
+      503
     ]
   }
 }
