@@ -3,6 +3,7 @@ klicuj.py - key the green background out of the fanpage model's reaction stills.
 
   python tools/model/klicuj.py            # assets/model_reakce/*.png|jpg|webp -> transparent *.png
   python tools/model/klicuj.py --mrizka assets/model_reakce/mrizka.png   # split the 3x2 grid first
+  python tools/model/klicuj.py --video    # grimasy*.mp4 (CapCut, green screen) -> stills + alpha .webm
 
 Input: stills generated from docs/model-reakce-prompt.md on a pure green (#00FF00) background.
 Output: same name .png with alpha, trimmed to the subject, green spill removed. Already
@@ -45,8 +46,47 @@ def split_grid(path, cols=3, rows=2):
     if Path(path).resolve().parent == DIR.resolve():
         Path(path).unlink()                                # the grid itself is not a sticker
 
+def frames(path, fps=10, w=270):
+    """Small grey frames of a video (numpy) + the fps used."""
+    import subprocess
+    probe = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height",
+                            "-of", "csv=p=0", str(path)], capture_output=True, text=True).stdout.strip().split(",")
+    vw, vh = int(probe[0]), int(probe[1])
+    h = int(round(w * vh / vw / 2) * 2)
+    raw = subprocess.run(["ffmpeg", "-v", "error", "-i", str(path), "-vf", f"fps={fps},scale={w}:{h},format=gray",
+                          "-f", "rawvideo", "-"], capture_output=True).stdout
+    return np.frombuffer(raw, np.uint8).reshape(-1, h, w).astype(np.float32), fps
+
+def split_video(path, names):
+    """
+    A CapCut grimace video (docs/model-reakce-prompt.md, step 3) -> one still + one short transparent
+    clip per reaction. The video is cut into len(names) equal parts; in each part the frame that differs
+    most from the neutral first frame is the peak of the reaction.
+    """
+    import subprocess
+    fr, fps = frames(path)
+    diff = np.abs(fr - fr[0]).mean(axis=(1, 2))
+    n = len(fr)
+    for i, name in enumerate(names):
+        a, b = i * n // len(names), (i + 1) * n // len(names)
+        k = a + int(np.argmax(diff[a:b])) if b > a else a
+        t = k / fps
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", f"{t:.2f}", "-i", str(path), "-frames:v", "1",
+                        str(DIR / f"{name}.png")], check=True)
+        t0 = max(0.0, t - 0.6)                            # ~1.2 s clip around the peak, green keyed to alpha
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", f"{t0:.2f}", "-t", "1.2", "-i", str(path),
+                        "-vf", "chromakey=0x00FF00:0.18:0.08,despill=type=green,format=yuva420p", "-an",
+                        "-c:v", "libvpx-vp9", "-b:v", "0", "-crf", "32", "-auto-alt-ref", "0",
+                        str(DIR / f"{name}.webm")], check=True)
+        print(f"{Path(path).name} {t:.1f}s -> {name}.png + {name}.webm")
+
 def main():
     DIR.mkdir(parents=True, exist_ok=True)
+    if "--video" in sys.argv:
+        vids = sorted(DIR.glob("grimasy*.mp4"))
+        per = len(NAMES) // max(1, len(vids))
+        for j, v in enumerate(vids):
+            split_video(v, NAMES[j * per: (j + 1) * per] if j < len(vids) - 1 else NAMES[j * per:])
     if "--mrizka" in sys.argv:
         split_grid(sys.argv[sys.argv.index("--mrizka") + 1])
     for f in sorted(DIR.iterdir()):
