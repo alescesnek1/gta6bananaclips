@@ -1,4 +1,10 @@
-# Long-form na YouTube – návrh (17. 11. 2026, zatím neimplementováno)
+# Long-form na YouTube (návrh 17. 11. 2026, postaveno týž den)
+
+**Stav (17. 11. večer):** hotovo, upload je ruční (Aleš nechtěl YouTube API ani audit). Jak to běží a jak nahrávat: `docs/long-form-navod.md`.
+- Sběr: `klipuj.py` píše každý short do `long_pool.json` (16:9 zdroj, pointa, HPC střih, štítky `funny/glitch/chase/crash/rage/first-reaction/wow`). Kandidáti, kteří se nevešli do kvóty, jdou do poolu jen jako řádek ze seznamu (bez stahování). Režim `klipuj.py sber` jen sbírá a štítkuje bez renderu shortu.
+- `kompilace.py` (výběr, střih, cold open, odpočet, banánové skóre / neonový přechod, kapitoly, kredity) → `nahled.py` (vstupy miniatury) → `nahled_ai.py` (Cloudflare FLUX.2 klein-9b + náš nadpis) → `posli_mail.py` (Gmail) → `.github/workflows/long.yml`.
+- Sdílený seznam použitých momentů: `long_used.json`. Rozpočet AI obrázků: `nahled_ai_budget.json`.
+
 
 Cíl: automaticky publikovat delší videa (8–15 min) na YouTube obou účtů, každý účet jiná videa a jiné série. Shorty běží dál beze změny.
 

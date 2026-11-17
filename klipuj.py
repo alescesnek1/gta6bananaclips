@@ -1656,7 +1656,7 @@ def dead_air(words, src, a, b, peak):
     keep.append((cur, b))
     return [(x, y) for x, y in keep if y - x > 0.05]
 
-def edit_cut(src, words, d, clip):
+def edit_cut(src, words, d, clip, hpc=None):
     """
     Cut the source before rendering: trim (Twitch/Kick; YouTube windows are already cut on
     sentences) and a COLD START - the payoff flashes for 1 s first, then the clip plays from
@@ -1669,6 +1669,8 @@ def edit_cut(src, words, d, clip):
     dur = duration(src)
     peak = audio_peak(src)
     a, b = (0.0, dur) if clip.get("section") else trim_points(words, peak, dur)
+    if hpc is not None:                               # long-form keeps the cut on the 16:9 source
+        hpc.update(peak=peak, cut=[round(a, 2), round(b, 2)], dur=round(dur, 2))
     e = b + min(RATING_DUR, dur - b)                  # live footage for under the card
     tease = peak is not None and peak - a >= 4 and b - peak >= 0.3
     segs = dead_air(words, src, a, b, peak)
@@ -1771,7 +1773,8 @@ def render(clip, src=None, clean=False):
     (d / "transcript.txt").write_text(speech, encoding="utf-8")
     (d / "mark.txt").write_text(f"@{clip['channel']}", encoding="utf-8")
     orig = src                                         # facecam is found on the uncut source (the edit fooled it)
-    src, words, peak, card_at, jumps, hook_t = edit_cut(src, words, d, clip)
+    words0, hpc = words, {}
+    src, words, peak, card_at, jumps, hook_t = edit_cut(src, words, d, clip, hpc)
     dur = duration(src)
     card_at = min(card_at, dur)
     words = [w for w in words if w[0] < card_at]      # no captions / banana under the score card
@@ -1966,6 +1969,13 @@ def render(clip, src=None, clean=False):
             "bez spoilerů: konec hry, velké cutscény",
         ],
     }
+    try:                                     # long-form (docs/long-form.md): 16:9 source, payoff, tags
+        tags, scores = moment_tags(words0, orig, hpc.get("peak"), clip.get("title"), clip.get("created") or 0)
+        meta.update(source_16x9=str(orig), peak_src=hpc.get("peak"), cut_src=hpc.get("cut"), tags=tags, tag_scores=scores)
+        pool_add(pool_row(clip, source=str(orig), peak=hpc.get("peak"), cut=hpc.get("cut"), dur=hpc.get("dur"),
+                          tags=tags, tag_scores=scores, quote=meta["quote"], rendered=list(shorts)), replace=True)
+    except Exception as e:                   # tags are a bonus: never lose a finished short over them
+        log(f"  tags failed: {str(e)[-120:]}")
     save_json(d / "meta.json", meta)
     log(f"  done -> {out} ({meta['layout']}, {enc})")
     return meta
@@ -2175,6 +2185,13 @@ def cmd_batch(a):
     # viewer-made clips first (a person picked the moment); YouTube windows only fill the rest
     total = process(live, a.clean, limit=a.max)
     total += process(yt, a.clean, limit=min(a.yt, a.max - total))
+    min_pool = load_json(SOURCES, {}).get("long_pool_min_views", 300)
+    for c in live:                                     # missed the shorts quota: long-form may still use it
+        try:
+            if c.get("views", 0) >= min_pool and not skip(c["id"]) and re.search(game_re(), c.get("category") or "", re.I):
+                pool_add(pool_row(c))
+        except Exception as e:                         # long-form pool must never break the shorts run
+            log(f"pool: {e}")
     log(f"batch done: {total} new shorts")
     if total == 0 and os.environ.get("GITHUB_ACTIONS") and datetime.now().date() >= date(2026, 11, 19):
         print("::warning::Dnes se nevyrenderoval zadny GTA 6 klip (zadne cerstve klipy, nebo blokace Twitch/Kick).")
@@ -2264,6 +2281,189 @@ def cmd_cam(a):
     run(["ffmpeg", "-nostdin", "-y", "-v", "error", "-ss", "1", "-i", str(src), "-frames:v", "1", "-vf",
          f"{NORM},drawbox=x={x}:y={y}:w={w}:h={h}:color=red:t=6", str(preview)])
     log(f"{ch}: cam {cam} -> preview {preview} (if right, remove \"auto\" in streamers.json)")
+
+# -----------------------------------------------------------------------------
+# 7) long-form pool (docs/long-form.md): every moment keeps its 16:9 source, payoff and tags,
+#    so kompilace.py can build 8-15 min YouTube videos from it. Cheap on purpose:
+#      - a rendered short adds its row for free (download, Whisper and payoff are already done)
+#      - a candidate that missed today's quota adds a listing row (no download at all)
+#      - `sber` / kompilace.py fill tags only for moments that may really be used:
+#        download the clip (10-20 MB), Whisper, payoff, tags - no 9:16 render
+
+POOL = Path(os.environ.get("KLIPY_POOL") or HERE / "long_pool.json")   # committed by denne.yml
+POOL_DIR = OUT / "_pool"               # local cache of 16:9 sources (not committed)
+POOL_DAYS = 8
+POOL_MAX = 600
+POOL_KEYS = ("id", "url", "channel", "name", "platform", "title", "views", "created", "category", "video_id",
+             "vod_offset", "cluster", "section", "signal_score", "live")
+
+# what a moment is about: transcript + the viewer's clip title (a person named it) + picture/sound
+TAG_WORDS = {
+    "funny": r"\b(ha(ha)+h?|lol|lmao|lmfao|bruh|bro what|i can'?t|i'?m crying|crying|dying|funny|hilarious)\b|💀|😂|🤣",
+    "glitch": r"\b(bug|bugs|bugged|glitch\w*|broken|clipping|clipped|stuck|physics|t-?pose|floating|how did|what is happening|why is)\b",
+    "chase": r"\b(cops?|police|chase|chasing|wanted|helicopter|heli|sirens?|getaway|escape|pursuit|go go|drive|run)\b",
+    "crash": r"\b(crash\w*|wreck\w*|flipped|explod\w*|boom|ran (him )?over|run over|hit (me|him|her|us)|splat|launched|flew)\b",
+    "rage": r"\b(fuck\w*|shit|bitch|asshole|stupid|hate|why would|are you serious|bro stop)\b",
+    "first-reaction": r"\b(vice city|first time|finally|gta ?(6|vi|six)|graphics|so real|looks? (so )?(good|real|insane|crazy)|beautiful|day (one|1))\b",
+    "wow": r"\b(wow|insane|crazy|no way|oh my god|omg|holy|what the|yo+|clutch|let'?s go)\b",
+}
+LAUNCH = date(2026, 11, 19)
+
+def motion_stats(src):
+    """Picture change (2 fps, tiny grey frames): (mean, 95th percentile) of the frame difference."""
+    diffs, prev = [], None
+    for _, img in frames(src, 2, 160, 90):
+        g = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY).astype(np.float32)
+        if prev is not None:
+            diffs.append(float(np.abs(g - prev).mean()))
+        prev = g
+    return (float(np.mean(diffs)), float(np.percentile(diffs, 95))) if diffs else (0.0, 0.0)
+
+def moment_tags(words, src, peak=None, title="", created=0):
+    """
+    Tags for long-form series: funny, glitch, chase, crash, rage, first-reaction, wow.
+    Words of the transcript and the clip title (counted double), emotion colours of the words,
+    how loud the payoff is over the rest and how much the picture moves. Returns (tags, scores).
+    """
+    text = " ".join(t for _, _, t in words).lower()
+    tl = (title or "").lower()
+    n = max(len(words), 1)
+    emo = word_emotions(words)
+    win, drama = emo.count("win"), emo.count("drama")
+    ts, rms = rms_curve(src)
+    loud = float(np.percentile(rms, 95) / (np.median(rms) + 1e-9)) if rms.size else 1.0
+    mot, mot_hi = motion_stats(src)
+    sc = {}
+    for tag, rx in TAG_WORDS.items():
+        hits = len(re.findall(rx, text, re.I)) + 2 * len(re.findall(rx, tl, re.I))
+        sc[tag] = min(1.0, hits / (2.0 + n / 40))
+    sc["funny"] = min(1.0, sc["funny"] + 0.08 * win)
+    sc["rage"] = min(1.0, sc["rage"] + 0.05 * drama + (0.25 if loud > 6 else 0))
+    sc["wow"] = min(1.0, sc["wow"] + 0.04 * (win + drama))
+    sc["chase"] = min(1.0, sc["chase"] + (0.2 if mot > 22 else 0.1 if mot > 14 else 0))
+    sc["crash"] = min(1.0, sc["crash"] + (0.3 if mot_hi > 30 and loud > 4 else 0))
+    if created and abs((datetime.fromtimestamp(created, tz=timezone.utc).date() - LAUNCH).days) <= 1:
+        sc["first-reaction"] = min(1.0, sc["first-reaction"] + 0.2)
+    sc = {k: round(v, 2) for k, v in sc.items()}
+    tags = [k for k, v in sorted(sc.items(), key=lambda kv: -kv[1]) if v >= 0.3]
+    return tags, {**sc, "_loud": round(loud, 1), "_motion": round(mot, 1)}
+
+def pool_load():
+    return load_json(POOL, {})
+
+def pool_add(row, replace=False):
+    """Add/update a moment in long_pool.json (compact, pruned to POOL_DAYS and POOL_MAX rows)."""
+    try:
+        pool = pool_load()
+        old = pool.get(row["id"])
+        if old and not replace:
+            return                                        # a listing row never overwrites what we know
+        pool[row["id"]] = {**(old or {}), **{k: v for k, v in row.items() if v is not None}}
+        now = time.time()
+        pool = {k: v for k, v in pool.items() if now - (v.get("created") or v.get("added") or now) < POOL_DAYS * 86400}
+        if len(pool) > POOL_MAX:                          # keep the tagged ones and the most viewed
+            keep = sorted(pool.values(), key=lambda v: (v.get("tags") is not None, v.get("views") or 0), reverse=True)
+            pool = {v["id"]: v for v in keep[:POOL_MAX]}
+        tmp = POOL.with_name(f"{POOL.name}.{os.getpid()}.tmp")
+        tmp.write_text(json.dumps(dict(sorted(pool.items())), ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+        tmp.replace(POOL)
+    except Exception as e:                                # the pool must never break a short
+        log(f"  pool: {str(e)[-120:]}")
+
+def pool_row(clip, **kw):
+    row = {k: clip.get(k) for k in POOL_KEYS}
+    row["added"] = int(time.time())
+    row.update(kw)
+    return row
+
+def collect(clip, force=False):
+    """
+    Long-form moment without a short: 16:9 source -> transcript, payoff, HPC cut, tags.
+    Writes out/_pool/<id>/{source.mp4, meta.json} and the pool row. Returns the row.
+    """
+    d = POOL_DIR / clip["id"]
+    d.mkdir(parents=True, exist_ok=True)
+    mf = d / "meta.json"
+    if mf.exists() and not force:
+        row = load_json(mf, {})
+        if row.get("tags") is not None and Path(row.get("source", "")).exists():
+            return row
+    src = d / "source.mp4"
+    if not src.exists():
+        log(f"  download {clip['url']}")
+        download(clip, src)
+    if talking_head(src):
+        raise NotGameplay("streamer's face fills the frame, no gameplay")
+    words = transcribe(src)
+    if SLUR_RE.search(" ".join(t for _, _, t in words)):
+        raise NotGameplay("slur in the speech")
+    dur = duration(src)
+    peak = audio_peak(src)
+    a, b = trim_points(words, peak, dur, hi=40.0)
+    tags, scores = moment_tags(words, src, peak, clip.get("title"), clip.get("created") or 0)
+    row = pool_row(clip, source=str(src), peak=peak, cut=[round(a, 2), round(b, 2)], dur=round(dur, 2),
+                   tags=tags, tag_scores=scores, quote=pick_quote(words, peak))
+    save_json(mf, {**row, "words": words})
+    pool_add(row, replace=True)
+    log(f"  pool: {clip['channel']} {clip['id']} tags {tags} peak {peak}")
+    return row
+
+def game_clips(name, t0, t1, pages=3):
+    """Clips of a Twitch category made between t0 and t1 (unix), English, best first (Helix)."""
+    games = helix("games", {"name": name}).get("data") or []
+    if not games:
+        log(f"twitch api: category '{name}' not found")
+        return []
+    fmt = lambda t: datetime.fromtimestamp(t, tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    out, cursor = [], None
+    for _ in range(pages):
+        params = {"game_id": games[0]["id"], "started_at": fmt(t0), "ended_at": fmt(t1), "first": 100}
+        if cursor:
+            params["after"] = cursor
+        res = helix("clips", params)
+        data = [c for c in res.get("data") or [] if (c.get("language") or "en").split("-")[0] == "en"]
+        ids = sorted({c["broadcaster_id"] for c in data})
+        users = {u["id"]: u["login"] for u in helix("users", [("id", i) for i in ids[:100]]).get("data") or []} if ids else {}
+        for c in data:
+            out.append({
+                "id": f"twitch_{c['id']}", "url": c["url"], "title": (c.get("title") or "").strip(),
+                "views": int(c.get("view_count") or 0), "duration": float(c.get("duration") or 0),
+                "created": int(datetime.fromisoformat(c["created_at"].replace("Z", "+00:00")).timestamp()),
+                "channel": users.get(c["broadcaster_id"], (c.get("broadcaster_name") or "twitch").lower()),
+                "name": c.get("broadcaster_name") or None, "platform": "twitch", "category": games[0]["name"],
+                "video_id": c.get("video_id") or None, "vod_offset": c.get("vod_offset"),
+            })
+        cursor = (res.get("pagination") or {}).get("cursor")
+        if not cursor:
+            break
+    return out
+
+def cmd_sber(a):
+    """Collect long-form moments (no shorts): given URLs, or the best clips of a Twitch category."""
+    blocked = {b.lower() for b in load_json(SOURCES, {}).get("blocklist", [])}
+    if a.urls:
+        clips = [clip_info(u) for u in a.urls]
+    else:
+        if not all(helix_keys()):
+            sys.exit("sber needs TWITCH_CLIENT_ID / TWITCH_CLIENT_SECRET (Twitch API)")
+        name = a.hra or load_json(SOURCES, {}).get("twitch_game", "Grand Theft Auto VI")
+        clips = cluster(game_clips(name, time.time() - a.days * 86400, time.time(), pages=a.pages))
+        clips = [c for c in clips if c["views"] >= a.min_views and c["channel"] not in blocked]
+        clips.sort(key=virality, reverse=True)
+    n = 0
+    for c in clips:
+        if n >= a.max:
+            break
+        if (pool_load().get(c["id"]) or {}).get("tags") is not None and (POOL_DIR / c["id"] / "source.mp4").exists():
+            continue
+        try:
+            collect(c)
+            n += 1
+        except NotGameplay as e:
+            log(f"  skip {c['id']}: {e}")
+        except Exception as e:
+            log(f"  FAILED {c['url']}: {str(e)[-200:]}")
+    log(f"sber done: {n} moments tagged (pool {POOL})")
 
 # -----------------------------------------------------------------------------
 # live: chat explosion on a running GTA VI stream -> the last ~40 s from its live VOD -> short
@@ -2508,6 +2708,15 @@ def main():
     c.add_argument("channel")
     c.add_argument("source", help="clip URL or local video file")
     c.set_defaults(fn=cmd_cam)
+
+    sb = sub.add_parser("sber", help="long-form: collect + tag moments (16:9 source, payoff, tags), no shorts")
+    sb.add_argument("urls", nargs="*", help="clip URLs; default: best clips of the Twitch category")
+    sb.add_argument("--hra", help="Twitch category (default sources.json twitch_game; test: 'Grand Theft Auto V')")
+    sb.add_argument("--days", type=float, default=1)
+    sb.add_argument("--max", type=int, default=40, help="tag at most this many new moments")
+    sb.add_argument("--pages", type=int, default=3)
+    sb.add_argument("--min-views", type=int, default=300)
+    sb.set_defaults(fn=cmd_sber)
 
     lv = sub.add_parser("live", help="launch: live chat spikes of GTA VI streams -> instant shorts")
     lv.add_argument("--hours", type=float, default=5.7, help="how long to watch (GitHub job limit is 6 h)")
