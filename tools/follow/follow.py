@@ -8,7 +8,7 @@ soft pop. No network's logo: the same card runs on all 6 networks.
 
 Needs Pillow + numpy (any Python, not the project venv) and ffmpeg. Everything is drawn here
 (fonts from fonts/, OFL); the click is synthesized. The film is a pure function of time:
-frame(t) draws the whole picture, motion = closed-form springs.
+frame(t) draws the whole picture, motion = closed-form critically damped springs (no overshoot).
 """
 import math
 import subprocess
@@ -45,12 +45,15 @@ T_BTN, T_CUR, T_PRESS, T_SWITCH = 0.22, 0.42, 0.98, 1.08
 
 
 def spring(t, freq=3.2, damp=0.45):
-    """0 -> 1 with overshoot: step response of an underdamped spring, closed form."""
+    """
+    0 -> 1, critically damped: fast first, then slow, and it never overshoots - nothing scales up and
+    back down or wobbles (motion rule: direction never reverses, no bounces). `damp` is kept for the
+    callers and ignored; `freq` still sets the speed.
+    """
     if t <= 0:
         return 0.0
-    w = 2 * math.pi * freq
-    wd = w * math.sqrt(1 - damp * damp)
-    return 1 - math.exp(-damp * w * t) * (math.cos(wd * t) + damp * w / wd * math.sin(wd * t))
+    w = 2 * math.pi * freq * 1.25
+    return 1 - math.exp(-w * t) * (1 + w * t)
 
 
 def clamp(x, a=0.0, b=1.0):
@@ -185,7 +188,7 @@ def frame(t, sp, b):
             im.alpha_composite(ring)
     # cursor: glides in from the lower right, presses, drifts off
     e = ease((t - T_CUR) / (T_PRESS - T_CUR - 0.04))
-    out = ease((t - T_SWITCH - 0.25) / 0.45)
+    out = clamp((t - T_SWITCH - 0.25) / 0.85) ** 1.5         # drifts off slowly until the end: never a still frame
     px = bx + 46 + (1 - e) * 150 + out * 70
     py = by + 8 + (1 - e) * 230 + out * 150
     put(im, sp["cursor"], px - 4, py - 4, 1 - 0.14 * press, clamp((t - T_CUR) / 0.12) * (1 - out), anchor="tl")

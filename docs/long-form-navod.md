@@ -8,7 +8,7 @@ Běh je každý den kolem 00:25 a dělá video na **zítřek**. E-mail tedy při
   - úterý: „GTA 6 Funniest Moments #N“ (tier list),
   - čtvrtek: „<streamer týdne> in GTA 6 #N“ (vede Banana League),
   - neděle: „Banana League Week #N“: každé místo ligy = nejlepší moment toho streamera za týden (hra + jeho facecam), přes něj jen malý odznak „#3 · 7.6 AVG“ ve stylu banánového skóre. Žádná samostatná tabulka.
-- **gta6fanpageclip = „THE STORY“** (jiný koncept než bananas, vypínač `fanpage_story`): žádné pořadí, tier list ani #N v obraze. Momenty jdou chronologicky. Kapitoly jsou černé karty s časem („HOUR 2“ = hodina streamu, „11 PM“ = čas klipu), u střihů 2.35:1 pruhy a filmové barvy. Mezi kapitolami je tichá reakce naší modelky (`assets/model_reakce/*.png`, když tam jsou). Na konci outro s modelkou a Follow karta.
+- **gta6fanpageclip = „THE STORY“** (jiný koncept než bananas, vypínač `fanpage_story`): žádné pořadí, tier list ani #N v obraze. Na začátku je cold open ~6 s ze tří nejsilnějších momentů, pak jdou momenty chronologicky. Název kapitoly („HOUR 2“ = hodina streamu, „11 PM“ = čas klipu) je první vteřinu přes běžící obraz, černé karty už nejsou; slova naběhnou z rozostření a stejně odejdou. U střihů se 2.35:1 pruhy zasunou a vysunou, filmové barvy zůstávají. Na konci posledního momentu kapitoly vyjede zdola tichá reakce naší modelky (`assets/model_reakce/*.webm`, když tam jsou) a zase zajede; samostatná tmavá karta už není. Na konci outro s modelkou a Follow karta.
   - pondělí: „<Streamer>'s Night in Vice City #N“ (jeden streamer, jeden den),
   - středa: „Same Mission, N Streamers #N“, když najdeme stejnou misi u ≥ 3 streamerů, jinak „Vice City After Dark #N“,
   - sobota: „Vice City After Dark #N“ (noc napříč streamery, střihy do rytmu hudby).
@@ -23,13 +23,25 @@ Běh je každý den kolem 00:25 a dělá video na **zítřek**. E-mail tedy při
 - Video kratší než 5 min se nedělá.
 
 ## Stavba videa bananas (pevná)
-Tier board je klasický TierMaker (`tools/long/tier.py`): černá plocha, pastelové štítky S–D, čtvercové náhledy momentů, které do řádku přiletí s pružinou a vlastním zvukem. Závěrečná karta je z `tools/long/endcard.py`; hotové kopie jsou v `assets/long/end_*.mp4`. Fanpage si sama vezme `assets/outro/fanpage_outro_16x9.mp4`, až bude existovat. Naše hudba se pod závěrečnou kartou ztiší, karta má vlastní.
-1. Cold open 10–12 s ze tří nejlepších pointe.
-2. Prázdný tier board na 2 s.
-3. Momenty #N…#1. Každý má úvodní kartu 0,6 s, pak moment (střih hluchých míst, střídavý zoom, titulky klíčových hlášek, zoom + záblesk na pointě, u bananas banán u top 5). Pak 1,5 s „let“ do tier listu (S = top 10 %, A, B, C, D).
-4. Plný tier board na 3 s, pak závěrečná karta.
-- Teaser „#1 is insane, stay till the end“ je jen na boardu po #6 a #3, nikdy přes moment.
-- Hudba hraje potichu pod celým videem, pod řečí se ztiší.
+Tier board je klasický TierMaker (`tools/long/tier.py`): černá plocha, pastelové štítky S–D. Závěrečná karta je z `tools/long/endcard.py`; hotové kopie jsou v `assets/long/end_*.mp4`. Fanpage si sama vezme `assets/outro/fanpage_outro_16x9.mp4`, až bude existovat.
+1. Cold open ~6 s: tři nejlepší momenty, každý nejvýš 2 s. Je to rozjezd těsně před pointou s přiblížením, takže se ve videu neopakuje stejný střih.
+2. Momenty #N…#1, od nejslabšího po nejlepší. Dva momenty stejného streamera ani stejné kategorie nejdou po sobě, když to jde poskládat jinak. Každý má úvodní kartu 0,6 s přes běžící obraz, pak moment (střih hluchých míst, střídavý zoom, titulky klíčových hlášek, zoom + záblesk na pointě, u bananas banán u top 5).
+3. Po momentu 1,9 s zařazení do tier listu. Poslední snímek momentu se z celé obrazovky zmenší do karty uprostřed a za ním se objeví board, takže moment do tier listu přejde bez střihu. Zvýraznění proběhne po řádcích a zpomalí na jeho stupni, karta vletí do řádku. Karta se celou dobu jen zmenšuje, nic neposkakuje. Dopad má ránu se subbasem a záři řádku (u S navíc jiskření a krátký otřes, u D komické „splasknutí“). Kamera se pořád pomalu přibližuje. Pod tím hraje znělka z hudební databáze.
+4. Plný tier board na 2,4 s (kamera pokračuje v přiblížení, přes náhledy přejede světlo), pak závěrečná karta.
+- Prázdný board po cold openu je vypnutý (`long_flags.tier_intro`), znělka u zařazení jde vypnout přes `tier_sting`.
+- Teaser „#1 is insane, stay till the end“ je jen na boardu po #6 a #3, nikdy přes moment. Slova naběhnou po jednom z rozostření.
+
+## Tempo a opakování (`tools/long/zabava.py`)
+- Stejný moment nesmí být ve videu dvakrát. Hlídá se stejné ID klipu, stejný VOD s překrývajícím se úsekem, stejný zvuk (dva klipy diváků nebo dva pohledy na jednu scénu) a stejný obraz u jednoho streamera. Zůstane ten s lepším skóre.
+- Moment s malým pohybem, tichým zvukem a bez smíchu nebo křiku vypadne („low action“).
+- Hluché úseky delší než 2 s (nikdo nemluví, nic není hlasité, obraz stojí) se vystřihnou. Když takový úsek leží přímo u pointy, moment vypadne celý.
+- Střih je těsnější: začátek na větě asi 10 s před pointou, konec 2–3,5 s po ní. Průměrný moment vychází na 12–16 s.
+
+## Hudba (`tools/long/hudba.py`, databáze `assets/hudba/long/`)
+- Hraje pod celým videem bez přestávky. Po každém bloku 4–5 momentů se skladba prolnutím vymění, pořadí jde od klidnější po nejsilnější, takže energie roste k #1.
+- Pod řečí se ztiší, ale nikdy úplně. U boardu a karet je hlasitější. Pod závěrečnou kartou doznívá, karta má vlastní zvuk.
+- Každý stream je stejně hlasitý: moment se nejdřív změří a pak dostane jedno zesílení na −16 LUFS (měří se pásmo řeči, aby hlasitý motor nebo hudba ve hře streamera neztišily). QA pak v hotovém videu změří každý moment zvlášť a nepustí rozdíl větší než ±1,5 LU.
+- Databáze: `python tools/long/hudba_db.py hledej` stáhne kandidáty z Openverse (jen `license=cc0`, délka ≥ 90 s) a změří je (hlasitost, šum, výšky, tempo a zřetelnost rytmu, tichá místa). `vyber` uloží nejlepší do `assets/hudba/long/<značka>/` a k nim přidá naše starší skladby. Zdroj, autor a licence každé skladby jsou v `assets/hudba/long/sources.json`.
 
 ## Automatická kontrola (QA)
 Než se video pošle, zkontroluje se:
@@ -37,12 +49,13 @@ Než se video pošle, zkontroluje se:
 - kredit u každého momentu,
 - žádný černý nebo zamrzlý obraz v momentech,
 - hlasitost −16 LUFS ±1,5 a true peak ≤ −1 dBTP, žádné ticho,
-- počet položek na boardu a pořadí #N.
+- počet položek na boardu a pořadí #N,
+- žádný moment dvakrát a průměrná délka momentu do 21 s.
 
 Když kontrola neprojde, zkusí se video bez tier listu. Když neprojde ani pak, přijde jen krátký e-mail „video na <datum> se nepovedlo: <důvod>“.
 
 ## Vypínače (`brands.json` → `long_flags`)
-`tier_list`, `league`, `thumb_brand` (banán / naše modelka na náhledu), `multi_pov`, `banana_reaction`: `false` = vypnuto.
+`tier_list`, `league`, `thumb_brand` (banán / naše modelka na náhledu), `multi_pov`, `banana_reaction`, `tier_sting`: `false` = vypnuto. `tier_intro`: `true` = zapnuto.
 
 ## Co přijde e-mailem (jedno video = jeden e-mail)
 - **Předmět:** `[gta6bananaclips] <název> – nahrát 20.11. 01:53`. Čas je navržený slot pro zveřejnění, každý den trochu jiný a nikdy v celou ani v půl.

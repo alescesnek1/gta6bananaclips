@@ -30,6 +30,7 @@ import math
 import os
 import random
 import re
+import shutil
 import subprocess
 import sys
 import time
@@ -59,7 +60,9 @@ RESERVE = Path(os.environ.get("LONG_RESERVE") or HERE / "long_reserve.json")    
 FUN_MIN = 0.35                    # entertainment floor: quiet walking / shopping / menus never get in
 MIN_VERIFIED = 15                 # a themed series needs this many verified moments, else the main series
 MIN_VIDEO = 300.0                 # shorter than 5:00: no video
-CHAPTER_EXTRA = {"bananas": 1.5, "fanpage": 1.5}           # the tier list animation after every moment
+CHAPTER_EXTRA = {"bananas": 1.9, "fanpage": 0.0}           # the tier list placement after every moment
+COLD_SHOT = 1.9                   # cold open: <= 2 s per moment, the build-up, never the cut used later
+sys.path.insert(0, str(HERE / "tools" / "long"))            # tier, endcard, hudba, zabava
 
 # Every series: categories it needs (None = any moment), tag weights for ranking, the vision question
 # (kategorie.QUESTION key), the window in days, title. Titles: no invented numbers, #N = episode.
@@ -349,14 +352,33 @@ def pick_episode(a, serie, cands, z, verify=True, vis_cache=None):
         if not ok:
             why[reason] = why.get(reason, 0) + 1
             continue
+        import zabava
+        if zabava.low_action(r):                           # low motion + low loudness + no laughter / scream
+            why["low action"] = why.get("low action", 0) + 1
+            continue
         s, e = segment_times(r)
-        if e - s < 9.0:                                    # source too short for a >= 10 s chapter
+        if e - s < zabava.MIN_LEN:                         # source too short for a >= 10 s chapter
             why["too short"] = why.get("too short", 0) + 1
             continue
-        r.update(seg=[s, e], score=round(series_score(r, w), 3))
+        pk = r.get("peak")
+        keep = (zabava.tight_cut(moment_words(r), r["source"], s, e, pk if pk is not None and s < pk < e else None)
+                if K.has_audio(r["source"]) else [(s, e)])  # no sound: nothing to measure, the plain cut
+        if keep is None:                                   # > 2 s of nothing around the payoff
+            why["dead stretch"] = why.get("dead stretch", 0) + 1
+            continue
+        r.update(seg=[s, e], keep=keep, play=round(sum(y - x for x, y in keep), 2), score=round(series_score(r, w), 3))
         good.append(r)
     good = drop_canned(good, why)
     good.sort(key=lambda r: -r["score"])
+    if not SERIES[sk].get("same_mission"):                 # the same moment never twice (same-mission IS multi-POV)
+        import zabava
+        for r in good:
+            r.setdefault("cam", K.load_json(K.STREAMERS, {}).get(r["channel"], {}).get("cam"))
+        good, dups = zabava.dedupe(good)
+        for i, (k, reason) in dups.items():
+            log(f"  duplicate {i[-14:]} of {k[-14:]}: {reason}")
+        if dups:
+            why["duplicate"] = len(dups)
     per_max = 99 if (serie.startswith("streamer:") or lead or SERIES[sk].get("night")) else a.max_na_streamera
     picked, rest, per, total = [], [], {}, 0.0
     themed = bool(SERIES[sk].get("cats"))
@@ -372,12 +394,16 @@ def pick_episode(a, serie, cands, z, verify=True, vis_cache=None):
             continue
         picked.append(r)
         per[r["channel"]] = per.get(r["channel"], 0) + 1
-        total += r["seg"][1] - r["seg"][0] + CHAPTER_EXTRA[z]
+        total += moment_len(r) + CHAPTER_EXTRA[z]
     return picked, rest, why, lead
 
 def video_len(picked, z):
     """Estimated video length: cold open + moments (+ score cards) + end slate."""
-    return 11.0 + (SWEEP if z == "fanpage" else 0) + sum(r["seg"][1] - r["seg"][0] + CHAPTER_EXTRA[z] for r in picked) + 8.0
+    return 3 * COLD_SHOT + sum(moment_len(r) + CHAPTER_EXTRA[z] for r in picked) + 8.0
+
+def moment_len(r):
+    """Length of the moment in the video (after the jump cuts)."""
+    return r.get("play") or (r["seg"][1] - r["seg"][0])
 
 def episode_ok(picked, z):
     """A part must stand on its own: >= 5 min, a strong #1 and cold open (Aleš: no weak part 2)."""
@@ -617,19 +643,15 @@ def ready(r):
     return K.collect(r)
 
 def segment_times(r):
-    """HPC cut on the 16:9 source: start in the action (<= 14 s before the payoff), end ~3 s after."""
+    """HPC cut on the 16:9 source: start on a sentence ~10 s before the payoff, end ~2-3.5 s after
+    (tools/long/zabava.py; Aleš 17. 11.: tighter heads and tails, average moment 12-16 s)."""
+    import zabava
     dur = r.get("dur") or K.duration(r["source"])
-    a, b = r["cut"]
-    p = r.get("peak")
-    if p is None:
-        s, e = a, b
-    else:
-        s = max(a, p - 14.0)
-        e = min(dur, max(p + 2.5, min(b, p + 4.0)))
-    if e - s < 10.2:                                       # chapters need >= 10 s
-        s = max(0.0, e - 10.2)
-        e = min(dur, s + 10.2)
-    return round(s, 2), round(e, 2)
+    try:
+        words = moment_words(r)
+    except Exception:
+        words = []
+    return zabava.snap_segment(words, r["cut"], r.get("peak"), dur)
 
 # -----------------------------------------------------------------------------
 # render
@@ -669,6 +691,77 @@ SFX = HERE / "assets" / "sfx"
 CAP16 = {"bananas": ("Montserrat Black", 78, "FFE135", 5, 3), "fanpage": ("Anton", 94, "FF4FD8", 4, 0)}
 TEASER = "#1 is insane, stay till the end"
 MUSIC_VOL = {"bananas": 0.06, "fanpage": 0.05}
+
+LUFS = -16.0                      # every moment's stream audio lands here (two-pass, linear gain)
+
+TAME = "acompressor=threshold=-13dB:ratio=5:attack=4:release=140,alimiter=limit=0.84:level=0:attack=3:release=80"
+
+def level_gain(src, pieces, t0=0.0, words=None):
+    """
+    Gain (dB) that brings the STREAMER'S VOICE in these pieces to LUFS (Aleš 17. 11.: some streams are really
+    quiet, every stream must be about as loud). Pass 1 of two: EBU R128 integrated loudness of the parts
+    where he speaks (word times; all of it when there are under 2 s of speech), in the voice band
+    (120 Hz - 6 kHz) so an engine or the game's music does not turn him down. Measuring everything would
+    let one scream set the level and leave the talking 20 dB under it. The gain is linear; what is far
+    louder than the voice (screams, crashes) is then held by TAME (compressor + limiter).
+    """
+    spans = []
+    for w0, w1, _ in words or []:
+        for x, y in pieces:
+            lo, hi = max(x, w0 - 0.12), min(y, w1 + 0.12)
+            if hi - lo > 0.05:
+                if spans and lo - spans[-1][1] < 0.25:
+                    spans[-1] = (spans[-1][0], hi)
+                else:
+                    spans.append((lo, hi))
+    if sum(y - x for x, y in spans) < 2.0:
+        spans = list(pieces)
+    spans = spans[:60]
+    parts = "".join(f"[0:a]atrim={x - t0:.3f}:{y - t0:.3f},asetpts=PTS-STARTPTS[p{i}];" for i, (x, y) in enumerate(spans))
+    g = (parts + "".join(f"[p{i}]" for i in range(len(spans))) + f"concat=n={len(spans)}:v=0:a=1,"
+         "highpass=f=120,lowpass=f=6000,ebur128=framelog=quiet[o]")
+    p = subprocess.run(["ffmpeg", "-nostdin", "-hide_banner", "-ss", f"{t0:.2f}", "-t", f"{pieces[-1][1] - t0 + 0.5:.2f}",
+                        "-i", str(src), "-filter_complex", g, "-map", "[o]", "-f", "null", "-"],
+                       capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=300)
+    summ = p.stderr[p.stderr.rfind("Summary:"):] if "Summary:" in p.stderr else ""
+    m = re.search(r"I:\s+(-?[\d.]+) LUFS", summ)
+    if not m or float(m.group(1)) < -60:
+        return 0.0
+    return max(-20.0, min(30.0, LUFS - 1.0 - float(m.group(1))))    # the band-limited reading sits ~1 LU under the full one
+
+LOUD_PART = -14.0                 # where the loud part of every moment lands (its integrated level is ~ -16)
+
+def loudness(path, ss=None, t=None):
+    """
+    Level of the LOUD PART of a file's audio (LUFS): the 95th percentile of the short-term loudness (EBU
+    R128 "LRA high"), the integrated value when the file is too short for it; None when unmeasurable.
+    This is what "as loud as the other streams" means to a viewer, and unlike the integrated value it does
+    not move when music fills the pauses (they pass the gate then and pull the average down by up to 4 LU).
+    """
+    cut = (["-ss", f"{ss:.2f}"] if ss is not None else []) + (["-t", f"{t:.2f}"] if t is not None else [])
+    p = subprocess.run(["ffmpeg", "-nostdin", "-hide_banner"] + cut + ["-i", str(path), "-vn", "-af", "ebur128=framelog=quiet",
+                        "-f", "null", "-"], capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=300)
+    summ = p.stderr[p.stderr.rfind("Summary:"):] if "Summary:" in p.stderr else ""
+    m = re.search(r"LRA high:\s+(-?[\d.]+) LUFS", summ)
+    if not m or float(m.group(1)) < -60:
+        m = re.search(r"I:\s+(-?[\d.]+) LUFS", summ)
+    return float(m.group(1)) if m and float(m.group(1)) > -60 else None
+
+def level_fix(seg, passes=2):
+    """
+    Pass 2 of the levelling: the finished moment (voice at its level, screams tamed, our effects on top) is
+    measured as the viewer hears it and its loud part brought to LOUD_PART with one more small linear gain;
+    the picture is copied.
+    """
+    for _ in range(passes):
+        cur = loudness(seg)
+        if cur is None or abs(LOUD_PART - cur) <= 0.4:
+            return
+        fixed = seg.with_name(seg.stem + "_lv.mp4")
+        run(["ffmpeg", "-nostdin", "-y", "-hide_banner", "-loglevel", "error", "-i", str(seg), "-map", "0:v", "-map", "0:a",
+             "-c:v", "copy", "-af", f"volume={max(-8.0, min(8.0, LOUD_PART - cur)):.2f}dB,alimiter=limit=0.84:level=0:attack=3:release=80"]
+            + AOUT + [str(fixed)])
+        fixed.replace(seg)
 
 def moment_words(m):
     """Word times of the moment's source: from the pool cache, else Whisper once (rendered shorts)."""
@@ -776,7 +869,7 @@ def story_grade(m, src, a, b):
     return K.FAN_LOOK
 
 def render_moment(m, out, z, rank, idx, tmp, venc, teaser=False, banana=False, card_on=False, intro_extra="",
-                  story=False, cut_to=None, badge=None):
+                  story=False, cut_to=None, badge=None, chapter=None, sticker=None):
     """
     One moment of the countdown, built like the shorts so it never sits still (Aleš 17. 11.):
       cut      start in the action, jump cuts over dead air (klipuj.dead_air), <= ~25 s
@@ -791,14 +884,17 @@ def render_moment(m, out, z, rank, idx, tmp, venc, teaser=False, banana=False, c
     s, e = m["seg"]
     src = m["source"]
     if not K.has_audio(src):
-        render_silent(m, out, z, rank, idx, tmp, venc)
+        render_silent({**m, "seg": [s, min(e, s + cut_to) if cut_to else e]}, out, z, rank, idx, tmp, venc)
         return K.duration(out)
     dur_src = K.duration(src)
     words = moment_words(m)
     peak = m.get("peak")
     peak = peak if peak is not None and s < peak < e else None
-    keep = K.dead_air(words, src, s, e, peak) if words else [(s, e)]
-    if sum(y - x for x, y in keep) < 9.0:                 # chapters need >= 10 s (moment + tier flight)
+    import zabava
+    keep = [tuple(k) for k in (m.get("keep") or [])] if not cut_to else None
+    if not keep or abs(keep[0][0] - s) > 0.01 or keep[-1][1] > e + 0.01:
+        keep = zabava.tight_cut(words, src, s, e, peak) or (K.dead_air(words, src, s, e, peak) if words else [(s, e)])
+    if sum(y - x for x, y in keep) < 8.0:                 # chapters need >= 10 s (moment + tier placement)
         keep = [(s, e)]
     card_file = K.RATING / f"score_{K.banana_rating(m.get('views'))}.webm"
     card = card_on and z == "bananas" and card_file.exists()
@@ -822,7 +918,8 @@ def render_moment(m, out, z, rank, idx, tmp, venc, teaser=False, banana=False, c
         a0, b0 = remap(w[0]), remap(w[1])
         if a0 is not None and b0 is not None:
             cap_words.append((a0, b0, w[2]))
-    cap_words = [w for w in cap_words if w[0] >= (0.0 if story else 0.65) and w[1] <= length - 0.2]   # not under the intro card
+    cap_words = [w for w in cap_words if w[0] >= (CHAPTER_CARD + 0.1 if chapter else 0.0 if story else 0.65)
+                 and w[1] <= length - 0.2]                 # not under the intro card / chapter title
     cap_words, mute = K.mask_swears(cap_words)
     for w in words:                                       # bleep every hard swear, captioned or not
         a0, b0 = remap(w[0]), remap(w[1])
@@ -843,7 +940,7 @@ def render_moment(m, out, z, rank, idx, tmp, venc, teaser=False, banana=False, c
     for i, (x, y) in enumerate(keep):
         g.append(f"[0:v]trim={x - t0:.3f}:{y - t0:.3f},setpts=PTS-STARTPTS,{norm},fps={FPS},setsar=1[v{i}]")
         g.append(f"[0:a]atrim={x - t0:.3f}:{y - t0:.3f},asetpts=PTS-STARTPTS,aresample=48000,"
-                 f"aformat=channel_layouts=stereo[a{i}]")
+                 f"aformat=channel_layouts=stereo,afade=t=in:d=0.012,afade=t=out:st={max(0.0, y - x - 0.012):.3f}:d=0.012[a{i}]")
     g.append("".join(f"[v{i}][a{i}]" for i in range(len(keep))) + f"concat=n={len(keep)}:v=1:a=1[vc][ac]")
     zexpr = zoom_marks(rw, jumps, main_end, pk)
     flash_col = "white@0.55" if z == "bananas" else f"0x{COL[z]}@0.5"
@@ -852,9 +949,6 @@ def render_moment(m, out, z, rank, idx, tmp, venc, teaser=False, banana=False, c
          + (f",drawbox=enable='between(t,{pk:.2f},{pk + 0.12:.2f})':color={flash_col}:t=fill" if pk is not None else "")
          + f",subtitles=filename='{K.ff_path(ass)}':fontsdir='{K.ff_path(K.CAP_FONTS)}'"
          + (f",{story_grade(m, src, s, e)}" if story else "")
-         + (f",drawbox=x=0:y=0:w=iw:h={LETTERBOX}:color=black:t=fill:enable='lt(t,0.45)+gt(t,{length - 0.45:.2f})'"
-            f",drawbox=x=0:y=ih-{LETTERBOX}:w=iw:h={LETTERBOX}:color=black:t=fill:enable='lt(t,0.45)+gt(t,{length - 0.45:.2f})'"
-            if story else "")
          + f",{overlays(tmp, z, m, None if story else rank, idx)}"
          + (f",drawtext=fontfile='{K.ff_path(FONT_B)}':textfile='{text_file(tmp, f'bd{idx}', badge)}':fontsize=46:"
             f"fontcolor=0x8BE04E:borderw=3:bordercolor=0x1E4A12:box=1:boxcolor=0x2E313B:boxborderw=16:"
@@ -870,7 +964,32 @@ def render_moment(m, out, z, rank, idx, tmp, venc, teaser=False, banana=False, c
               f"enable='between(t,{max(0.8, main_end - 3.0):.2f},{length:.2f})'")
     g.append(v + "[v0]")
     vlast, n, mixes = "[v0]", 1, []
-    a = "[ac]loudnorm=I=-16:TP=-1.5:LRA=11" + (f",apad=whole_dur={length:.2f}" if hold else "")
+    if story:                                             # 2.35:1 bars SLIDE away after the cut and back in before
+        k = f"min(min(1,t/0.45),max(0,({length:.2f}-t)/0.45))"       # the next one (no bars popping on and off)
+        g.append(f"color=c=black:s={W}x{LETTERBOX}:r={FPS},split[lb1][lb2];"
+                 f"[v0][lb1]overlay=x=0:y='-{LETTERBOX}*{k}':shortest=1[vl1];"
+                 f"[vl1][lb2]overlay=x=0:y='{H - LETTERBOX}+{LETTERBOX}*{k}':shortest=1[vl2]")
+        vlast = "[vl2]"
+    if chapter:                                           # the chapter title: words fade up blurred -> sharp, then leave
+        import titulek
+        pat, tx, ty = titulek.frames(chapter, tmp / f"ch{idx}", K.CAP_FONTS / "anton.ttf", 150, CHAPTER_CARD,
+                                     tuple(int(COL[z][i:i + 2], 16) for i in (0, 2, 4)), FPS, (W, H))
+        ins.extend(["-framerate", str(FPS), "-i", pat])
+        g.append(f"{vlast}[{n}:v]overlay=x={tx}:y={ty}:eof_action=pass[vch]")
+        vlast, n = "[vch]", n + 1
+    if sticker and main_end > 4.0:                        # our presenter reacts over the end of the moment: she
+        t0 = max(0.5, (pk + 0.5) if pk is not None else 0.0, main_end - 1.75)     # slides up from the edge
+        t1 = min(main_end, t0 + 1.7)                                              # and leaves the same way
+        e = (f"if(lt(t,{t0 + 0.32:.2f}),1-pow(1-(t-{t0:.2f})/0.32,3),"
+             f"if(gt(t,{t1 - 0.26:.2f}),1-pow(1-({t1:.2f}-t)/0.26,2),1))")
+        ins.extend(["-c:v", "libvpx-vp9", "-i", str(sticker)])
+        g.append(f"[{n}:v]scale=-2:600,setpts=PTS+{t0:.2f}/TB[ms];{vlast}[ms]overlay="
+                 f"x={'60' if hits(1300, 500, 1920, 1080) else 'W-w-60'}:y='H-h*max(0,{e})':"
+                 f"enable='between(t,{t0:.2f},{t1:.2f})':eof_action=pass[vms]")
+        vlast, n = "[vms]", n + 1
+    gain = level_gain(src, keep, t0, words)
+    a = (f"[ac]volume={gain:.2f}dB,{TAME}"
+         + (f",apad=whole_dur={length:.2f}" if hold else ""))
     for a0, b0 in mute:
         a += f",volume=enable='between(t,{a0:.2f},{b0:.2f})':volume=0"
     g.append(a + "[a0]")
@@ -894,6 +1013,8 @@ def render_moment(m, out, z, rank, idx, tmp, venc, teaser=False, banana=False, c
 
     if not story:
         sfx("flash.wav", 0.0, 0.3)                        # whoosh on the intro card
+    elif chapter:
+        sfx("hit.wav", 0.0, 0.4)                          # the chapter title lands
     if pk is not None:
         sfx("riser.wav", pk - 1.2, 0.45)
         sfx("hit.wav", pk, 0.55)
@@ -914,11 +1035,37 @@ def render_moment(m, out, z, rank, idx, tmp, venc, teaser=False, banana=False, c
         vlast, n = "[vk]", n + 1
         mixes.append("[ca]")
     g.append(f"{''.join(mixes)}amix=inputs={len(mixes)}:duration=first:normalize=0,alimiter=limit=0.95,"
-             f"afade=t=out:st={max(0.0, length - 0.15):.2f}:d=0.15[aout]")
+             f"afade=t=in:d=0.03,afade=t=out:st={max(0.0, length - 0.12):.2f}:d=0.12[aout]")
     run(["ffmpeg", "-nostdin", "-y", "-hide_banner", "-loglevel", "error"] + ins +
         ["-filter_complex", ";".join(g), "-map", vlast, "-map", "[aout]", "-t", f"{length:.2f}"] + VOUT + venc + AOUT
         + [str(out)])
+    level_fix(Path(out))
     return length
+
+MUSIC_BASE = {"bananas": 0.22, "fanpage": 0.27}          # bed level against a -16 LUFS track (ducked under speech)
+
+def block_of(i, n):
+    """Music block of the i-th played moment out of n: blocks of 4-5 moments, the last one never tiny."""
+    import hudba
+    nb = max(1, math.ceil(n / hudba.BLOCK))                # 12 moments -> 3 blocks of 4, 17 -> 5 + 4 + 4 + 4
+    return min(i * nb // max(n, 1), nb - 1), nb
+
+def music_bed(video, out, z, plan, block_starts, boosts, stings, stop_at, tmp):
+    """
+    The music database bed (tools/long/hudba.py) under the whole video: a new track every block with a
+    crossfade, the placement jingle on every tier segment, louder on boards / cards, rising towards the
+    end, ducked under speech with a floor (never silent). False = no database for this brand.
+    """
+    import hudba
+    if not plan:
+        return False
+    total = K.duration(video)
+    bed = hudba.build_bed(plan, total, block_starts, tmp / "bed.wav", base=MUSIC_BASE[z], boosts=boosts, stings=stings,
+                          sting_dur=TIER_ANIM, stop_at=stop_at)
+    hudba.mix(video, bed, out, AOUT)
+    Path(video).unlink(missing_ok=True)
+    bed.unlink(missing_ok=True)
+    return True
 
 def music_pass(video, out, z, music, mstart, louder, vol=None, stop_at=None):
     """
@@ -951,7 +1098,7 @@ def music_pass(video, out, z, music, mstart, louder, vol=None, stop_at=None):
 
 TIERS = ["S", "A", "B", "C", "D"]
 TIER_SHARE = [0.10, 0.20, 0.30, 0.25, 1.0]          # S = top 10 %, A next 20 %, B 30 %, C 25 %, D the rest
-TIER_ANIM = 1.5
+TIER_ANIM = 1.9
 
 def assign_tiers(ranked):
     """ranked = best first -> m["tier"] by position (S top 10 %, at least one)."""
@@ -966,27 +1113,44 @@ def assign_tiers(ranked):
         m["tier"] = TIERS[i]
 
 def tier_thumb(m, tmp):
-    """The moment's payoff frame, small."""
+    """
+    The moment's payoff frame, small. The payoff itself can be a black "wasted" screen or a flash: of the
+    frames around it the one with the most picture in it (contrast) is taken.
+    """
     p = tmp / f"th_{m['rank']}.jpg"
     if not p.exists():
         t = m.get("peak") or (m["seg"][0] + m["seg"][1]) / 2
-        run(["ffmpeg", "-nostdin", "-y", "-v", "error", "-ss", f"{t:.2f}", "-i", m["source"], "-frames:v", "1",
-             "-vf", "scale=512:288:force_original_aspect_ratio=increase,crop=512:288", str(p)])
+        best = None
+        for i, dt in enumerate((0.0, -0.7, -1.5, 0.6)):
+            c = tmp / f"th_{m['rank']}_{i}.jpg"
+            try:
+                run(["ffmpeg", "-nostdin", "-y", "-v", "error", "-ss", f"{max(m['seg'][0], t + dt):.2f}", "-i", m["source"],
+                     "-frames:v", "1", "-vf", "scale=960:540:force_original_aspect_ratio=increase,crop=960:540", str(c)])
+                import cv2
+                g = cv2.imread(str(c), cv2.IMREAD_GRAYSCALE)
+                score = float(g.std()) if g is not None else -1.0
+            except Exception:
+                score = -1.0
+            if best is None or score > best[0] * (1.25 if i else 1.0):   # the payoff frame wins unless clearly emptier
+                best = (score, c)
+        if best and best[1].exists():
+            best[1].replace(p)
+        for c in tmp.glob(f"th_{m['rank']}_*.jpg"):
+            c.unlink()
     return p
 
-sys.path.insert(0, str(HERE / "tools" / "long"))       # Fable's modules: tier list + end cards
-
-def tier_entry(m, tmp):
-    return {"tier": m["tier"], "thumb": str(tier_thumb(m, tmp)), "label": "@" + m["channel"]}
-
-def with_teaser(seg, tmp, venc):
-    """The teaser "#1 is insane, stay till the end" in the free strip under the board (y 1030+)."""
-    out = seg.with_name(seg.stem + "_t.mp4")
-    run(["ffmpeg", "-nostdin", "-y", "-hide_banner", "-loglevel", "error", "-i", str(seg), "-vf",
-         f"drawtext=fontfile='{K.ff_path(FONT_B)}':textfile='{text_file(tmp, 'teaser', TEASER.upper())}':"
-         f"fontsize=40:fontcolor=white:borderw=3:bordercolor=black:x=(w-tw)/2:y=1030"]
-        + VOUT + venc + ["-c:a", "copy", str(out)])
-    return out
+def tier_entry(m, tmp, seg=None):
+    """Board entry of a moment; seg = its rendered segment: the placement starts from its very last frame."""
+    e = {"tier": m["tier"], "thumb": str(tier_thumb(m, tmp)), "label": "@" + m["channel"]}
+    if seg is not None:
+        last = tmp / f"last_{m['rank']}.jpg"
+        try:
+            run(["ffmpeg", "-nostdin", "-y", "-v", "error", "-sseof", "-0.25", "-i", str(seg), "-update", "1", "-q:v", "2",
+                 str(last)])
+            e["from"] = str(last)
+        except RuntimeError:
+            pass
+    return e
 
 def end_card(z, out, venc):
     """
@@ -996,7 +1160,7 @@ def end_card(z, out, venc):
     """
     import endcard
     pre = HERE / "assets" / "long" / f"end_{z}.mp4"
-    if pre.exists() and (z == "bananas" or not endcard.OUTRO_16x9.exists()):
+    if pre.exists():                                       # rebuilt by `python tools/long/endcard.py` after any change
         run(["ffmpeg", "-nostdin", "-y", "-hide_banner", "-loglevel", "error", "-i", str(pre), "-map", "0:v", "-map", "0:a"]
             + VOUT + venc + ["-c:a", "copy", str(out)])
         return {"path": str(out), "dur": K.duration(out)}
@@ -1011,29 +1175,36 @@ def render_silent(m, out, z, rank, idx, tmp, venc):
          "-t", f"{e - s:.2f}"] + VOUT + venc + AOUT + [str(out)])
 
 def render_cold_open(top3, out, z, tmp, venc):
-    """10-12 s teaser: the payoffs of the best 3 (3.7 s each), hard cuts, credits, no numbers."""
+    """
+    ~6 s teaser of the best 3: <= 2 s each, the BUILD-UP into the payoff (it cuts away the instant the
+    payoff starts), punched in 1.15x so it is a different shot than the moment later. Hard cuts, credits.
+    Weakest of the three first, #1 last.
+    """
     parts = []
-    for i, m in enumerate(top3):
+    for i, m in enumerate(reversed(top3)):
         p = m.get("peak") or (m["seg"][0] + m["seg"][1]) / 2
-        s = max(0.0, p - 2.5)
-        e = min(K.duration(m["source"]), p + 1.2)
+        e = min(K.duration(m["source"]), p + 0.3)
+        s = max(0.0, e - COLD_SHOT)
         mm = {**m, "seg": [s, e]}
         seg = tmp / f"cold_{i}.mp4"
-        render_moment_plain(mm, seg, z, i, tmp, venc)
+        render_moment_plain(mm, seg, z, i, tmp, venc, punch=1.15)
         parts.append(seg)
     concat(parts, out)
 
-def render_moment_plain(m, out, z, idx, tmp, venc):
+def render_moment_plain(m, out, z, idx, tmp, venc, punch=1.0):
     s, e = m["seg"]
     src = m["source"]
     if not K.has_audio(src):
         return render_silent(m, out, z, None, f"o{idx}", tmp, venc)
     norm = f"scale={W}:{H}:force_original_aspect_ratio=decrease,pad={W}:{H}:(ow-iw)/2:(oh-ih)/2"
+    if punch > 1.0:                                        # slow push 1.0 -> punch over the shot
+        norm += (f",scale=w='{W}*(1+{punch - 1:.3f}*(0.4+0.6*t/{e - s:.2f}))':h=-2:eval=frame,"
+                 f"crop={W}:{H}:(iw-ow)/2:(ih-oh)/2")
     run(["ffmpeg", "-nostdin", "-y", "-hide_banner", "-loglevel", "error", "-ss", f"{s:.2f}", "-t", f"{e - s:.2f}",
          "-i", src, "-filter_complex",
          f"[0:v]{norm},fps={FPS},setsar=1,{overlays(tmp, z, m, None, f'o{idx}')}[v];"
-         f"[0:a]aresample=48000,aformat=channel_layouts=stereo,loudnorm=I=-16:TP=-1.5:LRA=11,"
-         f"apad=whole_dur={e - s:.2f},afade=t=in:d=0.04,afade=t=out:st={e - s - 0.1:.2f}:d=0.1[a]",
+         f"[0:a]aresample=48000,aformat=channel_layouts=stereo,volume={level_gain(src, [(s, e)], s):.2f}dB,"
+         f"{TAME},apad=whole_dur={e - s:.2f},afade=t=in:d=0.04,afade=t=out:st={e - s - 0.06:.2f}:d=0.06[a]",
          "-map", "[v]", "-map", "[a]", "-t", f"{e - s:.2f}"] + VOUT + venc + AOUT + [str(out)])
 
 def concat(parts, out):
@@ -1068,44 +1239,17 @@ def chapter_label(m, serie):
     t = datetime.fromtimestamp(m.get("created") or 0, TZ)
     return t.strftime("%I %p").lstrip("0")
 
-def render_chapter_card(z, label, out, tmp, venc, length=1.2):
-    """Black 2.35:1 card with the chapter title (time of the stream), the bars close in, a soft hit."""
-    ins = ["-f", "lavfi", "-t", f"{length}", "-i", f"color=black:s={W}x{H}:r={FPS}",
-           "-f", "lavfi", "-t", f"{length}", "-i", "anullsrc=r=48000:cl=stereo"]
-    g = [f"[0:v]drawtext=fontfile='{K.ff_path(K.CAP_FONTS / 'anton.ttf')}':textfile='{text_file(tmp, 'ch_' + label.replace(' ', '_'), label)}':"
-         f"fontsize=120:fontcolor=white:x=(w-tw)/2:y=(h-th)/2:alpha='min(1,t/0.25)',"
-         f"drawbox=x=0:y=(h-4)/2+90:w=iw:h=4:color=0x{COL[z]}@0.9:t=fill,fade=t=out:st={length - 0.2:.2f}:d=0.2,"
-         f"format=yuv420p[v]"]
-    mixes, n = ["[1:a]"], 2
-    if (SFX / "hit.wav").exists():
-        ins += ["-i", str(SFX / "hit.wav")]
-        g.append("[2:a]aresample=48000,aformat=channel_layouts=stereo,volume=0.35[h]")
-        mixes.append("[h]")
-    g.append(f"{''.join(mixes)}amix=inputs={len(mixes)}:duration=first:normalize=0[a]")
-    run(["ffmpeg", "-nostdin", "-y", "-hide_banner", "-loglevel", "error"] + ins +
-        ["-filter_complex", ";".join(g), "-map", "[v]", "-map", "[a]", "-t", f"{length}"] + VOUT + venc + AOUT + [str(out)])
-
-def render_model_card(z, out, tmp, venc, seed, length=1.0):
-    """Our presenter's silent reaction (a still from assets/model_reakce/ with a spring pop); None if none."""
-    stills = sorted(p for p in MODEL_REAKCE.glob("*.png")) if MODEL_REAKCE.exists() else []
-    if not stills:
-        return None
-    img = random.Random(seed).choice(stills)
-    pop = "min(1,1.15*sin(min(t,0.35)/0.35*PI/2)+0.0)"   # quick overshoot pop
-    g = [f"[1:v]scale=-2:820,format=rgba[m];[0:v][m]overlay=x=(W-w)/2:y=(H-h)/2+40*(1-{pop}):eval=frame,"
-         f"fade=t=in:d=0.15,fade=t=out:st={length - 0.2:.2f}:d=0.2,format=yuv420p[v]"]
-    run(["ffmpeg", "-nostdin", "-y", "-hide_banner", "-loglevel", "error",
-         "-f", "lavfi", "-t", f"{length}", "-i", f"color=0x{DARK[z]}:s={W}x{H}:r={FPS}",
-         "-loop", "1", "-t", f"{length}", "-i", str(img),
-         "-f", "lavfi", "-t", f"{length}", "-i", "anullsrc=r=48000:cl=stereo",
-         "-filter_complex", ";".join(g), "-map", "[v]", "-map", "2:a", "-t", f"{length}"] + VOUT + venc + AOUT + [str(out)])
-    return out
+def model_sticker(seed):
+    """One of our presenter's reactions (assets/model_reakce/*.webm, VP9 with alpha), or None when there is none."""
+    clips = sorted(MODEL_REAKCE.glob("*.webm")) if MODEL_REAKCE.exists() else []
+    return random.Random(seed).choice(clips) if clips else None
 
 def build_story(a, picked, d, tmp):
     """
     Chronological story (fanpage): [chapter card "HOUR 2" / "11 PM"] -> moments of that chapter (no ranking,
-    no on-screen numbers, cinematic grade, 2.35:1 bars at the cuts) -> model reaction card between chapters
-    (if assets/model_reakce/ exists) -> ... -> the model's outro + Follow card. After Dark: every moment
+    no on-screen numbers, cinematic grade, 2.35:1 bars sliding at the cuts) -> our model's reaction slides in
+    over the end of the last moment of a chapter (if assets/model_reakce/ exists) -> ... -> the model's outro + Follow card. The chapter title sits over
+    the first second of the running picture (no black card), a ~6 s cold open of the 3 strongest build-ups first. After Dark: every moment
     ends on a beat of the music. Returns (path, chapters, duration, info for qa_long).
     """
     z, serie = a.znacka, series_key(a.serie)
@@ -1113,13 +1257,16 @@ def build_story(a, picked, d, tmp):
     music, _, mstart = K.music_cfg(f"{d}:{z}:{serie}", 60, (K.load_json(K.BRANDS, {}).get(z) or {}).get("music"))
     mlen = K.duration(music) if music else 0.0
     m0 = (mstart + 7) % max(mlen - 12, 1.0) if music else 0.0
-    beats = K.beat_grid(music, m0, 900) if (music and serie == "after-dark") else None
+    import hudba
     story = sorted(picked, key=lambda m: ((m.get("video_id") or ""), m.get("vod_offset") or 0)
                    if serie == "streamer-night" else (m.get("created") or 0, m.get("vod_offset") or 0))
     for i, m in enumerate(story, 1):
         m["rank"] = i                                      # internal order only, never on screen
     parts, chapters, static, louder, t = [], [], [], [], 0.0
     info = {"moments": [], "board_entries": 0, "tiers": False}
+    plan = hudba.Plan(z, f"{d}:{z}:{serie}", block_of(0, len(story))[1])
+    block_starts, boosts, played = [0.0], [], 0
+    beats = K.beat_grid(music, m0, 900) if (music and serie == "after-dark" and not plan) else None
 
     def add(path, kind):
         nonlocal t
@@ -1128,7 +1275,11 @@ def build_story(a, picked, d, tmp):
         if kind in ("card", "end"):
             static.append((t, t + dur))
         t += dur
+        return dur
 
+    cold = tmp / "cold.mp4"                                # the 3 strongest build-ups first: it starts in action
+    render_cold_open(sorted(story, key=lambda m: -m.get("score", 0))[:3], cold, z, tmp, venc)
+    add(cold, "cold")
     groups = []
     for m in story:
         lab = chapter_label(m, serie)
@@ -1136,32 +1287,33 @@ def build_story(a, picked, d, tmp):
             groups.append((lab, []))
         groups[-1][1].append(m)
     for gi, (lab, ms) in enumerate(groups):
-        if gi and flag(z, "model_cards"):
-            mc = render_model_card(z, tmp / f"model{gi:02d}.mp4", tmp, venc, f"{d}:{gi}")
-            if mc:
-                louder.append((t, t + 1.0))
-                add(mc, "card")
-        cc = tmp / f"chap{gi:02d}.mp4"
-        render_chapter_card(z, lab, cc, tmp, venc)
         chapters.append((t, f"{lab} - {ms[0].get('name') or ms[0]['channel']}"))
-        louder.append((t, t + 1.2))
-        add(cc, "card")
-        for m in ms:
+        louder.append((t, t + CHAPTER_CARD))
+        for mi, m in enumerate(ms):
             seg = tmp / f"m{m['rank']:02d}.mp4"
             cut_to = None
+            bi = block_of(played, len(story))[0]
+            if bi == len(block_starts):                    # a new music block starts with this moment
+                block_starts.append(t)
+            played += 1
+            if plan and serie == "after-dark":             # the beat of the track playing in this block
+                beats = plan.beats(bi, block_starts[bi])
             if beats:                                      # After Dark: the cut lands on a beat
                 T, ph = beats
-                natural = (m["seg"][1] - m["seg"][0])
+                natural = moment_len(m)
                 end = t + natural
                 k = math.floor((end - ph) / T)
                 target = ph + k * T
                 if target - t > 6.0:
                     cut_to = target - t
             log(f"  {lab} {m['channel']} {m['seg'][0]:.1f}-{m['seg'][1]:.1f} s" + (f" -> {cut_to:.2f} s on beat" if cut_to else ""))
-            render_moment(m, seg, z, None, m["rank"], tmp, venc, story=True, cut_to=cut_to)
+            last_of_chapter = mi == len(ms) - 1 and gi < len(groups) - 1 and flag(z, "model_cards")
+            render_moment(m, seg, z, None, m["rank"], tmp, venc, story=True, cut_to=cut_to,
+                          chapter=lab if mi == 0 else None,   # the title over the running picture, no black card
+                          sticker=model_sticker(f"{d}:{gi}") if last_of_chapter else None)
             m["at"] = round(t, 2)
-            info["moments"].append({"rank": m["rank"], "channel": m["channel"], "at": t})
-            add(seg, "moment")
+            info["moments"].append({"rank": m["rank"], "channel": m["channel"], "at": t, "id": m["id"]})
+            info.setdefault("lens", []).append(add(seg, "moment"))
     end = tmp / "outro.mp4"
     end_card(z, end, venc)
     stop = t
@@ -1179,10 +1331,15 @@ def build_story(a, picked, d, tmp):
     out.parent.mkdir(parents=True, exist_ok=True)
     raw = tmp / "concat.mp4"
     concat(parts, raw)
-    music_pass(raw, out, z, music, m0, louder, vol=MUSIC_VOL_STORY, stop_at=stop)
+    if music_bed(raw, out, z, plan, block_starts, boosts, [], stop, tmp):
+        info["music"] = plan.credits()
+        log("  music: " + " -> ".join(b["title"] for b in plan.blocks[: len(block_starts)]))
+    else:
+        music_pass(raw, out, z, music, m0, louder, vol=MUSIC_VOL_STORY, stop_at=stop)
     info.update(static=static, parts_total=round(t, 2), n_moments=len(story), order=[])
     return out, chapters, K.duration(out), info
 
+CHAPTER_CARD = 1.1                                        # s, the chapter title over the first moment of a chapter
 MUSIC_VOL_STORY = 0.09                                    # the music carries the story (ducked under speech)
 
 def build(a, picked, d, tmp, tiers=True):
@@ -1202,7 +1359,9 @@ def build(a, picked, d, tmp, tiers=True):
     music, _, mstart = K.music_cfg(f"{d}:{z}:{a.serie}", 60, (K.load_json(K.BRANDS, {}).get(z) or {}).get("music"))
     mlen = K.duration(music) if music else 0.0
     mpos = lambda i: (mstart + 7 * i) % max(mlen - 12, 1.0)
-    ranked = sorted(picked, key=lambda m: -m["score"])     # best first
+    import hudba
+    import zabava
+    ranked = list(reversed(zabava.order_countdown(picked, lambda m: m.get("primary"))))   # best first, with variety
     if SERIES[series_key(a.serie)].get("league") and flag(z, "league"):
         try:
             import liga
@@ -1221,6 +1380,8 @@ def build(a, picked, d, tmp, tiers=True):
         m["rank"] = i
     order = list(reversed(ranked))                         # countdown: weakest first, #1 last
     assign_tiers(ranked)
+    plan = hudba.Plan(z, f"{d}:{z}:{a.serie}", block_of(0, len(order))[1])
+    block_starts, boosts, stings = [0.0], [], []
     league = []
     if SERIES[series_key(a.serie)].get("league") and flag(z, "league"):
         try:
@@ -1242,16 +1403,17 @@ def build(a, picked, d, tmp, tiers=True):
 
     cold = tmp / "cold.mp4"
     render_cold_open(ranked[:3], cold, z, tmp, venc)
-    chapters.append((0, "Best moments preview"))
-    add(cold, "cold")
+    add(cold, "cold")                                      # ~6 s: too short for a chapter, it belongs to the first one
     louder = [(max(0.0, t - 0.6), t + 0.4)]
     if tiers:
         import tier
         cap = tier.capacity([m["tier"] for m in ranked])
-        b0 = tmp / "board0.mp4"                            # empty board: where does #1 go?
-        tier.render_hold([], b0, dur=2.0, brand=z, capacity=cap, venc=venc)
-        louder.append((t, t + 2.0))
-        add(b0, "board")
+        if flag(z, "tier_intro", False):                   # empty board after the cold open (off: 2 s of nothing)
+            b0 = tmp / "board0.mp4"
+            tier.render_hold([], b0, dur=1.2, brand=z, capacity=cap, venc=venc)
+            louder.append((t, t + 1.2))
+            boosts.append((t, t + 1.2, 2.2))
+            add(b0, "board")
     placed, teasers, league_cards = [], {r for r in (6, 3) if r < len(ranked)}, 0
     for i, m in enumerate(order):
         seg = tmp / f"m{i:02d}.mp4"
@@ -1261,28 +1423,34 @@ def build(a, picked, d, tmp, tiers=True):
                       banana=z == "bananas" and m["rank"] <= 5 and flag(z, "banana_reaction"),
                       badge=f"#{lg['rank']} · {lg['avg']:.1f} AVG" if lg else None)
         title = re.sub(r"\s+", " ", m.get("title") or "").strip()[:50]
-        chapters.append((t, f"#{m['rank']} {m.get('name') or m['channel']}" + (f" - {title}" if title else "")))
+        chapters.append((t if chapters else 0, f"#{m['rank']} {m.get('name') or m['channel']}" + (f" - {title}" if title else "")))
         m["at"] = round(t, 2)
         louder.append((t, t + 0.7))
-        info["moments"].append({"rank": m["rank"], "channel": m["channel"], "at": t})
-        add(seg, "moment")
+        if block_of(i, len(order))[0] == len(block_starts):   # a new music block starts with this moment
+            block_starts.append(t)
+        info["moments"].append({"rank": m["rank"], "channel": m["channel"], "at": t, "id": m["id"]})
+        info.setdefault("lens", []).append(add(seg, "moment"))
         if tiers:
-            tb = tmp / f"tier{i:02d}.mp4"                  # the moment flies into its tier row
-            tier.render_fly_in([tier_entry(p, tmp) for p in placed], tier_entry(m, tmp), tb, dur=TIER_ANIM,
-                               brand=z, capacity=cap, venc=venc)
-            if m["rank"] in teasers and m["rank"] != 1:
-                tb = with_teaser(tb, tmp, venc)
+            stings.append((t, tier.LAND_FR * TIER_ANIM))
+            tb = tmp / f"tier{i:02d}.mp4"                  # the moment is placed into its tier row
+            tier.render_fly_in([tier_entry(p, tmp) for p in placed], tier_entry(m, tmp, seg), tb, dur=TIER_ANIM,
+                               brand=z, capacity=cap, venc=venc,
+                               teaser=TEASER.upper() if m["rank"] in teasers and m["rank"] != 1 else None)
             placed.append(m)
             louder.append((t, t + TIER_ANIM))
             add(tb, "board")
-        elif m["rank"] in teasers:
-            pass                                           # plain countdown: no teaser (never over a moment)
-        pass
     info["board_entries"] = len(placed)
+    merged = chapters[:1]
+    for c in chapters[1:]:                                 # YouTube needs >= 10 s per chapter
+        if c[0] - merged[-1][0] >= 10:
+            merged.append(c)
+    chapters = merged
     if tiers:
         full = tmp / "board_full.mp4"                      # the whole board before the end card
-        tier.render_hold([tier_entry(p, tmp) for p in placed], full, dur=3.0, brand=z, capacity=cap, venc=venc)
-        louder.append((t, t + 3.0))
+        tier.render_hold([tier_entry(p, tmp) for p in placed], full, dur=2.4, brand=z, capacity=cap, venc=venc,
+                         zoom0=1 + tier.PUSH, focus=placed[-1]["tier"])       # the camera carries on from the last placement
+        louder.append((t, t + 2.4))
+        boosts.append((t, t + 2.4, 2.4))
         add(full, "board")
     end = tmp / "end.mp4"
     end_card(z, end, venc)
@@ -1292,9 +1460,19 @@ def build(a, picked, d, tmp, tiers=True):
     out.parent.mkdir(parents=True, exist_ok=True)
     raw = tmp / "concat.mp4"
     concat(parts, raw)
-    music_pass(raw, out, z, music, mpos(1), louder, stop_at=stop)
+    if music_bed(raw, out, z, plan, block_starts, boosts, stings if flag(z, "tier_sting") else [], stop, tmp):
+        info["music"] = plan.credits()
+        log("  music: " + " -> ".join(b["title"] for b in plan.blocks[: len(block_starts)])
+            + (f" | sting: {plan.sting['title']}" if stings else ""))
+    else:
+        music_pass(raw, out, z, music, mpos(1), louder, stop_at=stop)
     info.update(static=static, parts_total=round(t, 2), n_moments=len(order), order=[m["rank"] for m in order])
     return out, chapters, K.duration(out), info
+
+def moment_levels(out, info):
+    """Level of the loud part (see loudness) of every moment inside the finished video, music and effects included."""
+    lv = [loudness(out, m["at"], ln) for m, ln in zip(info["moments"], info.get("lens") or [])]
+    return [x for x in lv if x is not None]
 
 def qa_long(out, chapters, info, min_len, max_len=900.0):
     """
@@ -1314,6 +1492,21 @@ def qa_long(out, chapters, info, min_len, max_len=900.0):
         bad.append("a moment without credit")
     if info["order"] != sorted(info["order"], reverse=True):
         bad.append(f"countdown order wrong: {info['order']}")
+    lv = moment_levels(out, info)
+    if lv:
+        med = float(np.median(lv))
+        log("  QA: moment levels " + " ".join(f"{x:.1f}" for x in lv) + f" LUFS (median {med:.1f})")
+        info["levels"] = [round(x, 1) for x in lv]
+        if max(abs(x - med) for x in lv) > 1.5:
+            bad.append(f"moment loudness spread: {min(lv):.1f}..{max(lv):.1f} LUFS (median {med:.1f}, max +-1.5)")
+    ids = [m.get("id") for m in info["moments"] if m.get("id")]
+    if len(ids) != len(set(ids)):
+        bad.append("the same moment twice")
+    lens = info.get("lens") or []
+    if lens:
+        log(f"  QA: moments {len(lens)}, average {sum(lens) / len(lens):.1f} s, {min(lens):.1f}-{max(lens):.1f} s")
+        if sum(lens) / len(lens) > 20.0:                   # target 12-20 s; shorter is fine (short sources)
+            bad.append(f"average moment {sum(lens) / len(lens):.1f} s (> 20)")
     if info["tiers"] and info["board_entries"] != info["n_moments"]:
         bad.append(f"tier board has {info['board_entries']} entries for {info['n_moments']} moments")
     p = subprocess.run(["ffmpeg", "-nostdin", "-hide_banner", "-i", str(out),
@@ -1416,7 +1609,7 @@ def main():
     try:
         for tiers in (True, False):                        # QA failed: once more as a plain countdown
             for f in tmp.glob("*"):
-                f.unlink()
+                shutil.rmtree(f) if f.is_dir() else f.unlink()
             out, chapters, dur, info = build(a, picked, do, tmp, tiers=tiers)
             problems = qa_long(out, chapters, info, MIN_VIDEO)
             if not problems:
@@ -1424,7 +1617,7 @@ def main():
             log(f"  QA failed ({'with' if tiers else 'without'} tier list): {'; '.join(problems)}")
     finally:
         for f in tmp.glob("*"):
-            f.unlink()
+            shutil.rmtree(f) if f.is_dir() else f.unlink()
         tmp.rmdir()
     if problems:
         fail = out.with_name(out.name.replace(".mp4", ".failed.json"))
@@ -1448,6 +1641,7 @@ def main():
         "moments": [{k: m.get(k) for k in ("id", "rank", "channel", "name", "url", "title", "views", "tags", "peak",
                                            "seg", "at", "source", "platform", "reach", "tag_scores", "primary",
                                            "proven", "fun", "tier")} for m in moments],
+        "music": info.get("music") or [],
         "made_at": datetime.now(TZ).isoformat(timespec="seconds"),
     }
     mp = out.with_name(out.name.replace(".mp4", ".meta.json"))

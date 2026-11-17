@@ -24,7 +24,9 @@ How kompilace.py calls it (instead of render_end):
 Where the YouTube elements go (Studio -> Editor -> End screen, template "2 videos, 1 subscribe"):
   bananas            videos (110,120)-(750,480) and (1170,120)-(1810,480), subscribe circle centre (960,300) r 125
   fanpage, no model  the same
-  fanpage, model     a column on the side away from her face, see the returned "zones"
+  fanpage, model     one column (2 videos + the circle under them) on the side she never enters during the
+                     whole outro, see the returned "zones"; the profile picture + name pop up on the other
+                     side once she has walked away from it
 
 Everything is drawn here (Pillow + numpy, fonts from fonts/), sounds are synthesized. The film is a pure
 function of time: frame(t) draws the whole picture, motion = closed-form springs, no randomness at run time.
@@ -47,6 +49,7 @@ W, H, FPS, SR = 1920, 1080, 30, 48000
 S = 2                                          # supersampling of sprites
 BANANA_KEY = "0x1BD02A"                        # the greenscreen of assets/banan (same as klipuj.BANANA_KEY)
 OUTRO_16x9 = HERE / "assets" / "outro" / "fanpage_outro_16x9.mp4"
+OUTRO_SKIP = 1.0                               # s cut from the start of the model's outro (Aleš 17. 11.)
 LUFS = -16.0
 
 BRANDS = {
@@ -66,12 +69,15 @@ ZONES = {"video": [(110, 120, 750, 480), (1170, 120, 1810, 480)], "subscribe": (
 # small tools
 
 def spring(t, freq=3.2, damp=0.45):
-    """0 -> 1 with overshoot: step response of an underdamped spring, closed form."""
+    """
+    0 -> 1, critically damped: fast first, then slow, and it never overshoots - nothing scales up and
+    back down or wobbles (motion rule: direction never reverses, no bounces). `damp` is kept for the
+    callers and ignored; `freq` still sets the speed.
+    """
     if t <= 0:
         return 0.0
-    w = 2 * math.pi * freq
-    wd = w * math.sqrt(1 - damp * damp)
-    return 1 - math.exp(-damp * w * t) * (math.cos(wd * t) + damp * w / wd * math.sin(wd * t))
+    w = 2 * math.pi * freq * 1.25
+    return 1 - math.exp(-w * t) * (1 + w * t)
 
 
 def clamp(x, a=0.0, b=1.0):
@@ -377,12 +383,20 @@ def draw_zones(im, A, t, col=(255, 255, 255), strength=0.11):
 
 
 def draw_name(im, A, t, t_name=T_NAME, lift=18):
-    for i, (spr, dx) in enumerate(A["letters"]):
-        u = t - t_name - i * TYPE_DT
-        if u <= 0:
-            continue
-        k = spring(u, 4.0, 0.5)
-        put(im, spr, A["name_x"] + dx, A["name_cy"] + (1 - ease(u / 0.2)) * lift, 0.6 + 0.4 * k, clamp(u / 0.06))
+    """The name as ONE word: it fades up from blurred to sharp with a small rise (no typing, no scale pop)."""
+    u = (t - t_name) / 0.5
+    if u <= 0:
+        return
+    if "name_spr" not in A:                                    # the letters joined into one sprite (at S x)
+        spr = Image.new("RGBA", (int((A["name_w"] + 40) * S), int((A["name_h"] + 40) * S)), (0, 0, 0, 0))
+        for ls, dx in A["letters"]:
+            spr.alpha_composite(ls, (int(20 * S + dx * S - ls.width / 2), int(20 * S + A["name_h"] * S / 2 - ls.height / 2)))
+        A["name_spr"] = spr
+    e = clamp(u) ** 2 * (3 - 2 * clamp(u))
+    spr = A["name_spr"]
+    if e < 1:
+        spr = spr.filter(ImageFilter.GaussianBlur(9 * S * (1 - e)))
+    put(im, spr, A["name_x"] + A["name_w"] / 2, A["name_cy"] + (1 - e) * lift, 1.0, e)
 
 
 def frame_bananas(A, t):
@@ -423,39 +437,74 @@ def frame_bananas(A, t):
 # ---------------------------------------------------------------------------
 # fanpage: the model's landscape outro full frame (when it exists) or the neon night card
 
-def fan_zones(side):
-    """A column of zones on one side: the name on top, two videos stacked, the subscribe circle beside them."""
-    if side == "right":                                        # videos at the outer edge, the circle inside
-        bx, cx = 1300, 1150
-    else:
-        bx, cx = 100, 770
-    return {"video": [(bx, 300, bx + 520, 592), (bx, 632, bx + 520, 924)], "subscribe": (cx, 612, 104)}
+def fan_zones(side, free=None, top=None):
+    """
+    One column of zones on the side away from her: the name on top, two 480x270 videos stacked, the
+    subscribe circle under them. `free` = (x0, x1) px she never enters during the WHOLE outro; the column
+    hugs the outer edge and shrinks (16:9 kept) when the free strip is narrower.
+    """
+    x0, x1 = free or ((1000, W) if side == "right" else (0, 920))
+    w = int(max(240, min(480, x1 - x0 - 100)))                # never wider than the strip she leaves free
+    h = round(w * 9 / 16)
+    bx = (W - 60 - w) if side == "right" else 60
+    r = 96
+    y = top if top is not None else (H - (2 * h + 28 + 22 + 2 * r)) // 2
+    return {"video": [(bx, y, bx + w, y + h), (bx, y + h + 28, bx + w, y + 2 * h + 28)],
+            "subscribe": (bx + w // 2, y + 2 * h + 28 + 22 + r, r)}
 
 
-def face_side(src):
-    """'left' / 'right' = where the zones go: the side away from her face (Haar on a few frames). Default right."""
+def person_extent(src, samples=24, skip=0.0):
+    """
+    Where she is over the WHOLE outro (she walks and the camera pushes in, one frame says nothing):
+    (side for the zones, (x0, x1) px of the strip she never enters, track [(t, x0, x1)] of her body in px
+    over time, t counted from `skip`). Face (Haar) on `samples` frames, the body taken as 1.45 face widths
+    to each side of it (shoulders in a close-up); the union of all frames is hers. Default: right.
+    """
+    track = []
     try:
         import cv2
         cap = cv2.VideoCapture(str(src))
         n = int(cap.get(cv2.CAP_PROP_FRAME_COUNT)) or 1
+        fps = cap.get(cv2.CAP_PROP_FPS) or 30.0
+        first = int(skip * fps)
         det = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
-        xs = []
-        for i in range(12):
-            cap.set(cv2.CAP_PROP_POS_FRAMES, int(n * (i + 0.5) / 12))
+        for i in range(samples):
+            f = first + int((n - first) * (i + 0.5) / samples)
+            cap.set(cv2.CAP_PROP_POS_FRAMES, f)
             ok, fr = cap.read()
             if not ok:
                 continue
             g = cv2.cvtColor(fr, cv2.COLOR_BGR2GRAY)
-            faces = det.detectMultiScale(g, 1.1, 6, minSize=(g.shape[0] // 9, g.shape[0] // 9))
+            faces = det.detectMultiScale(g, 1.1, 6, minSize=(g.shape[0] // 14, g.shape[0] // 14))
             if len(faces):
                 x, y, w, h = max(faces, key=lambda f: f[2] * f[3])
-                xs.append((x + w / 2) / g.shape[1])
+                cx, k = x + w / 2, W / g.shape[1]
+                track.append((f / fps - skip, max(0.0, (cx - 1.45 * w) * k), min(float(W), (cx + 1.45 * w) * k)))
         cap.release()
-        if xs:
-            return "left" if float(np.median(xs)) > 0.5 else "right"
+        if track:
+            lo, hi = min(t[1] for t in track), max(t[2] for t in track)
+            if W - hi >= lo:                                   # more room on the right
+                return "right", (int(hi) + 30, W), track
+            return "left", (0, int(lo) - 30), track
     except Exception as e:                                    # no cv2 / unreadable file: the default
-        print(f"endcard: face detection skipped ({e})", file=sys.stderr)
-    return "right"
+        print(f"endcard: person detection skipped ({e})", file=sys.stderr)
+    return "right", None, track
+
+
+def free_spot(side, track, dur, need=300):
+    """
+    The area she LEAVES: she starts on one side and walks to the middle, so the side opposite the zones is
+    empty from some moment on. -> (t, x0, x1): from t s the strip x0..x1 px stays clear of her until the
+    end, or None (never wide enough, or less than 3 s of the outro left).
+    """
+    for i, (t, lo, hi) in enumerate(track):
+        if side == "right":                                    # zones right -> the spot is on the left
+            x0, x1 = 40, min(tr[1] for tr in track[i:]) - 30
+        else:
+            x0, x1 = max(tr[2] for tr in track[i:]) + 30, W - 40
+        if x1 - x0 >= need and dur - t >= 3.0:
+            return t + 0.3, int(x0), int(x1)
+    return None
 
 
 def neon_frame(w, h, r, circle=False, fill_a=110):
@@ -520,8 +569,10 @@ def setup_fanpage(tmp, src=None):
     if A["video"]:
         A["dur"] = float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0",
                                          str(src)], capture_output=True, text=True).stdout.strip())
-        A["side"] = face_side(src)
-        A["zones"] = fan_zones(A["side"])
+        A["dur"] -= OUTRO_SKIP
+        A["side"], A["free"], track = person_extent(src, skip=OUTRO_SKIP)
+        A["spot"] = free_spot(A["side"], track, A["dur"])     # where the profile picture + name pop up
+        A["zones"] = fan_zones(A["side"], A["free"], None if A["spot"] else 262)
         # light scrim only on the zones' side so the name and the frames read on any picture
         xx = np.mgrid[0:H, 0:W][1].astype(np.float32) / W
         g = np.clip((xx - 0.40) / 0.45, 0, 1) if A["side"] == "right" else np.clip((0.60 - xx) / 0.45, 0, 1)
@@ -575,8 +626,22 @@ def setup_fanpage(tmp, src=None):
     r = A["zones"]["subscribe"][2]
     A["circle"] = neon_frame(2 * r, 2 * r, r, circle=True, fill_a=120 if A["video"] else 150)
     # the name: white Anton, typed; a pink line draws under it
-    if A["video"]:
-        px = fit_px(b["font"], b["name"], 150, 760)
+    if A["video"] and A["spot"]:                               # profile picture + name in the area she left
+        t0, sx0, sx1 = A["spot"]
+        d = int(min(210, sx1 - sx0 - 50))
+        px = fit_px(b["font"], b["name"], 110, sx1 - sx0 - 10)
+        x0 = (sx0 + sx1) / 2 - font(b["font"], px).getlength(b["name"]) / S / 2
+        A["pfp"] = with_shadow(circle_pic(b["pfp"], d, PINK, 6, (255, 255, 255), 2), 12 * S, (0, 8 * S), 0.55, 34 * S)
+        glow = Image.new("L", ((d + 120) * S, (d + 120) * S), 0)
+        ImageDraw.Draw(glow).ellipse((48 * S, 48 * S, (d + 72) * S, (d + 72) * S), outline=255, width=14 * S)
+        gl = Image.new("RGBA", glow.size, PINK + (0,))
+        gl.putalpha(glow.filter(ImageFilter.GaussianBlur(12 * S)))
+        A["pfp_glow"] = gl                                     # the neon ring's glow
+        A["pfp_c"], A["pfp_t"] = ((sx0 + sx1) / 2, 420), t0
+        A["name_cy"] = 420 + d / 2 + 62
+    elif A["video"]:
+        free = A["free"] or ((1000, W) if A["side"] == "right" else (0, 920))
+        px = fit_px(b["font"], b["name"], 150, min(760, free[1] - free[0] - 70))
         x0 = 100 if A["side"] == "left" else 1820 - font(b["font"], px).getlength(b["name"]) / S
         A["name_cy"] = 170
     else:
@@ -642,6 +707,14 @@ def frame_fanpage(A, t, base=None):
         im = base.convert("RGBA")
         im.alpha_composite(A["scrim"]) if t > 0.3 else paste(im, A["scrim"], 0, 0, t / 0.3)
         tn = 0.55
+        if A.get("spot"):                                      # the profile picture pops where she was
+            tp = A["pfp_t"]
+            tn = tp + 0.22
+            if t > tp:
+                k = spring(t - tp, 2.8, 0.42)
+                put(im, A["pfp_glow"], A["pfp_c"][0], A["pfp_c"][1], k,
+                    clamp((t - tp) / 0.25) * (0.75 + 0.25 * math.sin(2.2 * (t - tp))))
+                put(im, A["pfp"], A["pfp_c"][0], A["pfp_c"][1], k, clamp((t - tp) / 0.1), rot=-6 * (1 - spring(t - tp, 2.2, 0.5)))
     else:
         im = backdrop_fanpage(A, t)
         tn = T_NAME
@@ -699,18 +772,18 @@ def sfx_track(A):
         for i, t0 in enumerate(T_BOX):
             _add(buf, snd_tup(400 - 30 * i, 180), t0 + 0.07, 0.42)
         _add(buf, snd_pop(), T_PFP + 0.05, 0.6)
-        for i in range(len(A["letters"])):
-            _add(buf, snd_tick(2000 + 60 * (i % 3)), T_NAME + i * TYPE_DT + 0.02, 0.16)
+        _add(buf, snd_tup(520, 300), T_NAME + 0.05, 0.22)      # the name: one soft tonal knock (no typing sounds)
         _add(buf, snd_whoosh(0.45), T_MAS, 0.20)
         _add(buf, snd_tup(300, 150), T_MAS + 0.30, 0.38)
         _add(buf, snd_whoosh(0.3), T_LINE, 0.10)
     else:
-        tn = 0.55 if A["video"] else T_NAME
+        tn = (A["pfp_t"] + 0.22 if A.get("spot") else 0.55) if A["video"] else T_NAME
         vol = 0.5 if A["video"] else 1.0                      # under her voice: quieter
+        if A["video"] and A.get("spot"):
+            _add(buf, snd_pop(), A["pfp_t"] + 0.05, 0.4 * vol)
         for i, t0 in enumerate(T_BOX):
             _add(buf, snd_whoosh(0.28), t0, 0.10 * vol)
-        for i in range(len(A["letters"])):
-            _add(buf, snd_tick(1500 + 50 * (i % 3)), tn + i * TYPE_DT + 0.02, 0.14 * vol)
+        _add(buf, snd_tup(480, 280), tn + 0.05, 0.20 * vol)     # the name: one soft tonal knock (no typing sounds)
         _add(buf, snd_whoosh(0.4), tn + 0.75, 0.14 * vol)
         if not A["video"]:
             _add(buf, snd_pop(), T_PFP + 0.05, 0.4)
@@ -724,8 +797,8 @@ VENC = ["-c:v", "libx264", "-preset", "medium", "-crf", "17"]
 
 
 def _video_frames(src, dur):
-    """The outro as PIL frames (scaled to cover 1920x1080, 30 fps)."""
-    p = subprocess.Popen(["ffmpeg", "-nostdin", "-v", "error", "-i", str(src), "-vf",
+    """The outro as PIL frames (scaled to cover 1920x1080, 30 fps), from OUTRO_SKIP s of the file."""
+    p = subprocess.Popen(["ffmpeg", "-nostdin", "-v", "error", "-ss", f"{OUTRO_SKIP}", "-i", str(src), "-vf",
                           f"fps={FPS},scale={W}:{H}:force_original_aspect_ratio=increase:flags=lanczos,crop={W}:{H}",
                           "-f", "rawvideo", "-pix_fmt", "rgb24", "pipe:1"], stdout=subprocess.PIPE)
     n = W * H * 3
@@ -775,7 +848,7 @@ def render(brand, out, music=None, mstart=None, venc=None, src=None, sheet=None)
                                     "-of", "csv=p=0", str(A["video"])], capture_output=True, text=True).stdout.strip()
             if probe:
                 has_voice = True
-                ins += ["-i", str(A["video"])]
+                ins += ["-ss", f"{OUTRO_SKIP}", "-i", str(A["video"])]
                 parts.append(f"[{n}:a]aresample=48000,aformat=channel_layouts=stereo[s{n}]")
                 n += 1
         if music is None:

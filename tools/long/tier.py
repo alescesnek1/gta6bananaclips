@@ -48,7 +48,8 @@ TIER_RGB = {"S": (255, 127, 127), "A": (255, 191, 127), "B": (255, 223, 127), "C
 BG, ROW, INK = (0, 0, 0), (26, 26, 23), (24, 24, 24)
 ACCENT = {"bananas": (255, 225, 53), "fanpage": (255, 79, 216)}
 PER_ROW = 8                                   # up to 8 thumbs keep the full row height, more shrink
-LAND = 0.55                                   # s: the thumbnail touches its slot (the 'tok')
+LAND_FR = 0.58                                # the thumbnail touches its slot at 0.58 of the segment (impact)
+LAND = LAND_FR * 1.9
 
 
 # ---------------------------------------------------------------------------
@@ -76,16 +77,26 @@ def capacity(tiers):
 
 
 def slots(entries, size=(1920, 1080), cap=None):
-    """(x, y, side) of every entry, in order. `cap` (see capacity) fixes the thumb size of a row ahead."""
+    """
+    (x, y, w, h) of every entry, in order. `cap` (see capacity) fixes the thumb size of a row ahead.
+    A short video (no row with more than 4 moments) gets wide 16:9 thumbnails - the board is not left
+    empty and the game frame is readable; fuller boards use the classic squares.
+    """
     g = geometry(size)
     seen, out = {t: 0 for t in TIERS}, []
     count = {t: sum(1 for e in entries if e["tier"] == t) for t in TIERS}
+    fullest = max([count[t] for t in TIERS] + [(cap or {}).get(t, 0) for t in TIERS])
+    wide = g["w"] > g["h"] and fullest <= 4
     for e in entries:
         t = e["tier"]
-        n = max(g["per_row"], count[t], (cap or {}).get(t, 0))
-        side = min(g["row_h"], g["items_w"] // n)
-        y = g["top"] + TIERS.index(t) * (g["row_h"] + g["gap"]) + (g["row_h"] - side) // 2
-        out.append((g["items_x"] + seen[t] * side, y, side))
+        if wide:
+            h = g["row_h"]
+            w = min(round(h * 16 / 9), g["items_w"] // 4)
+        else:
+            n = max(g["per_row"], count[t], (cap or {}).get(t, 0))
+            w = h = min(g["row_h"], g["items_w"] // n)
+        y = g["top"] + TIERS.index(t) * (g["row_h"] + g["gap"]) + (g["row_h"] - h) // 2
+        out.append((g["items_x"] + seen[t] * w, y, w, h))
         seen[t] += 1
     return out
 
@@ -97,23 +108,25 @@ def _font(path, px):
     return ImageFont.truetype(str(path), max(8, int(px)))
 
 
-def thumb_sprite(entry, side):
-    """Square thumbnail `side` px: the frame centre-cropped, a hairline gap, the @label on a dark strip."""
+def thumb_sprite(entry, side, high=None):
+    """Thumbnail side x high px (square by default): the frame centre-cropped, a hairline gap, the @label on a dark strip."""
     src = entry.get("thumb")
     if src is not None and not isinstance(src, Image.Image):
         src = Image.open(src)
-    im = Image.new("RGB", (side, side), BG)
-    inner = side - 2                                           # 1 px of board between neighbours
+    high = high or side
+    im = Image.new("RGB", (side, high), BG)
+    inner, inner_h = side - 2, high - 2                        # 1 px of board between neighbours
     if src is None:
-        pic = Image.new("RGB", (inner, inner), (58, 58, 54))
+        pic = Image.new("RGB", (inner, inner_h), (58, 58, 54))
     else:
         src = src.convert("RGB")
-        s = min(src.size)
-        box = ((src.width - s) // 2, (src.height - s) // 2, (src.width + s) // 2, (src.height + s) // 2)
-        pic = src.crop(box).resize((inner, inner), Image.LANCZOS)
+        k = min(src.width / inner, src.height / inner_h)
+        cw, ch = round(inner * k), round(inner_h * k)
+        box = ((src.width - cw) // 2, (src.height - ch) // 2, (src.width + cw) // 2, (src.height + ch) // 2)
+        pic = src.crop(box).resize((inner, inner_h), Image.LANCZOS)
     label = (entry.get("label") or "").strip()
     if label:
-        px = max(11, round(side * 0.118))
+        px = max(11, round(min(side, high) * 0.118))
         f = _font(FONT_LABEL, px)
         while px > 10 and f.getlength(label) > inner - 10:
             px -= 1
@@ -123,9 +136,9 @@ def thumb_sprite(entry, side):
         strip_h = round(px * 1.75)
         strip = Image.new("RGBA", (inner, strip_h), (0, 0, 0, 205))
         pic = pic.convert("RGBA")
-        pic.alpha_composite(strip, (0, inner - strip_h))
+        pic.alpha_composite(strip, (0, inner_h - strip_h))
         d = ImageDraw.Draw(pic)
-        d.text((inner / 2, inner - strip_h / 2), label, font=f, fill=(255, 255, 255, 255), anchor="mm")
+        d.text((inner / 2, inner_h - strip_h / 2), label, font=f, fill=(255, 255, 255, 255), anchor="mm")
         pic = pic.convert("RGB")
     im.paste(pic, (1, 1))
     return im
@@ -175,8 +188,8 @@ def _base(size, brand):
 def board(entries, size=(1920, 1080), brand="bananas", cap=None):
     """The board with `entries` ({tier, thumb, label}) sitting in their rows -> PIL.Image (RGB)."""
     im = _base(size, brand)
-    for e, (x, y, side) in zip(entries, slots(entries, size, cap)):
-        im.paste(thumb_sprite(e, side), (x, y))
+    for e, (x, y, w, h) in zip(entries, slots(entries, size, cap)):
+        im.paste(thumb_sprite(e, w, h), (x, y))
     return im
 
 
@@ -200,82 +213,357 @@ def _flight_spring(dist, travel_s, overshoot_px):
     return w / (2 * math.pi), damp
 
 
-def fly_in_frames(entries_before, new_entry, fps=30, dur=1.5, size=(1920, 1080), brand="bananas", cap=None,
-                  land=LAND, overshoot=34):
+def _ease(x):
+    x = min(1.0, max(0.0, x))
+    return x * x * (3 - 2 * x)
+
+
+def roulette(target, t0, t1):
+    """[(time, row index)]: the highlight runs down the rows, wraps once and slows down onto `target`."""
+    seq = list(range(len(TIERS))) + list(range(target + 1))
+    n = len(seq)
+    return [(t0 + (t1 - t0) * (i / n) ** 1.7, r) for i, r in enumerate(seq)]
+
+
+FONT_TEASER = HERE / "fonts" / "cap" / "montserrat-900.ttf"
+PUSH = 0.045                                  # the camera pushes in this much over one placement
+
+
+def _cover(img, w, h):
+    """img centre-cropped to the aspect of w x h and resized to it."""
+    k = min(img.width / w, img.height / h)
+    cw, ch = max(1, round(w * k)), max(1, round(h * k))
+    box = ((img.width - cw) // 2, (img.height - ch) // 2, (img.width + cw) // 2, (img.height + ch) // 2)
+    return img.crop(box).resize((w, h), Image.BILINEAR)
+
+
+def _camera(im, size, z, fx, fy, dx=0.0, dy=0.0):
+    """The whole frame pushed in z x towards (fx, fy), shifted by (dx, dy)."""
+    if z == 1.0 and not dx and not dy:
+        return im
+    return im.transform(size, Image.AFFINE, (1 / z, 0, fx * (1 - 1 / z) + dx, 0, 1 / z, fy * (1 - 1 / z) + dy),
+                        resample=Image.BILINEAR)
+
+
+def teaser_sprites(text, k):
+    """Words of the teaser line as sprites + their x offsets (drawn once; each word fades up on its own)."""
+    f = _font(FONT_TEASER, 40 * k)
+    words, x, out = text.split(), 0.0, []
+    for wd in words:
+        wpx = int(f.getlength(wd)) + 24
+        im = Image.new("RGBA", (wpx, int(64 * k)), (0, 0, 0, 0))
+        d = ImageDraw.Draw(im)
+        d.text((12, im.height // 2), wd, font=f, fill=(0, 0, 0, 200), anchor="lm", stroke_width=max(2, round(3 * k)),
+               stroke_fill=(0, 0, 0, 200))
+        d.text((12, im.height // 2), wd, font=f, fill=(255, 255, 255, 255), anchor="lm")
+        out.append((im, x))
+        x += f.getlength(wd + " ")
+    return out, x
+
+
+def draw_teaser(im, sprites, total, t, t0, k):
+    """Word by word: each word fades up from blurred to sharp with a small rise (no hard reveal, no bounce)."""
+    x0 = (im.width - total) / 2
+    y0 = im.height - round(50 * k)
+    for i, (spr, dx) in enumerate(sprites):
+        u = (t - t0 - 0.075 * i) / 0.32
+        if u <= 0:
+            continue
+        e = _ease(u)
+        w = spr.filter(ImageFilter.GaussianBlur(7 * k * (1 - e))) if e < 1 else spr
+        if e < 1:
+            w.putalpha(w.getchannel("A").point(lambda v: int(v * e)))
+        im.paste(w, (round(x0 + dx - 12), round(y0 - spr.height / 2 + 12 * k * (1 - e))), w)
+
+
+def fly_in_frames(entries_before, new_entry, fps=30, dur=1.9, size=(1920, 1080), brand="bananas", cap=None,
+                  land=None, overshoot=30, teaser=None):
     """
-    Generator of PIL frames: `new_entry` flies in from the right edge, springs into its slot (touches it at
-    `land` s, overshoots by `overshoot` px and settles), the row flashes once on landing. The rest is still.
+    Generator of PIL frames, the placement of one moment. The previous shot TRANSFORMS into it (no cut to a
+    board, no crossfade): new_entry["from"] = the last frame of the moment (falls back to its thumbnail).
+      0 .. 0.20 dur   that frame shrinks from the full screen into a card in the middle (fast, then slow);
+                      the board is revealed behind it and the picture inside turns into the payoff thumbnail
+      .. 0.42 dur     the card keeps easing smaller while the row highlight runs down the labels and slows
+                      onto its tier (suspense)
+      .. land         it flies into its slot, still shrinking (land = 0.58 dur): one continuous way down in
+                      size, never up again, no rotation, no bounce
+      land ..         impact: the row's glow pulses in the tier colour (twice for S), the label flashes,
+                      a short shake on S only; the teaser line (if any) fades up word by word.
+    The camera pushes in slowly on the target row the whole time, so nothing ever stands still.
     """
+    land = land if land is not None else LAND_FR * dur
     entries = list(entries_before) + [new_entry]
     all_slots = slots(entries, size, cap)
     base = _base(size, brand)
-    for e, (x, y, side) in zip(entries[:-1], all_slots[:-1]):
-        base.paste(thumb_sprite(e, side), (x, y))
+    for e, (x, y, w_, h_) in zip(entries[:-1], all_slots[:-1]):
+        base.paste(thumb_sprite(e, w_, h_), (x, y))
     g = geometry(size)
-    sx, sy, side = all_slots[-1]
-    big = thumb_sprite(new_entry, side * 2).convert("RGBA")    # drawn at 2x: sharp while it is still large
-    t0 = 0.06
-    x_from = g["w"] + side * 0.35                              # centre starts outside the right edge
-    cx_to, cy_to = sx + side / 2, sy + side / 2
-    dist = x_from - cx_to
-    freq, damp = _flight_spring(dist, land - t0, overshoot * g["k"])
-    row_y = g["top"] + TIERS.index(new_entry["tier"]) * (g["row_h"] + g["gap"])
-    flash_row = Image.new("RGB", (g["items_w"], g["row_h"]), (255, 255, 255))
-    flash_lab = Image.new("RGB", (g["row_h"], g["row_h"]), (255, 255, 255))
+    k = g["k"]
+    W_, H_ = size
+    sx, sy, side, high = all_slots[-1]
+    asp = high / side
+    ti = TIERS.index(new_entry["tier"])
+    top = new_entry["tier"] == "S"
+    big_w = round(min(W_ * 0.46, H_ * 0.56 / asp))
+    big_h = round(big_w * asp)
+    card = thumb_sprite(new_entry, big_w, big_h).convert("RGB")           # the payoff thumbnail with the @label
+    src = new_entry.get("from") or new_entry.get("thumb")
+    if src is not None and not isinstance(src, Image.Image):
+        src = Image.open(src)
+    full = _cover(src.convert("RGB"), W_, H_) if src is not None else card.resize(size)
+    cx0, cy0 = W_ / 2 + g["row_h"] / 2 * (W_ > H_), g["top"] + (len(TIERS) * (g["row_h"] + g["gap"])) / 2
+    cx1, cy1 = sx + side / 2, sy + high / 2
+    t_card, t_fly = 0.20 * dur, 0.42 * dur
+    steps = roulette(ti, 0.10 * dur, t_fly)
+    row_y = lambda i: g["top"] + i * (g["row_h"] + g["gap"])
+    col = TIER_RGB[new_entry["tier"]]
+    pad = round(46 * k)
+    glow = Image.new("L", (W_ - 2 * g["mx"] + 2 * pad, g["row_h"] + 2 * pad), 0)
+    ImageDraw.Draw(glow).rectangle((pad, pad, glow.width - pad - 1, glow.height - pad - 1), outline=255, width=max(3, round(9 * k)))
+    glow = glow.filter(ImageFilter.GaussianBlur(13 * k))
+    glow_rgb = Image.new("RGB", glow.size, col)
+    white_lab = Image.new("RGB", (g["row_h"], g["row_h"]), (255, 255, 255))
+    acc = ACCENT.get(brand) or (255, 255, 255)
+    tz = teaser_sprites(teaser, k) if teaser else None
     for i in range(round(dur * fps)):
         t = i / fps
-        im = base.copy()
         u = t - land
-        if u >= 0:                                             # one soft flash of the row, gone in ~0.4 s
-            a = math.exp(-u / 0.11)
+        # --- the card: one continuous shrink  full screen -> centre card -> slot
+        if t < t_card:
+            e = 1 - (1 - t / t_card) ** 3                       # fast first, then slow
+            w = W_ + (big_w - W_) * e
+            h = H_ + (big_h - H_) * e
+            cx, cy = W_ / 2 + (cx0 - W_ / 2) * e, H_ / 2 + (cy0 - H_ / 2) * e
+            mix = _ease((e - 0.45) / 0.5)                       # the picture inside becomes the thumbnail
+        elif t < t_fly:
+            q = (t - t_card) / (t_fly - t_card)
+            w, h = big_w * (1 - 0.06 * q), big_h * (1 - 0.06 * q)   # never still: it keeps easing smaller
+            cx, cy, mix = cx0, cy0, 1.0
+        elif t < land:
+            q = (t - t_fly) / (land - t_fly)
+            e = q * q * (3 - 2 * q)
+            w = big_w * 0.94 + (side - big_w * 0.94) * e
+            h = big_h * 0.94 + (high - big_h * 0.94) * e
+            cx, cy, mix = cx0 + (cx1 - cx0) * e, cy0 + (cy1 - cy0) * e, 1.0
+        else:
+            w, h, cx, cy, mix = side, high, cx1, cy1, 1.0
+        w, h = max(2, round(w)), max(2, round(h))
+        if t == 0:                                              # frame 0 is exactly the previous shot
+            yield full
+            continue
+        im = base.copy()
+        d = ImageDraw.Draw(im)
+        # --- roulette highlight on the labels (until the landing)
+        if t < land:
+            cur = None
+            for ts, r in steps:
+                if t >= ts:
+                    cur = (ts, r)
+            if cur:
+                a = 0.55 * math.exp(-(t - cur[0]) / 0.09) + 0.25
+                y = row_y(cur[1])
+                box = (g["mx"], y, g["mx"] + g["row_h"], y + g["row_h"])
+                im.paste(Image.blend(im.crop(box), white_lab, min(0.8, a)), box)
+                d.rectangle((g["mx"], y, W_ - g["mx"] - 1, y + g["row_h"] - 1), outline=acc, width=max(2, round(3 * k)))
+        # --- landing: glow pulse of the row (S pulses twice) + label flash
+        if u >= 0:
+            a = math.exp(-u / 0.22) + (0.7 * math.exp(-((u - 0.30) / 0.09) ** 2) if top else 0.0)
             if a > 0.02:
-                box = (g["items_x"], row_y, g["items_x"] + g["items_w"], row_y + g["row_h"])
-                im.paste(Image.blend(im.crop(box), flash_row, 0.20 * a), box)
-                box = (g["mx"], row_y, g["mx"] + g["row_h"], row_y + g["row_h"])
-                im.paste(Image.blend(im.crop(box), flash_lab, 0.42 * a), box)
-        s = spring(t - t0, freq, damp)
-        p = min(1.0, max(0.0, (t - t0) / (land - t0)))        # 0..1 until the landing
-        cx = x_from + (cx_to - x_from) * s
-        cy = cy_to - 54 * g["k"] * math.sin(math.pi * p) * (1 - p)        # a small arc on the way in
-        scale = 1 + 0.5 * (1 - spring(t - t0, freq, min(0.9, damp + 0.06)))   # near -> lands with a tiny squash
-        rot = 8.0 * (1 - spring(t - t0, freq * 1.05, max(0.3, damp - 0.12)))  # tilt wobbles out
-        if t >= t0:
-            w = max(2, round(side * scale))
-            spr = big.resize((w, w), Image.LANCZOS)
-            if abs(rot) > 0.05:
-                spr = spr.rotate(rot, resample=Image.BICUBIC, expand=True)
-            lift = max(0.0, scale - 1) / 0.5                   # 1 in the air, 0 on the board
-            if lift > 0.02:                                    # the shadow it throws while above the board
-                m = round(40 * g["k"])
-                sh = Image.new("L", (spr.width + 2 * m, spr.height + 2 * m), 0)
-                sh.paste(spr.getchannel("A").point(lambda v: int(v * 0.55 * lift)), (m, m))
-                sh = sh.filter(ImageFilter.GaussianBlur(14 * g["k"]))
-                off = round(22 * g["k"] * lift)
-                im.paste((0, 0, 0), (round(cx - sh.width / 2) + off, round(cy - sh.height / 2) + off), sh)
-            im.paste(spr, (round(cx - spr.width / 2), round(cy - spr.height / 2)), spr)
+                im.paste(glow_rgb, (g["mx"] - pad, row_y(ti) - pad), glow.point(lambda v: int(min(255, v * min(1.0, a) * 1.25))))
+                box = (g["mx"], row_y(ti), g["mx"] + g["row_h"], row_y(ti) + g["row_h"])
+                im.paste(Image.blend(im.crop(box), white_lab, min(0.6, 0.6 * a)), box)
+        if mix < 1:
+            spr = Image.blend(_cover(full, w, h), card.resize((w, h), Image.BILINEAR), mix) if mix > 0 else _cover(full, w, h)
+        else:
+            spr = card.resize((w, h), Image.LANCZOS)
+        lift = min(1.0, max(0.0, w / side - 1) / 1.5)
+        if lift > 0.02:                                         # the shadow it throws while above the board
+            m = round(40 * k)
+            sh = Image.new("L", (w + 2 * m, h + 2 * m), 0)
+            sh.paste(int(255 * 0.6 * lift), (m, m, m + w, m + h))
+            sh = sh.filter(ImageFilter.GaussianBlur(16 * k))
+            off = round(26 * k * lift)
+            im.paste((0, 0, 0), (round(cx - sh.width / 2) + off, round(cy - sh.height / 2) + off), sh)
+        x0, y0 = round(cx - w / 2), round(cy - h / 2)
+        im.paste(spr, (x0, y0))
+        if t < land and w < W_ * 0.9:                           # a thin accent frame while it is in the air
+            ImageDraw.Draw(im).rectangle((x0, y0, x0 + w - 1, y0 + h - 1), outline=acc, width=max(2, round(4 * k)))
+        # --- camera: slow push towards the target row; a short shake on S only
+        z = 1 + PUSH * t / dur
+        dx = dy = 0.0
+        if u >= 0 and top:
+            amp = 12 * k * math.exp(-u / 0.12)
+            dx, dy = amp * math.sin(2 * math.pi * 17 * u), amp * math.cos(2 * math.pi * 23 * u)
+        im = _camera(im, size, z, W_ / 2, row_y(ti) + g["row_h"] / 2, dx, dy)
+        if tz:
+            im = im.convert("RGBA") if im.mode != "RGBA" else im
+            draw_teaser(im, tz[0], tz[1], t, land + 0.12, k)
+            im = im.convert("RGB")
         yield im
+
+
+def hold_frames(entries, dur=2.0, fps=30, size=(1920, 1080), brand="bananas", cap=None, zoom0=1.0, focus=None, sweep=True):
+    """
+    The board on its own (empty at the start, full at the end), never a still frame: the camera keeps
+    pushing in from zoom0 (continue where the last placement stopped: zoom0 = 1 + PUSH, focus = its tier)
+    and one soft band of light crosses the thumbnails.
+    """
+    g = geometry(size)
+    im0 = board(entries, size, brand, cap)
+    fy = (g["top"] + TIERS.index(focus) * (g["row_h"] + g["gap"]) + g["row_h"] / 2) if focus else size[1] / 2
+    band_w = round(260 * g["k"])
+    band = Image.new("L", (band_w, 1), 0)
+    for x in range(band_w):
+        band.putpixel((x, 0), int(70 * math.sin(math.pi * x / band_w) ** 2))
+    band = band.resize((band_w, size[1] - g["top"]))
+    white = Image.new("RGB", band.size, (255, 255, 255))
+    n = round(dur * fps)
+    for i in range(n):
+        t = i / fps
+        im = im0
+        if sweep and entries:
+            im = im0.copy()
+            x = round(g["items_x"] - band_w + (g["items_w"] + 2 * band_w) * _ease((t - 0.25) / max(0.6, dur - 0.7)))
+            x = max(g["items_x"] - band_w, x)
+            box = (max(x, 0), g["top"], min(x + band_w, size[0]), size[1])
+            if box[2] > box[0]:
+                bx = box[0] - x
+                im.paste(white.crop((bx, 0, bx + box[2] - box[0], band.height)), box[:2], band.crop((bx, 0, bx + box[2] - box[0], band.height)))
+        yield _camera(im, size, zoom0 + 0.025 * t / max(dur, 0.1), size[0] / 2, fy)
 
 
 # ---------------------------------------------------------------------------
 # sound (ours, synthesized) + encoding
 
-def fly_sound(dur=1.5, land=LAND):
-    """Soft airy whoosh that swells towards the landing, then a short wooden 'tok'. Mono float array."""
-    rnd = np.random.default_rng(5)
-    out = np.zeros(int(SR * dur))
-    n = int(SR * land)
-    ramp = np.linspace(0, 1, n)
+def _sweep(noise, f0, f1, q=1.6):
+    """Band-pass whose centre glides f0 -> f1 (state variable filter): the 'doppler' of a whoosh."""
+    n = noise.size
+    f = 2 * np.sin(np.pi * np.geomspace(f0, f1, n) / SR)
+    out = np.zeros(n)
+    low = band = 0.0
+    damp = 1 / q
+    for i in range(n):
+        low += f[i] * band
+        high = noise[i] - low - damp * band
+        band += f[i] * high
+        out[i] = band
+    return out
+
+
+def _tone(freq, n, decay, harm=0.25):
+    t = np.arange(n) / SR
+    ph = 2 * np.pi * freq * t
+    return (np.sin(ph) + harm * np.sin(2 * ph)) * np.exp(-t / decay)
+
+
+def _put(out, x, at, gain=1.0):
+    i = int(SR * at)
+    if 0 <= i < out.size:
+        x = x[: out.size - i]
+        out[i: i + x.size] += gain * x
+
+
+def whoosh(dur):
+    """Air rushing past: noise through a rising band-pass + a quiet tone gliding up, cut dead at the end."""
+    rnd = np.random.default_rng(7)
+    n = int(SR * dur)
+    r = np.linspace(0, 1, n)
+    air = _sweep(rnd.normal(0, 1, n), 260, 4200)
+    tone = np.sin(2 * np.pi * np.cumsum(190 * 2 ** (1.9 * r ** 1.5)) / SR)
+    x = (air / (np.abs(air).max() + 1e-9) + 0.16 * tone) * r ** 2.3
+    x[-int(SR * 0.006):] *= np.linspace(1, 0, int(SR * 0.006))
+    return x / np.abs(x).max()
+
+
+def impact(big=False):
+    """Thud + snap with a sub: a sine dropping to 45 Hz, a short mid knock, a 3 ms bright snap."""
+    rnd = np.random.default_rng(9)
+    n = int(SR * (0.75 if big else 0.45))
+    t = np.arange(n) / SR
+    sub = np.sin(2 * np.pi * np.cumsum(45 + 75 * np.exp(-t / 0.03)) / SR) * np.exp(-t / (0.30 if big else 0.15))
+    thud = np.sin(2 * np.pi * np.cumsum(150 + 260 * np.exp(-t / 0.012)) / SR) * np.exp(-t / 0.045)
     noise = rnd.normal(0, 1, n)
-    dark = np.convolve(noise, np.ones(48) / 48, mode="same")
-    bright = np.convolve(noise, np.ones(8) / 8, mode="same")
-    out[:n] += 0.5 * ((1 - ramp) * dark + ramp * bright) * ramp ** 2.4
-    m = int(SR * 0.22)
+    snap = (noise - np.convolve(noise, np.ones(10) / 10, mode="same")) * np.exp(-t / 0.011)
+    x = np.tanh(1.5 * (1.0 * sub + 0.6 * thud)) + 0.42 * snap
+    x[: int(SR * 0.001)] *= np.linspace(0, 1, int(SR * 0.001))
+    return x / np.abs(x).max()
+
+
+def _mallet(f):
+    """A soft wooden knock with a pitch (marimba-like: fundamental + 4th harmonic, gone in ~0.15 s)."""
+    n = int(SR * 0.3)
+    t = np.arange(n) / SR
+    x = np.sin(2 * np.pi * f * t) * np.exp(-t / 0.075) + 0.22 * np.sin(2 * np.pi * 4 * f * t) * np.exp(-t / 0.02)
+    return x * np.minimum(1, t / 0.002)
+
+
+def stinger(tier, n):
+    """What the tier sounds like after the impact (starts at the landing). Mono, length n."""
+    rnd = np.random.default_rng(TIERS.index(tier) + 20)
+    out = np.zeros(n)
+    if tier == "S":                                            # sparkle + a short bright chord: the win
+        for f, at in zip((1046.5, 1318.5, 1568.0, 2093.0), (0.0, 0.035, 0.07, 0.105)):
+            _put(out, _tone(f, int(SR * 0.7), 0.20, 0.3), at, 0.20)
+        for j in range(12):
+            _put(out, _tone(float(rnd.choice([2637.0, 3136.0, 4186.0, 5274.0, 6272.0])), int(SR * 0.25), 0.06, 0.0),
+                 0.06 + 0.05 * j + rnd.uniform(0, 0.02), 0.07 * (1 - j / 14))
+    elif tier == "A":                                          # marimba-like: two soft knocks up
+        _put(out, _mallet(523.3), 0.0, 0.30)
+        _put(out, _mallet(659.3), 0.09, 0.30)
+    elif tier == "B":
+        _put(out, _mallet(440.0), 0.0, 0.28)
+    elif tier == "C":
+        _put(out, _mallet(329.6), 0.0, 0.28)
+    else:                                                      # D: deflate (slide down with vibrato) + a boing
+        m = int(SR * 0.5)
+        t = np.arange(m) / SR
+        f = 520 * (140 / 520) ** (t / 0.5) * (1 + 0.035 * np.sin(2 * np.pi * 9 * t))
+        _put(out, np.sin(2 * np.pi * np.cumsum(f) / SR) * np.minimum(1, t / 0.02) * (1 - t / 0.5) ** 0.7, 0.03, 0.22)
+        b = np.sin(2 * np.pi * 95 * t + 7 * np.exp(-t / 0.16) * np.sin(2 * np.pi * 12 * t)) * np.exp(-t / 0.2)
+        _put(out, b, 0.0, 0.30)
+    return out
+
+
+def crowd_riser(dur):
+    """S only: a crowd-like swell under the roulette (wide noise band, slow flutter), rising into the landing."""
+    rnd = np.random.default_rng(13)
+    n = int(SR * dur)
+    r = np.linspace(0, 1, n)
+    x = _sweep(rnd.normal(0, 1, n), 500, 1900, q=0.7) * (1 + 0.25 * np.sin(2 * np.pi * 6.5 * r * dur)) * r ** 2
+    return x / (np.abs(x).max() + 1e-9)
+
+
+_sound_cache = {}
+
+
+def fly_sound(dur=1.9, land=None, tier="B"):
+    """
+    The placement: a soft pop when the frame appears, ticks of the roulette (rising pitch), a whoosh with a
+    pitch rise into the row, the impact (thud + snap + sub) and the tier's stinger: S = big hit + crowd-like
+    riser + sparkle, A/B/C = soft marimba-like knocks (lower with the tier), D = comedic deflate + boing.
+    """
+    land = land if land is not None else LAND_FR * dur
+    key = (round(dur, 3), round(land, 3), tier)
+    if key in _sound_cache:
+        return _sound_cache[key]
+    ti = TIERS.index(tier)
+    out = np.zeros(int(SR * dur))
+    t_fly = 0.42 * dur
+    m = int(SR * 0.09)
     t = np.arange(m) / SR
-    f = 190 + 230 * np.exp(-t / 0.018)
-    tok = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-t / 0.05)
-    click = np.convolve(rnd.normal(0, 1, m), np.ones(5) / 5, mode="same") * np.exp(-t / 0.006)
-    out[n: n + m] += (0.75 * tok + 0.22 * click)[: out.size - n]
-    return out / max(1e-9, np.abs(out).max()) * 0.5
+    _put(out, np.sin(2 * np.pi * np.cumsum(300 + 500 * t / 0.09) / SR) * np.exp(-t / 0.03), 0.0, 0.22)      # pop
+    steps = roulette(ti, 0.10 * dur, t_fly)
+    for j, (ts, r) in enumerate(steps):
+        _put(out, _tone(900 * 2 ** (j / len(steps)), int(SR * 0.04), 0.012, 0.0), ts, 0.13)
+    _put(out, whoosh(land - t_fly + 0.04), t_fly - 0.04, 0.60)
+    if tier == "S":
+        _put(out, crowd_riser(land - 0.1), 0.1, 0.20)
+    _put(out, impact(big=tier == "S"), land, 1.15 if tier == "S" else 0.95)
+    _put(out, stinger(tier, out.size - int(SR * land)), land + 0.012, 1.0)
+    k = int(SR * 0.03)
+    out[-k:] *= np.linspace(1, 0, k)
+    _sound_cache[key] = np.tanh(1.5 * out) * 0.92             # soft clip: the impact stays fat, never harsh
+    return _sound_cache[key]
 
 
 VENC = ["-c:v", "libx264", "-preset", "medium", "-crf", "17"]
@@ -312,18 +600,18 @@ def encode(frames, out, fps=30, size=(1920, 1080), sound=None, venc=None):
     return out
 
 
-def render_fly_in(entries_before, new_entry, out, fps=30, dur=1.5, size=(1920, 1080), brand="bananas", cap=None,
-                  capacity=None, audio=True, venc=None, land=LAND):
-    """The landing of `new_entry` as a video segment -> path of the mp4."""
+def render_fly_in(entries_before, new_entry, out, fps=30, dur=1.9, size=(1920, 1080), brand="bananas", cap=None,
+                  capacity=None, audio=True, venc=None, land=None, teaser=None):
+    """The placement of `new_entry` as a video segment -> path of the mp4 (teaser = a line under the board)."""
     cap = cap or capacity
-    frames = fly_in_frames(entries_before, new_entry, fps, dur, size, brand, cap, land)
-    return encode(frames, out, fps, size, fly_sound(dur, land) if audio else None, venc)
+    frames = fly_in_frames(entries_before, new_entry, fps, dur, size, brand, cap, land, teaser=teaser)
+    return encode(frames, out, fps, size, fly_sound(dur, land, new_entry["tier"]) if audio else None, venc)
 
 
-def render_hold(entries, out, dur=2.0, fps=30, size=(1920, 1080), brand="bananas", cap=None, capacity=None, venc=None):
-    """A still board (empty at the start, full at the end) as a silent video segment -> path."""
-    im = board(entries, size, brand, cap or capacity)
-    return encode((im for _ in range(round(dur * fps))), out, fps, size, None, venc)
+def render_hold(entries, out, dur=2.0, fps=30, size=(1920, 1080), brand="bananas", cap=None, capacity=None, venc=None,
+                zoom0=1.0, focus=None):
+    """The board alone (empty at the start, full at the end) as a silent segment, slowly pushing in -> path."""
+    return encode(hold_frames(entries, dur, fps, size, brand, cap or capacity, zoom0, focus), out, fps, size, None, venc)
 
 
 # ---------------------------------------------------------------------------
@@ -335,7 +623,7 @@ def _demo():
     if not vids:
         vids = sorted((HERE / "out" / "_ukazka").glob("long_*.mp4"))
     names = ["@kaicenat", "@xqc", "@ishowspeed", "@caseoh_", "@jynxzi"]
-    order = ["B", "S", "C", "A", "B"]
+    order = ["B", "S", "D", "A", "C"]
     entries = []
     with tempfile.TemporaryDirectory() as tmp:
         for i, (name, t) in enumerate(zip(names, order)):
@@ -344,26 +632,22 @@ def _demo():
                                        capture_output=True, text=True).stdout.strip() or 10)
             jpg = Path(tmp) / f"{i}.jpg"
             subprocess.run(["ffmpeg", "-nostdin", "-y", "-v", "error", "-ss", f"{dur * (0.15 + 0.16 * i):.2f}", "-i", str(v),
-                            "-frames:v", "1", "-vf", "scale=-2:540", str(jpg)], check=True)
+                            "-frames:v", "1", "-vf", "scale=-2:720", str(jpg)], check=True)
             entries.append({"tier": t, "thumb": Image.open(jpg).copy(), "label": name})
         cap = capacity(order)
         fps, size = 30, (1920, 1080)
 
         def film():
-            empty = board([], size, "bananas", cap)
-            for _ in range(round(1.0 * fps)):
-                yield empty
+            yield from hold_frames([], 1.0, fps, size, "bananas", cap)
             for i, e in enumerate(entries):
-                yield from fly_in_frames(entries[:i], e, fps, 1.5, size, "bananas", cap)
-            full = board(entries, size, "bananas", cap)
-            for _ in range(round(1.5 * fps)):
-                yield full
+                yield from fly_in_frames(entries[:i], e, fps, 1.9, size, "bananas", cap, teaser="#1 IS INSANE, STAY TILL THE END" if i == 3 else None)
+            yield from hold_frames(entries, 1.5, fps, size, "bananas", cap, 1 + PUSH, entries[-1]["tier"])
 
-        snd = np.concatenate([np.zeros(SR)] + [fly_sound(1.5)] * len(entries) + [np.zeros(int(SR * 1.5))])
+        snd = np.concatenate([np.zeros(SR)] + [fly_sound(1.9, None, e["tier"]) for e in entries] + [np.zeros(int(SR * 1.5))])
         out = encode(film(), dest / "tier_ukazka.mp4", fps, size, snd)
         # contact sheet: the flight of the 4th thumbnail + the full board
-        shots = [im.copy() for im in fly_in_frames(entries[:3], entries[3], fps, 1.5, size, "bananas", cap)]
-        picks = [shots[i] for i in (3, 9, 14, 16, 18, 24)] + [board([], size, "bananas", cap), board(entries, size, "bananas", cap)]
+        shots = [im.copy() for im in fly_in_frames(entries[:1], entries[1], fps, 1.9, size, "bananas", cap)]
+        picks = [shots[i] for i in (1, 4, 9, 20, 28, 33)] + [board([], size, "bananas", cap), board(entries, size, "bananas", cap)]
         sheet = Image.new("RGB", (4 * 960, 2 * 540), (40, 40, 40))
         for i, im in enumerate(picks):
             sheet.paste(im.resize((960, 540), Image.LANCZOS), ((i % 4) * 960, (i // 4) * 540))
