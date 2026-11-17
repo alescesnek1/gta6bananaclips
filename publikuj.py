@@ -23,6 +23,10 @@ the newest yt-inbox and treats its shorts like local ones (downloaded only when 
 One-time setup:
   1. .env (see .env.example): BUFFER_API_KEY_1/_2, NETLIFY_AUTH_TOKEN, NETLIFY_SITE_ID, MEDIA_BASE_URL
   2. .venv/Scripts/python publikuj.py kanaly    # saves your Buffer channels to buffer.json
+
+Second account (brands.json, docs/dva-ucty.md): every command takes --znacka bananas|fanpage
+(default bananas). `kanaly --znacka fanpage` uses BUFFER_API_KEY_3/_4 -> buffer_fanpage.json,
+`den --znacka fanpage` posts the fanpage versions (short_fanpage.mp4) -> publikovano_fanpage.json.
 """
 
 import argparse
@@ -69,6 +73,25 @@ SLOTS = ["14:00", "17:00", "18:30", "20:00", "21:30", "23:00", "00:30", "02:00",
 # which slots a small quota fills first: spread over UK evening + US prime time (Fable 15. 11.:
 # the first 3 in time order were all US morning)
 PRIORITY = ["18:30", "23:00", "02:00", "20:00", "00:30", "21:30", "14:00", "03:30", "17:00", "05:00"]
+
+# Two accounts (brands.json, docs/dva-ucty.md): `bananas` = gta6bananaclips (the original, its
+# behaviour and files stay as they were), `fanpage` = gta6fanpageclip. Every command takes
+# --znacka; set_brand() points PUBLISHED / CHANNELS / the Buffer keys at that brand's files.
+BRANDS = HERE / "brands.json"
+ZNACKA = "bananas"
+BRAND = {}                              # the brand's entry in brands.json ({} = no brands.json: as before)
+
+def brands_cfg():
+    return load_json(BRANDS, {})
+
+def set_brand(znacka):
+    global ZNACKA, BRAND, PUBLISHED, CHANNELS
+    cfg = brands_cfg()
+    if znacka != "bananas" and znacka not in cfg:
+        sys.exit(f"unknown brand '{znacka}' (brands.json)")
+    ZNACKA, BRAND = znacka, cfg.get(znacka) or {}
+    PUBLISHED = HERE / BRAND.get("published", "publikovano.json")
+    CHANNELS = HERE / BRAND.get("channels", "buffer.json")
 
 def log(msg):
     print(f"[{datetime.now():%H:%M:%S}] {msg}", flush=True)
@@ -129,6 +152,15 @@ def buffer_keys():
     """Names of the Buffer key variables we have: BUFFER_API_KEY_1, _2 ... (or a single BUFFER_API_KEY)."""
     keys = sorted(k for k in os.environ if k.startswith("BUFFER_API_KEY_") and os.environ[k])
     return keys or (["BUFFER_API_KEY"] if os.environ.get("BUFFER_API_KEY") else [])
+
+def brand_keys():
+    """The brand's Buffer keys that are set (brands.json buffer_keys); without brands.json all of them."""
+    if BRAND.get("buffer_keys"):
+        keys = [k for k in BRAND["buffer_keys"] if os.environ.get(k)]
+        if not keys and ZNACKA == "bananas" and os.environ.get("BUFFER_API_KEY"):
+            keys = ["BUFFER_API_KEY"]                 # old single-key setup
+        return keys
+    return buffer_keys()
 
 def gql(query, key="BUFFER_API_KEY"):
     body = json.dumps({"query": query}).encode()
@@ -265,8 +297,8 @@ def inbox_items():
         except Exception as e:
             log(f"inbox {title}: unreadable ({e})")
             continue
-        for m in items:
-            m["short"], m["remote"] = f"{base}/{m['file']}", True
+        for m in items:                               # `file` = bananas, `file_fanpage` = fanpage
+            m["base"], m["remote"] = base, True
         log(f"inbox {title}: {len(items)} shorts ({d.get('created_at', '')[:16]})")
         out += items
     return out
@@ -274,12 +306,31 @@ def inbox_items():
 # -----------------------------------------------------------------------------
 # what to post
 
-def candidates():
+def brand_short(m, meta_file, znacka):
+    """Local path of the brand's version of a rendered clip, or None (meta without `shorts` = bananas only)."""
+    if "shorts" in m:
+        v = (m.get("shorts") or {}).get(znacka)
+    else:
+        v = m.get("short") if znacka == "bananas" else None
+    if not v:
+        return None
+    p = Path(v)
+    if not p.is_absolute():
+        p = HERE / p if (HERE / p).exists() else meta_file.parent / p
+    return str(p)
+
+def inbox_short(m, znacka):
+    """URL of the brand's version of an inbox short (`file` = bananas, `file_fanpage` = fanpage), or None."""
+    f = m.get("file" if znacka == "bananas" else f"file_{znacka}")
+    return f"{m['base']}/{f}" if f else None
+
+def candidates(znacka=None):
     """
-    Rendered shorts not yet published, best first: virality = views per hour of age (softened).
-    Gate 2 of 2: only shorts whose saved stream category / video title matches the game
-    in sources.json (GTA 6) can go out - whatever slipped past the render step.
+    Rendered shorts of this brand not yet published by it, best first: virality = views per hour
+    of age (softened). Gate 2 of 2: only shorts whose saved stream category / video title matches
+    the game in sources.json (GTA 6) can go out - whatever slipped past the render step.
     """
+    znacka = znacka or ZNACKA
     game = load_json(HERE / "sources.json", {}).get("game", "Grand Theft Auto VI|GTA ?VI|GTA ?6")
     done = load_json(PUBLISHED, {})
     now = time.time()
@@ -287,11 +338,17 @@ def candidates():
     for meta_file in OUT.glob("*/*/meta.json"):
         if meta_file.parts[-3].startswith("_"):
             continue                                 # _ukazka, _media
-        local.append(load_json(meta_file, {}))
+        m = load_json(meta_file, {})
+        if m:
+            m["short"] = brand_short(m, meta_file, znacka)
+            local.append(m)
     seen = {m.get("id") for m in local}
     load_env()
-    for m in local + [m for m in inbox_items() if m.get("id") not in seen]:
-        if not m or m.get("id") in done or not (m.get("remote") or Path(m.get("short", "")).exists()):
+    for m in [m for m in inbox_items() if m.get("id") not in seen]:
+        m["short"] = inbox_short(m, znacka)
+        local.append(m)
+    for m in local:
+        if not m or not m.get("short") or m.get("id") in done or not (m.get("remote") or Path(m["short"]).exists()):
             continue
         if (m.get("platform") == "youtube" and date.today() >= date.fromisoformat(
                 (load_json(HERE / "sources.json", {}).get("youtube_prelaunch") or {}).get("until", "2026-11-19"))
@@ -332,7 +389,38 @@ CTAS = [
     "What would you have done? 👇", "Clip of the day or nah?", "Is {s} cooked? 👇",
 ]
 
+# gta6fanpageclip: a curator of streamer reactions - no bananas, no score, its own hashtags
+# (SlopMonster lint 5/5, 17. 11.); {s} = the streamer
+FAN_HOOKS = [
+    "Wait for {s}'s face", "{s} did not see that coming", "{s} lost it at this part",
+    "Chat saw it before {s} did", "{s} went quiet for a second", "How {s} took this GTA 6 moment",
+    "{s} had one job in Vice City", "Leonida keeps testing {s}", "{s} needed a minute after this",
+    "The reaction from {s} says it all",
+]
+FAN_CTAS = [
+    "Best reaction you've seen today?", "Would you react the same way?", "Which streamer should we clip next?",
+    "Fair reaction or overreaction?", "Could you have done it better?", "Rewatch or skip?",
+]
+FAN_HASHTAGS = ["#gtavi", "#gta6gameplay", "#gta6reaction", "#streamerclips", "#twitchclips",
+                "#vicecitygta6", "#gamingshorts", "#leonida"]
+
+def caption_fanpage(m, service):
+    rnd = random.Random(f"{m['id']}:{service}:fanpage")
+    s = (m.get("channel") or "they")[:1].upper() + (m.get("channel") or "they")[1:]
+    hook = rnd.choice(FAN_HOOKS).format(s=s)
+    q = (m.get("quote") or "").strip()
+    q = f"\"{q}\"" if q else ""
+    cta = rnd.choice(FAN_CTAS).format(s=s)
+    src = f"Streamer: {home(m)}"
+    if service in ("twitter", "threads"):
+        text = "\n\n".join(x for x in (hook, q, cta, f"{src} #GTA6") if x)
+        return text if len(text) <= 270 else "\n\n".join(x for x in (hook, f"{src} #GTA6") if x)
+    rot = rnd.sample(FAN_HASHTAGS, 2)
+    return "\n\n".join(x for x in (hook, q, cta, src, " ".join(["#gta6", "#gta6clips"] + rot)) if x)
+
 def caption(m, service):
+    if ZNACKA == "fanpage" and m.get("platform") != "top3":
+        return caption_fanpage(m, service)
     if m.get("platform") == "top3":                  # daily Top 3: credit every streamer
         lines = [f"#{i} {home(x)}" for i, x in enumerate(m["items"], 1)]
         if service in ("twitter", "threads"):
@@ -365,8 +453,8 @@ def youtube_title(m):
         return "Top 3 GTA 6 Moments Today 🍌 #shorts"
     t = (m.get("title") or "").strip()
     if len(t) < 12 or JUNK_RE.search(t) or sum(c.isalpha() for c in t) < len(t) / 2:
-        t = (m.get("quote") or "").strip() or "insane moment"
-    head = f"GTA 6: {m['channel']} - "
+        t = (m.get("quote") or "").strip() or ("wild reaction" if ZNACKA == "fanpage" else "insane moment")
+    head = f"{m['channel']} GTA 6 moment: " if ZNACKA == "fanpage" else f"GTA 6: {m['channel']} - "
     return head + t[: 100 - len(head) - len(" #shorts")] + " #shorts"
 
 def in_day(rec, day):
@@ -379,8 +467,8 @@ def in_day(rec, day):
     return start <= t < start + timedelta(days=1)
 
 def daily_quota(day):
-    """Ramp-up for new accounts (sources.json 'ramp': {date: posts per day}); 10 if not set."""
-    ramp = load_json(HERE / "sources.json", {}).get("ramp") or {}
+    """Ramp-up for new accounts (brand's / sources.json 'ramp': {date: posts per day}); 10 if not set."""
+    ramp = BRAND.get("ramp") or load_json(HERE / "sources.json", {}).get("ramp") or {}
     n = None
     for d, k in sorted(ramp.items()):
         if date.fromisoformat(d) <= day:
@@ -394,7 +482,9 @@ def month_gb():
     """
     start = datetime.now(TZ).replace(day=1, hour=0, minute=0, second=0, microsecond=0)
     mb = 0.0
-    for rec in load_json(PUBLISHED, {}).values():
+    files = {HERE / b.get("published", "publikovano.json")      # both accounts share one Netlify site
+             for b in brands_cfg().values() if isinstance(b, dict)} | {PUBLISHED}
+    for rec in (r for f in files for r in load_json(f, {}).values()):
         try:
             if datetime.fromisoformat(rec.get("due", "")) >= start:
                 mb += (rec.get("mb") or 20) * 7
@@ -407,6 +497,17 @@ def over_budget(share=0.9):
     budget = load_json(HERE / "sources.json", {}).get("netlify_gb_month", 45)
     return month_gb() >= share * budget
 
+def budget_level():
+    """
+    0 = fine, 1 = over netlify_gb_soft (no extras over the obligatory quota, no Top 3, both brands),
+    2 = over netlify_gb_hard (fanpage stops, bananas only the obligatory quota). No brands.json: as before.
+    """
+    cfg = brands_cfg()
+    if "netlify_gb_soft" not in cfg:
+        return 1 if over_budget() else 0
+    gb = month_gb()
+    return 2 if gb >= cfg.get("netlify_gb_hard", 1e9) else 1 if gb >= cfg["netlify_gb_soft"] else 0
+
 def used_today(day):
     return sum(in_day(rec, day) for k, rec in load_json(PUBLISHED, {}).items() if not k.startswith("top3_"))
 
@@ -416,7 +517,8 @@ def remaining(day):
 
 def remaining_max(day):
     """Up to max_per_day (10) when the extra clips are strong enough (Aleš: 8 is a must, 10 if worth it)."""
-    return max(0, max(daily_quota(day), load_json(HERE / "sources.json", {}).get("max_per_day", 10)) - used_today(day))
+    top = BRAND.get("max_per_day") or load_json(HERE / "sources.json", {}).get("max_per_day", 10)
+    return max(0, max(daily_quota(day), top) - used_today(day))
 
 def post_input(ch, m, video_url, due, draft):
     service = ch["service"].lower()
@@ -450,12 +552,36 @@ def create_post(inp, key):
     return res["post"]["id"]
 
 def slot_times(day, n):
-    """The publishing day runs from 14:00 to 05:00 the next morning (Prague)."""
+    """The publishing day runs from 14:00 to 05:00 the next morning (Prague). Base slots: they mark
+    which slot is taken (record 'slot'); the post itself goes out at jittered(slot)."""
     out = []
     for s in SLOTS[:n]:
         t = datetime.strptime(s, "%H:%M").time()
         out.append(datetime.combine(day + timedelta(days=1 if t.hour < 12 else 0), t, TZ))
     return out
+
+def jittered(slot, day, znacka=None):
+    """
+    Aleš 17. 11.: never on the full / half hour and never the same time every day. Each slot moves
+    by -25..+25 min, drawn from (day, brand) - the same run always gives the same times.
+    """
+    rnd = random.Random(f"{day}:{znacka or ZNACKA}:slots")
+    shift = {}
+    for s in SLOTS:
+        shift[s] = rnd.choice([d for d in range(-25, 26)
+                               if (datetime.strptime(s, "%H:%M") + timedelta(minutes=d)).minute not in (0, 30)])
+    return slot + timedelta(minutes=shift[slot.strftime("%H:%M")])
+
+def net_due(due, day, service, znacka=None):
+    """Each network a little later (0-9 min, its own draw per day + brand, so no fixed order),
+    still never landing on :00 / :30."""
+    order = list(range(10))
+    random.Random(f"{day}:{znacka or ZNACKA}:{service}").shuffle(order)
+    for d in order:
+        t = due + timedelta(minutes=d)
+        if t.minute not in (0, 30):
+            return t
+    return due
 
 # -----------------------------------------------------------------------------
 # commands
@@ -463,9 +589,10 @@ def slot_times(day, n):
 def cmd_kanaly(a):
     """Channels of every Buffer account we have a key for (free plan = 3 channels per account)."""
     load_env()
-    keys = buffer_keys()
+    keys = brand_keys()
     if not keys:
-        sys.exit("missing in .env: BUFFER_API_KEY_1 (and _2 for the second account), see .env.example")
+        sys.exit(f"missing in .env: {', '.join(BRAND.get('buffer_keys') or ['BUFFER_API_KEY_1', 'BUFFER_API_KEY_2'])}"
+                 " (see .env.example)")
     chans = []
     for key in keys:
         orgs = gql("query { account { organizations { id name } } }", key)["account"]["organizations"]
@@ -481,15 +608,21 @@ def cmd_kanaly(a):
 def cmd_den(a):
     now = datetime.now(TZ)
     day = now.date() if a.den == "dnes" else date.fromisoformat(a.den) if a.den else now.date() + timedelta(days=1)
-    # slots still ahead of us (+20 min for the deploy and for Buffer to fetch the video)
-    taken = {rec.get("due") for rec in load_json(PUBLISHED, {}).values()}   # an earlier run today
+    # slots still ahead of us (+20 min for the deploy and for Buffer to fetch the video); a slot is
+    # taken by its base time ('slot'; older records and hot posts only have 'due')
+    taken = {rec.get("slot") or rec.get("due") for rec in load_json(PUBLISHED, {}).values()}   # an earlier run today
+    level = budget_level()
+    if level >= 2 and ZNACKA == "fanpage":   # Netlify hard limit: the second account waits for next month
+        print(f"::warning::Netlify: ~{month_gb():.0f} GB this month, {BRAND.get('name', ZNACKA)} paused")
+        return
     must = min(a.n, remaining(day))          # obligatory part of the daily quota (8)
     cap = min(a.n, remaining_max(day))       # with strong extras up to 10
-    if over_budget():                        # Netlify < 1000 credits/month: extras pause, the 8 always go out
+    if level:                                # Netlify < 1000 credits/month: extras pause, the 8 always go out
         cap = must
-        print(f"::warning::Netlify: ~{month_gb():.0f} GB this month, 9./10. video and Top 3 paused")
+        print(f"::warning::Netlify: ~{month_gb():.0f} GB this month, extra videos and Top 3 paused")
     quota = must
-    free = [t for t in slot_times(day, len(SLOTS)) if t > now + timedelta(minutes=20) and t.isoformat() not in taken]
+    free = [t for t in slot_times(day, len(SLOTS))
+            if jittered(t, day) > now + timedelta(minutes=20) and t.isoformat() not in taken]
     src_cfg = load_json(HERE / "sources.json", {})
     good, extra = src_cfg.get("good_score", 1000), src_cfg.get("extra_score", 5000)
     # Aleš: do not burn the 8 on average clips. An average one only goes out when the 8 would
@@ -514,7 +647,8 @@ def cmd_den(a):
         if m.get("platform") == "youtube":
             yt_left -= 1
         picks.append(m)
-    times = sorted(sorted(free, key=lambda t: PRIORITY.index(t.strftime("%H:%M")))[: len(picks)])
+    slots = sorted(sorted(free, key=lambda t: PRIORITY.index(t.strftime("%H:%M")))[: len(picks)])
+    times = [jittered(t, day) for t in slots]
     # hot path: a clip from the last 3 h that is exploding goes out in 25 min, not at the next slot
     hot_due = (now + timedelta(minutes=2)).replace(second=0, microsecond=0)   # the deploy below takes ~1 min
     # ... but never eat the evening: `hot_reserve` posts of the day stay for the UK/US prime-time slots
@@ -522,16 +656,18 @@ def cmd_den(a):
             and picks[0].get("age_h", 99) <= 3 and picks[0]["score"] >= src_cfg.get("hot_score", 2000)
             and in_day({"due": hot_due.isoformat()}, day) and hot_due < times[0] - timedelta(minutes=30)):
         picks[0]["hot"] = True
-        times[0] = hot_due
+        times[0], slots[0] = hot_due, None          # hot post: takes no slot (as before)
         log(f"HOT: {picks[0]['channel']} '{picks[0].get('title', '')[:40]}' -> {hot_due:%H:%M}")
     chans = load_json(CHANNELS, [])
     mode = "ZKOUŠKA" if a.zkouska else ("NAOSTRO" if a.ostre else "koncepty")
-    log(f"{day}: {len(picks)} shorts (quota {quota}) x {len(chans) or '?'} channels ({mode})")
+    log(f"{day} [{ZNACKA}]: {len(picks)} shorts (quota {quota}) x {len(chans) or '?'} channels ({mode})")
     if os.environ.get("GITHUB_ACTIONS") and not a.ostre and not a.zkouska:
         print("::warning::Buffer: jen KONCEPTY, nic nevyjde. Na GitHubu nastav promennou OSTRE=1.")
     if a.zkouska:
         for m, due in zip(picks, times):
             log(f"{due:%H:%M} {m['platform']}/{m['channel']} '{m.get('title', '')[:50]}' ({m.get('views')} views)")
+            log("   " + "  ".join(f"{c['service'].lower()} {net_due(due, day, c['service'].lower()):%H:%M}"
+                                  for c in chans))
             fake = {"id": "CHANNEL_ID", "service": "youtube"}
             print("   ", gql_value(post_input(fake, m, "https://media.example/clip.mp4", due, not a.ostre))[:400])
         return
@@ -541,8 +677,8 @@ def cmd_den(a):
         return
     load_env()
     need("NETLIFY_AUTH_TOKEN", "NETLIFY_SITE_ID", "MEDIA_BASE_URL")
-    if not buffer_keys() or not chans:
-        sys.exit("no Buffer keys or channels: fill .env and run `publikuj.py kanaly` first")
+    if not brand_keys() or not chans:
+        sys.exit(f"no Buffer keys or channels: fill .env and run `publikuj.py kanaly --znacka {ZNACKA}` first")
 
     # 1) one deploy of this run's videos as a Netlify DRAFT deploy: 0 credits (a production
     # deploy is 15), and its permalink stays forever, so earlier videos need no carry-over
@@ -551,7 +687,9 @@ def cmd_den(a):
     stage.mkdir(parents=True, exist_ok=True)
     files = {}
     plan = []
-    for m, due in zip(picks, times):
+    slot_of = {}
+    for m, due, slot in zip(picks, times, slots):
+        slot_of[m["id"]] = slot.isoformat() if slot else None
         rel = f"{day:%Y%m%d}/{safe_name(m['id'])}.mp4"
         src = Path(m["short"]) if not m.get("remote") else stage / f"inbox_{safe_name(m['id'])}.mp4"
         if m.get("remote"):                          # YouTube short from the worker PC's inbox
@@ -585,7 +723,7 @@ def cmd_den(a):
             service = ch["service"].lower()
             if used.get(service, 0) >= caps.get(service, 99):
                 continue
-            ch_due = due                                   # all networks at the same time (Aleš 16. 11.)
+            ch_due = net_due(due, day, service)            # Aleš 17. 11.: each network a few minutes apart
             m["now"] = bool(m.get("hot"))                  # hot path: everywhere NOW (Buffer shareNow)
             try:
                 posts[ch["id"]] = create_post(post_input(ch, m, url, ch_due, not a.ostre), ch.get("key", "BUFFER_API_KEY"))
@@ -600,6 +738,8 @@ def cmd_den(a):
         done[m["id"]] = {"url": url, "path": rel, "due": due.isoformat(), "draft": not a.ostre, "posts": posts, "mb": mb,
                          "channel": m.get("channel"), "platform": m.get("platform"), "score": round(m.get("score") or 0, 1),
                          "hot": bool(m.get("hot"))}
+        if slot_of.get(m["id"]):
+            done[m["id"]]["slot"] = slot_of[m["id"]]
         save_json(PUBLISHED, done)
     # make failures visible: a red run = an e-mail from GitHub
     if failed:
@@ -613,7 +753,7 @@ TOP3_FONT = HERE / "fonts" / "cap" / "montserrat-900.ttf"
 def top3_only(a, day, now):
     """A run with no new shorts: build, deploy and post the day's Top 3 if it is due."""
     load_env()
-    if not (buffer_keys() and os.environ.get("NETLIFY_AUTH_TOKEN")):
+    if not (brand_keys() and os.environ.get("NETLIFY_AUTH_TOKEN")):
         return
     done = load_json(PUBLISHED, {})
     stage = OUT / "_media"
@@ -631,7 +771,7 @@ def top3_only(a, day, now):
     for i, ch in enumerate(load_json(CHANNELS, [])):
         service = ch["service"].lower()
         try:
-            posts[ch["id"]] = create_post(post_input(ch, m, url, due, not a.ostre),
+            posts[ch["id"]] = create_post(post_input(ch, m, url, net_due(due, day, service), not a.ostre),
                                           ch.get("key", "BUFFER_API_KEY"))
             log(f"  top3 {service}: ok")
         except Exception as e:
@@ -648,7 +788,7 @@ def make_top3(day, done, plan, stage):
     Returns (meta, due, site path) with meta['file'] = the local mp4, or None.
     """
     key = f"top3_{day}"
-    if key in done or remaining(day) - len(plan) > 0 or over_budget():
+    if not BRAND.get("top3", True) or key in done or remaining(day) - len(plan) > 0 or budget_level():
         return None
     items = []                                       # (score, meta-ish, local file or url, due)
     for k, rec in done.items():
@@ -718,7 +858,9 @@ def cmd_schranka(a):
     load_env()
     need("NETLIFY_AUTH_TOKEN", "NETLIFY_SITE_ID")
     game = load_json(HERE / "sources.json", {}).get("game", "Grand Theft Auto VI|GTA ?VI|GTA ?6")
-    done = load_json(PUBLISHED, {})
+    cfg = brands_cfg()
+    names = ["bananas"] + [k for k, v in cfg.items() if isinstance(v, dict) and k != "bananas"]
+    done = {z: load_json(HERE / ((cfg.get(z) or {}).get("published") or "publikovano.json"), {}) for z in names}
     cutoff = time.time() - a.dni * 86400
     items, files = [], {}
     for meta_file in OUT.glob("*/*/meta.json"):
@@ -729,18 +871,25 @@ def cmd_schranka(a):
                 shutil.rmtree(meta_file.parent, ignore_errors=True)
             continue
         m = load_json(meta_file, {})
-        short = Path(m.get("short") or "")
         keep = m.get("id", "").startswith(a.prefix) if a.prefix else m.get("platform") == "youtube"
-        if (not keep or m.get("id") in done or not short.exists()
-                or not re.search(game, m.get("category") or "", re.I)):
+        if not keep or not re.search(game, m.get("category") or "", re.I):
             continue
-        rel = f"yt/{safe_name(m['id'])}.mp4"
-        files[rel] = short
-        items.append({**{k: v for k, v in m.items() if k not in ("short", "base", "source")}, "file": rel})
+        # every brand version of the clip that its brand has not published yet (`file` = bananas,
+        # `file_fanpage` = fanpage); the clip drops out once all its brands have published it
+        item = {k: v for k, v in m.items() if k not in ("short", "shorts", "base", "source")}
+        for z in names:
+            short = brand_short(m, meta_file, z)
+            if not short or not Path(short).exists() or m.get("id") in done[z]:
+                continue
+            rel = f"yt/{safe_name(m['id'])}.mp4" if z == "bananas" else f"yt/{safe_name(m['id'])}_{z}.mp4"
+            files[rel] = Path(short)
+            item["file" if z == "bananas" else f"file_{z}"] = rel
+        if any(k == "file" or k.startswith("file_") for k in item):
+            items.append(item)
     now = time.time()                                # only the best few: `den` takes a handful a day anyway
     items.sort(key=lambda m: -(m.get("views") or 0) / (max((now - (m.get("created") or now)) / 3600, 0) + 1) ** 0.5)
     items = items[: a.max]
-    files = {m["file"]: files[m["file"]] for m in items}
+    files = {m[k]: files[m[k]] for m in items for k in m if k == "file" or k.startswith("file_")}
     sent = HERE / f"schranka_{a.nazev}.json"          # ids of the live inbox (local, not in git)
     live = set(load_json(sent, []))
     new = [m["id"] for m in items if m["id"] not in live]
@@ -770,8 +919,12 @@ def main():
     s.add_argument("--prefix", default="", help="only shorts whose id starts with this (live_); default: YouTube")
     s.set_defaults(fn=cmd_schranka)
     z = sub.add_parser("zbyva", help="print how many shorts today's quota still allows (for the workflow)")
-    z.set_defaults(fn=lambda a: print(remaining_max(datetime.now(TZ).date())))   # render enough for the strong extras
+    z.set_defaults(fn=lambda a: print(0 if ZNACKA == "fanpage" and budget_level() >= 2
+                                      else remaining_max(datetime.now(TZ).date())))   # render enough for the strong extras
+    for x in (k, d, s, z):
+        x.add_argument("--znacka", default="bananas", help="account from brands.json: bananas (default) | fanpage")
     a = p.parse_args()
+    set_brand(a.znacka)
     a.fn(a)
 
 if __name__ == "__main__":

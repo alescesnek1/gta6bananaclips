@@ -1,10 +1,12 @@
 """
 sfx.py - our own transition sound (no samples, no licences).
 
-  python tools/hudba/sfx.py      # -> assets/sfx/flash.wav
+  python tools/hudba/sfx.py      # -> assets/sfx/flash.wav, riser.wav, hit.wav
 
 'flash': an airy whoosh that swells for 0.45 s into a soft cinematic impact (low boom + a
 little air), for the hook -> start-of-clip white flash. The impact lands at 0.45 s.
+'riser': 1.2 s of quiet tension before the payoff - filtered noise opening up + a tone gliding up.
+'hit': a short deep thump exactly on the payoff (starts at 0 s).
 """
 import wave
 from pathlib import Path
@@ -35,15 +37,44 @@ def flash():
     out[: int(SR * 0.01)] *= np.linspace(0, 1, int(SR * 0.01))
     return out / np.abs(out).max() * 0.8
 
-def main():
-    DEST.mkdir(parents=True, exist_ok=True)
-    pcm = (flash() * 32767).astype(np.int16)
-    with wave.open(str(DEST / "flash.wav"), "wb") as w:
+def riser(dur=1.2):
+    rnd = np.random.default_rng(23)
+    n = int(SR * dur)
+    t = np.arange(n) / SR
+    ramp = t / dur
+    noise = rnd.normal(0, 1, n)
+    air = (1 - ramp) * lowpass(noise, 60) + ramp * lowpass(noise, 5)      # opens up towards the payoff
+    f = 180 * 2 ** (2.5 * ramp)                                           # tone gliding up 2.5 octaves
+    tone = np.sin(2 * np.pi * np.cumsum(f) / SR) + 0.3 * np.sin(4 * np.pi * np.cumsum(f) / SR)
+    out = (0.5 * air + 0.35 * tone) * ramp ** 2
+    out[-int(SR * 0.01):] *= np.linspace(1, 0, int(SR * 0.01))           # stops dead at the hit
+    return out / np.abs(out).max() * 0.8
+
+def hit():
+    rnd = np.random.default_rng(31)
+    n = int(SR * 0.7)
+    t = np.arange(n) / SR
+    f = 38 + 70 * np.exp(-t / 0.04)
+    boom = np.tanh(2.0 * np.sin(2 * np.pi * np.cumsum(f) / SR)) * np.exp(-t / 0.18)
+    click = lowpass(rnd.normal(0, 1, n), 4) * np.exp(-t / 0.008)
+    out = boom + 0.4 * click
+    out[: int(SR * 0.002)] *= np.linspace(0, 1, int(SR * 0.002))
+    return out / np.abs(out).max() * 0.85
+
+def save(name, x):
+    pcm = (x * 32767).astype(np.int16)
+    with wave.open(str(DEST / name), "wb") as w:
         w.setnchannels(1)
         w.setsampwidth(2)
         w.setframerate(SR)
         w.writeframes(pcm.tobytes())
-    print("flash.wav")
+    print(name)
+
+def main():
+    DEST.mkdir(parents=True, exist_ok=True)
+    save("flash.wav", flash())
+    save("riser.wav", riser())
+    save("hit.wav", hit())
 
 if __name__ == "__main__":
     main()

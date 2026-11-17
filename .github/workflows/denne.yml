@@ -6,6 +6,7 @@
 #
 # Secrets (Settings -> Secrets and variables -> Actions -> Secrets):
 #   BUFFER_API_KEY_1, BUFFER_API_KEY_2, NETLIFY_AUTH_TOKEN
+#   BUFFER_API_KEY_3, BUFFER_API_KEY_4 (second account gta6fanpageclip, brands.json -> fanpage)
 # Variables (same page -> Variables):
 #   NETLIFY_SITE_ID, MEDIA_BASE_URL, OSTRE (set to 1 to schedule for real; otherwise Buffer drafts)
 # YouTube is off here: it blocks GitHub's servers ("confirm you're not a bot").
@@ -50,6 +51,8 @@ jobs:
     env:
       BUFFER_API_KEY_1: ${{ secrets.BUFFER_API_KEY_1 }}
       BUFFER_API_KEY_2: ${{ secrets.BUFFER_API_KEY_2 }}
+      BUFFER_API_KEY_3: ${{ secrets.BUFFER_API_KEY_3 }}          # second account gta6fanpageclip
+      BUFFER_API_KEY_4: ${{ secrets.BUFFER_API_KEY_4 }}
       NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
       YT_COOKIES: ${{ secrets.YT_COOKIES }}
       TWITCH_CLIENT_ID: ${{ secrets.TWITCH_CLIENT_ID }}          # Twitch API: clips of the whole GTA VI category
@@ -99,6 +102,10 @@ jobs:
         if: inputs.url == '' && hashFiles('buffer.json') == '' && env.BUFFER_API_KEY_1 != ''
         run: python publikuj.py kanaly
 
+      - name: Buffer channels, fanpage account (first run only)
+        if: inputs.url == '' && hashFiles('buffer_fanpage.json') == '' && env.BUFFER_API_KEY_3 != ''
+        run: python publikuj.py kanaly --znacka fanpage
+
       - name: render one test clip
         if: inputs.url != ''
         run: |
@@ -111,7 +118,13 @@ jobs:
         if: inputs.url == '' && inputs.jen_publikace != 'ano'
         run: |
           n="${{ inputs.max }}"
-          [ -z "$n" ] && n=$(python publikuj.py zbyva)
+          if [ -z "$n" ]; then
+            # the render makes a version for each brand, so render as many as the hungrier brand still needs
+            a=$(python publikuj.py zbyva --znacka bananas 2>/dev/null || python publikuj.py zbyva)
+            b=$(python publikuj.py zbyva --znacka fanpage 2>/dev/null || echo 0)
+            echo "quota left: bananas $a, fanpage $b"
+            n=$(( a > b ? a : b ))
+          fi
           echo "quota left today: $n"
           yt="${{ inputs.yt }}"
           # YouTube discovery is slow (detail + comments per video): only in the morning run
@@ -125,12 +138,18 @@ jobs:
         if: (inputs.url == '' || inputs.publikovat == 'ano') && env.BUFFER_API_KEY_1 != '' && env.NETLIFY_AUTH_TOKEN != ''
         run: python publikuj.py den --den dnes --n 10 ${{ vars.OSTRE == '1' && '--ostre' || '' }}
 
+      - name: publish to Buffer, fanpage account
+        if: (inputs.url == '' || inputs.publikovat == 'ano') && env.BUFFER_API_KEY_3 != '' && env.NETLIFY_AUTH_TOKEN != ''
+        run: python publikuj.py den --den dnes --n 10 --znacka fanpage ${{ vars.OSTRE == '1' && '--ostre' || '' }}
+
       - name: keep the shorts for 3 days (download from the run page)
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: shorts
-          path: out/*/*/short_9x16.mp4
+          path: |
+            out/*/*/short_9x16.mp4
+            out/*/*/short_fanpage.mp4
           retention-days: 3
           if-no-files-found: ignore
 
@@ -139,5 +158,5 @@ jobs:
         run: |
           git config user.name "gta6bananaclips-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          for f in state.json streamers.json publikovano.json buffer.json; do [ -f "$f" ] && git add "$f"; done
+          for f in state.json streamers.json publikovano.json buffer.json publikovano_fanpage.json buffer_fanpage.json; do [ -f "$f" ] && git add "$f"; done
           git diff --cached --quiet || { git commit -q -m "stav: denni beh $(date -u +%F)" && git pull -q --rebase && git push -q; }
