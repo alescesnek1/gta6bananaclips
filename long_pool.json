@@ -3275,5 +3275,19 @@
     "vod_offset": 10408,
     "cluster": 1,
     "added": 1795040238
+  },
+  "twitch_EphemeralDirtySoybeanDAESuppy-M-swyIPFDMfIaQor": {
+    "id": "twitch_EphemeralDirtySoybeanDAESuppy-M-swyIPFDMfIaQor",
+    "url": "https://www.twitch.tv/sashagrey/clip/EphemeralDirtySoybeanDAESuppy-M-swyIPFDMfIaQor",
+    "channel": "sashagrey",
+    "platform": "twitch",
+    "title": "🌴 !DROPS COUNTDOWN TO GTA VI @SASHAGREY",
+    "views": 705,
+    "created": 1795005487,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932206166",
+    "vod_offset": 7241,
+    "cluster": 1,
+    "added": 1795042711
   }
 }
