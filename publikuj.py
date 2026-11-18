@@ -1201,8 +1201,7 @@ def outburst(m, src):
     if str(m.get("channel") or "").lower() not in {x.lower() for x in src.get("outburst_streamers", [])}:
         return False
     sc = m.get("tag_scores") or {}
-    return ((sc.get("_loud") or 0) >= src.get("outburst_loud", 4.0)
-            or max((sc.get(t) or 0) for t in ("rage", "funny", "wow")) >= 0.3)
+    return (sc.get("_loud") or 0) >= src.get("outburst_loud", 5.0)    # a real outburst is loud, not just a word
 
 ACTION_TAGS = ("crash", "chase", "glitch", "funny", "rage")
 ACTION_MIN = 0.5
