@@ -59,7 +59,7 @@
       "_first": "Ales 18. 11. vecer: zadne nudne koukani na grafiku -> prvni dil akcni serie misto first-reactions"
     },
     "long_min_gap_h": 20,
-    "long_target_min": 6,
+    "long_target_min": 8,
     "long_retry_h": 6,
     "long_flags": {
       "_napoveda": "Vypinace novych prvku long-formu (false = vypnuto).",
@@ -80,8 +80,7 @@
     "_exp": "Experimenty (experimenty.py, docs/dva-ucty.md): max exp_max_per_day denne navic ke kvote, zapina je az data (dost silneho materialu), meri se 48 h po vydani; koncept pod 60 % klasiky po 5 postech se sam vypne (experimenty.json), nad 100 % smi 2x denne. false = vypnuto hned.",
     "exp_first": true,
     "exp_tier3": false,
-    "exp_max_per_day": 1,
-    "_long_target_min": "Ales 18. 11.: dnes vydat jeden long-form (launch den, hledanost nejvyssi) -> bananas docasne 6 min (min. 5 dodrzeno); zitra zpet na 8."
+    "exp_max_per_day": 1
   },
   "fanpage": {
     "name": "gta6fanpageclip",
