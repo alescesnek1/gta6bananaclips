@@ -53,6 +53,14 @@
         },
         "draft": false,
         "done": true
+      },
+      "kick_clip_01M7QB1PQ1JTDEBN7AFG5XVDKX": {
+        "due": "2026-11-18T17:43:00+01:00",
+        "posts": {
+          "6af7142262b70b94b01ac608": "6afdc7e6b3f8322ac748fbae"
+        },
+        "draft": false,
+        "done": true
       }
     },
     "days": {
