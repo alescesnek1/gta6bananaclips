@@ -1,0 +1,27 @@
+{
+  "live_clix_1795000007": {
+    "url": "https://6afd8a609cd180f103593174--gta6bananaclips-media.netlify.app/20261118/live_clix_1795000007.mp4",
+    "path": "20261118/live_clix_1795000007.mp4",
+    "due": "2026-11-18T12:24:00+01:00",
+    "draft": false,
+    "posts": {
+      "6afc4355ece6dfde5ff6769a": "6afd8a6475578146ec49f075",
+      "6afc433aece6dfde5ff6749b": "6afd8a6527a97c2bc637068c",
+      "6afc42e6ece6dfde5ff66dca": "6afd8a6527a97c2bc63706b5",
+      "6afc4429ece6dfde5ff683db": "6afd8a6627a97c2bc6370728",
+      "6afc4413ece6dfde5ff68286": "6afd8a6675578146ec49f121",
+      "6afc43ffece6dfde5ff68162": "6afd8a67be723dbbcfdbf3e3"
+    },
+    "mb": 16.7,
+    "channel": "clix",
+    "platform": "twitch",
+    "score": 0,
+    "hot": true,
+    "rating": 8,
+    "views": 0,
+    "golden": false,
+    "live": true,
+    "viewers": 11630,
+    "spike_z": 23.0
+  }
+}
