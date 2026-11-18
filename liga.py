@@ -47,7 +47,10 @@ def _live(cid, rec):
 def moments():
     """{id: {channel, ts, score}} from the pool and from published shorts (their meta.json)."""
     out = {}
-    for r in _load(POOL).values():
+    pool = _load(POOL)
+    for r in (pool.values() if isinstance(pool, dict) else pool if isinstance(pool, list) else []):
+        if not isinstance(r, dict):
+            continue
         if _live(r.get("id"), r):
             continue
         if r.get("channel") and (r.get("created") or r.get("added")):
