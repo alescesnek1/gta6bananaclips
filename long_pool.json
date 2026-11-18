@@ -2677,12 +2677,121 @@
     "channel": "arky",
     "platform": "twitch",
     "title": "🔶 GTA 6 🔶 GOT EARLY ACCESS 🔶DROPS ENABLED 🔶 !comm !socials",
-    "views": 509,
+    "views": 515,
     "created": 1795008732,
     "category": "Grand Theft Auto VI",
     "video_id": "2932205358",
     "vod_offset": 10583,
     "cluster": 1,
-    "added": 1795033220
+    "added": 1795033440
+  },
+  "twitch_CuteBlindingSandwichKevinTurtle-StfZX5EDlf9jn5_j": {
+    "id": "twitch_CuteBlindingSandwichKevinTurtle-StfZX5EDlf9jn5_j",
+    "url": "https://www.twitch.tv/theburntpeanut/clip/CuteBlindingSandwichKevinTurtle-StfZX5EDlf9jn5_j",
+    "channel": "theburntpeanut",
+    "platform": "twitch",
+    "title": "worth it.. (banned)",
+    "views": 1609,
+    "created": 1795032368,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932226282",
+    "vod_offset": 32468,
+    "cluster": 4,
+    "added": 1795033440,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/theburntpeanut/20261118_twitch_CuteBlindingSandwichKevinTurtle-StfZX5EDlf9jn5_j/source.mp4",
+    "peak": 12.950000000000001,
+    "cut": [
+      0.53,
+      16.97
+    ],
+    "dur": 24.85,
+    "tags": [
+      "rage"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.52,
+      "first-reaction": 0.2,
+      "wow": 0.16,
+      "_loud": 1.8,
+      "_motion": 8.0
+    },
+    "quote": "wait wait wait wait wait wait hold on He was",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.35,
+      "fail": 0.7,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "primary": "fail",
+    "proven": [],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "fail": [
+        "text"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.26,
+    "signals": {
+      "siren": 0.0,
+      "impact": 5.5,
+      "loud": 1.5,
+      "motion": 7.9,
+      "sustained": 0.11,
+      "spike": 4.8,
+      "laugh": 0,
+      "static": 0.0,
+      "letterbox": 0.0,
+      "luma": 38.7,
+      "dark": 0.19
+    }
+  },
+  "twitch_PrettiestRockyFrogNerfBlueBlaster-kXM9Wrv-AmlrT3Jo": {
+    "id": "twitch_PrettiestRockyFrogNerfBlueBlaster-kXM9Wrv-AmlrT3Jo",
+    "url": "https://www.twitch.tv/sashagrey/clip/PrettiestRockyFrogNerfBlueBlaster-kXM9Wrv-AmlrT3Jo",
+    "channel": "sashagrey",
+    "platform": "twitch",
+    "title": "🌴 !DROPS COUNTDOWN TO GTA VI @SASHAGREY",
+    "views": 510,
+    "created": 1795001264,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932206166",
+    "vod_offset": 3018,
+    "cluster": 1,
+    "added": 1795033440
+  },
+  "twitch_SplendidFurryCobraLitty-aRzKqT4E06s7soNa": {
+    "id": "twitch_SplendidFurryCobraLitty-aRzKqT4E06s7soNa",
+    "url": "https://www.twitch.tv/ohnepixel/clip/SplendidFurryCobraLitty-aRzKqT4E06s7soNa",
+    "channel": "ohnepixel",
+    "platform": "twitch",
+    "title": "FPS GAMER OF THE YEAR WITH TRIGGER CONTROL",
+    "views": 1219,
+    "created": 1795025490,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932275268",
+    "vod_offset": 21458,
+    "cluster": 1,
+    "added": 1795033440
   }
 }
