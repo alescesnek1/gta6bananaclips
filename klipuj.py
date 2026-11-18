@@ -1199,6 +1199,8 @@ def transcribe(src):
                 or seg.get("compression_ratio", 1) > 2.2 or sung > 0.45 or seen.get(key, 0) >= 2
                 or game_share(ws, game) >= 0.5):
             dropped += 1
+            if seen.get(key, 0) >= 2 or game_share(ws, game) >= 0.5:
+                continue                              # the game's own audio (song, chorus): never blocks a cut
             # no caption, but it may still be the streamer talking: keep it as occupied time for the cuts
             busy += [(s, e, BUSY) for s, e, _ in ws] or [(seg["start"], seg["end"], BUSY)]
             continue
@@ -1262,6 +1264,129 @@ def game_share(ws, game, tol=GAME_TOL):
         if tok and any(g == tok and gs - tol <= s <= ge + tol for gs, ge, g in game):
             hit += 1
     return hit / len(ws)
+
+# Streamer's voice vs game dialogue (18. 11., the first real GTA 6 clips: cutscene dialogue and the
+# intro song were captioned). A word is the streamer's when his mouth moves while it is spoken:
+# mouth region (lower part of the face in the facecam) frame differences at MOUTH_FPS, minus the
+# upper face's (head motion, compression noise), compared to the clip's own still-mouth level.
+CUTSCENE_MAX = 0.5       # more of the clip than this in cinematic letterbox = a story cutscene (spoiler)
+
+def cutscene_share(src):
+    """
+    Share of the clip (1 fps) in cinematic letterbox: black bars over >= 9 % at the top AND the bottom
+    of the picture while the middle shows something (as podobnost.letterbox_share). Measured on the
+    middle half of the width: a facecam overlay in a corner must not hide the bars.
+    """
+    try:
+        raw = subprocess.run(["ffmpeg", "-nostdin", "-v", "error", "-i", str(src), "-vf", "fps=1,scale=160:90,format=gray",
+                              "-f", "rawvideo", "-"], capture_output=True, timeout=300).stdout
+    except subprocess.TimeoutExpired:
+        return 0.0
+    n = len(raw) // (160 * 90)
+    if not n:
+        return 0.0
+    fr = np.frombuffer(raw[: n * 160 * 90], np.uint8).reshape(n, 90, 160).astype(np.float32)[:, :, 40:120]
+    k = 8                                              # 9 % of 90 rows
+    top, bot = fr[:, :k].mean(axis=(1, 2)), fr[:, -k:].mean(axis=(1, 2))
+    mid = fr[:, k:-k].mean(axis=(1, 2))
+    return round(float(((top < 14) & (bot < 14) & (mid > 30)).mean()), 2)
+
+def cluster_need(clip):
+    """How many viewers' clips of one moment make it viral (owner 18. 11.: 2-3 is nothing on a stream
+    with hundreds of thousands of viewers): max(10, stream viewers / 5000)."""
+    return max(10.0, (clip.get("viewers") or 0) / 5000)
+
+def cutscene_exception(clip, cfg):
+    """
+    A cutscene clip may go out only when it is EXTREMELY viral by the numbers (owner 18. 11.):
+    virality >= 4 x hot_score, or >= cluster_need viewers clipped the moment, or a live spike_z >= 60 of a
+    star streamer. Returns the numbers that justify it (meta qa.cutscene_exception) or None.
+    """
+    v, cl, z = virality(clip), clip.get("cluster") or 1, clip.get("spike_z") or 0
+    star = (clip.get("channel") or "").lower() in {x.lower() for x in cfg.get("star_streamers", [])}
+    why = {"virality": round(v), "hot_score_x4": 4 * cfg.get("hot_score", 2000), "cluster": cl, "cluster_need": cluster_need(clip),
+           "spike_z": z, "star": star}
+    if v >= 4 * cfg.get("hot_score", 2000) or cl >= cluster_need(clip) or (clip.get("live") and star and z >= 60):
+        return why
+    return None
+
+MOUTH_FPS = 10
+MOUTH_PAD = 0.15         # s around a word
+MOUTH_HEAD = 0.0         # share of the upper face's motion taken off the mouth's (measured 18. 11.: the whole face moves with the mouth - subtracting it dropped xQc's own screams)
+
+def mouth_track(src, cam=None):
+    """
+    (times, mouth activity per frame) of the streamer's face: in the facecam box cam (% of the
+    normalised frame) or, cam=None, the whole frame (a reaction / IRL clip). None when no face is
+    found (then nobody can say who speaks).
+    """
+    global _cascade
+    if _cascade is None:
+        _cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+    if cam:
+        x, y, w, h = [int(round(v / 100 * d)) for v, d in zip(cam, (SW, SH, SW, SH))]
+        vf, W_, H_ = f"fps={MOUTH_FPS},{src_norm(src)},crop={w}:{h}:{x}:{y},scale=320:240,format=gray", 320, 240
+    else:
+        vf, W_, H_ = f"fps={MOUTH_FPS},{src_norm(src)},scale=640:360,format=gray", 640, 360
+    try:
+        raw = subprocess.run(["ffmpeg", "-nostdin", "-v", "error", "-i", str(src), "-vf", vf, "-f", "rawvideo", "-"],
+                             capture_output=True, timeout=300).stdout
+    except subprocess.TimeoutExpired:
+        return None
+    n = len(raw) // (W_ * H_)
+    if n < MOUTH_FPS * 2:
+        return None
+    fr = np.frombuffer(raw[: n * W_ * H_], np.uint8).reshape(n, H_, W_)
+    boxes = []
+    for i in range(0, n, max(1, n // 24)):
+        f = _cascade.detectMultiScale(fr[i], scaleFactor=1.1, minNeighbors=5, minSize=(W_ // 10, W_ // 10))
+        if len(f):
+            boxes.append(max(f, key=lambda b: b[2] * b[3]))
+    if len(boxes) < 3:
+        return None
+    fx, fy, fw, fh = [int(v) for v in np.median(np.array(boxes), axis=0)]
+    mouth = (slice(fy + int(0.62 * fh), min(H_, fy + int(1.0 * fh))), slice(fx + int(0.2 * fw), fx + int(0.8 * fw)))
+    upper = (slice(fy + int(0.15 * fh), fy + int(0.45 * fh)), slice(fx + int(0.2 * fw), fx + int(0.8 * fw)))
+    f32 = fr.astype(np.float32)
+    dm = np.abs(np.diff(f32[:, mouth[0], mouth[1]], axis=0)).mean(axis=(1, 2))
+    du = np.abs(np.diff(f32[:, upper[0], upper[1]], axis=0)).mean(axis=(1, 2))
+    mouth_track.last = (dm, du)                       # (diagnostics)
+    act = np.maximum(dm - MOUTH_HEAD * du, 0.0)
+    return (np.arange(1, n) / MOUTH_FPS), act
+
+MOUTH_MIN = 1.0          # mean mouth activity (0-255 per pixel and frame) an utterance needs (cutscene, mouth still: <= 0.5; xQc talking 1.5-8, lacy 7-12)
+MOUTH_REL = 0.1          # ... and this share of the clip's busy-mouth level (90th percentile)
+
+def utterances(words):
+    """Words grouped into utterances (split at sentence ends: . ? ! or a pause)."""
+    out, cur = [], []
+    for i, w in enumerate(words):
+        cur.append(w)
+        if sent_end(words, i):
+            out.append(cur)
+            cur = []
+    return out + ([cur] if cur else [])
+
+def mouth_words(words, track, pad=MOUTH_PAD):
+    """
+    Split words into (the streamer's, the others) by the mouth activity track, per utterance (one
+    word is too short to judge): an utterance is the streamer's when the mean activity over it
+    (+-pad) is >= MOUTH_MIN and >= MOUTH_REL x the clip's 90th percentile. Game dialogue and songs
+    come while the streamer's mouth is still. track None: nothing can be judged -> ([], words).
+    """
+    words = list(words)
+    if not words:
+        return [], []
+    if track is None:
+        return [], words
+    ts, act = track
+    need = max(MOUTH_MIN, MOUTH_REL * float(np.percentile(act, 90)))
+    mine, other = [], []
+    for u in utterances(words):
+        m = (ts >= u[0][0] - pad) & (ts <= u[-1][1] + pad)
+        a = float(act[m].mean()) if m.any() else 0.0
+        (mine if a >= need else other).extend(u)
+    return mine, other
 
 def singing(x, sr=16000):
     """
@@ -1789,7 +1914,7 @@ def audio_mix(clip_audio, total, card_idx=None, card_at=0.0, music_idx=None, mus
         f += f";[{outro_idx}:a]{fmt},adelay={int(clip_end * 1000)}:all=1,apad=whole_dur={total:.3f}[ou]"
         parts.append("[ou]")
     if follow_idx is not None:
-        f += f";[{follow_idx}:a]volume=0.6,{fmt},adelay={int(follow_at * 1000)}:all=1,apad=whole_dur={total:.3f}[fo]"
+        f += f";[{follow_idx}:a]volume=0.6,{fmt},adelay={int(follow_at * 1000)}:all=1,apad=whole_dur={total:.3f}" + (f",afade=t=out:st={max(0.0, total - 0.35):.3f}:d=0.35" if music_fade else "") + "[fo]"
         parts.append("[fo]")
     if music_idx is not None:                  # adeclick: the generated track has a little crackle
         duck = (f",volume='if(between(t\\,{peak:.2f}\\,{peak + 0.6:.2f})\\,0.2\\,1)':eval=frame"
@@ -1804,7 +1929,8 @@ def audio_mix(clip_audio, total, card_idx=None, card_at=0.0, music_idx=None, mus
     if stems:                                   # mix_check: voice and music separately
         return f + (f";{parts[0]}anull[vo]" if parts and parts[0] in ("[a0]", "[a0v]") else "")
     if card_idx is not None:
-        f += f";[{card_idx}:a]{fmt},adelay={int(card_at * 1000)}:all=1,apad=whole_dur={total:.3f}[ar]"
+        cfade = f",afade=t=out:st={max(0.0, total - 0.35):.3f}:d=0.35" if music_fade else ""   # loop: quiet at the seam
+        f += f";[{card_idx}:a]{fmt},adelay={int(card_at * 1000)}:all=1,apad=whole_dur={total:.3f}{cfade}[ar]"
         parts.append("[ar]")
     if riser_idx is not None and peak is not None:     # the file is 1.2 s and ends on the payoff
         cut = max(0.0, 1.2 - peak)
@@ -2614,6 +2740,12 @@ def qa_short(path, plan):
                  (plan["card_at"] if plan.get("card") else plan["main_end"]) - plan["peak"])
         if after < AFTER_PEAK - 0.05:
             probs.append(f"only {after:.1f} s after the climax (min {AFTER_PEAK:.1f})")
+    # loop edit: the banana / the model's reaction sit ON the payoff peak in the opening
+    if plan.get("loop_cut") and plan.get("peak") is not None:
+        for t0, _, name, _ in els:
+            if (name.startswith("banana") or name.startswith("model")) and "(ending)" not in name \
+                    and abs(t0 - plan["peak"]) > STICKER_TOL:
+                probs.append(f"{name} at {t0:.1f} s, not on the payoff peak ({plan['peak']:.1f} s)")
     # SEAMLESS LOOP (owner 18. 11.): the seam must not jump - sound level and the crop
     if plan.get("loop"):
         jump = seam_check(path)
@@ -3431,6 +3563,8 @@ def short_start(words, peak, a, b, score=None):
     """
     cuts = sorted({a} | {_start_at(words, i) for i in range(len(words))
                          if sent_start(words, i) and words[i][2] != BUSY and _start_at(words, i) >= a - 1e-6})
+    if peak is not None and peak - SETUP_TGT >= a and ok_start(words, peak - SETUP_TGT):
+        cuts = sorted(set(cuts) | {peak - SETUP_TGT})  # nobody talks there: any moment is a clean start
     if peak is None:
         if b - a <= SHORT_CAP:
             return a
@@ -3519,6 +3653,15 @@ def dead_air(words, src, a, b, peak):
     keep.append((cur, b))
     return [(x, y) for x, y in keep if y - x > 0.05]
 
+STICKER_TOL = 0.5        # QA (loop edit): the banana / model reaction starts within this of the peak
+
+def loop_reactions(reactions, peak):
+    """The loop edit's banana: exactly one, on the payoff peak (output time `peak`, in the opening);
+    the kind of the first reaction pick_reactions chose. [] without a payoff or a reaction."""
+    if peak is None or not reactions:
+        return []
+    return [(round(peak + 0.05, 2), reactions[0][1])]
+
 def loop_p0(words, peak, lo=0.5, hi=1.5):
     """
     The loop point P0, lo..hi s before the payoff peak, on the output frame grid: a sentence start
@@ -3558,8 +3701,8 @@ def loop_cut(src, cw, words, d, peak, a, b, dur, ts, rms, v2, info):
         e = e2
     e = min(dur, round(e * FPS) / FPS)
     s = short_start(cw, p0, a, e, score=lambda t: open_score(ts, rms, t))
-    if p0 - s < SETUP_MIN - 1.0:
-        log(f"  loop: only {p0 - s:.1f} s of setup before the payoff, plain cut")
+    if p0 - s < SETUP_MIN - 1.0 or e - s > STORY_CAP + 0.01:
+        log(f"  loop: {p0 - s:.1f} s of setup, {e - s:.1f} s in all - no clean loop, plain cut")
         return None
     s = round(s * FPS) / FPS
     segs = [(x, y) for x, y in dead_air(cw, src, s, p0, None) if y - x > 0.05]
@@ -3801,6 +3944,17 @@ def render(clip, src=None, clean=False):
     why = non_game_why(clip, None, load_json(SOURCES, {})) if non_game else None
     if why:                                            # no chance (other game / not viral): skip Whisper
         raise NotGameplay(f"{'; '.join(gp_probs)}; {why}")
+    # story cutscene = spoiler (18. 11.: three live shorts were cutscenes): rejected unless the numbers
+    # say it is extremely viral (cutscene_exception) - and even then only with the streamer's facecam
+    cut_x = None
+    if not non_game:
+        cs = cutscene_share(src)
+        if cs > CUTSCENE_MAX:
+            cut_x = cutscene_exception(clip, load_json(SOURCES, {}))
+            if not cut_x:
+                raise NotGameplay(f"cutscene: {cs:.0%} of the clip in cinematic letterbox (spoiler)")
+            cut_x["cutscene_share"] = cs
+            log(f"  cutscene ({cs:.0%}), allowed as extremely viral: {cut_x}")
     if words is None:
         words = transcribe(src)
     if vod_ok:                                         # ends too soon after the payoff: the VOD has the rest
@@ -3844,14 +3998,16 @@ def render(clip, src=None, clean=False):
     cfg = load_json(SOURCES, {})
     # YouTube: video views are not clip popularity, and a window without a facecam is someone's
     # commentary / trailer re-upload (18. 11.: three such picks) -> YouTube needs the streamer's face
-    nocam_ok = clip.get("platform") != "youtube" and (
-        (clip.get("views") or 0) >= cfg.get("nocam_min_views", 5000) or (clip.get("cluster") or 1) >= 2)
+    # (live: the point is the streamer's reaction - never without his facecam; a cutscene exception neither)
+    nocam_ok = clip.get("platform") != "youtube" and not clip.get("live") and not cut_x and (
+        (clip.get("views") or 0) >= cfg.get("nocam_min_views", 5000) or (clip.get("cluster") or 1) >= cluster_need(clip))
 
     # Look passes: first the launch look (brands with any LAUNCH_FLAGS on), then - only for the
     # brands whose short failed QA - the proven old look; a short failing even that is dropped.
     shorts, qa_log, todo, not_game = {}, {}, list(blist), []
     looks = [True, False] if any(b.get(k) for b in blist for k in LAUNCH_FLAGS) else [False]
     cuts, bore, mtags = {}, None, {}
+    mouth_cache, mouth_log = {}, []                    # facecam mouth activity per cut (who speaks)
     for v2 in looks:
         if not todo:
             break
@@ -3872,10 +4028,11 @@ def render(clip, src=None, clean=False):
         dur = duration(src)
         card_at = min(card_at, dur)
         loop = info.get("loop")                           # the loop edit: payoff [0, hook_t], setup to the seam
+        mouth_cache = {}                                  # (per cut: the times differ)
         if not loop:
             words = [w for w in words if w[0] < card_at]  # no captions / banana under the score card
         if bore is None:                                  # boredom gate, once per clip, on the cut it will show
-            viral = bool(virality(clip) >= cfg.get("extra_score", 5000) or (clip.get("cluster") or 1) >= 2
+            viral = bool(virality(clip) >= cfg.get("extra_score", 5000) or (clip.get("cluster") or 1) >= cluster_need(clip)
                          or (clip.get("live") and (clip.get("spike_z") or 0) >= 10))
             try:
                 bore_probs, bore = boredom(src, words, peak, 0.0 if loop else hook_t, dur if loop else card_at, viral=viral)
@@ -3894,10 +4051,9 @@ def render(clip, src=None, clean=False):
         if hv2_cut and hook_t and not loop:               # hook = teaser -> flash -> start, nothing else in it
             reactions = [r for r in reactions if r[0] >= hook_t + 0.2]
         if loop:                                          # the banana stays on the payoff; the card follows it
-            if peak is not None:                          # (the one in the opening lands on the peak itself)
-                reactions = [(round(peak + 0.05, 2) if t < hook_t else t, n) for t, n in reactions]
-                reactions = [r for i, r in enumerate(reactions) if r[0] >= hook_t or i == next(
-                    (k for k, x in enumerate(reactions) if x[0] < hook_t), -1)]
+            # ONE banana, on the payoff peak in the opening (CLAUDE.md: 1x per clip, on the payoff) -
+            # pick_reactions may have placed it in the setup; only its kind is taken over
+            reactions = loop_reactions(reactions, peak)
             # owner 18. 11.: the score card and every end graphic sit at the VERY END, over the last
             # seconds of the setup that runs into P0, and end with the video (the seam stays exact)
             card_at = max(hook_t + 0.5, dur - RATING_DUR)
@@ -3969,13 +4125,30 @@ def render(clip, src=None, clean=False):
                     cmds.write_text(track, encoding="utf-8")
                     ass = d / f"captions{sfx}.ass"
                     cap_y = cam_h if cam else 600
+                    # captions = the STREAMER's voice only (18. 11.: cutscene dialogue and the intro song
+                    # were captioned): utterances while his mouth moves in the facecam (a reaction clip:
+                    # the face in the full frame); gameplay without a facecam -> no captions at all
+                    mkey = tuple(cam) if cam else ("person" if non_game else None)
+                    if mkey not in mouth_cache:
+                        try:
+                            mouth_cache[mkey] = mouth_track(src, cam) if mkey else None
+                        except Exception as e:
+                            log(f"  mouth track failed ({str(e)[-100:]})")
+                            mouth_cache[mkey] = None
+                    caps, not_mine = mouth_words(words, mouth_cache[mkey])
+                    mouth_pct = round(len(caps) / len(words), 2) if words else None
+                    if bi == 0 or not mouth_log:
+                        mouth_log.append(mouth_pct)
+                        log(f"  captions: {len(caps)}/{len(words)} words with the streamer's mouth moving"
+                            + ("" if mkey else " (no facecam: no captions)")
+                            + (f"; dropped '{' '.join(w[2] for w in not_mine[:8])}'" if not_mine else ""))
                     if fan:   # Anton white, neon green highlight, thin dark outline (sleek, not the banana look)
-                        n_chunks = captions_ass(words, ass, y=cap_y,     # on the seam (Aleš)
+                        n_chunks = captions_ass(caps, ass, y=cap_y,     # on the seam (Aleš)
                                                 cap={**(b.get("caption") or {}), "outline": 3, "shadow": 0},
                                                 per=2, anim="pop")      # owner 18. 11.: like bananas - two words, key words pink
                     else:
                         cap_y = CAM_H if cam else 600
-                        n_chunks = captions_ass(words, ass, y=cap_y, cap=b.get("caption"))   # face/game seam
+                        n_chunks = captions_ass(caps, ass, y=cap_y, cap=b.get("caption"))   # face/game seam
                     card = RATING / (GOLD_CARD if use_gold and (RATING / GOLD_CARD).exists() else f"score_{rating}.webm")
                     use_card = bool(b.get("score_card")) and card.exists()
                     if b.get("score_card"):
@@ -4154,7 +4327,7 @@ def render(clip, src=None, clean=False):
                         inputs += ["-i", str(whip)]               # HOOK v2: a short air swish on the hard cut
                         sfx_idx, sfx_at = idx, max(0.0, hook_t - 0.12)
                     riser_idx = hit_idx = None
-                    if peak is not None and peak < main_end and riser.exists() and hit.exists():
+                    if peak is not None and peak < main_end and riser.exists() and hit.exists() and not (loop and peak < 1.2):   # loop: the riser would sit on the seam
                         inputs += ["-i", str(riser), "-i", str(hit)]
                         riser_idx, hit_idx = idx + (sfx_idx is not None), idx + (sfx_idx is not None) + 1
                     nxt = idx + (sfx_idx is not None) + (2 if riser_idx is not None else 0)
@@ -4219,7 +4392,7 @@ def render(clip, src=None, clean=False):
                     except Exception as e:
                         log(f"  {b['key']}: loudness fix failed ({str(e)[-120:]})")
                     seam_info = None
-                    if LOOP and not outro:                        # the end's sound flows into the start's
+                    if LOOP and not outro and not loop:           # (the loop edit is continuous at its seam already)
                         try:
                             seam_info = loop_seam(out)
                             if seam_info:
@@ -4231,7 +4404,7 @@ def render(clip, src=None, clean=False):
                         total=total, main_end=total if loop and not outro else card_at if use_card else clip_total, card_at=card_at,
                         card=str(card) if use_card else None, heat_on=use_heat, heat=bool(heat_plan),
                         loud_hook=hv2 and not loop, elements=sorted(elements), face_bottom=cam_h if cam else 0,
-                        cap_times=[(w0, w1 + 0.6) for w0, w1, _ in words],
+                        cap_times=[(w0, w1 + 0.6) for w0, w1, _ in caps], mouth_pct=mouth_pct,
                         cap_box=(40, cap_y - int(int((b.get("caption") or {}).get("size", CAP_SIZE)) * 0.65),
                                  1040, cap_y + int(int((b.get("caption") or {}).get("size", CAP_SIZE)) * 0.65)),
                         look="launch" if v2 else "old", gold=use_gold, heat_n=heat_n if heat_plan else None, peak=peak,
@@ -4240,8 +4413,8 @@ def render(clip, src=None, clean=False):
                         cuts=info.get("cuts"), ending=("outro" if outro else "short") if fan else None,
                         loop=bool(loop and not outro), loop_cut=bool(loop), seam_src=(loop or {}).get("p0"), seam_end=(loop or {}).get("end_src"),
                         loop_after=((loop or {}).get("e", 0) - (loop or {}).get("p0", 0) - (peak or 0)) if loop else None,
-                        caption_cov=caption_coverage(words, words_cut, total if loop else card_at), seam_crop=abs(float(xs[min(len(xs), int(round(total * FPS))) - 1]) - float(xs[0])) / crop_w if len(xs) else 0.0)
-                    log(f"  {b['key']}: captions {len(words)} words, {n_chunks} chunks; "
+                        caption_cov=caption_coverage(caps, caps, total if loop else card_at), seam_crop=abs(float(xs[min(len(xs), int(round(total * FPS))) - 1]) - float(xs[0])) / crop_w if len(xs) else 0.0)
+                    log(f"  {b['key']}: captions {len(caps)} words, {n_chunks} chunks; "
                         f"banana: {', '.join(f'{n} @{t:.1f}s' for t, n in rx) or 'none'}"
                         + (f"; replay {replay[1]:.1f}-{replay[2]:.1f} s" if replay else "")
                         + (f"; look {'launch' if v2 else 'old'}" if looks != [False] else "")
@@ -4290,7 +4463,8 @@ def render(clip, src=None, clean=False):
                 qa_log[b["key"]] = {"ok": True, "look": look, "gold": plans[b["key"]]["gold"],
                                     "heat": plans[b["key"]]["heat_n"], "stickers": plans[b["key"]]["stickers"],
                                     "peak": plans[b["key"]]["peak"], "cuts": plans[b["key"]].get("cuts"),
-                                    "mix": plans[b["key"]].get("mix"), "ending": plans[b["key"]].get("ending")}
+                                    "mix": plans[b["key"]].get("mix"), "ending": plans[b["key"]].get("ending"),
+                                    "mouth_pct": plans[b["key"]].get("mouth_pct")}
                 continue
             log(f"  QA {b['key']} ({look} look): {'; '.join(probs)}")
             if os.environ.get("KLIPY_DEBUG"):
@@ -4319,6 +4493,8 @@ def render(clip, src=None, clean=False):
     except Exception as e:
         log(f"  rating history: {str(e)[-80:]}")
 
+    if cut_x:                                    # the numbers that let a cutscene through
+        qa_log["cutscene_exception"] = cut_x
     meta = {
         **clip,
         "cam": cam,
