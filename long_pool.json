@@ -1492,5 +1492,19 @@
     "vod_offset": 3690,
     "cluster": 1,
     "added": 1795016904
+  },
+  "twitch_ClumsyWimpyPuppySaltBae-UHUqwCCm1IBg3Pfl": {
+    "id": "twitch_ClumsyWimpyPuppySaltBae-UHUqwCCm1IBg3Pfl",
+    "url": "https://www.twitch.tv/ohnepixel/clip/ClumsyWimpyPuppySaltBae-UHUqwCCm1IBg3Pfl",
+    "channel": "ohnepixel",
+    "platform": "twitch",
+    "title": "happy ohne",
+    "views": 515,
+    "created": 1795005516,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932275268",
+    "vod_offset": 1532,
+    "cluster": 1,
+    "added": 1795018400
   }
 }
