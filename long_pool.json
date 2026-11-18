@@ -2387,5 +2387,33 @@
     "vod_offset": 12980,
     "cluster": 1,
     "added": 1795027427
+  },
+  "twitch_AbstruseGrossMetalMVGame-LfXvAGlp6PoHBBwk": {
+    "id": "twitch_AbstruseGrossMetalMVGame-LfXvAGlp6PoHBBwk",
+    "url": "https://www.twitch.tv/lacy/clip/AbstruseGrossMetalMVGame-LfXvAGlp6PoHBBwk",
+    "channel": "lacy",
+    "platform": "twitch",
+    "title": "cars have security systems?",
+    "views": 702,
+    "created": 1795004593,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932194507",
+    "vod_offset": 7839,
+    "cluster": 1,
+    "added": 1795027685
+  },
+  "twitch_DepressedJollyBatteryKlappa-zR_WXGaFqKX9RKtk": {
+    "id": "twitch_DepressedJollyBatteryKlappa-zR_WXGaFqKX9RKtk",
+    "url": "https://www.twitch.tv/lacy/clip/DepressedJollyBatteryKlappa-zR_WXGaFqKX9RKtk",
+    "channel": "lacy",
+    "platform": "twitch",
+    "title": "w bump",
+    "views": 983,
+    "created": 1795000970,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932194507",
+    "vod_offset": 4273,
+    "cluster": 1,
+    "added": 1795027685
   }
 }
