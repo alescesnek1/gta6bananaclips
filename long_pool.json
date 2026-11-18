@@ -2191,11 +2191,94 @@
     "channel": "ishowspeed",
     "platform": "twitch",
     "title": "HAHAHAHH",
-    "views": 532,
+    "views": 1570,
     "created": 1795011761,
     "category": "Grand Theft Auto VI",
     "cluster": 1,
-    "added": 1795024845
+    "added": 1795034743,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/ishowspeed/20261118_twitch_CreativeHeadstrongAniseFunRun-_f88pOqgLQhawQRA/source.mp4",
+    "peak": 24.950000000000003,
+    "cut": [
+      15.3,
+      27.97
+    ],
+    "dur": 30.02,
+    "tags": [
+      "wow",
+      "rage"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.6,
+      "first-reaction": 0.2,
+      "wow": 0.99,
+      "_loud": 15.0,
+      "_motion": 8.4
+    },
+    "quote": "What is wrong with y 'all Check out about to give me band Stop",
+    "rendered": [
+      "fanpage"
+    ],
+    "cats": {
+      "funny": 0.25,
+      "rage": 0.25,
+      "fail": 0.25,
+      "physics": 0.25,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.25
+    },
+    "proven": [],
+    "evidence": {
+      "funny": [
+        "loud"
+      ],
+      "rage": [
+        "loud"
+      ],
+      "fail": [
+        "impact",
+        "loud"
+      ],
+      "physics": [
+        "impact"
+      ],
+      "crash": [
+        "impact"
+      ],
+      "stunt": [
+        "impact"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "loud"
+      ]
+    },
+    "fun": 0.0,
+    "signals": {
+      "siren": 0.0,
+      "impact": 79.2,
+      "loud": 26.9,
+      "motion": 2.6,
+      "sustained": 0.0,
+      "spike": 2.2,
+      "laugh": 0,
+      "static": 0.47,
+      "letterbox": 0.0,
+      "luma": 103.2,
+      "dark": 0.0
+    }
   },
   "twitch_WiseBusyStapleNononoCat--XYNEyYmRlr4KoEY": {
     "id": "twitch_WiseBusyStapleNononoCat--XYNEyYmRlr4KoEY",
@@ -2807,5 +2890,98 @@
     "vod_offset": 24585,
     "cluster": 1,
     "added": 1795033968
+  },
+  "kick_clip_01M7QCCG08XKJGGNGN2NG1J3EN": {
+    "id": "kick_clip_01M7QCCG08XKJGGNGN2NG1J3EN",
+    "url": "https://kick.com/n3on/clips/clip_01M7QCCG08XKJGGNGN2NG1J3EN",
+    "channel": "n3on",
+    "platform": "kick",
+    "title": "neon crashing out at stripper lol",
+    "views": 1651,
+    "created": 1795007347,
+    "category": "Grand Theft Auto VI (GTA)",
+    "added": 1795034662,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/n3on/20261118_kick_clip_01M7QCCG08XKJGGNGN2NG1J3EN/source.mp4",
+    "peak": 171.05,
+    "cut": [
+      163.07,
+      175.03
+    ],
+    "dur": 180.02,
+    "tags": [
+      "rage",
+      "wow",
+      "funny",
+      "crash"
+    ],
+    "tag_scores": {
+      "funny": 0.66,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.49,
+      "rage": 1.0,
+      "first-reaction": 0.2,
+      "wow": 1.0,
+      "_loud": 4.2,
+      "_motion": 8.5
+    },
+    "quote": "Where's the bar?",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.7,
+      "rage": 0.35,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.7,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "primary": "funny",
+    "proven": [],
+    "evidence": {
+      "funny": [
+        "text"
+      ],
+      "rage": [
+        "text"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "crash": [
+        "text"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.55,
+    "signals": {
+      "siren": 0.0,
+      "impact": 29.4,
+      "loud": 4.9,
+      "motion": 14.8,
+      "sustained": 0.56,
+      "spike": 2.3,
+      "laugh": 0,
+      "static": 0.05,
+      "letterbox": 0.0,
+      "luma": 25.9,
+      "dark": 0.0
+    }
   }
 }
