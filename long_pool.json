@@ -2697,7 +2697,7 @@
     "video_id": "2932226282",
     "vod_offset": 32468,
     "cluster": 4,
-    "added": 1795033440,
+    "added": 1795033741,
     "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/theburntpeanut/20261118_twitch_CuteBlindingSandwichKevinTurtle-StfZX5EDlf9jn5_j/source.mp4",
     "peak": 12.950000000000001,
     "cut": [
@@ -2719,7 +2719,7 @@
       "_loud": 1.8,
       "_motion": 8.0
     },
-    "quote": "wait wait wait wait wait wait hold on He was",
+    "quote": "wait wait wait wait wait wait wait wait He was",
     "rendered": [
       "bananas"
     ],
@@ -2738,7 +2738,7 @@
       "first-reaction": 0.25,
       "wow": 0.0
     },
-    "primary": "fail",
+    "primary": "rage",
     "proven": [],
     "evidence": {
       "rage": [
@@ -2778,7 +2778,7 @@
     "video_id": "2932206166",
     "vod_offset": 3018,
     "cluster": 1,
-    "added": 1795033440
+    "added": 1795033793
   },
   "twitch_SplendidFurryCobraLitty-aRzKqT4E06s7soNa": {
     "id": "twitch_SplendidFurryCobraLitty-aRzKqT4E06s7soNa",
@@ -2793,5 +2793,19 @@
     "vod_offset": 21458,
     "cluster": 1,
     "added": 1795033440
+  },
+  "twitch_ThankfulSoftKoupreyOMGScoots-8rWxvM1hXbQ2r_nz": {
+    "id": "twitch_ThankfulSoftKoupreyOMGScoots-8rWxvM1hXbQ2r_nz",
+    "url": "https://www.twitch.tv/ohnepixel/clip/ThankfulSoftKoupreyOMGScoots-8rWxvM1hXbQ2r_nz",
+    "channel": "ohnepixel",
+    "platform": "twitch",
+    "title": "ohnePixel gets into a high-speed chase",
+    "views": 1300,
+    "created": 1795028729,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932275268",
+    "vod_offset": 24585,
+    "cluster": 1,
+    "added": 1795033793
   }
 }
