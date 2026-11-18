@@ -1317,13 +1317,75 @@
     "channel": "ohnepixel",
     "platform": "twitch",
     "title": "Gooner?",
-    "views": 525,
+    "views": 1642,
     "created": 1795004786,
     "category": "Grand Theft Auto VI",
     "video_id": "2932275268",
     "vod_offset": 773,
     "cluster": 1,
-    "added": 1795015116
+    "added": 1795026614,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/ohnepixel/20261118_twitch_TastyGoldenFlamingoHassanChop-43fCNikHeoMOC0Yg/source.mp4",
+    "peak": 14.65,
+    "cut": [
+      5.43,
+      19.47
+    ],
+    "dur": 25.48,
+    "tags": [],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.05,
+      "first-reaction": 0.2,
+      "wow": 0.04,
+      "_loud": 1.2,
+      "_motion": 2.0
+    },
+    "quote": "Alright, if everyone is fine with that, we're going to do that.",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.33,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "primary": "mission",
+    "proven": [],
+    "evidence": {
+      "mission": [
+        "text"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.0,
+    "signals": {
+      "siren": 0.0,
+      "impact": 14.7,
+      "loud": 1.3,
+      "motion": 1.4,
+      "sustained": 0.0,
+      "spike": 1.8,
+      "laugh": 0,
+      "static": 0.9,
+      "letterbox": 0.0,
+      "luma": 66.0,
+      "dark": 0.0
+    }
   },
   "twitch_GlamorousConcernedHerbsFutureMan-J1fdtFf4ZXDMBWLA": {
     "id": "twitch_GlamorousConcernedHerbsFutureMan-J1fdtFf4ZXDMBWLA",
@@ -2190,5 +2252,19 @@
     "vod_offset": 1836,
     "cluster": 1,
     "added": 1795026155
+  },
+  "twitch_BlueIcySnoodSaltBae-qKp3QE1R_FoncNN1": {
+    "id": "twitch_BlueIcySnoodSaltBae-qKp3QE1R_FoncNN1",
+    "url": "https://www.twitch.tv/ohnepixel/clip/BlueIcySnoodSaltBae-qKp3QE1R_FoncNN1",
+    "channel": "ohnepixel",
+    "platform": "twitch",
+    "title": "WHAT?!",
+    "views": 1162,
+    "created": 1795025266,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932275268",
+    "vod_offset": 21248,
+    "cluster": 2,
+    "added": 1795026614
   }
 }
