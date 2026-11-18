@@ -18,6 +18,12 @@ from datetime import date, datetime, timedelta
 from pathlib import Path
 from unittest import mock
 
+# quotas from the live config (18. 11.: 8 per day from the gameplay, fanpage max 10)
+B = json.loads((Path(__file__).resolve().parents[1] / "brands.json").read_text(encoding="utf-8"))
+def QUOTA(z, day="2026-11-19"):
+    return [k for d, k in sorted(B[z]["ramp"].items()) if d <= day][-1]
+
+
 HERE = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(HERE))
 import publikuj as P                                       # noqa: E402
@@ -277,7 +283,7 @@ class Sim:
 
 
 class JustInTimeDay(unittest.TestCase):
-    D = date(2026, 11, 19)                  # launch day: bananas min 5 / max 10, fanpage min 5 / max 8
+    D = date(2026, 11, 19)                  # launch day: quotas from brands.json (8 per day, max 10)
 
     def world(self, sim, scarce=False):
         d = self.D
@@ -297,7 +303,7 @@ class JustInTimeDay(unittest.TestCase):
     def check_day(self, sim, cadence):
         d = self.D
         ids = {}
-        for brand, mx, mn in (("bananas", 10, 5), ("fanpage", 8, 5)):
+        for brand, mx, mn in ((z, B[z]["max_per_day"], QUOTA(z)) for z in ("bananas", "fanpage")):
             P.set_brand(brand)
             recs = sim.records(brand)
             main, live = (json.loads(f.read_text()) if f.exists() else {} for f in P.rec_files())
@@ -368,7 +374,7 @@ class JustInTimeDay(unittest.TestCase):
         for sim, ids in self.run_day(30, scarce=True):
             for brand in ("bananas", "fanpage"):
                 recs = sim.records(brand)
-                self.assertEqual(P.used_today(self.D, recs), 5, brand)          # exactly the minimum
+                self.assertEqual(P.used_today(self.D, recs), QUOTA(brand), brand)   # exactly the minimum
                 first = min(datetime.fromisoformat(r["due"]) for r in recs.values())
                 self.assertGreaterEqual(first, at(self.D, "19:00"), f"{brand}: average clips burned early")
 

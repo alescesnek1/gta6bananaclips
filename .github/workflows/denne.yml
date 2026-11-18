@@ -18,7 +18,7 @@ on:
     - cron: "*/30 * * * *"
     # launch of GTA 6 (19. 11.) and the day after: a conveyor belt every 5 min (UTC days 19-21 cover
     # the whole Prague publishing day). Runs queue in the 'denne' group, so they go back to back.
-    - cron: "5-55/5 * 19-21 11 *"
+    - cron: "5-55/5 * 18-21 11 *"
   workflow_dispatch:
     inputs:
       max:

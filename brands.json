@@ -35,8 +35,8 @@
     "watermark": "gta6bananaclips",
     "follow": "assets/follow/follow_bananas.webm",
     "ramp": {
-      "2026-11-18": 5,
-      "2026-11-19": 5,
+      "2026-11-18": 8,
+      "2026-11-19": 8,
       "2026-11-26": 8,
       "2026-12-03": 10
     },
@@ -118,8 +118,8 @@
     "follow": "assets/follow/follow_fanpage.webm",
     "ramp": {
       "2026-11-17": 2,
-      "2026-11-18": 5,
-      "2026-11-19": 5,
+      "2026-11-18": 8,
+      "2026-11-19": 8,
       "2026-11-26": 8
     },
     "extra_ramp": {
@@ -127,7 +127,7 @@
       "2026-11-19": 1000,
       "2026-11-26": 5000
     },
-    "max_per_day": 8,
+    "max_per_day": 10,
     "top3": false,
     "music_volume": 0.11,
     "long_calendar": {

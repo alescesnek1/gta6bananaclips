@@ -22,7 +22,7 @@ $env:KLIPY_STATE = Join-Path $dir "worker_state.json"   # own memory: the checko
 $env:PYTHONUTF8 = "1"
 $py = Join-Path $dir ".venv\Scripts\python.exe"
 $now = Get-Date
-$launch = ($now.Month -eq 11) -and ($now.Day -ge 19) -and ($now.Day -le 21)
+$launch = ($now.Month -eq 11) -and ($now.Day -ge 18) -and ($now.Day -le 21)
 
 # --- 1) clock for the GitHub run
 # "is it time?" by the time of the last run (not by the clock minute: the task may run at :15/:45)
