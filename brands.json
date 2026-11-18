@@ -55,7 +55,8 @@
         "streamer-week",
         "banana-league"
       ],
-      "first": "first-reactions"
+      "first": "funny-day",
+      "_first": "Ales 18. 11. vecer: zadne nudne koukani na grafiku -> prvni dil akcni serie misto first-reactions"
     },
     "long_min_gap_h": 20,
     "long_target_min": 8,
@@ -136,8 +137,9 @@
         "after-dark",
         "after-dark"
       ],
-      "first": "first-reactions",
-      "same_mission_slot": 1
+      "first": "after-dark",
+      "same_mission_slot": 1,
+      "_first": "Ales 18. 11. vecer: zadne nudne koukani na grafiku -> prvni dil akcni serie misto first-reactions"
     },
     "long_min_gap_h": 20,
     "long_target_min": 8,
