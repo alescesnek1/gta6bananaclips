@@ -1618,13 +1618,104 @@
     "channel": "lacy",
     "platform": "twitch",
     "title": "mandy",
-    "views": 501,
+    "views": 560,
     "created": 1795009550,
     "category": "Grand Theft Auto VI",
     "video_id": "2932194507",
     "vod_offset": 12860,
     "cluster": 1,
-    "added": 1795019560
+    "added": 1795020550,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/lacy/20261118_twitch_EnergeticVastTofuTheRinger-Mi3gDMWyJsLZwDUy/source.mp4",
+    "peak": 21.35,
+    "cut": [
+      4.97,
+      25.0
+    ],
+    "dur": 30.02,
+    "tags": [
+      "rage",
+      "wow"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.68,
+      "first-reaction": 0.2,
+      "wow": 0.41,
+      "_loud": 10.9,
+      "_motion": 5.4
+    },
+    "quote": "What is he doing?",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.25,
+      "rage": 0.6,
+      "fail": 0.25,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.6
+    },
+    "primary": "rage",
+    "proven": [
+      "rage",
+      "wow"
+    ],
+    "evidence": {
+      "funny": [
+        "loud"
+      ],
+      "rage": [
+        "loud",
+        "text"
+      ],
+      "fail": [
+        "loud"
+      ],
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion-spike"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "loud",
+        "text"
+      ]
+    },
+    "fun": 0.61,
+    "signals": {
+      "siren": 0.0,
+      "impact": 48.0,
+      "loud": 14.3,
+      "motion": 3.4,
+      "sustained": 0.02,
+      "spike": 7.4,
+      "laugh": 0,
+      "static": 0.13,
+      "letterbox": 0.0,
+      "luma": 31.2,
+      "dark": 0.0
+    }
   },
   "twitch_TalentedSteamyHumanHassaanChop-DL8PqlPqix6JV1lU": {
     "id": "twitch_TalentedSteamyHumanHassaanChop-DL8PqlPqix6JV1lU",
@@ -1637,5 +1728,200 @@
     "category": "Grand Theft Auto VI",
     "cluster": 2,
     "added": 1795020053
+  },
+  "twitch_GrossBlazingDillSquadGoals-XTGoFBoTeUWbVdno": {
+    "id": "twitch_GrossBlazingDillSquadGoals-XTGoFBoTeUWbVdno",
+    "url": "https://www.twitch.tv/zoil/clip/GrossBlazingDillSquadGoals-XTGoFBoTeUWbVdno",
+    "channel": "zoil",
+    "platform": "twitch",
+    "title": "strip",
+    "views": 523,
+    "created": 1795001774,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932212372",
+    "vod_offset": 2785,
+    "cluster": 1,
+    "added": 1795020636
+  },
+  "youtube_J_GK53E9gZo_264": {
+    "id": "youtube_J_GK53E9gZo_264",
+    "url": "https://6afdd6f4d240962d28efdb77--gta6bananaclips-media.netlify.app/yt/youtube_J_GK53E9gZo_264_16x9.mp4",
+    "channel": "gamersnack",
+    "platform": "youtube",
+    "title": "Grand Theft Auto VI (4K) 🤩 أول تجربة للعبة و مترجم بالعربي",
+    "views": 993946,
+    "created": 1795013464,
+    "category": "Grand Theft Auto VI (4K) 🤩 أول تجربة للعبة و مترجم بالعربي Gamersnack gamer snack fortnight gaming العاب الشهر بلايستيشن فورتنايت فورنايت playstation ps5 playstation event playstation showcase 2021 بث مباشر حدث سوني ملزلز تغطية حدث بلايستيشن تغطية موتمر نفيديا بث مباشر call of duty بث مباشر كود كود ٧ كود بلاك اوبس ٧ GTA VI GTA 6 GTA 6 LIVE Grand Theft Auto VI",
+    "signal_score": 0.57,
+    "added": 1795020641,
+    "peak": 27.15,
+    "cut": [
+      0.0,
+      30.8
+    ],
+    "dur": 30.8,
+    "tags": [],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 0.2,
+      "wow": 0.0,
+      "_loud": 1.5,
+      "_motion": 7.4
+    },
+    "quote": "",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "proven": [],
+    "evidence": {
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion-spike"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.0,
+    "signals": {
+      "siren": 0.0,
+      "impact": 6.0,
+      "loud": 1.7,
+      "motion": 4.8,
+      "sustained": 0.2,
+      "spike": 26.6,
+      "laugh": 0,
+      "static": 0.56,
+      "letterbox": 0.0,
+      "luma": 59.1,
+      "dark": 0.0
+    },
+    "seg_from": 0.0,
+    "src_mb": 6.6,
+    "source": "https://6afdd6f4d240962d28efdb77--gta6bananaclips-media.netlify.app/yt/youtube_J_GK53E9gZo_264_16x9.mp4",
+    "yt_url": "https://www.youtube.com/watch?v=J_GK53E9gZo"
+  },
+  "youtube_J_GK53E9gZo_9774": {
+    "id": "youtube_J_GK53E9gZo_9774",
+    "url": "https://6afdd6f4d240962d28efdb77--gta6bananaclips-media.netlify.app/yt/youtube_J_GK53E9gZo_9774_16x9.mp4",
+    "channel": "gamersnack",
+    "platform": "youtube",
+    "title": "Grand Theft Auto VI (4K) 🤩 أول تجربة للعبة و مترجم بالعربي",
+    "views": 993946,
+    "created": 1795013464,
+    "category": "Grand Theft Auto VI (4K) 🤩 أول تجربة للعبة و مترجم بالعربي Gamersnack gamer snack fortnight gaming العاب الشهر بلايستيشن فورتنايت فورنايت playstation ps5 playstation event playstation showcase 2021 بث مباشر حدث سوني ملزلز تغطية حدث بلايستيشن تغطية موتمر نفيديا بث مباشر call of duty بث مباشر كود كود ٧ كود بلاك اوبس ٧ GTA VI GTA 6 GTA 6 LIVE Grand Theft Auto VI",
+    "signal_score": 1.0,
+    "added": 1795020641,
+    "peak": 32.85,
+    "cut": [
+      0.0,
+      34.57
+    ],
+    "dur": 34.57,
+    "tags": [
+      "crash"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.3,
+      "rage": 0.0,
+      "first-reaction": 0.2,
+      "wow": 0.0,
+      "_loud": 4.9,
+      "_motion": 16.9
+    },
+    "quote": "Bro, this is something about picking up a payment.",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.25,
+      "rage": 0.25,
+      "fail": 0.25,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.25
+    },
+    "proven": [],
+    "evidence": {
+      "funny": [
+        "loud"
+      ],
+      "rage": [
+        "loud"
+      ],
+      "fail": [
+        "loud"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "loud"
+      ]
+    },
+    "fun": 0.56,
+    "signals": {
+      "siren": 0.0,
+      "impact": 22.1,
+      "loud": 5.2,
+      "motion": 12.6,
+      "sustained": 0.42,
+      "spike": 4.8,
+      "laugh": 0,
+      "static": 0.02,
+      "letterbox": 0.0,
+      "luma": 115.6,
+      "dark": 0.0
+    },
+    "seg_from": 0.0,
+    "src_mb": 11.4,
+    "source": "https://6afdd6f4d240962d28efdb77--gta6bananaclips-media.netlify.app/yt/youtube_J_GK53E9gZo_9774_16x9.mp4",
+    "yt_url": "https://www.youtube.com/watch?v=J_GK53E9gZo"
   }
 }
