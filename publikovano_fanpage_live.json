@@ -77,5 +77,28 @@
     "live": true,
     "viewers": 87128,
     "spike_z": 45.0
+  },
+  "live_lacy_1795006757": {
+    "url": "https://6afda47351cb0e671638db37--gta6bananaclips-media.netlify.app/20261118/live_lacy_1795006757.mp4",
+    "path": "20261118/live_lacy_1795006757.mp4",
+    "due": "2026-11-18T14:15:00+01:00",
+    "draft": false,
+    "posts": {
+      "6afc4355ece6dfde5ff6769a": "6afda4760aec53ca439adb8e",
+      "6afc42e6ece6dfde5ff66dca": "6afda47761bd3b7f60c21375",
+      "6afc4413ece6dfde5ff68286": "6afda4771c55ed7dd801bed3",
+      "6afc43ffece6dfde5ff68162": "6afda4781c55ed7dd801bf16"
+    },
+    "mb": 6.6,
+    "channel": "lacy",
+    "platform": "twitch",
+    "score": 0,
+    "hot": true,
+    "rating": 9,
+    "views": 0,
+    "golden": false,
+    "live": true,
+    "viewers": 28352,
+    "spike_z": 33.0
   }
 }
