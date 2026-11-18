@@ -3176,13 +3176,13 @@
     "channel": "zoil",
     "platform": "twitch",
     "title": "theMaster",
-    "views": 589,
+    "views": 597,
     "created": 1795002008,
     "category": "Grand Theft Auto VI",
     "video_id": "2932212372",
     "vod_offset": 3003,
     "cluster": 1,
-    "added": 1795037214
+    "added": 1795037569
   },
   "twitch_DarlingHealthyGrouseMVGame--9sw1QWYsqn-hG8N": {
     "id": "twitch_DarlingHealthyGrouseMVGame--9sw1QWYsqn-hG8N",
@@ -3190,12 +3190,40 @@
     "channel": "zlaner",
     "platform": "twitch",
     "title": "Inception",
-    "views": 587,
+    "views": 610,
     "created": 1795009560,
     "category": "Grand Theft Auto VI",
     "video_id": "2932157318",
     "vod_offset": 18777,
     "cluster": 1,
-    "added": 1795037214
+    "added": 1795037569
+  },
+  "twitch_BlightedLightOwlYouWHY-W5j62q7ze1LGleAm": {
+    "id": "twitch_BlightedLightOwlYouWHY-W5j62q7ze1LGleAm",
+    "url": "https://www.twitch.tv/zoil/clip/BlightedLightOwlYouWHY-W5j62q7ze1LGleAm",
+    "channel": "zoil",
+    "platform": "twitch",
+    "title": "broo....",
+    "views": 593,
+    "created": 1795007002,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932212372",
+    "vod_offset": 4976,
+    "cluster": 1,
+    "added": 1795037569
+  },
+  "twitch_EphemeralDarlingHeronPeteZaroll-CTH7FFmj2M1rcJSV": {
+    "id": "twitch_EphemeralDarlingHeronPeteZaroll-CTH7FFmj2M1rcJSV",
+    "url": "https://www.twitch.tv/ohnepixel/clip/EphemeralDarlingHeronPeteZaroll-CTH7FFmj2M1rcJSV",
+    "channel": "ohnepixel",
+    "platform": "twitch",
+    "title": "i see dick hype",
+    "views": 1036,
+    "created": 1795006726,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932275268",
+    "vod_offset": 2751,
+    "cluster": 2,
+    "added": 1795037569
   }
 }
