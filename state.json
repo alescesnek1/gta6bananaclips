@@ -169,7 +169,8 @@
     "twitch_AntsyCooperativeMartenCmonBruh-Cs5moHR4OdrazXg_": "ROB RUN",
     "twitch_GentleQuaintLegHassaanChop-ueu8bpOBC5We_Uu8": "Chess",
     "twitch_BlushingObliviousGarbageShazBotstix-A53SoOPGB84C2I4C": "Grand Theft Auto V",
-    "twitch_TangentialWanderingLyrebirdDxAbomb-PouHuoJG_PCPCvbz": "Minecraft"
+    "twitch_TangentialWanderingLyrebirdDxAbomb-PouHuoJG_PCPCvbz": "Minecraft",
+    "twitch_CloudyLivelyHareCharlieBitMe-8lGWQ2aObfK8dyAR": "Just Chatting"
   },
   "views": {
     "twitch_TenderResoluteMartenRickroll-MMEYpSBXgiOpCFd8": [
@@ -422,7 +423,9 @@
       1795001302,
       554,
       1795001605,
-      556
+      556,
+      1795001911,
+      558
     ],
     "twitch_NimbleFrozenBeanOSsloth-S2n7zCkGDTOWP_mP": [
       1795001014,
@@ -430,7 +433,13 @@
       1795001302,
       503,
       1795001605,
-      504
+      504,
+      1795001911,
+      508
+    ],
+    "twitch_CloudyLivelyHareCharlieBitMe-8lGWQ2aObfK8dyAR": [
+      1795001911,
+      518
     ]
   },
   "rr": "bananas"
