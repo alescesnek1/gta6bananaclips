@@ -1312,6 +1312,7 @@ def cutscene_exception(clip, cfg):
 
 MOUTH_FPS = 10
 MOUTH_PAD = 0.15         # s around a word
+MOUTH_HEAD = 0.0         # share of the upper face's motion taken off the mouth's (measured 18. 11.: the whole face moves with the mouth - subtracting it dropped xQc's own screams)
 
 def mouth_track(src, cam=None):
     """
@@ -1349,11 +1350,12 @@ def mouth_track(src, cam=None):
     f32 = fr.astype(np.float32)
     dm = np.abs(np.diff(f32[:, mouth[0], mouth[1]], axis=0)).mean(axis=(1, 2))
     du = np.abs(np.diff(f32[:, upper[0], upper[1]], axis=0)).mean(axis=(1, 2))
-    act = np.maximum(dm - du, 0.0)
+    mouth_track.last = (dm, du)                       # (diagnostics)
+    act = np.maximum(dm - MOUTH_HEAD * du, 0.0)
     return (np.arange(1, n) / MOUTH_FPS), act
 
-MOUTH_MIN = 0.5          # mean mouth activity (0-255 per pixel and frame) an utterance needs at least
-MOUTH_REL = 0.25         # ... and this share of the clip's busy-mouth level (90th percentile)
+MOUTH_MIN = 1.0          # mean mouth activity (0-255 per pixel and frame) an utterance needs (cutscene, mouth still: <= 0.5; xQc talking 1.5-8, lacy 7-12)
+MOUTH_REL = 0.1          # ... and this share of the clip's busy-mouth level (90th percentile)
 
 def utterances(words):
     """Words grouped into utterances (split at sentence ends: . ? ! or a pause)."""
@@ -1912,7 +1914,7 @@ def audio_mix(clip_audio, total, card_idx=None, card_at=0.0, music_idx=None, mus
         f += f";[{outro_idx}:a]{fmt},adelay={int(clip_end * 1000)}:all=1,apad=whole_dur={total:.3f}[ou]"
         parts.append("[ou]")
     if follow_idx is not None:
-        f += f";[{follow_idx}:a]volume=0.6,{fmt},adelay={int(follow_at * 1000)}:all=1,apad=whole_dur={total:.3f}[fo]"
+        f += f";[{follow_idx}:a]volume=0.6,{fmt},adelay={int(follow_at * 1000)}:all=1,apad=whole_dur={total:.3f}" + (f",afade=t=out:st={max(0.0, total - 0.35):.3f}:d=0.35" if music_fade else "") + "[fo]"
         parts.append("[fo]")
     if music_idx is not None:                  # adeclick: the generated track has a little crackle
         duck = (f",volume='if(between(t\\,{peak:.2f}\\,{peak + 0.6:.2f})\\,0.2\\,1)':eval=frame"
@@ -1927,7 +1929,8 @@ def audio_mix(clip_audio, total, card_idx=None, card_at=0.0, music_idx=None, mus
     if stems:                                   # mix_check: voice and music separately
         return f + (f";{parts[0]}anull[vo]" if parts and parts[0] in ("[a0]", "[a0v]") else "")
     if card_idx is not None:
-        f += f";[{card_idx}:a]{fmt},adelay={int(card_at * 1000)}:all=1,apad=whole_dur={total:.3f}[ar]"
+        cfade = f",afade=t=out:st={max(0.0, total - 0.35):.3f}:d=0.35" if music_fade else ""   # loop: quiet at the seam
+        f += f";[{card_idx}:a]{fmt},adelay={int(card_at * 1000)}:all=1,apad=whole_dur={total:.3f}{cfade}[ar]"
         parts.append("[ar]")
     if riser_idx is not None and peak is not None:     # the file is 1.2 s and ends on the payoff
         cut = max(0.0, 1.2 - peak)
@@ -2737,6 +2740,12 @@ def qa_short(path, plan):
                  (plan["card_at"] if plan.get("card") else plan["main_end"]) - plan["peak"])
         if after < AFTER_PEAK - 0.05:
             probs.append(f"only {after:.1f} s after the climax (min {AFTER_PEAK:.1f})")
+    # loop edit: the banana / the model's reaction sit ON the payoff peak in the opening
+    if plan.get("loop_cut") and plan.get("peak") is not None:
+        for t0, _, name, _ in els:
+            if (name.startswith("banana") or name.startswith("model")) and "(ending)" not in name \
+                    and abs(t0 - plan["peak"]) > STICKER_TOL:
+                probs.append(f"{name} at {t0:.1f} s, not on the payoff peak ({plan['peak']:.1f} s)")
     # SEAMLESS LOOP (owner 18. 11.): the seam must not jump - sound level and the crop
     if plan.get("loop"):
         jump = seam_check(path)
@@ -3644,6 +3653,15 @@ def dead_air(words, src, a, b, peak):
     keep.append((cur, b))
     return [(x, y) for x, y in keep if y - x > 0.05]
 
+STICKER_TOL = 0.5        # QA (loop edit): the banana / model reaction starts within this of the peak
+
+def loop_reactions(reactions, peak):
+    """The loop edit's banana: exactly one, on the payoff peak (output time `peak`, in the opening);
+    the kind of the first reaction pick_reactions chose. [] without a payoff or a reaction."""
+    if peak is None or not reactions:
+        return []
+    return [(round(peak + 0.05, 2), reactions[0][1])]
+
 def loop_p0(words, peak, lo=0.5, hi=1.5):
     """
     The loop point P0, lo..hi s before the payoff peak, on the output frame grid: a sentence start
@@ -4033,10 +4051,9 @@ def render(clip, src=None, clean=False):
         if hv2_cut and hook_t and not loop:               # hook = teaser -> flash -> start, nothing else in it
             reactions = [r for r in reactions if r[0] >= hook_t + 0.2]
         if loop:                                          # the banana stays on the payoff; the card follows it
-            if peak is not None:                          # (the one in the opening lands on the peak itself)
-                reactions = [(round(peak + 0.05, 2) if t < hook_t else t, n) for t, n in reactions]
-                reactions = [r for i, r in enumerate(reactions) if r[0] >= hook_t or i == next(
-                    (k for k, x in enumerate(reactions) if x[0] < hook_t), -1)]
+            # ONE banana, on the payoff peak in the opening (CLAUDE.md: 1x per clip, on the payoff) -
+            # pick_reactions may have placed it in the setup; only its kind is taken over
+            reactions = loop_reactions(reactions, peak)
             # owner 18. 11.: the score card and every end graphic sit at the VERY END, over the last
             # seconds of the setup that runs into P0, and end with the video (the seam stays exact)
             card_at = max(hook_t + 0.5, dur - RATING_DUR)
@@ -4310,7 +4327,7 @@ def render(clip, src=None, clean=False):
                         inputs += ["-i", str(whip)]               # HOOK v2: a short air swish on the hard cut
                         sfx_idx, sfx_at = idx, max(0.0, hook_t - 0.12)
                     riser_idx = hit_idx = None
-                    if peak is not None and peak < main_end and riser.exists() and hit.exists():
+                    if peak is not None and peak < main_end and riser.exists() and hit.exists() and not (loop and peak < 1.2):   # loop: the riser would sit on the seam
                         inputs += ["-i", str(riser), "-i", str(hit)]
                         riser_idx, hit_idx = idx + (sfx_idx is not None), idx + (sfx_idx is not None) + 1
                     nxt = idx + (sfx_idx is not None) + (2 if riser_idx is not None else 0)

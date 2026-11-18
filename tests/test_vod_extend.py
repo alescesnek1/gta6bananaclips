@@ -311,6 +311,27 @@ class LoopEdit(unittest.TestCase):                         # owner 18. 11.: payo
         self.assertAlmostEqual(K.loop_p0([], 6.0), 5.0)
 
 
+class LoopBanana(unittest.TestCase):                       # merged main 18. 11.: "banana: clap @11.4s" in the setup
+    def test_one_banana_on_the_peak(self):
+        self.assertEqual(K.loop_reactions([(11.4, "clap"), (13.0, "shock")], 0.6), [(0.65, "clap")])
+        self.assertEqual(K.loop_reactions([], 0.6), [])
+        self.assertEqual(K.loop_reactions([(11.4, "clap")], None), [])
+
+    def qa(self, t0, name="banana clap"):
+        plan = dict(total=14.0, main_end=14.0, card_at=11.4, card=None, heat_on=False, heat=False, loud_hook=False,
+                    elements=[(t0, t0 + 1.2, name, (60, 1160, 400, 1500))], face_bottom=640, cap_times=[],
+                    cap_box=(40, 560, 1040, 720), peak=0.6, hook_end=4.8, loop_cut=True)
+        with mock.patch.object(K, "duration", return_value=14.0), \
+                mock.patch.object(K, "ff_stats", return_value=([], [], -14.0, -1.5)), \
+                mock.patch.object(K, "boredom", return_value=([], {"dead_s": 0})):
+            return K.qa_short("x.mp4", plan)
+
+    def test_qa_sticker_off_the_peak(self):
+        self.assertTrue(any("not on the payoff peak" in p for p in self.qa(11.4)))
+        self.assertFalse(any("not on the payoff peak" in p for p in self.qa(0.65)))
+        self.assertFalse(any("not on the payoff peak" in p for p in self.qa(12.0, "model wink (ending)")))
+
+
 class GameAudio(unittest.TestCase):                        # 18. 11.: the GTA 6 intro song on lacy's live short
     def test_words_the_game_also_says(self):
         game = [(11.0, 11.4, "starting"), (11.4, 11.6, "from"), (11.6, 12.0, "zero")]
