@@ -315,7 +315,7 @@ def classified(r):
     if r.get("cats") is None:
         import kategorie
         words = moment_words(r)
-        a0, b0 = segment_times(r) or r["cut"]              # classification only: the HPC cut when no safe one
+        a0, b0 = segment_times(r) or tuple(r["cut"][:2])              # classification only: the HPC cut when no safe one
         r.update(kategorie.classify(words, r["source"], r.get("peak"), r.get("title"), r.get("created") or 0,
                                     r.get("views") or 0, a0, b0))
         K.pool_add({k: r.get(k) for k in K.POOL_KEYS} | {k: r.get(k) for k in ("cats", "primary", "proven", "evidence",
@@ -339,14 +339,14 @@ def qualifies(r, serie, z, verify=True, vis_cache=None):
     cfg = SERIES[sk]
     static = (r.get("signals") or {}).get("static")
     if static is None and r.get("source"):
-        a0, b0 = r.get("seg") or segment_times(r) or r["cut"]
+        a0, b0 = r.get("seg") or segment_times(r) or tuple(r["cut"][:2])
         static = kategorie.static_share(r["source"], a0, b0)
         r.setdefault("signals", {})["static"] = static
     if static is not None and static > kategorie.STATIC_MAX:
         return False, "not gameplay (static screen)"
     sig = r.setdefault("signals", {})
     if "dark" not in sig and r.get("source"):
-        a0, b0 = r.get("seg") or segment_times(r) or r["cut"]
+        a0, b0 = r.get("seg") or segment_times(r) or tuple(r["cut"][:2])
         sig["luma"], sig["dark"] = kategorie.darkness(r["source"], a0, b0)
     if (sig.get("dark") or 0) > 0.5:
         return False, "too dark"
@@ -856,7 +856,7 @@ def segment_times(r):
     except Exception as e:
         log(f"  words {r['id'][-16:]}: {str(e)[-100:]} -> dropped")
         return None
-    return zabava.snap_segment(words, r["cut"], r.get("peak"), cutter_for(r).dur, cutter_for(r))
+    return zabava.snap_segment(words, tuple(r["cut"][:2]), r.get("peak"), cutter_for(r).dur, cutter_for(r))
 
 def cutter_for(r):
     """zabava.Cutter of the moment's source (words + fine loudness), cached on the row."""
