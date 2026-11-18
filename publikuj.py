@@ -1928,7 +1928,11 @@ def lock_release(who, save=(), cwd=None, tries=10, release=True):
                 origin = json.loads(get(f) or "{}")
             except json.JSONDecodeError:
                 origin = {}
-            merged[f] = {**origin, **load_json(local, {})}
+            if Path(f).name == "stories_state.json":       # nested {brand: {reposts, days, pool}}: a shallow
+                from tools.merge_state import merge        # merge would drop origin's posts of the same brand
+                merged[f] = merge(origin, load_json(local, {}))
+            else:
+                merged[f] = {**origin, **load_json(local, {})}
             out[f] = json.dumps(merged[f], indent=2, ensure_ascii=False)
         try:
             cur = json.loads(get(LOCK_FILE) or "{}")

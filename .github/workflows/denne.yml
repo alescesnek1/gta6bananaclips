@@ -207,7 +207,9 @@ jobs:
           pkill -f "publikuj.py zamek obnov" || true
           cat zamek_obnov.log 2>/dev/null || true
           python publikuj.py zamek pust --kdo "${{ github.run_id }}-${{ github.run_attempt }}" --uloz \
-            ${{ inputs.jen_publikace == 'ano' && 'publikovano_live.json publikovano_fanpage_live.json' || 'publikovano.json publikovano_fanpage.json' }} publikace_chyby.json
+            ${{ inputs.jen_publikace == 'ano' && 'publikovano_live.json publikovano_fanpage_live.json' || 'publikovano.json publikovano_fanpage.json stories_state.json' }} publikace_chyby.json
+          # stories_state.json goes with the lock (18. 11.: it was saved only in `save state`, after the lock,
+          # so the next run read a stale state and reposted the same reel to the IG story a second time)
 
       - name: experiment stats (Buffer post metrics 48 h after publishing, read-only; 1x per 20 h)
         if: inputs.jen_publikace != 'ano' && env.BUFFER_API_KEY_1 != ''

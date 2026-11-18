@@ -66,7 +66,7 @@ class HotPacing(unittest.TestCase):
         self.assertEqual(P.hot_pick([clip("live_x_1", live=True, z=12)], recs, now, 10, SRC), [])
         self.assertEqual(len(P.hot_pick([clip("live_x_2", live=True, z=SRC.get("hot_bypass_z", 25) + 1)],
                                         recs, now, 10, SRC)), 1)
-        recs["l"]["due"] = (now - timedelta(minutes=21)).isoformat()
+        recs["l"]["due"] = (now - timedelta(minutes=SRC.get("live_gap_min", 20) + 1)).isoformat()
         self.assertEqual(len(P.hot_pick([clip("live_x_1", live=True, z=12)], recs, now, 10, SRC)), 1)
 
 
@@ -123,8 +123,9 @@ class DayPace(unittest.TestCase):
         self.assertFalse(P.exceptional(clip("b", score=3.9 * HS), SRC))
         self.assertTrue(P.exceptional(clip("c", channel=star, score=2 * HS), SRC))
         self.assertFalse(P.exceptional(clip("d", channel=star, score=1.9 * HS), SRC))
-        self.assertTrue(P.exceptional(clip("live_e", live=True, z=25, score=0), SRC))
-        self.assertFalse(P.exceptional(clip("live_f", live=True, z=24, score=0), SRC))
+        lz = SRC.get("exceptional", {}).get("live_z", 80)
+        self.assertTrue(P.exceptional(clip("live_e", live=True, z=lz, score=0), SRC))
+        self.assertFalse(P.exceptional(clip("live_f", live=True, z=lz - 1, score=0), SRC))
 
     def test_hot_pick_paced_but_exceptional_breaks_it(self):
         with mock.patch.object(P, "max_per_day", lambda day: 10):
