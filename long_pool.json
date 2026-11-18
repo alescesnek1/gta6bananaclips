@@ -429,5 +429,97 @@
     "category": "Grand Theft Auto VI",
     "cluster": 1,
     "added": 1795005499
+  },
+  "twitch_RelievedRichRhinocerosPeteZaroll-qOXHVQ3XVK3asCkK": {
+    "id": "twitch_RelievedRichRhinocerosPeteZaroll-qOXHVQ3XVK3asCkK",
+    "url": "https://www.twitch.tv/lacy/clip/RelievedRichRhinocerosPeteZaroll-qOXHVQ3XVK3asCkK",
+    "channel": "lacy",
+    "platform": "twitch",
+    "title": "THE RELEASE OF GTA VI",
+    "views": 606,
+    "created": 1794999642,
+    "category": "Grand Theft Auto VI",
+    "added": 1795005950
+  },
+  "twitch_SlickStylishBeaverStrawBeary-ljpqadoCXEhYwJx5": {
+    "id": "twitch_SlickStylishBeaverStrawBeary-ljpqadoCXEhYwJx5",
+    "url": "https://www.twitch.tv/lacy/clip/SlickStylishBeaverStrawBeary-ljpqadoCXEhYwJx5",
+    "channel": "lacy",
+    "platform": "twitch",
+    "title": "LUCIA",
+    "views": 509,
+    "created": 1794999765,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932194507",
+    "vod_offset": 3032,
+    "added": 1795005950,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/lacy/20261118_twitch_SlickStylishBeaverStrawBeary-ljpqadoCXEhYwJx5/source.mp4",
+    "peak": 10.05,
+    "cut": [
+      0.0,
+      13.07
+    ],
+    "dur": 20.23,
+    "tags": [
+      "wow",
+      "rage"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.8,
+      "first-reaction": 0.2,
+      "wow": 1.0,
+      "_loud": 5.8,
+      "_motion": 7.3
+    },
+    "quote": "Oh, she's so hot F*** Lucia Lucia, oh my god.",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.35,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.7
+    },
+    "primary": "wow",
+    "proven": [],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.36,
+    "signals": {
+      "siren": 0.0,
+      "impact": 29.4,
+      "loud": 2.2,
+      "motion": 6.2,
+      "sustained": 0.12,
+      "spike": 4.1,
+      "laugh": 0,
+      "static": 0.15,
+      "letterbox": 0.0,
+      "luma": 26.0,
+      "dark": 0.0
+    }
   }
 }

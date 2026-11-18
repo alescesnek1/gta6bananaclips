@@ -7,10 +7,12 @@
     "youtube_ClI-eATridI_1483": 1794670233,
     "youtube_EfX_QR_knWs_360": 1794673965,
     "twitch_WealthyNimbleHamsterDansGame-yrU7UShZomelh1Ke": 1795003395,
-    "kick_clip_01M7Q5876Z0GVGGNFWGHMRKKZR": 1795003991
+    "kick_clip_01M7Q5876Z0GVGGNFWGHMRKKZR": 1795003991,
+    "twitch_SlickStylishBeaverStrawBeary-ljpqadoCXEhYwJx5": 1795005950
   },
   "failed": {
-    "twitch_IntelligentAbstemiousBasenjiOMGScoots-6o4BuG8nzW3K8qWx": 3
+    "twitch_IntelligentAbstemiousBasenjiOMGScoots-6o4BuG8nzW3K8qWx": 3,
+    "twitch_RelievedRichRhinocerosPeteZaroll-qOXHVQ3XVK3asCkK": 1
   },
   "other_game": {
     "twitch_3007922283": "World of Warcraft",
@@ -446,7 +448,9 @@
       1795004899,
       581,
       1795005499,
-      587
+      587,
+      1795005798,
+      588
     ],
     "twitch_NimbleFrozenBeanOSsloth-S2n7zCkGDTOWP_mP": [
       1795001014,
@@ -477,7 +481,9 @@
       1795005194,
       533,
       1795005499,
-      534
+      534,
+      1795005798,
+      536
     ],
     "twitch_CloudyLivelyHareCharlieBitMe-8lGWQ2aObfK8dyAR": [
       1795001911,
@@ -506,7 +512,8 @@
       1795005194,
       655,
       1795005499,
-      700
+      700,
+      1795005798
     ],
     "kick_clip_01M7Q5876Z0GVGGNFWGHMRKKZR": [
       1795003185,
@@ -537,7 +544,9 @@
       1795005194,
       536,
       1795005499,
-      559
+      559,
+      1795005798,
+      582
     ],
     "twitch_RelievedRichRhinocerosPeteZaroll-qOXHVQ3XVK3asCkK": [
       1795004899,
@@ -545,18 +554,27 @@
       1795005194,
       532,
       1795005499,
-      569
+      569,
+      1795005798,
+      606
     ],
     "twitch_CautiousSuperSnoodKappaWealth-3CVX9GlGsGZia1vf": [
       1795005499,
-      511
+      511,
+      1795005798,
+      530
+    ],
+    "twitch_SlickStylishBeaverStrawBeary-ljpqadoCXEhYwJx5": [
+      1795005798,
+      509
     ]
   },
   "rr": "bananas",
   "rating_hist": [
     648,
     888,
-    644
+    644,
+    509
   ],
   "moments_ch": {
     "xqc": [
@@ -581,6 +599,24 @@
         1795003991,
         1794999942,
         "kick_clip_01M7Q5876Z0GVGGNFWGHMRKKZR"
+      ]
+    ],
+    "lacy": [
+      [
+        1795005950,
+        1794999765,
+        "twitch_SlickStylishBeaverStrawBeary-ljpqadoCXEhYwJx5"
+      ]
+    ]
+  },
+  "failed_why": {
+    "twitch_RelievedRichRhinocerosPeteZaroll-qOXHVQ3XVK3asCkK": "QA failed: {'bananas': {'ok': False, 'look': 'old', 'problems': ['true peak 2.5 dBTP (> -1)', 'loudness -16.1 LUFS (target -14)'], 'cuts': {'start': 2.13, 'end': 25.97, 'jumps': 1, 'fixed': [], 'problems': [], 'first': '30 seconds! 20 seconds.', 'last': '6 officially comes out in 10,'}, 'mix': {'spe"
+  },
+  "moments": {
+    "2932194507": [
+      [
+        1795005950,
+        3032
       ]
     ]
   }
