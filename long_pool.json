@@ -979,5 +979,103 @@
     "vod_offset": 16908,
     "cluster": 1,
     "added": 1795009105
+  },
+  "twitch_HumbleOpenPassionfruitPrimeMe-kw5lcvoycKcFD4j5": {
+    "id": "twitch_HumbleOpenPassionfruitPrimeMe-kw5lcvoycKcFD4j5",
+    "url": "https://www.twitch.tv/lacy/clip/HumbleOpenPassionfruitPrimeMe-kw5lcvoycKcFD4j5",
+    "channel": "lacy",
+    "platform": "twitch",
+    "title": "uhhhh ok",
+    "views": 579,
+    "created": 1795001715,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932194507",
+    "vod_offset": 5019,
+    "cluster": 1,
+    "added": 1795011569
+  },
+  "twitch_TiredCrepuscularLettuceTebowing-_ckSEJKNEXXBWDj1": {
+    "id": "twitch_TiredCrepuscularLettuceTebowing-_ckSEJKNEXXBWDj1",
+    "url": "https://www.twitch.tv/lacy/clip/TiredCrepuscularLettuceTebowing-_ckSEJKNEXXBWDj1",
+    "channel": "lacy",
+    "platform": "twitch",
+    "title": "Damn bro",
+    "views": 596,
+    "created": 1795000446,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932194507",
+    "vod_offset": 3722,
+    "cluster": 1,
+    "added": 1795011168,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/lacy/20261118_twitch_TiredCrepuscularLettuceTebowing-_ckSEJKNEXXBWDj1/source.mp4",
+    "peak": 16.25,
+    "cut": [
+      9.27,
+      21.73
+    ],
+    "dur": 30.02,
+    "tags": [
+      "rage",
+      "crash"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.2,
+      "crash": 0.3,
+      "rage": 0.8,
+      "first-reaction": 0.2,
+      "wow": 0.08,
+      "_loud": 4.3,
+      "_motion": 33.1
+    },
+    "quote": "Put your hands!",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "proven": [],
+    "evidence": {
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.45,
+    "signals": {
+      "siren": 0.0,
+      "impact": 18.2,
+      "loud": 3.4,
+      "motion": 24.6,
+      "sustained": 0.76,
+      "spike": 2.8,
+      "laugh": 0,
+      "static": 0.05,
+      "letterbox": 0.0,
+      "luma": 72.1,
+      "dark": 0.0
+    }
   }
 }
