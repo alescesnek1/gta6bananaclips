@@ -1,1 +1,17 @@
-{}
+{
+  "_last": {
+    "bananas": {
+      "serie": "funny-day",
+      "at": "2026-11-18T19:07:44+01:00",
+      "next": 0
+    }
+  },
+  "_series_at": {
+    "bananas": {
+      "funny-day": "2026-11-18T19:07:44+01:00"
+    }
+  },
+  "bananas": {
+    "funny-day": 1
+  }
+}
