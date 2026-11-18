@@ -436,10 +436,74 @@
     "channel": "lacy",
     "platform": "twitch",
     "title": "THE RELEASE OF GTA VI",
-    "views": 606,
+    "views": 866,
     "created": 1794999642,
     "category": "Grand Theft Auto VI",
-    "added": 1795005950
+    "added": 1795007976,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/lacy/20261118_twitch_RelievedRichRhinocerosPeteZaroll-qOXHVQ3XVK3asCkK/source.mp4",
+    "peak": 19.950000000000003,
+    "cut": [
+      11.97,
+      25.97
+    ],
+    "dur": 30.02,
+    "tags": [
+      "first-reaction"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.25,
+      "first-reaction": 0.95,
+      "wow": 0.0,
+      "_loud": 9.7,
+      "_motion": 1.4
+    },
+    "quote": "Grand Theft Auto 6 officially comes out in 10, 20 seconds.",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.95,
+      "wow": 0.0
+    },
+    "primary": "first-reaction",
+    "proven": [
+      "first-reaction"
+    ],
+    "evidence": {
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ]
+    },
+    "fun": 0.0,
+    "signals": {
+      "siren": 0.0,
+      "impact": 31.1,
+      "loud": 3.9,
+      "motion": 1.1,
+      "sustained": 0.0,
+      "spike": 1.1,
+      "laugh": 0,
+      "static": 0.92,
+      "letterbox": 0.0,
+      "luma": 17.7,
+      "dark": 0.0
+    }
   },
   "twitch_SlickStylishBeaverStrawBeary-ljpqadoCXEhYwJx5": {
     "id": "twitch_SlickStylishBeaverStrawBeary-ljpqadoCXEhYwJx5",
@@ -528,10 +592,10 @@
     "channel": "xqc",
     "platform": "kick",
     "title": "asdasd",
-    "views": 524,
+    "views": 564,
     "created": 1794999642,
     "category": "Grand Theft Auto VI (GTA)",
-    "added": 1795007121,
+    "added": 1795007676,
     "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/xqc/20261118_kick_clip_01M7Q51JSHH80CZXCCA0V2ND3A/source.mp4",
     "peak": 15.65,
     "cut": [
@@ -549,7 +613,7 @@
       "crash": 0.0,
       "rage": 0.15,
       "first-reaction": 0.2,
-      "wow": 0.52,
+      "wow": 0.53,
       "_loud": 3.3,
       "_motion": 5.9
     },
@@ -610,7 +674,7 @@
         "text"
       ]
     },
-    "fun": 0.63,
+    "fun": 0.64,
     "signals": {
       "siren": 0.0,
       "impact": 91.6,
@@ -631,15 +695,16 @@
     "channel": "xqc",
     "platform": "twitch",
     "title": "GTA 6 First Ever Police Chase",
-    "views": 543,
+    "views": 630,
     "created": 1795000731,
     "category": "Grand Theft Auto VI",
-    "added": 1795007029,
+    "added": 1795007902,
     "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/xqc/20261118_twitch_DifferentPreciousWaffleHotPokket-wMDh_pqLv3Ve6ZOc/source.mp4",
     "peak": 53.85,
     "cut": [
       45.87,
-      56.87
+      56.87,
+      57.37
     ],
     "dur": 60.0,
     "tags": [
@@ -659,7 +724,8 @@
     },
     "quote": "",
     "rendered": [
-      "bananas"
+      "bananas",
+      "fanpage"
     ],
     "cats": {
       "funny": 0.0,
@@ -701,14 +767,14 @@
     "signals": {
       "siren": 0.0,
       "impact": 6.7,
-      "loud": 1.6,
-      "motion": 20.0,
+      "loud": 1.7,
+      "motion": 20.2,
       "sustained": 0.89,
       "spike": 1.8,
       "laugh": 0,
       "static": 0.04,
       "letterbox": 0.0,
-      "luma": 61.8,
+      "luma": 62.5,
       "dark": 0.0
     }
   },
@@ -718,9 +784,95 @@
     "channel": "xqc",
     "platform": "twitch",
     "title": "XQC gets called a f****** P**** right after he said so to an NPC in GTA 6",
-    "views": 634,
+    "views": 907,
     "created": 1795004834,
     "category": "Grand Theft Auto VI",
-    "added": 1795007254
+    "added": 1795007565,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/xqc/20261118_twitch_TrustworthyCarefulJalapenoKAPOW--CPhZdDJiBW-X0-C/source.mp4",
+    "peak": 11.65,
+    "cut": [
+      1.8,
+      14.67
+    ],
+    "dur": 17.6,
+    "tags": [
+      "rage",
+      "first-reaction",
+      "wow"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 1.0,
+      "first-reaction": 0.95,
+      "wow": 0.95,
+      "_loud": 1.6,
+      "_motion": 9.7
+    },
+    "quote": "Okay, Oh yo, bro Don't master enjoy that enjoy that you moron.",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.35,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.95,
+      "wow": 0.35
+    },
+    "primary": "first-reaction",
+    "proven": [
+      "first-reaction"
+    ],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.27,
+    "signals": {
+      "siren": 0.0,
+      "impact": 21.9,
+      "loud": 1.4,
+      "motion": 6.2,
+      "sustained": 0.12,
+      "spike": 3.2,
+      "laugh": 0,
+      "static": 0.16,
+      "letterbox": 0.0,
+      "luma": 25.3,
+      "dark": 0.0
+    }
+  },
+  "twitch_DifferentSullenReubenItsBoshyTime-K1Eo8-_fjY3ZqQan": {
+    "id": "twitch_DifferentSullenReubenItsBoshyTime-K1Eo8-_fjY3ZqQan",
+    "url": "https://www.twitch.tv/zoil/clip/DifferentSullenReubenItsBoshyTime-K1Eo8-_fjY3ZqQan",
+    "channel": "zoil",
+    "platform": "twitch",
+    "title": "wtf",
+    "views": 675,
+    "created": 1795001932,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932212372",
+    "vod_offset": 2939,
+    "cluster": 2,
+    "added": 1795007976
   }
 }
