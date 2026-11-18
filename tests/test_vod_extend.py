@@ -333,6 +333,55 @@ class GameAudio(unittest.TestCase):                        # 18. 11.: the GTA 6 
             self.assertGreater(K.side_level("x.mp4"), K.SIDE_MIN_DB)
 
 
+class StreamerVoice(unittest.TestCase):                    # 18. 11.: captions only while the streamer's mouth moves
+    WS = [(1.0, 1.3, "Lucia,"), (1.3, 1.8, "do"), (1.8, 2.2, "you"), (2.2, 2.6, "know?"),        # NPC: mouth still
+          (5.0, 5.3, "Bro"), (5.3, 5.6, "that's"), (5.6, 6.0, "crazy!")]                       # the streamer
+
+    def track(self):
+        ts = np.arange(1, 80) / K.MOUTH_FPS
+        act = np.where((ts > 4.9) & (ts < 6.1), 4.0, 0.1)
+        return ts, act
+
+    def test_only_the_streamers_utterance(self):
+        mine, other = K.mouth_words(self.WS, self.track())
+        self.assertEqual([w[2] for w in mine], ["Bro", "that's", "crazy!"])
+        self.assertEqual(len(other), 4)
+
+    def test_no_face_no_captions(self):
+        self.assertEqual(K.mouth_words(self.WS, None), ([], self.WS))
+
+    def test_still_mouth_all_clip(self):
+        ts = np.arange(1, 80) / K.MOUTH_FPS
+        mine, _ = K.mouth_words(self.WS, (ts, np.full_like(ts, 0.2)))    # never above MOUTH_MIN
+        self.assertEqual(mine, [])
+
+    def test_utterances(self):
+        self.assertEqual([len(u) for u in K.utterances(self.WS)], [4, 3])
+
+
+class Cutscene(unittest.TestCase):                         # spoiler rule + the viral exception
+    CFG = {"hot_score": 2000, "star_streamers": ["lacy"]}
+
+    def test_cluster_need_scales_with_the_stream(self):
+        self.assertEqual(K.cluster_need({}), 10)
+        self.assertEqual(K.cluster_need({"viewers": 300000}), 60)
+
+    def test_exception(self):
+        now = K.time.time()
+        self.assertIsNone(K.cutscene_exception({"views": 500, "created": now - 3600, "cluster": 3}, self.CFG))
+        self.assertIsNotNone(K.cutscene_exception({"views": 30000, "created": now - 3600}, self.CFG))   # 21k > 8k
+        self.assertIsNotNone(K.cutscene_exception({"cluster": 12, "created": now}, self.CFG))
+        self.assertIsNone(K.cutscene_exception({"cluster": 12, "viewers": 100000, "created": now}, self.CFG))
+        self.assertIsNotNone(K.cutscene_exception({"live": True, "channel": "lacy", "spike_z": 64, "created": now}, self.CFG))
+        self.assertIsNone(K.cutscene_exception({"live": True, "channel": "nobody", "spike_z": 64, "created": now}, self.CFG))
+
+    def test_letterbox_share(self):
+        fr = np.full((4, 90, 160), 80, np.uint8)
+        fr[:2, :8], fr[:2, -8:] = 0, 0                             # 2 of 4 frames letterboxed
+        with mock.patch.object(K.subprocess, "run", return_value=mock.Mock(stdout=fr.tobytes())):
+            self.assertEqual(K.cutscene_share("x.mp4"), 0.5)
+
+
 class Captions(unittest.TestCase):                         # owner 18. 11.: key words coloured, fillers white
     def test_key_words(self):
         for w in ("island!", "inmate", "Kai", "500", "F***", "crazy"):
