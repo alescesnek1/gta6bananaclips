@@ -521,5 +521,206 @@
       "luma": 26.0,
       "dark": 0.0
     }
+  },
+  "kick_clip_01M7Q51JSHH80CZXCCA0V2ND3A": {
+    "id": "kick_clip_01M7Q51JSHH80CZXCCA0V2ND3A",
+    "url": "https://kick.com/xqc/clips/clip_01M7Q51JSHH80CZXCCA0V2ND3A",
+    "channel": "xqc",
+    "platform": "kick",
+    "title": "asdasd",
+    "views": 524,
+    "created": 1794999642,
+    "category": "Grand Theft Auto VI (GTA)",
+    "added": 1795007121,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/xqc/20261118_kick_clip_01M7Q51JSHH80CZXCCA0V2ND3A/source.mp4",
+    "peak": 15.65,
+    "cut": [
+      8.6,
+      18.67
+    ],
+    "dur": 32.0,
+    "tags": [
+      "wow"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.15,
+      "first-reaction": 0.2,
+      "wow": 0.52,
+      "_loud": 3.3,
+      "_motion": 5.9
+    },
+    "quote": "Oh my god, here comes that!",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.25,
+      "rage": 0.25,
+      "fail": 0.25,
+      "physics": 0.6,
+      "glitch": 0.25,
+      "chase": 0.0,
+      "crash": 0.6,
+      "stunt": 0.6,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.6
+    },
+    "primary": "physics",
+    "proven": [
+      "wow"
+    ],
+    "evidence": {
+      "funny": [
+        "loud"
+      ],
+      "rage": [
+        "loud"
+      ],
+      "fail": [
+        "impact",
+        "loud"
+      ],
+      "physics": [
+        "impact",
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "crash": [
+        "impact",
+        "motion-spike"
+      ],
+      "stunt": [
+        "impact",
+        "motion-spike"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "loud",
+        "text"
+      ]
+    },
+    "fun": 0.63,
+    "signals": {
+      "siren": 0.0,
+      "impact": 91.6,
+      "loud": 35.1,
+      "motion": 9.1,
+      "sustained": 0.15,
+      "spike": 24.2,
+      "laugh": 0,
+      "static": 0.0,
+      "letterbox": 0.0,
+      "luma": 72.5,
+      "dark": 0.3
+    }
+  },
+  "twitch_DifferentPreciousWaffleHotPokket-wMDh_pqLv3Ve6ZOc": {
+    "id": "twitch_DifferentPreciousWaffleHotPokket-wMDh_pqLv3Ve6ZOc",
+    "url": "https://www.twitch.tv/xqc/clip/DifferentPreciousWaffleHotPokket-wMDh_pqLv3Ve6ZOc",
+    "channel": "xqc",
+    "platform": "twitch",
+    "title": "GTA 6 First Ever Police Chase",
+    "views": 543,
+    "created": 1795000731,
+    "category": "Grand Theft Auto VI",
+    "added": 1795007029,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/xqc/20261118_twitch_DifferentPreciousWaffleHotPokket-wMDh_pqLv3Ve6ZOc/source.mp4",
+    "peak": 53.85,
+    "cut": [
+      45.87,
+      56.87
+    ],
+    "dur": 60.0,
+    "tags": [
+      "chase",
+      "first-reaction"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 1.0,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 1.0,
+      "wow": 0.0,
+      "_loud": 1.6,
+      "_motion": 28.8
+    },
+    "quote": "",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 1.0,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.95,
+      "wow": 0.0
+    },
+    "primary": "chase",
+    "proven": [
+      "chase",
+      "first-reaction"
+    ],
+    "evidence": {
+      "chase": [
+        "motion",
+        "text"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ]
+    },
+    "fun": 0.34,
+    "signals": {
+      "siren": 0.0,
+      "impact": 6.7,
+      "loud": 1.6,
+      "motion": 20.0,
+      "sustained": 0.89,
+      "spike": 1.8,
+      "laugh": 0,
+      "static": 0.04,
+      "letterbox": 0.0,
+      "luma": 61.8,
+      "dark": 0.0
+    }
+  },
+  "twitch_TrustworthyCarefulJalapenoKAPOW--CPhZdDJiBW-X0-C": {
+    "id": "twitch_TrustworthyCarefulJalapenoKAPOW--CPhZdDJiBW-X0-C",
+    "url": "https://www.twitch.tv/xqc/clip/TrustworthyCarefulJalapenoKAPOW--CPhZdDJiBW-X0-C",
+    "channel": "xqc",
+    "platform": "twitch",
+    "title": "XQC gets called a f****** P**** right after he said so to an NPC in GTA 6",
+    "views": 634,
+    "created": 1795004834,
+    "category": "Grand Theft Auto VI",
+    "added": 1795007254
   }
 }
