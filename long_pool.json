@@ -1735,13 +1735,13 @@
     "channel": "zoil",
     "platform": "twitch",
     "title": "strip",
-    "views": 523,
+    "views": 568,
     "created": 1795001774,
     "category": "Grand Theft Auto VI",
     "video_id": "2932212372",
     "vod_offset": 2785,
     "cluster": 1,
-    "added": 1795020636
+    "added": 1795021074
   },
   "youtube_J_GK53E9gZo_264": {
     "id": "youtube_J_GK53E9gZo_264",
@@ -1753,7 +1753,7 @@
     "created": 1795013464,
     "category": "Grand Theft Auto VI (4K) 🤩 أول تجربة للعبة و مترجم بالعربي Gamersnack gamer snack fortnight gaming العاب الشهر بلايستيشن فورتنايت فورنايت playstation ps5 playstation event playstation showcase 2021 بث مباشر حدث سوني ملزلز تغطية حدث بلايستيشن تغطية موتمر نفيديا بث مباشر call of duty بث مباشر كود كود ٧ كود بلاك اوبس ٧ GTA VI GTA 6 GTA 6 LIVE Grand Theft Auto VI",
     "signal_score": 0.57,
-    "added": 1795020641,
+    "added": 1795021079,
     "peak": 27.15,
     "cut": [
       0.0,
@@ -1838,7 +1838,7 @@
     "created": 1795013464,
     "category": "Grand Theft Auto VI (4K) 🤩 أول تجربة للعبة و مترجم بالعربي Gamersnack gamer snack fortnight gaming العاب الشهر بلايستيشن فورتنايت فورنايت playstation ps5 playstation event playstation showcase 2021 بث مباشر حدث سوني ملزلز تغطية حدث بلايستيشن تغطية موتمر نفيديا بث مباشر call of duty بث مباشر كود كود ٧ كود بلاك اوبس ٧ GTA VI GTA 6 GTA 6 LIVE Grand Theft Auto VI",
     "signal_score": 1.0,
-    "added": 1795020641,
+    "added": 1795021079,
     "peak": 32.85,
     "cut": [
       0.0,
@@ -1923,5 +1923,17 @@
     "src_mb": 11.4,
     "source": "https://6afdd6f4d240962d28efdb77--gta6bananaclips-media.netlify.app/yt/youtube_J_GK53E9gZo_9774_16x9.mp4",
     "yt_url": "https://www.youtube.com/watch?v=J_GK53E9gZo"
+  },
+  "twitch_CrazyAbnegateLapwingPipeHype-fzo4DD3_M-TisQLE": {
+    "id": "twitch_CrazyAbnegateLapwingPipeHype-fzo4DD3_M-TisQLE",
+    "url": "https://www.twitch.tv/ishowspeed/clip/CrazyAbnegateLapwingPipeHype-fzo4DD3_M-TisQLE",
+    "channel": "ishowspeed",
+    "platform": "twitch",
+    "title": "first robbery speed",
+    "views": 501,
+    "created": 1795009434,
+    "category": "Grand Theft Auto VI",
+    "cluster": 1,
+    "added": 1795021074
   }
 }
