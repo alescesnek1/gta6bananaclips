@@ -904,7 +904,10 @@ def youtube_title(m):
     return t[: 100 - len(" #shorts")] + " #shorts"
 
 def in_day(rec, day):
-    """Is the post due inside this publishing day (12:00 that day to 12:00 the next, Prague)?"""
+    """Is the post due inside this publishing day (12:00 that day to 12:00 the next, Prague)?
+    A post deleted from Buffer by hand (record "deleted": true) frees its quota and slot again."""
+    if rec.get("deleted"):
+        return False
     try:
         t = datetime.fromisoformat(rec.get("due") or "")
     except ValueError:

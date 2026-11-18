@@ -20,6 +20,8 @@
     "rating": 10,
     "views": 411705,
     "golden": false,
-    "slot": "2026-11-18T11:00:00+01:00"
+    "slot": "2026-11-18T11:00:00+01:00",
+    "deleted": true,
+    "deleted_why": "smazano rucne 18. 11. (ne GTA 6 gameplay)"
   }
 }
