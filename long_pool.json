@@ -881,13 +881,76 @@
     "channel": "lacy",
     "platform": "twitch",
     "title": "wtf",
-    "views": 908,
+    "views": 1124,
     "created": 1795003558,
     "category": "Grand Theft Auto VI",
     "video_id": "2932194507",
     "vod_offset": 6847,
     "cluster": 3,
-    "added": 1795008508
+    "added": 1795009512,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/lacy/20261118_twitch_CredulousKawaiiTriangleFUNgineer-Zys54vtw1G4OmIkN/source.mp4",
+    "peak": 37.95,
+    "cut": [
+      26.7,
+      40.93
+    ],
+    "dur": 60.01,
+    "tags": [
+      "wow",
+      "funny",
+      "rage",
+      "crash"
+    ],
+    "tag_scores": {
+      "funny": 0.4,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.3,
+      "rage": 0.35,
+      "first-reaction": 0.2,
+      "wow": 0.48,
+      "_loud": 22.8,
+      "_motion": 12.4
+    },
+    "quote": "Bro.",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "proven": [],
+    "evidence": {
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.33,
+    "signals": {
+      "siren": 0.0,
+      "impact": 34.3,
+      "loud": 4.8,
+      "motion": 3.3,
+      "sustained": 0.05,
+      "spike": 3.9,
+      "laugh": 0,
+      "static": 0.19,
+      "letterbox": 0.0,
+      "luma": 100.9,
+      "dark": 0.0
+    }
   },
   "twitch_ThirstyAcceptableRaccoonDxAbomb-NT930bCo04OgUQHD": {
     "id": "twitch_ThirstyAcceptableRaccoonDxAbomb-NT930bCo04OgUQHD",

@@ -12,12 +12,15 @@
     "twitch_DifferentPreciousWaffleHotPokket-wMDh_pqLv3Ve6ZOc": 1795007902,
     "kick_clip_01M7Q51JSHH80CZXCCA0V2ND3A": 1795007676,
     "twitch_TrustworthyCarefulJalapenoKAPOW--CPhZdDJiBW-X0-C": 1795007565,
-    "twitch_RelievedRichRhinocerosPeteZaroll-qOXHVQ3XVK3asCkK": 1795007976
+    "twitch_RelievedRichRhinocerosPeteZaroll-qOXHVQ3XVK3asCkK": 1795007976,
+    "twitch_CredulousKawaiiTriangleFUNgineer-Zys54vtw1G4OmIkN": 1795009512
   },
   "failed": {
     "twitch_IntelligentAbstemiousBasenjiOMGScoots-6o4BuG8nzW3K8qWx": 3,
     "twitch_RelievedRichRhinocerosPeteZaroll-qOXHVQ3XVK3asCkK": 3,
-    "twitch_TrustworthyCarefulJalapenoKAPOW--CPhZdDJiBW-X0-C": 1
+    "twitch_TrustworthyCarefulJalapenoKAPOW--CPhZdDJiBW-X0-C": 1,
+    "twitch_ThirstyAcceptableRaccoonDxAbomb-NT930bCo04OgUQHD": 1,
+    "twitch_DifferentSullenReubenItsBoshyTime-K1Eo8-_fjY3ZqQan": 1
   },
   "other_game": {
     "twitch_3007922283": "World of Warcraft",
@@ -470,7 +473,9 @@
       1795008796,
       607,
       1795009105,
-      612
+      612,
+      1795009401,
+      614
     ],
     "twitch_NimbleFrozenBeanOSsloth-S2n7zCkGDTOWP_mP": [
       1795001014,
@@ -517,7 +522,9 @@
       558,
       1795008796,
       1795009105,
-      562
+      562,
+      1795009401,
+      564
     ],
     "twitch_CloudyLivelyHareCharlieBitMe-8lGWQ2aObfK8dyAR": [
       1795001911,
@@ -562,7 +569,9 @@
       1795008796,
       1073,
       1795009105,
-      1105
+      1105,
+      1795009401,
+      1151
     ],
     "kick_clip_01M7Q5876Z0GVGGNFWGHMRKKZR": [
       1795003185,
@@ -597,7 +606,9 @@
       1795008796,
       695,
       1795009105,
-      714
+      714,
+      1795009401,
+      734
     ],
     "twitch_AstuteArtsyEaglePeteZaroll-h-8smz8Kb6qltijo": [
       1795004599,
@@ -624,7 +635,9 @@
       1795008796,
       760,
       1795009105,
-      775
+      775,
+      1795009401,
+      792
     ],
     "twitch_RelievedRichRhinocerosPeteZaroll-qOXHVQ3XVK3asCkK": [
       1795004899,
@@ -661,7 +674,9 @@
       1795008796,
       681,
       1795009105,
-      693
+      693,
+      1795009401,
+      704
     ],
     "twitch_SlickStylishBeaverStrawBeary-ljpqadoCXEhYwJx5": [
       1795005798,
@@ -701,7 +716,9 @@
       1795008796,
       983,
       1795009105,
-      1053
+      1053,
+      1795009401,
+      1124
     ],
     "twitch_DifferentSullenReubenItsBoshyTime-K1Eo8-_fjY3ZqQan": [
       1795007426,
@@ -714,7 +731,9 @@
       1795008796,
       1035,
       1795009105,
-      1120
+      1120,
+      1795009401,
+      1191
     ],
     "twitch_ThirstyAcceptableRaccoonDxAbomb-NT930bCo04OgUQHD": [
       1795008508,
@@ -722,11 +741,14 @@
       1795008796,
       536,
       1795009105,
-      585
+      585,
+      1795009401,
+      611
     ],
     "twitch_PiercingSlipperyTortoiseDuDudu-ShespqH5CNlosqhC": [
       1795009105,
-      503
+      503,
+      1795009401
     ]
   },
   "rr": "bananas",
@@ -739,7 +761,8 @@
     524,
     907,
     564,
-    866
+    866,
+    1124
   ],
   "moments_ch": {
     "xqc": [
@@ -801,12 +824,19 @@
         1795007976,
         1794999642,
         "twitch_RelievedRichRhinocerosPeteZaroll-qOXHVQ3XVK3asCkK"
+      ],
+      [
+        1795009512,
+        1795003558,
+        "twitch_CredulousKawaiiTriangleFUNgineer-Zys54vtw1G4OmIkN"
       ]
     ]
   },
   "failed_why": {
     "twitch_RelievedRichRhinocerosPeteZaroll-qOXHVQ3XVK3asCkK": "QA failed: {'fanpage': {'ok': False, 'look': 'old', 'problems': ['black frames at 0 s'], 'cuts': {'start': 11.97, 'end': 25.97, 'jumps': 1, 'fixed': [], 'problems': [], 'first': '20 seconds.', 'last': '6 officially comes out in 10,'}, 'mix': {'speech_db': -35.4, 'voice_gain': 15.4, 'spans': 2, 'musi",
-    "twitch_TrustworthyCarefulJalapenoKAPOW--CPhZdDJiBW-X0-C": "quality check failed after repairs: face in the top band missing or cut (1/8 frames)"
+    "twitch_TrustworthyCarefulJalapenoKAPOW--CPhZdDJiBW-X0-C": "quality check failed after repairs: face in the top band missing or cut (1/8 frames)",
+    "twitch_ThirstyAcceptableRaccoonDxAbomb-NT930bCo04OgUQHD": "no facecam - every short needs the streamer's face on top",
+    "twitch_DifferentSullenReubenItsBoshyTime-K1Eo8-_fjY3ZqQan": "QA failed: {'fanpage': {'ok': False, 'look': 'old', 'problems': ['black frames at 2.2, 4.533333, 7.766667 s', 'loop seam: sound jumps 6.8 dB (max 6)'], 'cuts': {'start': 5.1, 'end': 17.27, 'jumps': 1, 'fixed': [], 'problems': [], 'first': 'Seven bucks for my name!', 'last': 'Seven bucks for my name,"
   },
   "moments": {
     "2932194507": [
