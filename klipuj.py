@@ -4416,7 +4416,7 @@ class ChatMeter:
             med = float(np.median(hist))
             mad = float(np.median([abs(x - med) for x in hist])) + 1
             z = (cur - med) / mad
-            if z >= z_min and cur >= max(8, 3 * med) and (best is None or z > best[0]):
+            if z >= z_min and cur >= max(15, 5 * med) and (best is None or z > best[0]):   # 18. 11.: only real explosions
                 rmed = float(np.median(rhist))
                 best = (round(z, 1), cur, round(rcur / rmed) if rmed >= 1 else None)
         return best
@@ -4674,7 +4674,7 @@ def main():
     lv.add_argument("--hours", type=float, default=5.7, help="how long to watch (GitHub job limit is 6 h)")
     lv.add_argument("--streamu", dest="n_streams", type=int, default=15, help="watch the chat of the N biggest streams")
     lv.add_argument("--min-viewers", type=int, default=8000)   # Aleš 18. 11.: 1500 is far too low for GTA 6
-    lv.add_argument("--z", type=float, default=6.0, help="how far the chat must jump over its last 5 min")
+    lv.add_argument("--z", type=float, default=25.0, help="how far the chat must jump over its last 5 min (18. 11.: 6 gave ~40 clips/day)")
     lv.add_argument("--cool", type=int, default=180, help="seconds between two spikes of one channel")
     lv.add_argument("--hra", help="other Twitch category (test before the launch, e.g. 'Grand Theft Auto V')")
     lv.add_argument("--ted", action="store_true", help="start now even before live_from (test)")
