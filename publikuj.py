@@ -538,9 +538,17 @@ def candidates(znacka=None):
         m["age_h"] = age_h
         m["score"] = ((m.get("views") or 0) / (max(age_h, 0) + 1) ** 0.5   # same "virality" as klipuj.batch
                       * (1 + min(m.get("growth") or 0, 3)) * (1 + 0.5 * ((m.get("cluster") or 1) - 1)))
-        if crossover(m, load_json(HERE / "sources.json", {})):    # >= 2 star streamers named: x 1.5
+        src_c = load_json(HERE / "sources.json", {})
+        if crossover(m, src_c):                                   # >= 2 star streamers named: x 1.5
             m["score"] *= 1.5
             m["crossover"] = True
+        # Aleš 18. 11.: the quota goes to the famous streamers first, never burnt on no-names:
+        # Kai Cenat / IShowSpeed / xQc x 2, other star streamers x 1.5
+        ch_c = str(m.get("channel") or "").lower()
+        if ch_c in {x.lower() for x in src_c.get("star_tier1", [])}:
+            m["score"] *= 2.0
+        elif ch_c in {x.lower() for x in src_c.get("star_streamers", [])}:
+            m["score"] *= 1.5
         out.append(m)
     # viewer-made Twitch/Kick clips first: a YouTube window's "views" are the whole video's,
     # not comparable, so YouTube only fills what is left (and at most youtube_per_day)
