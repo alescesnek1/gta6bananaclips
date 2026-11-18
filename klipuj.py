@@ -1291,6 +1291,144 @@ def cutscene_share(src):
     mid = fr[:, k:-k].mean(axis=(1, 2))
     return round(float(((top < 14) & (bot < 14) & (mid > 30)).mean()), 2)
 
+# "No HUD = cutscene" (18. 11., GTA 6 launch: a full-height story cutscene without letterbox went out as
+# a live short). Calibrated on 21 real launch-day Twitch clips (xQc, Lacy, Zoil, ZLaner, ispylil,
+# jasontheween, tyrone). GTA 6 gameplay draws a frosted rounded-rectangle minimap in the bottom-left
+# corner, always at the same spot of a full-frame game: x 1.5-17.3 %, y 81.5-97.2 % (HUD_BOX). Its thin
+# light rim is a straight edge on all four sides while the game moves under it. A story cutscene has no
+# minimap - but neither do many gameplay moments (shower, strip club, prison prologue, bank robbery: 8 of
+# the 21 clips), so a missing HUD alone never rejects: the missing-HUD frames must also be cinematic
+# (>= 2 hard cuts within +-5 s; gameplay keeps one continuous camera, a cutscene cuts every 2-5 s).
+# Measured (2 fps): a "no minimap" call is right on 97 % of frames (rim misses are faint maps over
+# bright sky; false "minimap" = a streamer's timer box at that spot - fail-safe). Clip shares: tyrone
+# cutscene 1.0, Lacy (same cutscene, gameplay at the end) 0.60; gameplay: Lacy's bank robbery with a
+# scripted takedown 0.57, all other gameplay <= 0.28. Hence its own bar HUD_CUTSCENE_MAX 0.58 (thin margin!)
+# (letterbox stays at CUTSCENE_MAX 0.5): a missing HUD is the weaker signal.
+HUD_CUTSCENE_MAX = 0.58
+HUD_BOX = (9.5 / 640, 293.5 / 360, 110.5 / 640, 350.0 / 360)   # minimap rim at 640x360 (x0, y0, x1, y1)
+HUD_RIM = 0.15           # rim edge coverage minus texture beside it (2nd weakest side) above this = minimap
+CINE_WIN = 5.0           # s: a no-HUD frame is cinematic with >= CINE_CUTS hard cuts within +- this
+CINE_CUTS = 2
+
+def _ridges(g, axis):
+    """Thin straight edges across `axis`: a strong step that stands out from the pixels 4 px away."""
+    e = np.zeros_like(g)
+    sl = [slice(None)] * g.ndim
+    a, b, c = list(sl), list(sl), list(sl)
+    a[axis], b[axis], c[axis] = slice(1, -1), slice(2, None), slice(None, -2)
+    e[tuple(a)] = np.abs(g[tuple(b)] - g[tuple(c)])
+    r = (e > 8) & (e > 1.6 * np.maximum(np.roll(e, 4, axis), np.roll(e, -4, axis)))
+    return r | np.roll(r, 1, axis) | np.roll(r, -1, axis)
+
+def hud_rim(gs):
+    """
+    Minimap rim score per frame (gray frames n x 360 x 640, the normalised source): share of each rim
+    side covered by an edge, 2nd weakest of the 4 sides (one may sit on a dark frame edge), best of
+    +-2 px / +-3 % size around HUD_BOX. Gameplay with the minimap 0.5-0.95, without it < 0.3.
+    """
+    gs = np.asarray(gs)
+    n, h, w = gs.shape
+    oy, ox = int(0.7 * h), int(0.3 * w)                # only the bottom-left corner is looked at
+    g = gs[:, oy:, :ox].astype(np.float32)
+    rh, rv = _ridges(g, 1), _ridges(g, 2)
+    best = np.zeros(n)
+    for dx in (-2, 0, 2):
+        for dy in (-2, 0, 2):
+            for sc in (0.97, 1.0, 1.03):
+                x0, y1 = HUD_BOX[0] * w + dx, HUD_BOX[3] * h + dy          # anchored bottom-left
+                x1 = x0 + (HUD_BOX[2] - HUD_BOX[0]) * w * sc
+                y0 = y1 - (HUD_BOX[3] - HUD_BOX[1]) * h * sc
+                x0, x1 = int(round(x0)), int(round(x1))
+                y0, y1 = int(round(y0)) - oy, min(h - 1, int(round(y1))) - oy
+                r = max(3, int(0.06 * (x1 - x0)))                         # rounded corners left out
+                hx = slice(x0 + r, x1 - r)
+                vy = slice(y0 + r, y1 - r)
+
+                def side_h(y):                         # coverage on the line minus texture 6 px away
+                    return rh[:, y, hx].mean(1) - np.maximum(rh[:, y - 6, hx].mean(1), rh[:, min(y + 6, g.shape[1] - 1), hx].mean(1))
+
+                def side_v(x):
+                    return rv[:, vy, x].mean(1) - np.maximum(rv[:, vy, x - 6].mean(1), rv[:, vy, x + 6].mean(1))
+                s = np.stack([side_h(y0), side_h(y1), side_v(max(x0, 6)), side_v(x1)], 1)
+                best = np.maximum(best, np.sort(s, 1)[:, 1])
+    return best
+
+def hud_covered(gs):
+    """The minimap spot sits under a static streamer overlay (its pixels stand still while the game
+    moves): the HUD detector cannot see there - never reject on a missing HUD then."""
+    gs = np.asarray(gs)
+    n, h, w = gs.shape
+    box = gs[:, int(HUD_BOX[1] * h) + 3: int(HUD_BOX[3] * h) - 3, int(HUD_BOX[0] * w) + 3: int(HUD_BOX[2] * w) - 3]
+    mid = gs[:, h // 4: 3 * h // 4, w // 4: 3 * w // 4]
+    return bool((box.astype(np.float32).std(0) < 4).mean() > 0.6 and (mid.astype(np.float32).std(0) < 4).mean() < 0.3)
+
+def shot_cuts(small, fps):
+    """Times of hard cuts (gray frames n x 90 x 160): an isolated spike of the frame difference in the
+    middle of the picture (overlays sit at the edges) that also changes the brightness histogram and
+    lasts (a flash / muzzle blast goes there and back: the picture after it is the one before)."""
+    fr = np.asarray(small)[:, 12:78, 32:128].astype(np.float32)
+    if len(fr) < 3:
+        return []
+    d = np.abs(np.diff(fr, axis=0)).mean(axis=(1, 2))
+    hs = [cv2.calcHist([np.ascontiguousarray(x.astype(np.uint8))], [0], None, [32], [0, 256]).ravel() for x in fr]
+    out = []
+    for i in range(len(d)):
+        nb = np.r_[d[max(0, i - 4): i], d[i + 1: i + 5]]
+        if len(nb) >= 3 and d[i] > 40 and d[i] > 1.8 * np.median(nb) \
+                and cv2.compareHist(hs[i], hs[i + 1], cv2.HISTCMP_BHATTACHARYYA) > 0.2 \
+                and np.abs(fr[min(i + 2, len(fr) - 1)] - fr[max(i - 1, 0)]).mean() > 0.6 * d[i]:
+            out.append((i + 1) / fps)
+    return out
+
+def hud_cutscene(src):
+    """
+    Share of the clip (2 fps) that is a story cutscene by the HUD rule: no minimap AND cinematic cuts
+    around (two signals; a missing HUD alone is ordinary gameplay too). 0.0 when the minimap spot is
+    covered by an overlay or the probe fails (fail-safe: never reject on an unsure HUD).
+    Returns (share, numbers for the log / meta).
+    """
+    W_, H_ = 640, 360
+    try:
+        r = subprocess.run(["ffmpeg", "-nostdin", "-v", "error", "-i", str(src), "-vf",
+                            f"fps=4,{src_norm(src)},scale={W_}:{H_},format=gray", "-f", "rawvideo", "-"],
+                           capture_output=True, timeout=300)
+    except subprocess.TimeoutExpired:
+        return 0.0, {"hud": "probe timeout"}
+    raw = r.stdout
+    n = len(raw) // (W_ * H_)
+    if r.returncode != 0 or n < 8:                       # a half-decoded clip says nothing about the rest
+        return 0.0, {"hud": "probe failed"}
+    g4 = np.frombuffer(raw[: n * W_ * H_], np.uint8).reshape(n, H_, W_)
+    g2 = g4[::2]
+    if hud_covered(g2):
+        return 0.0, {"hud": "covered by an overlay"}
+    hud = hud_rim(g2) > HUD_RIM
+    dark = g2.reshape(len(g2), -1).mean(1) < 12          # fades / black frames say nothing
+    cuts = np.array(shot_cuts(np.array([cv2.resize(x, (160, 90), interpolation=cv2.INTER_AREA) for x in g4]), 4))
+    t = np.arange(len(g2)) / 2
+    cine = np.array([((cuts >= x - CINE_WIN) & (cuts <= x + CINE_WIN)).sum() >= CINE_CUTS for x in t], bool)
+    share = round(float((~hud & ~dark & cine).mean()), 2)
+    return share, {"no_hud": round(float((~hud & ~dark).mean()), 2), "cuts": len(cuts), "hud_cutscene": share}
+
+def cutscene_check(src, clip=None):
+    """
+    Story cutscene share of the clip: cinematic letterbox (cutscene_share) or, for GTA 6 category
+    clips (Twitch / Kick / live; YouTube windows are mostly trailer reactions), no HUD + cinematic cuts
+    (hud_cutscene). Returns (share, why).
+    """
+    lb = cutscene_share(src)
+    why = {"letterbox": lb}
+    hs = 0.0
+    if lb <= CUTSCENE_MAX and (clip or {}).get("platform") != "youtube":
+        try:
+            hs, more = hud_cutscene(src)
+            why.update(more)
+        except Exception as e:                           # never reject on a failed HUD probe
+            why["hud"] = f"failed: {str(e)[-80:]}"
+    hs = hs if hs > HUD_CUTSCENE_MAX else 0.0             # the weaker signal needs the higher bar
+    why["by"] = "letterbox" if lb and lb >= hs else "no HUD + cinematic cuts" if hs else "-"
+    return max(lb, hs), why
+
 def cluster_need(clip):
     """How many viewers' clips of one moment make it viral (owner 18. 11.: 2-3 is nothing on a stream
     with hundreds of thousands of viewers): max(10, stream viewers / 5000)."""
@@ -3951,12 +4089,14 @@ def render(clip, src=None, clean=False):
     # say it is extremely viral (cutscene_exception) - and even then only with the streamer's facecam
     cut_x = None
     if not non_game:
-        cs = cutscene_share(src)
+        cs, cs_why = cutscene_check(src, clip)
+        log(f"  cutscene check: {cs:.0%} ({cs_why})")
         if cs > CUTSCENE_MAX:
             cut_x = cutscene_exception(clip, load_json(SOURCES, {}))
             if not cut_x:
-                raise NotGameplay(f"cutscene: {cs:.0%} of the clip in cinematic letterbox (spoiler)")
+                raise NotGameplay(f"cutscene: {cs:.0%} of the clip ({cs_why['by']}) (spoiler)")
             cut_x["cutscene_share"] = cs
+            cut_x["cutscene_by"] = cs_why["by"]
             log(f"  cutscene ({cs:.0%}), allowed as extremely viral: {cut_x}")
     if words is None:
         words = transcribe(src)
