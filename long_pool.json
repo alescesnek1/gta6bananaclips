@@ -1431,11 +1431,11 @@
     "channel": "ishowspeed",
     "platform": "twitch",
     "title": "here",
-    "views": 697,
+    "views": 731,
     "created": 1795008697,
     "category": "Grand Theft Auto VI",
     "cluster": 1,
-    "added": 1795018767,
+    "added": 1795019259,
     "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/ishowspeed/20261118_twitch_PeppyWittyJaguarItsBoshyTime-Y7W5ETNtNFcXOjYn/source.mp4",
     "peak": 51.85,
     "cut": [
@@ -1593,10 +1593,10 @@
     "channel": "n3on",
     "platform": "kick",
     "title": "What is bro doing",
-    "views": 2116,
+    "views": 2674,
     "created": 1795010538,
     "category": "Grand Theft Auto VI (GTA)",
-    "added": 1795019021
+    "added": 1795019560
   },
   "twitch_ModernBigWolfResidentSleeper-zUnNje_xisYIyfTG": {
     "id": "twitch_ModernBigWolfResidentSleeper-zUnNje_xisYIyfTG",
@@ -1604,12 +1604,38 @@
     "channel": "quin69",
     "platform": "twitch",
     "title": "father of 4 btw",
-    "views": 515,
+    "views": 586,
     "created": 1795015930,
     "category": "Grand Theft Auto VI",
     "video_id": "2932203147",
     "vod_offset": 17852,
     "cluster": 1,
-    "added": 1795019021
+    "added": 1795019560
+  },
+  "twitch_EnergeticVastTofuTheRinger-Mi3gDMWyJsLZwDUy": {
+    "id": "twitch_EnergeticVastTofuTheRinger-Mi3gDMWyJsLZwDUy",
+    "url": "https://www.twitch.tv/lacy/clip/EnergeticVastTofuTheRinger-Mi3gDMWyJsLZwDUy",
+    "channel": "lacy",
+    "platform": "twitch",
+    "title": "mandy",
+    "views": 501,
+    "created": 1795009550,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932194507",
+    "vod_offset": 12860,
+    "cluster": 1,
+    "added": 1795019560
+  },
+  "twitch_TalentedSteamyHumanHassaanChop-DL8PqlPqix6JV1lU": {
+    "id": "twitch_TalentedSteamyHumanHassaanChop-DL8PqlPqix6JV1lU",
+    "url": "https://www.twitch.tv/ishowspeed/clip/TalentedSteamyHumanHassaanChop-DL8PqlPqix6JV1lU",
+    "channel": "ishowspeed",
+    "platform": "twitch",
+    "title": "SPEED PLAY GTA VI EARLY ACCESS",
+    "views": 520,
+    "created": 1795008812,
+    "category": "Grand Theft Auto VI",
+    "cluster": 2,
+    "added": 1795019560
   }
 }
