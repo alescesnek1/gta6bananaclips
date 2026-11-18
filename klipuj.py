@@ -96,11 +96,33 @@ def run(cmd, timeout=None):
         raise RuntimeError(f"{cmd[0]} failed ({p.returncode}): {p.stderr.strip()[-800:]}")
     return p.stdout
 
+class CorruptJson(RuntimeError):
+    """A state/config file did not parse: kept as <name>.bad, nothing is written over it."""
+
+def _strict_json(path):
+    """Files whose silent default would be written back and wipe them (state, facecams, sources, brands)."""
+    try:
+        p = Path(path).resolve()
+        return p in {Path(x).resolve() for x in (STATE, STREAMERS, SOURCES, BRANDS, HERE / "state.json")}
+    except OSError:
+        return False
+
 def load_json(path, default):
     try:
-        return json.loads(path.read_text(encoding="utf-8"))
-    except (FileNotFoundError, json.JSONDecodeError):
+        return json.loads(Path(path).read_text(encoding="utf-8"))
+    except FileNotFoundError:
         return default
+    except (json.JSONDecodeError, UnicodeDecodeError) as e:
+        if not _strict_json(path):
+            return default
+        # a silent default here would be saved back by the next mark()/save_json and lose the whole
+        # file (done clips, facecam boxes, sources): keep a copy and stop loudly instead
+        bad = Path(path).with_name(Path(path).name + ".bad")
+        try:
+            shutil.copy(path, bad)
+        except OSError:
+            pass
+        raise CorruptJson(f"{Path(path).name} is corrupt ({e}); copy kept as {bad.name}, nothing overwritten")
 
 def save_json(path, data):
     tmp = path.with_name(f"{path.name}.{os.getpid()}.tmp")
@@ -396,8 +418,9 @@ def launched():
 
 def exclude_re():
     """Titles we never take; from the launch on also trailers and their reactions (Aleš 17. 11.)."""
-    bad = load_json(SOURCES, {}).get("exclude_titles") or ""
-    return bad + ("|trailer|extended look|showcase" if launched() else "")
+    bad = (load_json(SOURCES, {}).get("exclude_titles") or "").strip().strip("|")
+    # only non-empty alternatives: "" + "|trailer" would be an empty branch that matches every title
+    return "|".join(p for p in [bad] + (["trailer", "extended look", "showcase"] if launched() else []) if p)
 
 def video_moments(url, info, per_video, label):
     """One YouTube video (full yt-dlp info) -> clip dicts of its audience-marked moments."""
@@ -812,6 +835,11 @@ def frames_raw(src, fps, w, h):
 class NotGameplay(Exception):
     """The clip is in the GTA category but shows no game (e.g. full-screen webcam talk)."""
 
+class RenderFailed(NotGameplay):
+    """The short could not be made good enough this time (boring, QA, quality, cuts). Not a property
+    of the stream category: counted as a failed try (MAX_TRIES), never written to other_game -
+    a render bug must not lose a good clip forever."""
+
 def talking_head(src):
     """
     Full-screen webcam instead of game: one person (the streamer) fills a big part of the
@@ -834,6 +862,81 @@ def talking_head(src):
         return False
     c = np.array(centres)
     return bool(c[:, 0].std() < 0.08 and c[:, 1].std() < 0.08)
+
+# Gameplay gate (18. 11., launch day: a fanpage short of DarkViperAU talking about GT5 - his face
+# full-frame, then his YouTube channel page, no game at all - passed boredom and QA). talking_head
+# wants ONE big still person on >= 60 % of the frames: a video that switches between a face cam and a
+# web page never reaches that. This gate looks at what the game band would show, per window of the
+# clip, at 2 fps: a big face (Haar, the streamer's camera full-frame), a static screen (browser,
+# YouTube page, desktop, menu: most pixels unchanged, like kategorie.static_share) and no motion.
+GP_FPS = 2.0
+GP_WIN = 6.0             # s per window: each window is game / not game
+GP_FACE_W = 0.14         # a face this wide (share of the band's width) = a camera, not a facecam overlay
+GP_FACE_MAX = 0.30       # big face on more than this share of the samples = not gameplay
+GP_STATIC_PX = 4.0       # pixel std (0-255) under this over a window = the pixel did not change
+GP_STATIC_MAX = 0.5      # window with more unchanged pixels than this = static screen
+GP_STILL = 0.8           # median picture change (0-255, 2 fps) under this = nothing moves
+GP_BAD_MAX = 0.4         # more than this share of the windows not gameplay = not gameplay
+
+def gameplay_check(path, a=None, b=None, crop=None, mask=None):
+    """
+    Is [a, b] of `path` gameplay of a 3D game? crop = ffmpeg crop of the game band ('w:h:x:y', the
+    finished short), mask = facecam box in % of the frame (x, y, w, h) left out of the static / motion
+    measure (a webcam background stands still). Returns (problems, numbers); problems name 'not gameplay'.
+    """
+    global _cascade
+    if _cascade is None:
+        _cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+    W_, H_ = 640, 360
+    ss = ["-ss", f"{a:.3f}"] if a else []
+    tt = ["-t", f"{b - (a or 0):.3f}"] if b else []
+    vf = (f"crop={crop}," if crop else "") + f"fps={GP_FPS},scale={W_}:{H_},format=gray"
+    r = subprocess.run(["ffmpeg", "-nostdin", "-v", "error", *ss, *tt, "-i", str(path), "-vf", vf,
+                        "-f", "rawvideo", "-"], capture_output=True, timeout=600)
+    raw = r.stdout
+    n = len(raw) // (W_ * H_)
+    if r.returncode != 0 or n < 4:                           # a failed probe is never a pass (fail closed)
+        raise RuntimeError(f"gameplay probe failed (ffmpeg {r.returncode}, {n} frames): "
+                           f"{r.stderr.decode('utf-8', 'replace').strip()[-200:]}")
+    fr = np.frombuffer(raw[: n * W_ * H_], np.uint8).reshape(n, H_, W_)
+    keep = np.ones((H_, W_), bool)
+    if mask:
+        x0, y0 = int(mask[0] / 100 * W_), int(mask[1] / 100 * H_)
+        keep[y0: y0 + int(mask[3] / 100 * H_) + 1, x0: x0 + int(mask[2] / 100 * W_) + 1] = False
+    face = np.zeros(n, bool)
+    for i in range(n):
+        found = _cascade.detectMultiScale(fr[i], scaleFactor=1.1, minNeighbors=6,
+                                          minSize=(int(GP_FACE_W * W_), int(GP_FACE_W * W_)))
+        face[i] = len(found) > 0
+    small = fr[:, ::4, ::4].astype(np.float32)               # 160x90 for static / motion
+    km = keep[::4, ::4]
+    motion = np.abs(np.diff(small, axis=0))[:, km].mean(axis=1) if n > 1 else np.zeros(1)
+    per = max(2, int(GP_WIN * GP_FPS))
+    wins = []
+    for s in range(0, n, per):
+        seg = small[s: s + per]
+        if len(seg) < max(3, per // 2) and wins:
+            break                                            # a short tail is judged with the window before
+        static = float((seg.std(axis=0)[km] < GP_STATIC_PX).mean())
+        mo = float(np.median(motion[s: s + per - 1])) if len(motion[s: s + per - 1]) else 0.0
+        fc = float(face[s: s + per].mean())
+        bad = static > GP_STATIC_MAX or fc > 0.5 or mo < GP_STILL
+        wins.append({"static": round(static, 2), "motion": round(mo, 1), "face": round(fc, 2), "bad": bad})
+    face_share = float(face.mean())
+    bad_share = float(np.mean([w["bad"] for w in wins]))
+    med_motion = float(np.median(motion))
+    probs = []
+    if face_share > GP_FACE_MAX:
+        probs.append(f"not gameplay: a big face on {face_share:.0%} of the frames (a camera, not the game)")
+    if bad_share > GP_BAD_MAX:
+        why = sorted({k for w in wins if w["bad"] for k, v in (("static screen", w["static"] > GP_STATIC_MAX),
+                                                                ("face", w["face"] > 0.5),
+                                                                ("no motion", w["motion"] < GP_STILL)) if v})
+        probs.append(f"not gameplay: {bad_share:.0%} of the clip is {', '.join(why)}")
+    if med_motion < GP_STILL:
+        probs.append(f"not gameplay: nothing moves (median change {med_motion:.1f})")
+    return probs, {"face": round(face_share, 2), "bad": round(bad_share, 2), "motion": round(med_motion, 1),
+                   "windows": wins}
 
 class Yolox:
     """Minimal YOLOX ONNX runner (official 0.1.1rc0 export: BGR 0-255, pad 114, raw grid output)."""
@@ -979,7 +1082,7 @@ def content_box(src):
         return 0, 0, SW, SH
     return int(cols[0]) * 4, int(rows[0]) * 4, int(cols[-1] + 1) * 4, int(rows[-1] + 1) * 4
 
-_detections = {}   # (source, cam) -> player positions; both brands' crops reuse one detection pass
+_detections = {}   # (source, size, mtime, cam) -> player positions; both brands' crops reuse one detection pass
 
 def track_path(src, cam, crop_w, dur, xlim=None):
     """
@@ -987,7 +1090,10 @@ def track_path(src, cam, crop_w, dur, xlim=None):
     Returns (xs, lo, hi, cuts): the path, the allowed range of x, the cuts in the source (s).
     """
     global _yolox
-    key = (str(src), tuple(cam) if cam else None)
+    # keyed by the file's identity too: the old-look re-cut is a new file (a stale detection of the
+    # first cut would steer the crop to where the player was in a different edit)
+    st = Path(src).stat()
+    key = (str(src), st.st_size, st.st_mtime_ns, tuple(cam) if cam else None)
     if key not in _detections:
         if _yolox is None:
             _yolox = Yolox(MODEL)
@@ -1053,9 +1159,20 @@ def track_path(src, cam, crop_w, dur, xlim=None):
 #    the spoken word turns banana yellow and pops
 
 _whisper = None
+BUSY = "~"               # text of a word Whisper heard but we dropped (no caption) - still nobody cuts into it
+
+class Words(list):
+    """Whisper's caption words [(start, end, text)]; .busy = the words of segments dropped from the
+    captions (doubtful, repetitive, sung) as (start, end, BUSY): real sound someone may be saying, so
+    a cut must not land inside them either (cut_words)."""
+    def __init__(self, items=(), busy=()):
+        super().__init__(items)
+        self.busy = list(busy)
 
 def transcribe(src):
     global _whisper
+    if not has_audio(src):                            # a video without sound: nothing to caption
+        return Words()
     import whisper
     if _whisper is None:
         WHISPER_DIR.mkdir(parents=True, exist_ok=True)
@@ -1063,19 +1180,22 @@ def transcribe(src):
     res = _whisper.transcribe(str(src), word_timestamps=True, condition_on_previous_text=False,
                               fp16=_whisper.device.type == "cuda", verbose=None)
     audio = whisper.load_audio(str(src))              # 16 kHz mono, for the singing check
-    words, dropped = [], 0
+    words, busy, dropped = [], [], 0
     for seg in res["segments"]:
         # captions = what the STREAMER says (Aleš: they were lyrics of the in-game radio):
         # drop segments Whisper itself doubts, repetitive ones (choruses) and sung ones
         sung = singing(audio[int(seg["start"] * 16000): int(seg["end"] * 16000)])
+        ws = [(w["start"], w["end"], w["word"].strip()) for w in seg.get("words", []) if w["word"].strip()]
         if (seg.get("no_speech_prob", 0) > 0.5 or seg.get("avg_logprob", 0) < -0.9
                 or seg.get("compression_ratio", 1) > 2.2 or sung > 0.45):
             dropped += 1
+            # no caption, but it may still be the streamer talking: keep it as occupied time for the cuts
+            busy += [(s, e, BUSY) for s, e, _ in ws] or [(seg["start"], seg["end"], BUSY)]
             continue
-        words += [(w["start"], w["end"], w["word"].strip()) for w in seg.get("words", []) if w["word"].strip()]
+        words += ws
     if dropped:
-        log(f"  captions: {dropped} segment(s) dropped as music/lyrics or unsure")
-    return words
+        log(f"  captions: {dropped} segment(s) dropped as music/lyrics or unsure (kept as occupied time for cuts)")
+    return Words(words, busy)
 
 def singing(x, sr=16000):
     """
@@ -1130,7 +1250,10 @@ def cap_font(cap):
 EMO_WIN = ["lol", "lmao", "lmfao", "let's go", "lets go", "w", "yes", "gg", "clutch", "easy"]
 EMO_DRAMA = ["what", "no", "wtf", "dead", "died", "run", "help", "oh my god", "fuck", "fucking", "shit"]
 EMO_COL = {"win": "39FF88", "drama": "FF3B3B"}
-SWEAR_RE = re.compile(r"^(motherfuck|fuck|shit|bullshit|bitch|asshole|dick)", re.I)
+# matched on one token (punctuation stripped): a prefix where every longer word is a swear too
+# (fucking, shitty, bitches, cunts), exact forms where a prefix would hit clean words (cockpit, Dickens)
+SWEAR_RE = re.compile(r"^(?:[a-z]*fuck|[a-z]*shit|bitch|asshole|cunt|whore|slut|twat|wank|cocksucker"
+                      r"|dick(?:head)?s?$|puss(?:y|ies)$|bastards?$|motherf|[a-z]*\*)", re.I)   # f***, sh*t: Whisper's own censoring
 
 def _tok(t):
     return t.lower().strip(".,!?\"'")
@@ -1162,6 +1285,15 @@ def mask_swears(words, until=1e9):
             mute.append((s0, e0))
         out.append((s0, e0, t))
     return out, mute
+
+def swear_plan(words, card_at, sound_end=None):
+    """Captions (masked, only before the score card) and the bleeps: every swear in the clip's sound,
+    also under the card / fanpage tail where the clip keeps playing, up to sound_end (where the clip's
+    own sound stops; None = to its end)."""
+    masked, mute = mask_swears(words)
+    if sound_end is not None:
+        mute = [(m0, min(m1, sound_end)) for m0, m1 in mute if m0 < sound_end]
+    return [w for w in masked if w[0] < card_at], mute
 
 def captions_ass(words, path, y, cap=None, per=2, anim="pop"):
     """
@@ -2112,21 +2244,26 @@ def loud_start(src, peak, lo=0.9, hi=0.05):
             best, best_e = float(s), e
     return best
 
+def loud_stats(path):
+    """Integrated loudness (LUFS) and true peak (dBTP) of a file's audio, ebur128; None = not measured."""
+    r = subprocess.run(["ffmpeg", "-nostdin", "-v", "info", "-i", str(path), "-vn", "-af", "ebur128=peak=true",
+                        "-f", "null", "-"], capture_output=True, text=True, encoding="utf-8", errors="replace",
+                       timeout=600)
+    tail = r.stderr[r.stderr.rfind("Summary:"):] if "Summary:" in r.stderr else r.stderr
+    li = re.search(r"I:\s*(-?[\d.]+|-inf)\s*LUFS", tail)
+    tp = re.search(r"True peak:\s*Peak:\s*(-?[\d.]+|-inf)\s*dBFS", tail)
+    num = lambda m: (float("-inf") if m.group(1) == "-inf" else float(m.group(1))) if m else None
+    return num(li), num(tp)
+
 def ff_stats(path, until=None):
     """ffmpeg probes of a finished short: black/frozen stretches (video up to `until`), loudness, true peak."""
     vt = ["-t", f"{until:.3f}"] if until else []
     r = subprocess.run(["ffmpeg", "-nostdin", "-v", "info", *vt, "-i", str(path), "-vf",
                         "blackdetect=d=1.0:pix_th=0.06,freezedetect=n=0.003:d=2.5", "-an", "-f", "null", "-"],
-                       capture_output=True, text=True, timeout=600)
+                       capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=600)
     black = re.findall(r"black_start:\s*([\d.]+)", r.stderr)
     frozen = re.findall(r"freeze_start:\s*([\d.]+)", r.stderr)
-    r = subprocess.run(["ffmpeg", "-nostdin", "-v", "info", "-i", str(path), "-vn", "-af", "ebur128=peak=true",
-                        "-f", "null", "-"], capture_output=True, text=True, timeout=600)
-    tail = r.stderr[r.stderr.rfind("Summary:"):] if "Summary:" in r.stderr else r.stderr
-    li = re.search(r"I:\s*(-?[\d.]+|-inf)\s*LUFS", tail)
-    tp = re.search(r"True peak:\s*Peak:\s*(-?[\d.]+|-inf)\s*dBFS", tail)
-    num = lambda m: (float("-inf") if m.group(1) == "-inf" else float(m.group(1))) if m else None
-    return black, frozen, num(li), num(tp)
+    return (black, frozen) + loud_stats(path)
 
 def hook_is_loud(path, main_end):
     """The first 300 ms are at least as loud as the short's median (50 ms windows up to main_end)."""
@@ -2141,17 +2278,20 @@ def hook_is_loud(path, main_end):
 
 LUFS_TARGET = -14.0      # every short (some came out at -22 LUFS, 17. 11.); YouTube/TikTok/IG play ~-14
 LUFS_TOL = 2.0           # qa_short: outside target +- this = a problem
-TP_TARGET = -2.0         # loudnorm target; AAC re-encode adds ~0.4 dB (measured -1.5 -> -1.1), qa_short wants <= -1 dBTP
+# True peak: loudnorm aims at TP_TARGET, but the AAC re-encode adds 1-3 dB on explosions and gunshots
+# (broadband bursts; measured -2 -> -0.3 / +0.5 dBTP, 18. 11.: both looks failed QA and the clip was
+# lost). So the result is MEASURED after the encode; above TP_SAFE it is redone from the original with a
+# limiter after loudnorm (at 48 kHz, right before the AAC encode), then with lower targets, and as the
+# last resort the best version is turned down by the measured excess (a static gain, no pumping).
+TP_TARGET = -3.0
+TP_SAFE = -1.2           # measured after the encode; qa_short wants <= -1 dBTP
+TP_RETRY = (-3.0, -4.5, -6.0)    # targets of the limiter passes after the plain one
 
-def loudness_fix(path):
-    """
-    Two-pass loudnorm of a finished short to LUFS_TARGET integrated, true peak <= TP_TARGET.
-    linear=true: one steady gain (no pumping); loudnorm falls back to dynamic only when that gain
-    would push the peaks over the limit. Video is copied, audio re-encoded like encode().
-    Returns (before, after) integrated LUFS, or None when there is nothing to fix.
-    """
+def _loudnorm_pass(path, out, tp, limit):
+    """One two-pass loudnorm of `path` into `out` with true peak target `tp` (+ a true-peak limiter).
+    Returns loudnorm's measurement of the input (dict) or None (no audio / silent / nothing to do)."""
     probe = subprocess.run(["ffmpeg", "-nostdin", "-hide_banner", "-i", str(path), "-vn", "-af",
-                            f"loudnorm=I={LUFS_TARGET}:TP={TP_TARGET}:LRA=11:print_format=json", "-f", "null", "-"],
+                            f"loudnorm=I={LUFS_TARGET}:TP={tp}:LRA=11:print_format=json", "-f", "null", "-"],
                            capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=600)
     m = re.search(r"\{[^{}]*\"input_i\"[^{}]*\}", probe.stderr)
     if not m:
@@ -2159,17 +2299,62 @@ def loudness_fix(path):
     js = json.loads(m.group(0))
     if js["input_i"] in ("-inf", "inf") or float(js["input_i"]) < -60:
         return None                                        # silent: qa_short reports it
-    if abs(float(js["input_i"]) - LUFS_TARGET) < 0.5 and float(js["input_tp"]) <= TP_TARGET:
-        return float(js["input_i"]), float(js["input_i"])
-    af = (f"loudnorm=I={LUFS_TARGET}:TP={TP_TARGET}:LRA=11:linear=true:measured_I={js['input_i']}:"
+    af = (f"loudnorm=I={LUFS_TARGET}:TP={tp}:LRA=11:linear=true:measured_I={js['input_i']}:"
           f"measured_TP={js['input_tp']}:measured_LRA={js['input_lra']}:measured_thresh={js['input_thresh']}:"
           f"offset={js['target_offset']},aresample=48000")
-    tmp = Path(path).with_name(Path(path).stem + "_ln.mp4")
+    if limit:                                              # on what the encoder gets (measured better than at 192 kHz)
+        af += f",alimiter=limit={10 ** (tp / 20):.4f}:level=0:attack=1:release=60"
     run(["ffmpeg", "-nostdin", "-y", "-hide_banner", "-loglevel", "error", "-i", str(path), "-map", "0:v", "-map", "0:a",
          "-c:v", "copy", "-af", af, "-c:a", "aac", "-b:a", "128k", "-cutoff", "18000", "-movflags", "+faststart",
-         str(tmp)], timeout=600)
-    os.replace(tmp, path)
-    return float(js["input_i"]), LUFS_TARGET
+         str(out)], timeout=600)
+    return js
+
+def loudness_fix(path):
+    """
+    Two-pass loudnorm of a finished short to LUFS_TARGET integrated, true peak <= TP_TARGET, then the
+    encoded result's true peak is measured: above TP_SAFE the pass is redone from the original with
+    the TP_RETRY targets (+ limiter). linear=true: one steady gain (no pumping); loudnorm falls back
+    to dynamic only when that gain would push the peaks over the limit. Video is copied, audio
+    re-encoded like encode(). Returns (before LUFS, after LUFS, after dBTP), or None when there is
+    nothing to fix (no audio / silent).
+    """
+    lufs0, tp0 = loud_stats(path)
+    if lufs0 is None or lufs0 == float("-inf") or lufs0 < -60:
+        return None
+    if abs(lufs0 - LUFS_TARGET) < 0.5 and tp0 is not None and tp0 <= TP_SAFE:
+        return lufs0, lufs0, tp0                           # already right
+    best = None                                            # (tp, lufs, file)
+    tmps = []
+    for k, (tp, limit) in enumerate([(TP_TARGET, False)] + [(t, True) for t in TP_RETRY]):
+        tmp = Path(path).with_name(Path(path).stem + f"_ln{k}.mp4")
+        tmps.append(tmp)
+        if _loudnorm_pass(path, tmp, tp, limit) is None:
+            break
+        lufs1, tp1 = loud_stats(tmp)
+        if tp1 is None or lufs1 is None:
+            continue
+        if best is None or tp1 < best[0]:
+            best = (tp1, lufs1, tmp)
+        if tp1 <= TP_SAFE:
+            break
+        log(f"  loudness: true peak {tp1:.1f} dBTP after the encode (target {tp}{', limiter' if limit else ''})"
+            " -> next pass")
+    if best and best[0] > TP_SAFE:                         # last resort: the best one, turned down by the excess
+        cut = best[0] - (TP_SAFE - 0.3)
+        tmp = Path(path).with_name(Path(path).stem + "_lnv.mp4")
+        tmps.append(tmp)
+        run(["ffmpeg", "-nostdin", "-y", "-hide_banner", "-loglevel", "error", "-i", str(best[2]), "-map", "0:v",
+             "-map", "0:a", "-c:v", "copy", "-af", f"volume=-{cut:.2f}dB", "-c:a", "aac", "-b:a", "128k",
+             "-cutoff", "18000", "-movflags", "+faststart", str(tmp)], timeout=600)
+        lufs1, tp1 = loud_stats(tmp)
+        log(f"  loudness: still {best[0]:.1f} dBTP -> turned down {cut:.1f} dB: {lufs1} LUFS, {tp1} dBTP")
+        if tp1 is not None and lufs1 is not None and tp1 < best[0]:
+            best = (tp1, lufs1, tmp)
+    if best:
+        os.replace(best[2], path)
+    for t in tmps:
+        t.unlink(missing_ok=True)
+    return (lufs0, best[1], best[0]) if best else None
 
 # Boredom gate (Aleš 17. 11.: no clip where nothing happens, every short must hook). Conservative on
 # purpose: it only drops what is clearly flat - the payoff no louder and no busier than the rest of the
@@ -2311,8 +2496,18 @@ def qa_short(path, plan):
         probs.append("hook does not start with the loud part")
     if plan.get("card") and not (Path(plan["card"]).exists() and d >= plan["card_at"] + RATING_DUR - 0.3):
         probs.append("score card missing")
+    # structure (CLAUDE.md): hook <= 2.5 s; after the climax >= 3 s of the clip before the card / the end
+    if (plan.get("hook_end") or 0) > HOOK_MAX + 0.05:
+        probs.append(f"hook {plan['hook_end']:.2f} s (max {HOOK_MAX})")
+    if plan.get("peak") is not None:
+        after = (plan["card_at"] if plan.get("card") else plan["main_end"]) - plan["peak"]
+        if after < AFTER_PEAK - 0.05:
+            probs.append(f"only {after:.1f} s after the climax (min {AFTER_PEAK:.0f})")
     if plan.get("heat_on") and not plan.get("heat"):
         probs.append("heat missing")
+    # the game band of the finished short must show the game (18. 11.: a talk + YouTube page passed)
+    if "game_crop" in plan and plan.get("main_end", 0) - plan.get("hook_end", 0) >= 4:
+        probs += gameplay_check(path, plan.get("hook_end") or None, plan["main_end"], crop=plan.get("game_crop"))[0]
     # Aleš 18. 11.: no cut inside a sentence (edit_cut checked and re-snapped; what is left fails)
     for p in (plan.get("cuts") or {}).get("problems") or []:
         probs.append(f"cut: {p}")
@@ -2406,20 +2601,40 @@ JUMP_GAP = 1.6           # a jump cut without . ? ! before it needs a pause at l
 SNAP_BACK = 4.0          # a start may move this much earlier to reach a sentence start
 SNAP_FWD = 8.0           # an end may move this much later to reach a sentence end
 WORD_TOL = 0.02
+EDGE_TOL = 0.25          # a word this close to the source's start / end = the viewer's clip cut into speech
+AFTER_PEAK = 3.0         # rule: at least this many seconds of the clip after the climax before the card / end
+BUILDUP = 5.0            # skipping a partial first sentence must leave this much run-up before the payoff
+HOOK_MAX = 2.5           # rule: the hook teaser is at most this long
 
 def _punct_end(text):
     """Whisper ended the word with . ? ! (an ellipsis '...' is trailing off, not an end)."""
     t = text.rstrip("\"')]")
-    return t[-1:] in ".?!" and not t.endswith("..")
+    return bool(t) and t[-1] in ".?!" and not t.endswith("..")     # ('' in '.?!' is True: a bare quote is no end)
+
+# A pause after one of these is the speaker hesitating, not a finished sentence (18. 11.: a long-form
+# moment ended on "...you got it. I" - the 0.5 s pause after "I" counted as an end).
+DANGLING = {"i", "a", "an", "the", "and", "but", "or", "so", "to", "of", "for", "with", "my", "your", "his",
+            "her", "our", "their", "like", "because", "if", "that", "this", "is", "was", "are", "gonna", "wanna",
+            "im", "i'm", "it's", "we", "you", "he", "she", "they"}
+
+def _dangling(text):
+    """The word leaves the sentence open (a function word: 'I', 'the', 'and' ...) - punctuation aside."""
+    return re.sub(r"[^\w']", "", text.lower().replace("’", "'")).strip("'") in DANGLING
 
 def sent_end(words, i):
-    """Word i ends a sentence: . ? !, a pause >= END_GAP after it, or the last word."""
-    return (i == len(words) - 1 or _punct_end(words[i][2])
-            or words[i + 1][0] - words[i][1] >= END_GAP)
+    """Word i ends a sentence: . ? !, or a pause >= END_GAP after it / the last word - but never after a
+    dangling function word without punctuation ('... you got it. I' + pause is a cut sentence)."""
+    if _punct_end(words[i][2]):
+        return True
+    if _dangling(words[i][2]):
+        return False
+    return i == len(words) - 1 or words[i + 1][0] - words[i][1] >= END_GAP
 
 def sent_start(words, i):
-    """Word i starts a sentence: the first word, after a sentence end or after a pause >= START_GAP."""
-    return i == 0 or words[i][0] - words[i - 1][1] >= START_GAP or sent_end(words, i - 1)
+    """Word i starts a sentence: the first word, after a sentence end or after a pause >= START_GAP
+    (not after a dangling word: 'I ... think so' is one sentence)."""
+    return (i == 0 or sent_end(words, i - 1)
+            or (words[i][0] - words[i - 1][1] >= START_GAP and not _dangling(words[i - 1][2])))
 
 def in_word(words, t, tol=WORD_TOL):
     """The word t falls inside (None = t is between words)."""
@@ -2504,6 +2719,55 @@ def snap_end(words, t, limit, fwd=SNAP_FWD, back=0.0):
         return w[1] if w[1] <= limit else w[0]
     return t
 
+def cut_words(words, dur=None):
+    """
+    The words every cut decision is made on: the captions plus the dropped (BUSY) ones - Whisper
+    heard something there, a cut must not land inside it - sorted by time. When the last word
+    touches the source's end (< EDGE_TOL s before it) without . ? ! the source cut that sentence:
+    a marker after the end keeps it from counting as a sentence end.
+    """
+    ws = sorted(list(words) + list(getattr(words, "busy", None) or []))
+    if (dur is not None and ws and ws[-1][0] <= dur and ws[-1][1] > dur - EDGE_TOL
+            and not _punct_end(ws[-1][2])):
+        ws.append((dur + 0.05, dur + 0.3, BUSY))
+    return ws
+
+def skip_partial_start(words, a, peak, b, lo=8.0):
+    """
+    A viewer's clip that starts mid-speech (first word < EDGE_TOL s in): its first 'sentence' is a
+    fragment of one. Start at the next sentence start instead - unless that cuts into the payoff's
+    run-up (< BUILDUP s before the peak) or leaves less than `lo` s. Returns the new start (or a).
+    """
+    if not words or words[0][0] >= EDGE_TOL or a > words[0][0] + WORD_TOL:
+        return a
+    i = next((k for k in range(1, len(words)) if sent_start(words, k)), None)
+    if i is None:
+        return a
+    w0, prev = words[i][0], words[i - 1][1]
+    na = (prev + w0) / 2 if w0 - prev < 0.3 else w0 - 0.15
+    if (peak is not None and na > peak - BUILDUP) or b - na < lo:
+        return a
+    return na
+
+def end_from(words, t, floor, limit):
+    """
+    Sentence-safe end point >= floor (payoff + AFTER_PEAK), at or after t, never past limit; None
+    when there is none (the speech runs on to the source's end).
+    """
+    t = min(max(t, floor), limit)
+    if ok_end(words, t):
+        return t
+    for i, w in enumerate(words):
+        if w[1] < t - WORD_TOL:
+            continue
+        if w[0] > limit:
+            break
+        if sent_end(words, i):
+            p = _end_point(words, i, limit)
+            if p >= floor - 1e-6 and ok_end(words, p):
+                return p
+    return limit if ok_end(words, limit) else None
+
 def word_edge(words, t, lo=0.0, hi=1e9):
     """t moved out of a word to the nearer word edge inside [lo, hi] (hook teaser in/out points)."""
     w = in_word(words, t)
@@ -2561,19 +2825,29 @@ def cut_problems(words, a, b, segs=(), hook=None):
                 probs.append(f"hook {name} {t:.2f} s inside the word '{w[2]}'")
     return probs
 
-def fix_cuts(words, a, b, segs, hook, dur):
+def fix_cuts(words, a, b, segs, hook, dur, peak=None):
     """
     Repair what cut_problems finds by re-snapping: start/end to sentence borders, a jump cut inside
-    a sentence is dropped (its pieces joined), hook edges to word edges. Returns
-    (a, b, segs, hook, fixed, left): fixed = problems found and repaired, left = still there.
+    a sentence is dropped (its pieces joined), hook edges to word edges. peak = the payoff: the end
+    never snaps to less than AFTER_PEAK s after it - no sentence end there = the end moves forward
+    (up to the source's end). Returns (a, b, segs, hook, fixed, left): fixed = problems found and
+    repaired, left = still there.
     """
     found = cut_problems(words, a, b, segs, hook)
+    floor = min(dur, peak + AFTER_PEAK) if peak is not None else None
+    if floor is not None and b < floor - 0.01:
+        found.append(f"end {b:.2f} s only {b - peak:.1f} s after the payoff")
+    if hook and hook[1] - hook[0] > HOOK_MAX + 0.02:
+        found.append(f"hook {hook[1] - hook[0]:.2f} s long")
     if not found:
         return a, b, segs, hook, [], []
     if not ok_start(words, a):
         a = snap_start(words, a)
     if not ok_end(words, b):
         b = snap_end(words, b, dur, back=4.0)
+    if floor is not None and (b < floor - 0.01 or not ok_end(words, b)):
+        nb = end_from(words, b, floor, dur)
+        b = nb if nb is not None else max(b, floor)    # no sentence end after the payoff: cut check flags it
     keep = []
     for x, y in segs:
         x, y = max(x, a), min(y, b)
@@ -2592,8 +2866,12 @@ def fix_cuts(words, a, b, segs, hook, dur):
     keep[-1] = (keep[-1][0], b)
     if hook:
         h0 = word_edge(words, hook[0], 0.0, hook[1] - 0.5)
-        hook = (h0, word_edge(words, hook[1], h0 + 0.5, min(dur, max(hook[1], h0 + 2.5))))
+        hook = (h0, word_edge(words, min(hook[1], h0 + HOOK_MAX), h0 + 0.5, min(dur, h0 + HOOK_MAX)))
     left = cut_problems(words, a, b, keep, hook)
+    if floor is not None and b < floor - 0.01:
+        left.append(f"end {b:.2f} s only {b - peak:.1f} s after the payoff (the source ends)")
+    if hook and hook[1] - hook[0] > HOOK_MAX + 0.02:
+        left.append(f"hook {hook[1] - hook[0]:.2f} s long (max {HOOK_MAX})")
     return a, b, keep, hook, found, left
 
 def snap_cut(words, s, e, total, lo=15.0, hi=40.0):
@@ -2630,13 +2908,14 @@ def fetch_section(clip, d, dst):
     log(f"  download {clip['url']} [{ps:.0f}-{e + PAD:.0f}]")
     download({**clip, "section": [ps, e + PAD]}, raw)
     words = transcribe(raw)
-    a, b = snap_cut(words, s - ps, e - ps, duration(raw))
+    a, b = snap_cut(cut_words(words), s - ps, e - ps, duration(raw))
     encode(["ffmpeg", "-nostdin", "-y", "-hide_banner", "-loglevel", "error", "-ss", f"{a:.2f}", "-to", f"{b:.2f}",
             "-i", str(raw), "-map", "0:v:0", "-map", "0:a?"], dst)
     raw.unlink(missing_ok=True)
     clip["section"] = [round(float(ps + a), 1), round(float(ps + b), 1)]
     log(f"  cut on sentence pauses: {clip['section']} ({b - a:.0f} s)")
-    return [(w0 - a, w1 - a, t) for w0, w1, t in words if w0 >= a and w1 <= b]
+    shift = lambda ws: [(w0 - a, w1 - a, t) for w0, w1, t in ws if w0 >= a and w1 <= b]
+    return Words(shift(words), shift(getattr(words, "busy", [])))
 
 def has_audio(src):
     try:
@@ -2691,12 +2970,12 @@ def trim_points(words, peak, dur, hi=35.0, lo=8.0):
         a = max(0.0, min(words[0][0], (peak - 6) if peak else words[0][0]) - 0.4)
     talk_after = [w for w in words if w[0] > (peak or 0) + 5]
     if peak is not None and not (peak < dur / 3 and talk_after):   # a shout early on is not the payoff
-        end_sent = next((w[1] for w in words if w[0] >= peak - 0.5 and w[2][-1:] in ".?!"), None)
+        end_sent = next((w[1] for w in words if w[0] >= peak - 0.5 and _punct_end(w[2])), None)
         end_word = next((w[1] for w in words if w[1] >= peak + 2.5), None)       # no punctuation: end of a word
         # Aleš 17. 11.: after the climax leave a few seconds - the reaction and the sentence that is
         # running finish, never cut mid-sentence (the xQc test ended just barely)
-        end = end_sent if end_sent and end_sent <= peak + 6 else (end_word if end_word and end_word <= peak + 6 else peak + 3.0)
-        b = min(dur, max(end + 0.5, peak + 3.0))
+        end = end_sent if end_sent and end_sent <= peak + 6 else (end_word if end_word and end_word <= peak + 6 else peak + AFTER_PEAK)
+        b = min(dur, max(end + 0.5, peak + AFTER_PEAK))
     elif words and dur - words[-1][1] > 2:
         b = words[-1][1] + 0.8
     if b - a > hi:                                 # too long: keep the 35 s around the payoff, never cut it off
@@ -2705,10 +2984,15 @@ def trim_points(words, peak, dur, hi=35.0, lo=8.0):
     if b - a < lo:
         return 0.0, dur
     # Aleš 18. 11.: never start or end inside a sentence - start on a sentence start (<= 4 s
-    # earlier), end on a sentence end (<= 8 s later), never before the payoff's reaction
+    # earlier), end on a sentence end (<= 8 s later), never less than AFTER_PEAK s after the payoff
     a = snap_start(words, a)
-    floor = (peak + 1.5) if peak is not None else a + lo
-    return a, snap_end(words, b, dur, back=max(0.0, b - floor))
+    a = skip_partial_start(words, a, peak, b, lo)     # the viewer's clip began mid-sentence
+    floor = min(dur, peak + AFTER_PEAK) if peak is not None else a + lo
+    nb = snap_end(words, b, dur, back=max(0.0, b - floor))
+    if peak is not None and (nb < floor - 0.01 or not ok_end(words, nb)):
+        fe = end_from(words, b, floor, dur)           # no sentence end around b: the next one after the payoff
+        nb = fe if fe is not None else max(nb, floor)
+    return a, nb
 
 def rms_curve(src):
     """Loudness every 0.1 s (0.5 s windows) -> (times, rms); empty if there is no audio."""
@@ -2740,9 +3024,15 @@ def dead_air(words, src, a, b, peak):
     inside = [w for w in words if a <= w[0] and w[1] <= b]
     for w1, w2 in zip(inside, inside[1:]):
         g0, g1 = w1[1] + 0.2, w2[0] - 0.15
-        if g1 - g0 < 0.6 or (peak is not None and g0 - 1.0 < peak < g1 + 1.0):
+        # never near the payoff, and never in the AFTER_PEAK s after it (the reaction must stay whole):
+        # a pause reaching into that stretch is only cut after it
+        if peak is not None and g0 - 1.0 < peak < g1 + 1.0:
             continue
-        if not _punct_end(w1[2]) and w2[0] - w1[1] < JUMP_GAP:
+        if peak is not None and peak < g0 < peak + AFTER_PEAK + 0.5:
+            g0 = peak + AFTER_PEAK + 0.5
+        if g1 - g0 < 0.6:
+            continue
+        if not _punct_end(w1[2]) and (w2[0] - w1[1] < JUMP_GAP or _dangling(w1[2])):
             continue                                   # a pause inside a sentence: never cut there
         m = (ts >= g0) & (ts <= g1)
         if m.any() and rms[m].mean() < 0.6 * med:
@@ -2767,21 +3057,26 @@ def edit_cut(src, words, d, clip, hpc=None, v2=False, info=None):
     dur = duration(src)
     peak = audio_peak(src)
     info = info if info is not None else {}
-    a, b = (0.0, dur) if clip.get("section") else trim_points(words, peak, dur)
+    cw = cut_words(words, dur)                        # + dropped speech, + a sentence the source cut off
+    a, b = (0.0, dur) if clip.get("section") else trim_points(cw, peak, dur)
     tease = peak is not None and peak - a >= 4 and b - peak >= 0.3
-    segs = dead_air(words, src, a, b, peak)
-    # hook (Aleš: 1 s looked like a cut by mistake; the rewind he did not like): ~2.7 s of the
-    # payoff, then the transition (bananas: white FLASH + whoosh) and the clip from its start.
-    # The teaser is the one intentional excerpt; its in/out points still sit between words.
-    ps, pe = (max(0.0, peak - 1.8), min(dur, peak + 0.9)) if tease else (0, 0)
+    segs = dead_air(cw, src, a, b, peak)
+    # hook (Aleš: 1 s looked like a cut by mistake; the rewind he did not like): ~2.5 s of the
+    # payoff (rule: <= HOOK_MAX), then the transition (bananas: white FLASH + whoosh) and the clip
+    # from its start. The teaser is the one intentional excerpt; its in/out points sit between words.
+    ps, pe = (max(0.0, peak - 1.6), min(dur, peak + 0.9)) if tease else (0, 0)
     if tease and v2:
         ps = loud_start(src, peak)
         pe = min(dur, ps + 2.3, b + RATING_DUR)
     if tease:
-        ps = word_edge(words, ps, 0.0, peak - 0.05)
-        pe = word_edge(words, pe, max(ps + 1.0, peak + 0.05), min(dur, ps + 2.5) if v2 else dur)
-    # cut check (Aleš 18. 11.): no boundary inside a word or a sentence; repaired by re-snapping
-    a, b, segs, hook, fixed, left = fix_cuts(words, a, b, segs, (ps, pe) if tease else None, dur)
+        ps = word_edge(cw, ps, 0.0, peak - 0.05)
+        pe = word_edge(cw, min(pe, ps + HOOK_MAX), max(ps + 1.0, peak + 0.05), min(dur, ps + HOOK_MAX))
+    # cut check (Aleš 18. 11.): no boundary inside a word or a sentence; repaired by re-snapping;
+    # the end stays >= AFTER_PEAK s after the payoff
+    a, b, segs, hook, fixed, left = fix_cuts(cw, a, b, segs, (ps, pe) if tease else None, dur, peak)
+    if peak is not None and dur - peak < AFTER_PEAK - 0.05:
+        # the source ends too soon after the payoff: no look can give the 3 s (rule) - fail before encoding
+        raise RenderFailed(f"only {dur - peak:.1f} s after the climax before the source ends (min {AFTER_PEAK:.0f})")
     if hook:
         ps, pe = hook
     if tease and v2:
@@ -2798,13 +3093,13 @@ def edit_cut(src, words, d, clip, hpc=None, v2=False, info=None):
     segs[-1] = (segs[-1][0], e)                       # the tail under the card stays continuous
     if not tease and a < 0.5 and b > dur - 0.5 and len(segs) == 1:
         # untouched: the card covers the last seconds, but only if the payoff is safely before them
-        late = peak is not None and dur - peak >= RATING_DUR + 1.8
+        late = peak is not None and dur - peak >= RATING_DUR + AFTER_PEAK
         card = dur - RATING_DUR if late else dur
-        info["voice_at"] = lambda end, card=card: voice_new(words, card, card, end, dur)
+        info["voice_at"] = lambda end, card=card: voice_new(cw, card, card, end, dur)
         return src, words, peak, card, [], 0.0
     if not has_audio(src):
         return src, words, peak, dur, [], 0.0
-    out = d / "edit.mp4"
+    out = d / ("edit_v2.mp4" if v2 else "edit_old.mp4")    # each look its own file (and player detection)
     T = pe - ps if tease else 0.0
     if tease:
         flt = (f"[0:v]trim={ps:.2f}:{pe:.2f},setpts=PTS-STARTPTS[v0];[0:a]atrim={ps:.2f}:{pe:.2f},asetpts=PTS-STARTPTS[a0];"
@@ -2831,7 +3126,7 @@ def edit_cut(src, words, d, clip, hpc=None, v2=False, info=None):
             new.append((m0, m1, t))
     pk = None if peak is None else remap(peak)
     card = remap(b) if remap(b) is not None else acc - (e - b)
-    info["voice_at"] = lambda end, b=b, card=card: voice_new(words, b, card, end, dur)
+    info["voice_at"] = lambda end, b=b, card=card: voice_new(cw, b, card, end, dur)
     jumps = [round(st, 2) for st in starts[1:]]       # jump cuts: the zoom switches there to hide them
     log(f"  cut {a:.1f}-{b:.1f} s of {dur:.0f} s (+{e - b:.1f} s under the card), {len(jumps)} jump cuts"
         + (f", hook {pe - ps:.1f} s from the payoff at {peak:.1f} s" if tease else ""))
@@ -2890,7 +3185,12 @@ def render(clip, src=None, clean=False):
 
     dur = duration(src)
     if talking_head(src):                     # check first: a full-screen webcam also looks like a "facecam"
-        raise NotGameplay("streamer's face fills the frame, no gameplay")
+        raise NotGameplay("not gameplay: streamer's face fills the frame")
+    gp_probs, gp_stats = gameplay_check(src)  # every source: a face cam / web page / desktop is not the game
+    log(f"  gameplay: face {gp_stats.get('face')}, not-game windows {gp_stats.get('bad')}, "
+        f"motion {gp_stats.get('motion')}" + (f" -> {'; '.join(gp_probs)}" if gp_probs else " ok"))
+    if gp_probs:
+        raise NotGameplay("; ".join(gp_probs))
     if words is None:
         words = transcribe(src)
     speech = " ".join(t for _, _, t in words)
@@ -2931,7 +3231,7 @@ def render(clip, src=None, clean=False):
 
     # Look passes: first the launch look (brands with any LAUNCH_FLAGS on), then - only for the
     # brands whose short failed QA - the proven old look; a short failing even that is dropped.
-    shorts, qa_log, todo = {}, {}, list(blist)
+    shorts, qa_log, todo, not_game = {}, {}, list(blist), []
     looks = [True, False] if any(b.get(k) for b in blist for k in LAUNCH_FLAGS) else [False]
     cuts, bore, mtags = {}, None, {}
     for v2 in looks:
@@ -2940,7 +3240,15 @@ def render(clip, src=None, clean=False):
         hv2_cut = v2 and all(b.get("hook_v2") for b in todo)   # one cut for all: any brand off -> proven hook
         if hv2_cut not in cuts:
             info = {}
-            cuts[hv2_cut] = (edit_cut(orig, words0, d, clip, hpc, v2=hv2_cut, info=info), info)
+            try:                                          # a crash in the launch cut -> the old look, never a lost clip
+                cuts[hv2_cut] = (edit_cut(orig, words0, d, clip, hpc, v2=hv2_cut, info=info), info)
+            except NotGameplay:
+                raise
+            except Exception as e:
+                if v2 and False in looks:
+                    log(f"  launch cut crashed ({str(e)[-160:]}) -> old look")
+                    continue
+                raise
         (src, words, peak, card_at, jumps, hook_t), info = cuts[hv2_cut]
         words_cut = words                                  # all words of the cut (the mix ducks under them)
         dur = duration(src)
@@ -2957,8 +3265,10 @@ def render(clip, src=None, clean=False):
                 bore_probs = []
             log(f"  boredom: {bore}" + (f" -> {'; '.join(bore_probs)}" if bore_probs else " ok"))
             if bore_probs:
-                raise NotGameplay(f"boring: {'; '.join(bore_probs)}")
-        words, mute = mask_swears(words)                  # swears in the first 3 s: F*** and silent
+                raise RenderFailed(f"boring: {'; '.join(bore_probs)}")
+        # swears anywhere in the clip's sound - also under the score card / fanpage tail, where the clip
+        # keeps playing - are bleeped; captions (F***) stay before the card only
+        words, mute = swear_plan(words_cut, card_at)
         reactions = pick_reactions(words, card_at, clip["id"], peak) if (BANANA / "reakce1.mp4").exists() else []
         if hv2_cut and hook_t:                            # hook = teaser -> flash -> start, nothing else in it
             reactions = [r for r in reactions if r[0] >= hook_t + 0.2]
@@ -3213,8 +3523,10 @@ def render(clip, src=None, clean=False):
                             vgain, menv, mixinfo = mix_levels(src, words_cut, a_end, mpath, mstart, mvol, v_end, hgain)
                         except Exception as e:            # a broken probe: the old steady mix
                             log(f"  mix levels failed ({str(e)[-120:]}), steady music")
+                    # bleep only while the clip's own sound plays (not over a faded tail or the outro)
+                    mute_b = swear_plan(words_cut, card_at, v_end if v_end is not None else a_end)[1]
                     mix = audio_mix(has_audio(src), total, card_idx, card_at, music_idx, mvol, sfx_idx, sfx_at, replay,
-                                    mute, riser_idx, hit_idx, peak, clip_end=clip_total if outro else None,
+                                    mute_b, riser_idx, hit_idx, peak, clip_end=clip_total if outro else None,
                                     outro_idx=outro_idx, follow_idx=follow_idx, follow_at=total - FOLLOW_DUR,
                                     extras=extra_audio, hook_gain=hgain, voice_gain=vgain, music_env=menv, voice_end=v_end)
                     if menv:
@@ -3232,10 +3544,10 @@ def render(clip, src=None, clean=False):
                                 if not (x == "no facecam" and cam_mode == "none")]
                     if problems:
                         break
-                    try:                                  # -14 LUFS / TP <= -1.5 (qa_short checks it)
+                    try:                                  # -14 LUFS / TP <= -1.2 measured (qa_short checks it)
                         ln = loudness_fix(out)
                         if ln:
-                            log(f"  {b['key']}: loudness {ln[0]:.1f} -> {ln[1]:.1f} LUFS")
+                            log(f"  {b['key']}: loudness {ln[0]:.1f} -> {ln[1]:.1f} LUFS, true peak {ln[2]:.1f} dBTP")
                     except Exception as e:
                         log(f"  {b['key']}: loudness fix failed ({str(e)[-120:]})")
                     made[b["key"]] = str(out)
@@ -3280,7 +3592,7 @@ def render(clip, src=None, clean=False):
             if shorts:                                    # another brand's version already passed: keep it
                 log(f"  {', '.join(b['key'] for b in todo)}: quality check failed ({'; '.join(problems)}), dropped")
                 break
-            raise NotGameplay(f"quality check failed after repairs: {'; '.join(problems)}")
+            raise RenderFailed(f"quality check failed after repairs: {'; '.join(problems)}")
         # QA of every finished short (brands.json 'qa'): a failing launch look -> the old look; a
         # failing old look -> not published (the file is deleted, the reason logged in meta 'qa')
         retry = []
@@ -3291,8 +3603,8 @@ def render(clip, src=None, clean=False):
             if b.get("qa", True):
                 try:
                     probs = qa_short(made[b["key"]], plans[b["key"]])
-                except Exception as e:                    # a broken probe must not cost the short
-                    log(f"  QA {b['key']}: probe failed ({str(e)[-120:]}), accepted")
+                except Exception as e:                    # fail closed: an unchecked short is not published
+                    probs = [f"qa probe failed ({str(e)[-120:]})"]
             look = plans[b["key"]]["look"]
             if not probs:
                 shorts[b["key"]] = made[b["key"]]
@@ -3307,13 +3619,17 @@ def render(clip, src=None, clean=False):
             Path(made[b["key"]]).unlink(missing_ok=True)
             qa_log[b["key"]] = {"ok": False, "look": look, "problems": probs, "cuts": plans[b["key"]].get("cuts"),
                                 "mix": plans[b["key"]].get("mix")}
-            if v2 and False in looks:
+            if any(p.startswith("not gameplay") for p in probs):
+                not_game.append(f"{b['key']}: " + "; ".join(p for p in probs if p.startswith("not gameplay")))
+            elif v2 and False in looks:              # (no game in the band: the old look would show the same)
                 retry.append(b)
         todo = retry
     for tmp in list(d.glob("_sticker*")) + list(d.glob("_heat*")):   # sprite frames: only needed for the encode
         shutil.rmtree(tmp, ignore_errors=True)
+    if not shorts and not_game:                  # the finished short shows no game: never again (other_game)
+        raise NotGameplay("; ".join(not_game))
     if not shorts:
-        raise NotGameplay(f"QA failed: {qa_log}")
+        raise RenderFailed(f"QA failed: {qa_log}")
     base = d / "base_9x16.mp4"               # clean, no captions: input for the editor (OpenMotion)
     if clean:
         encode(ff + ["-filter_complex", build_filter(*base_args, nf=src_norm(src)), "-map", "[v]", "-map", "0:a?"], base)
@@ -3374,15 +3690,20 @@ def render(clip, src=None, clean=False):
 # -----------------------------------------------------------------------------
 # 6) modes
 
-def mark(clip_id, ok):
-    """Record a finished clip, or count a failure (re-read the file: another process may write too)."""
+def mark(clip_id, ok, why=None):
+    """Record a finished clip, or count a failure (re-read the file: another process may write too).
+    why = the reason of a failure, kept in state 'failed_why' (the last one per clip)."""
     state = load_json(STATE, {"done": {}, "failed": {}})
+    state.setdefault("done", {})
     state.setdefault("failed", {})
     if ok:
         state["done"][clip_id] = int(time.time())
         state["failed"].pop(clip_id, None)
+        state.get("failed_why", {}).pop(clip_id, None)
     else:
         state["failed"][clip_id] = state["failed"].get(clip_id, 0) + 1
+        if why:
+            state.setdefault("failed_why", {})[clip_id] = str(why)[:300]
     save_json(STATE, state)
 
 def skip(clip_id):
@@ -3439,28 +3760,34 @@ def process(clips, clean=False, limit=None, tried=None):
             if c["id"] in tried:
                 continue
             tried.add(c["id"])
-        if skip(c["id"]) or not is_game(c):
+        if skip(c["id"]) or moment_done(c) or not is_game(c):
             continue
         log(f"render {c['platform']}/{c['channel']} '{c['title'][:60]}' {c['views']} views")
         try:
             render(c, clean=clean)
             mark(c["id"], True)
-            if has_moment(c):                    # other viewers' clips of this moment: skip them later
-                save_moment(c)
+            save_moment(c)                       # other viewers' clips of this moment: skip them later
             n += 1
+        except RenderFailed as e:                # boring / QA / quality / cuts this time: a failed try (MAX_TRIES)
+            need_back(c)
+            mark(c["id"], False, e)
+            log(f"  failed: {e}")
+            continue
         except NotGameplay as e:                 # right category, wrong picture: never again
             need_back(c)
             if "no facecam" in str(e):           # detection can miss once: counts as a failure (max 3 tries)
-                mark(c["id"], False)
+                mark(c["id"], False, e)
                 log(f"  skip: {e}")
                 continue
             state = load_json(STATE, {"done": {}, "failed": {}})
             state.setdefault("other_game", {})[c["id"]] = str(e)
             save_json(STATE, state)
             log(f"  skip: {e}")
+        except CorruptJson:                     # a broken state file: stop loudly, never write over it
+            raise
         except Exception as e:  # one broken clip must not stop launch day
             need_back(c)
-            mark(c["id"], False)
+            mark(c["id"], False, e)
             log(f"  FAILED {c['url']}: {e}")
     return n
 
@@ -3474,37 +3801,63 @@ def virality(c):
     base = (c.get("views") or 0) / (max(age_h, 0) + 1) ** 0.5
     return base * (1 + min(c.get("growth") or 0, 3)) * (1 + 0.5 * ((c.get("cluster") or 1) - 1))
 
+SAME_MOMENT_S = 30      # two clips this close (VOD offset, or channel + creation time) = one moment
+
+def same_moment(c, o):
+    """Two viewers' clips of one moment: same VOD < 30 s apart, or - when a clip has no VOD data
+    (channel-list clips from yt-dlp) - same channel and created < 30 s apart."""
+    if has_moment(c) and has_moment(o):
+        return c["video_id"] == o["video_id"] and abs(c["vod_offset"] - o["vod_offset"]) < SAME_MOMENT_S
+    return (by_created(c) and by_created(o) and c.get("channel") == o.get("channel")
+            and abs(c["created"] - o["created"]) < SAME_MOMENT_S)
+
+def by_created(c):
+    """The creation time marks the moment only for a viewer's clip (Twitch/Kick/live): every window of
+    one YouTube video carries the video's upload time, so those are told apart by their section."""
+    return bool(c.get("created")) and not c.get("section") and c.get("platform") != "youtube"
+
 def cluster(clips):
     """Several viewers clipping the same 30 s of the same stream = one moment, a stronger one."""
     groups = []
-    for c in sorted(clips, key=lambda c: -c["views"]):
-        if c.get("video_id") and c.get("vod_offset") is not None:
-            g = next((g for g in groups if g[0].get("video_id") == c["video_id"]
-                      and g[0].get("vod_offset") is not None and abs(g[0]["vod_offset"] - c["vod_offset"]) < 30), None)
-            if g:
-                g.append(c)
-                continue
+    for c in sorted(clips, key=lambda c: -(c.get("views") or 0)):
+        g = next((g for g in groups if any(same_moment(c, o) for o in g)), None)
+        if g:
+            g.append(c)
+            continue
         groups.append([c])
     for g in groups:
-        g[0]["cluster"] = len(g)
+        g[0]["cluster"] = max(len(g), max((o.get("cluster") or 1) for o in g))
     return [g[0] for g in groups]
 
 def has_moment(c):
     return bool(c.get("video_id")) and c.get("vod_offset") is not None
 
 def moment_done(c):
-    """The same stream moment (same VOD, < 30 s apart) already rendered from another viewer's clip."""
-    if not has_moment(c):
-        return False
-    seen = load_json(STATE, {}).get("moments", {}).get(c["video_id"], [])
-    return any(abs(off - c["vod_offset"]) < 30 for _, off in seen)
+    """The same stream moment already rendered from another viewer's clip: same VOD < 30 s apart, or
+    same channel and created < 30 s apart (state 'moments' / 'moments_ch'). Two clips of one moment
+    must never become two shorts (they would go to the two accounts)."""
+    state = load_json(STATE, {})
+    if has_moment(c):
+        seen = state.get("moments", {}).get(c["video_id"], [])
+        if any(abs(off - c["vod_offset"]) < SAME_MOMENT_S for _, off in seen):
+            return True
+    if by_created(c) and c.get("channel"):
+        seen = state.get("moments_ch", {}).get(c["channel"], [])
+        if any(abs(cr - c["created"]) < SAME_MOMENT_S and cid != c["id"] for _, cr, cid in seen):
+            return True
+    return False
 
 def save_moment(c):
     state = load_json(STATE, {"done": {}, "failed": {}})
     now = int(time.time())
-    m = {v: [x for x in xs if now - x[0] < 3 * 86400] for v, xs in state.get("moments", {}).items()}
-    m.setdefault(c["video_id"], []).append([now, c["vod_offset"]])
-    state["moments"] = {v: xs for v, xs in m.items() if xs}
+    if has_moment(c):
+        m = {v: [x for x in xs if now - x[0] < 3 * 86400] for v, xs in state.get("moments", {}).items()}
+        m.setdefault(c["video_id"], []).append([now, c["vod_offset"]])
+        state["moments"] = {v: xs for v, xs in m.items() if xs}
+    if by_created(c) and c.get("channel"):
+        m = {ch: [x for x in xs if now - x[0] < 3 * 86400] for ch, xs in state.get("moments_ch", {}).items()}
+        m.setdefault(c["channel"], []).append([now, int(c["created"]), c["id"]])
+        state["moments_ch"] = {ch: xs for ch, xs in m.items() if xs}
     save_json(STATE, state)
 
 def add_growth(clips):
