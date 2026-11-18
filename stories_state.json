@@ -92,7 +92,19 @@
     "pool": {
       "bananas_07.jpg": "2026-11-18"
     },
-    "long": {}
+    "long": {
+      "funny-day#1@202611181907": {
+        "title": "GTA 6 Funniest Moments #1",
+        "due": "2026-11-18T23:58:00+01:00",
+        "url": "https://6afe166c3c809df0fbdf0ba7--gta6bananaclips-media.netlify.app/stories/20261118/bananas_long_11181907.jpg",
+        "alt": "New GTA 6 video on YouTube: GTA 6 Funniest Moments #1",
+        "posts": {
+          "6af7142262b70b94b01ac608": "6afe16720d8c064ce4d866c2"
+        },
+        "draft": false,
+        "done": true
+      }
+    }
   },
   "fanpage": {
     "reposts": {
