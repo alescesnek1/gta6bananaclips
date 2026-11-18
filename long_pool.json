@@ -874,5 +874,33 @@
     "vod_offset": 2939,
     "cluster": 2,
     "added": 1795008112
+  },
+  "twitch_CredulousKawaiiTriangleFUNgineer-Zys54vtw1G4OmIkN": {
+    "id": "twitch_CredulousKawaiiTriangleFUNgineer-Zys54vtw1G4OmIkN",
+    "url": "https://www.twitch.tv/lacy/clip/CredulousKawaiiTriangleFUNgineer-Zys54vtw1G4OmIkN",
+    "channel": "lacy",
+    "platform": "twitch",
+    "title": "wtf",
+    "views": 908,
+    "created": 1795003558,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932194507",
+    "vod_offset": 6847,
+    "cluster": 3,
+    "added": 1795008508
+  },
+  "twitch_ThirstyAcceptableRaccoonDxAbomb-NT930bCo04OgUQHD": {
+    "id": "twitch_ThirstyAcceptableRaccoonDxAbomb-NT930bCo04OgUQHD",
+    "url": "https://www.twitch.tv/lacy/clip/ThirstyAcceptableRaccoonDxAbomb-NT930bCo04OgUQHD",
+    "channel": "lacy",
+    "platform": "twitch",
+    "title": "LACY JUST KILLED AN INNCOCENT DOGGGG",
+    "views": 509,
+    "created": 1795004087,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932194507",
+    "vod_offset": 7362,
+    "cluster": 3,
+    "added": 1795008508
   }
 }
