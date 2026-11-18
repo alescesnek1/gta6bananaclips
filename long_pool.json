@@ -2415,5 +2415,29 @@
     "vod_offset": 4273,
     "cluster": 1,
     "added": 1795027685
+  },
+  "twitch_AdventurousHonestTapirKeyboardCat-9Eii4tkWb1VjxGqf": {
+    "id": "twitch_AdventurousHonestTapirKeyboardCat-9Eii4tkWb1VjxGqf",
+    "url": "https://www.twitch.tv/oozie/clip/AdventurousHonestTapirKeyboardCat-9Eii4tkWb1VjxGqf",
+    "channel": "oozie",
+    "platform": "twitch",
+    "title": "absolute maniac",
+    "views": 506,
+    "created": 1795002438,
+    "category": "Grand Theft Auto VI",
+    "cluster": 1,
+    "added": 1795028039
+  },
+  "twitch_SavageEphemeralSwanPMSTwin-CdV0_Uj1h7SAGkLW": {
+    "id": "twitch_SavageEphemeralSwanPMSTwin-CdV0_Uj1h7SAGkLW",
+    "url": "https://www.twitch.tv/king_wolfe_/clip/SavageEphemeralSwanPMSTwin-CdV0_Uj1h7SAGkLW",
+    "channel": "king_wolfe_",
+    "platform": "twitch",
+    "title": "Forced Taught Empathy…",
+    "views": 504,
+    "created": 1795017396,
+    "category": "Grand Theft Auto VI",
+    "cluster": 1,
+    "added": 1795028039
   }
 }
