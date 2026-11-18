@@ -1463,6 +1463,7 @@ def flag(z, name, default=True):
 # No ranking, no tier list, no countdown, no #N on screen: chronological, cinematic, music carries it.
 
 MODEL_REAKCE = HERE / "assets" / "model_reakce"
+MODEL_IN_VIDEO = False
 LETTERBOX = int((H - W / 2.35) / 2)                       # 2.35:1 bars: 131 px top and bottom
 
 def main_series(z):
@@ -1481,6 +1482,8 @@ def chapter_label(m, serie):
 
 def model_sticker(seed):
     """One of our presenter's reactions (assets/model_reakce/*.webm, VP9 with alpha), or None when there is none."""
+    if not MODEL_IN_VIDEO:                                 # owner 18. 11. evening: no AI model in the videos
+        return None
     clips = sorted(MODEL_REAKCE.glob("*.webm")) if MODEL_REAKCE.exists() else []
     return random.Random(seed).choice(clips) if clips else None
 

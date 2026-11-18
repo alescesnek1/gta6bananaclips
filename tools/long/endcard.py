@@ -49,6 +49,7 @@ W, H, FPS, SR = 1920, 1080, 30, 48000
 S = 2                                          # supersampling of sprites
 BANANA_KEY = "0x1BD02A"                        # the greenscreen of assets/banan (same as klipuj.BANANA_KEY)
 OUTRO_16x9 = HERE / "assets" / "outro" / "fanpage_outro_16x9.mp4"
+MODEL_OUTRO = False                            # owner 18. 11.: the model stays out of the videos
 OUTRO_SKIP = 3.5                               # s cut from the start of the model's outro (Aleš 18. 11.: shorter, ~11.6 s)
 LUFS = -16.0
 
@@ -564,7 +565,10 @@ def palm(d, x, base, height, lean, col):
 def setup_fanpage(tmp, src=None):
     b = BRANDS["fanpage"]
     src = Path(src) if src else OUTRO_16x9
-    A = {"brand": "fanpage", "video": src if src.exists() else None}
+    # owner 18. 11. evening: no AI model in any video (long-form too) -> the neon night card, the 16:9
+    # model outro only when MODEL_OUTRO is switched back on (or an explicit src is given)
+    use = src.exists() and (MODEL_OUTRO or src != OUTRO_16x9)
+    A = {"brand": "fanpage", "video": src if use else None}
     rnd = np.random.default_rng(19)
     if A["video"]:
         A["dur"] = float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0",
