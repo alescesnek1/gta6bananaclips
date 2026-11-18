@@ -456,6 +456,13 @@ def report_md(st):
         L.append("- zatím žádná čísla" + (f" ({perf['postu_celkem']} postů, v Bufferu nenalezeno {perf['nenalezeno']})"
                                           if perf and perf.get("nenalezeno") else "")
                  + (f" ({'; '.join(perf['chyby'])})" if perf and perf.get("chyby") else ""))
+    sd = st.get("sit_data")
+    if sd:
+        L += ["", f"## YouTube / TikTok (veřejná čísla z notebooku, {fmt_t(ts(sd['at']))})"]
+        for net_, brands in (("youtube", sd.get("youtube") or {}), ("tiktok", sd.get("tiktok") or {})):
+            for b, xs in brands.items():
+                L.append(f"- {net_} {b}: " + (", ".join(n(x.get("views") or 0) for x in xs[:10]) or "–")
+                         + f" (součet {n(sum(x.get('views') or 0 for x in xs))})")
     if net:
         L += ["", "## Netlify",
               f"- deploye 24 h: {net['deploye_24h'] if net['deploye_24h'] is not None else '–'}; "
@@ -516,6 +523,8 @@ def collect(now):
         except Exception as e:                    # one source down must not hide the others
             st[name] = None
             st["chyby"].append(clean(f"{name}: {type(e).__name__} {str(e)[-150:]}"))
+    sd = P.load_json(HERE / "zhlednuti.json", {})      # tools/sit_data.py on the notebook (YouTube blocks GitHub)
+    st["sit_data"] = sd if sd.get("at") and now - (ts(sd["at"]) or now) < timedelta(hours=6) else None
     st["alerty"] = [{"klic": k, "text": t} for k, t in alerts]
     return st
 
