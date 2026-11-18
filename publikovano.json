@@ -143,5 +143,25 @@
     "rating": 4,
     "views": 888,
     "golden": false
+  },
+  "twitch_DifferentPreciousWaffleHotPokket-wMDh_pqLv3Ve6ZOc": {
+    "url": "https://6afda31b5c52e194fd7adaa8--gta6bananaclips-media.netlify.app/20261118/twitch_DifferentPreciousWaffleHotPokket-wMDh_pqLv3Ve6ZOc.mp4",
+    "path": "20261118/twitch_DifferentPreciousWaffleHotPokket-wMDh_pqLv3Ve6ZOc.mp4",
+    "due": "2026-11-18T14:09:00+01:00",
+    "draft": false,
+    "posts": {
+      "6af7142262b70b94b01ac608": "6afda3225f355732b1d156f8",
+      "6af7130a62b70b94b01abcc9": "6afda3220aec53ca439a44f9",
+      "6af7155e62b70b94b01ad06f": "6afda3231c55ed7dd8012e56",
+      "6af714e862b70b94b01acc7f": "6afda32488f8ac97b1a9c4e1"
+    },
+    "mb": 6.1,
+    "channel": "xqc",
+    "platform": "twitch",
+    "score": 647.5,
+    "hot": true,
+    "rating": 3,
+    "views": 543,
+    "golden": false
   }
 }
