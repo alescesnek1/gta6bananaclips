@@ -221,8 +221,8 @@
     "xqc"
   ],
   "_star_tier_napoveda": "Ales 18. 11.: Kai Cenat, IShowSpeed a xQc maji prednost pred ostatnimi hvezdami (DarkViperAU, TypicalGamer...).",
-  "live_publish": false,
-  "_live_publish_napoveda": "18. 11.: bezici live job renderuje starym kodem (bez filtru cutscén) - zapnout az po startu noveho live jobu s kodem od 1cfd59a.",
+  "live_publish": true,
+  "_live_publish_napoveda": "18. 11.: zapnuto s filtrem cutscén, titulky jen hlas streamera, live jen s facecamem (live job od c4687b2).",
   "live_nonstar_viewers": 40000,
   "publish_pause": false,
   "_publish_pause_napoveda": "Docasna pauza publikovani pri oprave chyby (18. 11.: banan v rozjezdu misto na pointe). Po oprave false."

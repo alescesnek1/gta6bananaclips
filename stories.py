@@ -194,7 +194,7 @@ def repost_candidates(znacka, bs, now):
     """Reels of the brand that are (nearly) live and not reposted yet, oldest first."""
     out = []
     for cid, rec in P.records(znacka).items():
-        if rec.get("deleted") or rec.get("draft") or not rec.get("url") or not rec.get("posts"):
+        if rec.get("deleted") or rec.get("nocount") or rec.get("draft") or not rec.get("url") or not rec.get("posts"):
             continue
         due = ts(rec.get("due"))
         if not due or due > now + timedelta(minutes=REPOST_LEAD) or due < now - timedelta(hours=REPOST_MAX_AGE_H):

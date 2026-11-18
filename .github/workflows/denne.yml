@@ -196,6 +196,11 @@ jobs:
         run: python publikuj.py den --den dnes --n 10 --znacka fanpage ${{ inputs.jen_publikace == 'ano' && '--rychle' || '' }} ${{ vars.OSTRE == '1' && '--ostre' || '' }}
 
       # the records go to origin in the same commit that frees the lock (merged per key, never lost)
+      - name: stories (Instagram + Facebook)
+        if: always() && steps.zamek.outcome == 'success' && inputs.jen_publikace != 'ano'
+        continue-on-error: true
+        timeout-minutes: 5
+        run: python stories.py den ${{ vars.OSTRE == '1' && '--ostre' || '' }}
       - name: save publication records + release the lock
         if: always() && steps.zamek.outcome == 'success'
         run: |
@@ -232,7 +237,7 @@ jobs:
           for f in publikovano.json publikovano_fanpage.json publikovano_live.json publikovano_fanpage_live.json publikace_chyby.json publikace_zamek.json; do
             if git ls-files --error-unmatch "$f" >/dev/null 2>&1; then git checkout -q -- "$f"; else rm -f "$f"; fi
           done
-          FILES="state.json streamers.json buffer.json buffer_fanpage.json long_pool.json experimenty.json netlify_extra.json"
+          FILES="state.json streamers.json buffer.json buffer_fanpage.json long_pool.json experimenty.json netlify_extra.json stories_state.json"
           git diff --quiet -- $FILES 2>/dev/null && [ -z "$(git ls-files --others --exclude-standard -- $FILES)" ] && exit 0
           # 18. 11.: a rebase of two edits of state.json (denne + the fast path) conflicted and the state was lost.
           # Keep this run's copies, reset to the newest origin and merge key by key (tools/merge_state.py).
