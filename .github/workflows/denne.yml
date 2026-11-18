@@ -232,12 +232,19 @@ jobs:
           for f in publikovano.json publikovano_fanpage.json publikovano_live.json publikovano_fanpage_live.json publikace_chyby.json publikace_zamek.json; do
             if git ls-files --error-unmatch "$f" >/dev/null 2>&1; then git checkout -q -- "$f"; else rm -f "$f"; fi
           done
-          for f in state.json streamers.json buffer.json buffer_fanpage.json long_pool.json experimenty.json netlify_extra.json; do [ -f "$f" ] && git add "$f"; done
-          git diff --cached --quiet && exit 0
-          git commit -q -m "stav: denni beh $(date -u +%F)"
-          # another workflow may push in between (denne / long / live dispatches): retry, never lose the state
-          for i in 1 2 3 4 5 6; do
-            if git pull -q --rebase --autostash; then git push -q && exit 0; else git rebase --abort 2>/dev/null || true; fi
-            sleep $((i * 5 + RANDOM % 7))
+          FILES="state.json streamers.json buffer.json buffer_fanpage.json long_pool.json experimenty.json netlify_extra.json"
+          git diff --quiet -- $FILES 2>/dev/null && [ -z "$(git ls-files --others --exclude-standard -- $FILES)" ] && exit 0
+          # 18. 11.: a rebase of two edits of state.json (denne + the fast path) conflicted and the state was lost.
+          # Keep this run's copies, reset to the newest origin and merge key by key (tools/merge_state.py).
+          OURS=$(mktemp -d)
+          for f in $FILES; do [ -f "$f" ] && cp "$f" "$OURS/"; done
+          for i in 1 2 3 4 5 6 7 8; do
+            git fetch -q origin main && git reset -q --hard origin/main
+            python tools/merge_state.py "$OURS" $FILES
+            for f in $FILES; do [ -f "$f" ] && git add "$f"; done
+            git diff --cached --quiet && exit 0
+            git commit -q -m "stav: denni beh $(date -u +%F)"
+            git push -q && exit 0
+            sleep $((i * 4 + RANDOM % 7))
           done
-          echo "::error::stav se nepodarilo pushnout (6 pokusu)"; exit 1
+          echo "::error::stav se nepodarilo pushnout (8 pokusu)"; exit 1
