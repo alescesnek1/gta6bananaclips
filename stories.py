@@ -455,9 +455,66 @@ def build_frame(lines, znacka, bg, seed="x"):
     return img
 
 
-def pool_frame(path):
-    from PIL import Image
-    return cover(Image.open(path).convert("RGB"))
+POOL_TEXT = {   # 18. 11. (Aleš): every pool story carries a short line; rotates per image + day
+    "bananas": ["New GTA 6 clips every day", "Who should we clip next?", "Funniest GTA 6 moments, daily",
+                "Rate today's chaos 1-10", "Which streamer wins GTA 6 today?", "Your daily dose of GTA 6 fails"],
+    "fanpage": ["Late night Vice City vibes", "Which streamer should I watch tonight?",
+                "New GTA 6 clips every night", "Tell me your favourite streamer", "Vice City never sleeps",
+                "Best GTA 6 moments, only here"],
+}
+
+
+def protected_boxes(img):
+    """Face and chest areas the story text must never cover (Aleš 18. 11.): OpenCV Haar faces (real and
+    painted faces both get a chance, frontal + profile); chest = below each face, ~2.6 face heights,
+    1.9 face widths wide. Returns [(x0, y0, x1, y1)] in 1080x1920 pixels."""
+    import cv2
+    import numpy as np
+    g = cv2.cvtColor(np.asarray(img), cv2.COLOR_RGB2GRAY)
+    out = []
+    for name in ("haarcascade_frontalface_default.xml", "haarcascade_profileface.xml"):
+        cas = cv2.CascadeClassifier(cv2.data.haarcascades + name)
+        for (x, y, w, h) in cas.detectMultiScale(g, 1.1, 5, minSize=(90, 90)):
+            out.append((x - 0.25 * w, y - 0.35 * h, x + 1.25 * w, y + 1.15 * h))                 # face + hair
+            out.append((x - 0.45 * w, y + h, x + 1.45 * w, y + h + 2.6 * h))                     # chest
+    return out
+
+
+def free_band(img, boxes, band_h):
+    """y of the band (full width, band_h tall) for the text: never touching a protected box; among the
+    allowed ones the calmest (lowest edge density, so no subject behind it); top and bottom zones first."""
+    import cv2
+    import numpy as np
+    edges = cv2.Canny(cv2.cvtColor(np.asarray(img), cv2.COLOR_RGB2GRAY), 80, 160)
+    best = None
+    for y in list(range(120, 520, 40)) + list(range(H - 260 - band_h, H - band_h - 80, 40)) + list(range(520, H - 260 - band_h, 40)):
+        if any(not (y + band_h < b0[1] or y > b0[3]) for b0 in boxes):
+            continue
+        busy = float(edges[y:y + band_h].mean())
+        if best is None or busy < best[0]:
+            best = (busy, y)
+    return None if best is None else best[1]
+
+
+def pool_frame(path, znacka="bananas", seed=""):
+    """A pool image with one short line, placed where it covers no face and no chest."""
+    from PIL import Image, ImageDraw
+    img = cover(Image.open(path).convert("RGB"))
+    look = BRAND_LOOK.get(znacka) or BRAND_LOOK["bananas"]
+    lines = POOL_TEXT.get(znacka) or POOL_TEXT["bananas"]
+    text = random.Random(f"{path.name}:{seed}").choice(lines)
+    font = fit_font(text.upper(), FONTS / look["font"], 76, W - 2 * 64 - 2 * 26)
+    d = ImageDraw.Draw(img)
+    l, t, r, b = d.textbbox((0, 0), text.upper(), font=font)
+    band = (b - t) + 2 * 26
+    y = free_band(img, protected_boxes(img), band)
+    if y is None:                                     # no safe place: the story goes without text
+        log(f"pool {path.name}: no text area free of face/chest, posted without text")
+        return img
+    x = (W - (r - l) - 2 * 26) // 2
+    d.rectangle((x, y, x + (r - l) + 2 * 26, y + band), fill=look["box"])
+    d.text((x + 26 - l, y + 26 - t), text.upper(), font=font, fill=look["ink"])
+    return img
 
 
 # -----------------------------------------------------------------------------
@@ -478,7 +535,7 @@ def build_and_post(day, brands, st, now, draft, dry, deploy=None, grab=grab_fram
             if it["due"] < now + timedelta(minutes=5):
                 continue                                   # built late: that window has passed
             if it["kind"] == "pool":
-                img, alt = pool_frame(it["pool"]), "GTA 6 story"
+                img, alt = pool_frame(it["pool"], z, day.isoformat()), "GTA 6 story"
             else:
                 clip = it.get("clip") or {}
                 bg = grab(clip["url"]) if clip.get("url") else None
