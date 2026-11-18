@@ -1264,6 +1264,9 @@ def cmd_kanaly(a):
 
 def cmd_den(a):
     global TAKE_LONG, PLAN_DAY, FAST
+    if load_json(HERE / "sources.json", {}).get("publish_pause") and not a.zkouska:
+        log("publishing paused (sources.json publish_pause) - nothing posted this run")
+        return
     FAST = bool(getattr(a, "rychle", False))
     TAKE_LONG = not a.zkouska and not FAST       # a dry run writes nothing; the fast path only its record file
     now = now_tz()
