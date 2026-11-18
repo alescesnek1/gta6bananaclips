@@ -205,5 +205,112 @@
     "src_mb": 8.5,
     "source": "https://6afd74383b22a7d460ad2c7a--gta6bananaclips-media.netlify.app/yt/youtube_y79qruxZJ0s_303_16x9.mp4",
     "yt_url": "https://www.youtube.com/watch?v=y79qruxZJ0s"
+  },
+  "twitch_SparklingGrotesqueArtichokeCorgiDerp-I3x3bsdsVQvrlIkt": {
+    "id": "twitch_SparklingGrotesqueArtichokeCorgiDerp-I3x3bsdsVQvrlIkt",
+    "url": "https://www.twitch.tv/kaicenat/clip/SparklingGrotesqueArtichokeCorgiDerp-I3x3bsdsVQvrlIkt",
+    "channel": "kaicenat",
+    "platform": "twitch",
+    "title": "Kai talks GTA 6 after the first look",
+    "views": 519,
+    "created": 1794936584,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2858049515",
+    "vod_offset": 3750,
+    "cluster": 1,
+    "added": 1795003047
+  },
+  "twitch_WealthyNimbleHamsterDansGame-yrU7UShZomelh1Ke": {
+    "id": "twitch_WealthyNimbleHamsterDansGame-yrU7UShZomelh1Ke",
+    "url": "https://www.twitch.tv/xqc/clip/WealthyNimbleHamsterDansGame-yrU7UShZomelh1Ke",
+    "channel": "xqc",
+    "platform": "twitch",
+    "title": "xQc commits Grand Theft Auto for the first time in GTA 6",
+    "views": 648,
+    "created": 1795000780,
+    "category": "Grand Theft Auto VI",
+    "added": 1795003047,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/xqc/20261118_twitch_WealthyNimbleHamsterDansGame-yrU7UShZomelh1Ke/source.mp4",
+    "peak": 41.45,
+    "cut": [
+      20.73,
+      44.45
+    ],
+    "dur": 54.37,
+    "tags": [
+      "first-reaction",
+      "wow",
+      "rage",
+      "chase"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.5,
+      "crash": 0.0,
+      "rage": 0.65,
+      "first-reaction": 1.0,
+      "wow": 1.0,
+      "_loud": 1.7,
+      "_motion": 24.8
+    },
+    "quote": "What the hell?",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.35,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 1.0,
+      "wow": 1.0
+    },
+    "primary": "first-reaction",
+    "proven": [
+      "first-reaction"
+    ],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.54,
+    "signals": {
+      "siren": 0.0,
+      "impact": 7.0,
+      "loud": 1.6,
+      "motion": 21.3,
+      "sustained": 0.77,
+      "spike": 4.8,
+      "laugh": 0,
+      "static": 0.03,
+      "letterbox": 0.0,
+      "luma": 73.3,
+      "dark": 0.0
+    }
   }
 }

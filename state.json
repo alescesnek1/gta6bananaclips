@@ -5,7 +5,8 @@
     "youtube_miGclAow9KI_2923": 1794669606,
     "youtube_ClI-eATridI_943": 1794670115,
     "youtube_ClI-eATridI_1483": 1794670233,
-    "youtube_EfX_QR_knWs_360": 1794673965
+    "youtube_EfX_QR_knWs_360": 1794673965,
+    "twitch_WealthyNimbleHamsterDansGame-yrU7UShZomelh1Ke": 1795003047
   },
   "failed": {
     "twitch_IntelligentAbstemiousBasenjiOMGScoots-6o4BuG8nzW3K8qWx": 3
@@ -429,7 +430,8 @@
       1795002286,
       560,
       1795002497,
-      561
+      561,
+      1795002799
     ],
     "twitch_NimbleFrozenBeanOSsloth-S2n7zCkGDTOWP_mP": [
       1795001014,
@@ -443,12 +445,34 @@
       1795002286,
       511,
       1795002497,
-      512
+      512,
+      1795002799,
+      515
     ],
     "twitch_CloudyLivelyHareCharlieBitMe-8lGWQ2aObfK8dyAR": [
       1795001911,
       518
+    ],
+    "twitch_WealthyNimbleHamsterDansGame-yrU7UShZomelh1Ke": [
+      1795002799,
+      648
+    ],
+    "twitch_SparklingGrotesqueArtichokeCorgiDerp-I3x3bsdsVQvrlIkt": [
+      1795002799,
+      519
     ]
   },
-  "rr": "bananas"
+  "rr": "bananas",
+  "rating_hist": [
+    648
+  ],
+  "moments_ch": {
+    "xqc": [
+      [
+        1795003047,
+        1795000780,
+        "twitch_WealthyNimbleHamsterDansGame-yrU7UShZomelh1Ke"
+      ]
+    ]
+  }
 }
