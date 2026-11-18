@@ -48,6 +48,7 @@ USED = Path(os.environ.get("LONG_USED") or HERE / "long_used.json")
 TZ = ZoneInfo("Europe/Prague")
 W, H, FPS = 1920, 1080, 30
 LAUNCH = date(2026, 11, 19)
+GAME_OUT = date(2026, 11, 18)                  # first day with real GTA 6 gameplay (NZ unlock)
 FONT_B = HERE / "fonts" / "cap" / "montserrat-900.ttf"
 FONT_M = HERE / "fonts" / "montserrat-600.ttf"
 COL = {"bananas": "FFE135", "fanpage": "FF4FD8"}
@@ -160,6 +161,9 @@ def window_for(serie, run_day, a):
         days = SERIES[series_key(serie)]["days"]
         do = run_day - timedelta(days=1)
         od = LAUNCH if days == 0 else do - timedelta(days=max(days, 1) - 1)
+        # 18. 11. (Aleš): GTA 6 unlocks in NZ on 18. 11. 12:00 Prague; anything earlier in the category
+        # is Just Chatting / other games, never a "GTA 6" compilation
+        od = max(od, GAME_OUT)
     t0 = datetime(od.year, od.month, od.day, tzinfo=TZ).timestamp()
     t1 = datetime(do.year, do.month, do.day, tzinfo=TZ).timestamp() + 86400
     return od, do, t0, t1

@@ -49,7 +49,7 @@ W, H, FPS, SR = 1920, 1080, 30, 48000
 S = 2                                          # supersampling of sprites
 BANANA_KEY = "0x1BD02A"                        # the greenscreen of assets/banan (same as klipuj.BANANA_KEY)
 OUTRO_16x9 = HERE / "assets" / "outro" / "fanpage_outro_16x9.mp4"
-OUTRO_SKIP = 1.0                               # s cut from the start of the model's outro (Aleš 17. 11.)
+OUTRO_SKIP = 3.5                               # s cut from the start of the model's outro (Aleš 18. 11.: shorter, ~11.6 s)
 LUFS = -16.0
 
 BRANDS = {

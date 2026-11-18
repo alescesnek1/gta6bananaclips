@@ -75,6 +75,15 @@ def texts_for(m):
         f"Ve Studiu: nahraj video, vlož název, popis a tagy, miniaturu z Gemini/ChatGPT, naplánuj na "
         f"{when:%d.%m. %H:%M} (Praha), playlist \"{m.get('playlist', m['serie'])}\", kategorie Hry, pro děti NE.",
         "",
+        "===== KONCOVÁ OBRAZOVKA (Studio → Úpravy → Koncová obrazovka) =====",
+        f"Video končí kartou {('s modelkou' if m.get('znacka') == 'fanpage' else 's banánem')}, v níž jsou "
+        "nakreslené rámečky přesně pro prvky YouTube (vpravo / nahoře). Postup:",
+        "1) Přidej prvek Video → „Nejnovější nahrané“ a přetáhni ho do horního rámečku.",
+        f"2) Přidej prvek Playlist → \"{m.get('playlist', m['serie'])}\" (série) a přetáhni ho do druhého rámečku.",
+        "3) Přidej prvek Odběr a přetáhni ho do kruhu.",
+        "4) Časování: všechny tři prvky nech běžet až do konce videa (celá závěrečná karta).",
+        "Další díly: v koncové obrazovce dej „Importovat z videa“ a vyber předchozí díl, prvky sednou samy.",
+        "",
         "===== NÁHLED – Gemini/ChatGPT =====",
         "1) Nahraj přílohy " + ", ".join(n for n in ("1_tvar.jpg", "2_scena.jpg", "3_znacka.png") if has(n))
         + (" (4_tvar2.jpg jen když chceš druhého streamera)" if has("4_tvar2.jpg") else "") + ".",
