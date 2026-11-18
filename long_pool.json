@@ -3257,9 +3257,23 @@
     "channel": "stableronaldo",
     "platform": "twitch",
     "title": "GYAT DAMNNN",
-    "views": 502,
+    "views": 528,
     "created": 1795034626,
     "category": "Grand Theft Auto VI",
-    "added": 1795039782
+    "added": 1795040238
+  },
+  "twitch_UnusualConsiderateLionGingerPower-oJF7Ao2MX9omrH0x": {
+    "id": "twitch_UnusualConsiderateLionGingerPower-oJF7Ao2MX9omrH0x",
+    "url": "https://www.twitch.tv/kaicenat/clip/UnusualConsiderateLionGingerPower-oJF7Ao2MX9omrH0x",
+    "channel": "kaicenat",
+    "platform": "twitch",
+    "title": "kai cenat argues with his new girlfriend",
+    "views": 1429,
+    "created": 1795017346,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932305259",
+    "vod_offset": 10408,
+    "cluster": 1,
+    "added": 1795040238
   }
 }
