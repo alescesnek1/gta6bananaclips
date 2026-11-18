@@ -461,7 +461,9 @@
       1795006701,
       595,
       1795007426,
-      602
+      602,
+      1795008112,
+      603
     ],
     "twitch_NimbleFrozenBeanOSsloth-S2n7zCkGDTOWP_mP": [
       1795001014,
@@ -500,7 +502,9 @@
       1795006701,
       544,
       1795007426,
-      552
+      552,
+      1795008112,
+      555
     ],
     "twitch_CloudyLivelyHareCharlieBitMe-8lGWQ2aObfK8dyAR": [
       1795001911,
@@ -536,7 +540,9 @@
       1795006701,
       798,
       1795007426,
-      929
+      929,
+      1795008112,
+      992
     ],
     "kick_clip_01M7Q5876Z0GVGGNFWGHMRKKZR": [
       1795003185,
@@ -563,7 +569,9 @@
       1795006701,
       603,
       1795007426,
-      636
+      636,
+      1795008112,
+      668
     ],
     "twitch_AstuteArtsyEaglePeteZaroll-h-8smz8Kb6qltijo": [
       1795004599,
@@ -581,7 +589,9 @@
       1795006701,
       635,
       1795007426,
-      689
+      689,
+      1795008112,
+      719
     ],
     "twitch_RelievedRichRhinocerosPeteZaroll-qOXHVQ3XVK3asCkK": [
       1795004899,
@@ -609,7 +619,9 @@
       1795006701,
       568,
       1795007426,
-      625
+      625,
+      1795008112,
+      654
     ],
     "twitch_SlickStylishBeaverStrawBeary-ljpqadoCXEhYwJx5": [
       1795005798,
@@ -627,7 +639,9 @@
       1795006701,
       634,
       1795007426,
-      907
+      907,
+      1795008112,
+      1229
     ],
     "twitch_DifferentPreciousWaffleHotPokket-wMDh_pqLv3Ve6ZOc": [
       1795006701,
@@ -637,11 +651,15 @@
     ],
     "twitch_CredulousKawaiiTriangleFUNgineer-Zys54vtw1G4OmIkN": [
       1795007426,
-      626
+      626,
+      1795008112,
+      758
     ],
     "twitch_DifferentSullenReubenItsBoshyTime-K1Eo8-_fjY3ZqQan": [
       1795007426,
-      675
+      675,
+      1795008112,
+      835
     ]
   },
   "rr": "bananas",
