@@ -2525,5 +2525,16 @@
     "vod_offset": 12896,
     "cluster": 1,
     "added": 1795028713
+  },
+  "twitch_DullCalmGullUWot-yyTc1tkQ0S4Gv-5E": {
+    "id": "twitch_DullCalmGullUWot-yyTc1tkQ0S4Gv-5E",
+    "url": "https://www.twitch.tv/lacy/clip/DullCalmGullUWot-yyTc1tkQ0S4Gv-5E",
+    "channel": "lacy",
+    "platform": "twitch",
+    "title": "OMG",
+    "views": 758,
+    "created": 1795020201,
+    "category": "Grand Theft Auto VI",
+    "added": 1795029934
   }
 }
