@@ -2266,5 +2266,98 @@
     "vod_offset": 21248,
     "cluster": 2,
     "added": 1795026614
+  },
+  "twitch_PeacefulGlutenFreeVultureShazBotstix-KgHnVnwwgZOeO6Xs": {
+    "id": "twitch_PeacefulGlutenFreeVultureShazBotstix-KgHnVnwwgZOeO6Xs",
+    "url": "https://www.twitch.tv/ohnepixel/clip/PeacefulGlutenFreeVultureShazBotstix-KgHnVnwwgZOeO6Xs",
+    "channel": "ohnepixel",
+    "platform": "twitch",
+    "title": "ohnePixel tries out the strip club's private dance in GTA 6",
+    "views": 1960,
+    "created": 1795025649,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932275268",
+    "vod_offset": 21273,
+    "cluster": 3,
+    "added": 1795027233,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/ohnepixel/20261118_twitch_PeacefulGlutenFreeVultureShazBotstix-KgHnVnwwgZOeO6Xs/source.mp4",
+    "peak": 32.75,
+    "cut": [
+      25.17,
+      37.4
+    ],
+    "dur": 60.01,
+    "tags": [
+      "first-reaction",
+      "wow",
+      "rage",
+      "glitch"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.3,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.7,
+      "first-reaction": 0.79,
+      "wow": 0.71,
+      "_loud": 6.2,
+      "_motion": 5.2
+    },
+    "quote": "I need to hold him.",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.25,
+      "rage": 0.25,
+      "fail": 0.25,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.95,
+      "wow": 0.25
+    },
+    "primary": "first-reaction",
+    "proven": [
+      "first-reaction"
+    ],
+    "evidence": {
+      "funny": [
+        "loud"
+      ],
+      "rage": [
+        "loud"
+      ],
+      "fail": [
+        "loud"
+      ],
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ],
+      "wow": [
+        "loud"
+      ]
+    },
+    "fun": 0.0,
+    "signals": {
+      "siren": 0.0,
+      "impact": 28.3,
+      "loud": 11.0,
+      "motion": 2.5,
+      "sustained": 0.0,
+      "spike": 3.1,
+      "laugh": 0,
+      "static": 0.38,
+      "letterbox": 0.0,
+      "luma": 12.5,
+      "dark": 0.58
+    }
   }
 }
