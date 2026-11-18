@@ -734,11 +734,11 @@ SHARE = [
     "Every group chat has someone who plays like this. Send it to them", "{s} fans will say this was planned",
     "Forward this to your co-op partner. No explanation needed", "Your friend who screams at games needs this one",
 ]
-FAN_BAIT = [
-    "Rate the heat 1-5 🔥", "How hot was that on a scale of 1 to 5? 🔥", "Too much or just enough? 👇",
-    "Did {s} handle that well? Be honest 👇", "One word for that reaction 👇", "Guess the heat level before the end 🔥",
-    "Would you watch this twice? 👀", "Smooth or messy? 👇", "Heat check. What's your number? 🔥",
-    "Did that make you rewind? 👇",
+FAN_BAIT = [   # 18. 11.: no Heat lines - the Heat badge is off (Aleš), the caption must not refer to it
+    "Rate that 1-5 🔥", "How wild was that on a scale of 1 to 5? 🔥", "Too much or just enough? 👇",
+    "Did {s} handle that well? Be honest 👇", "One word for that reaction 👇", "Would you watch this twice? 👀",
+    "Smooth or messy? 👇", "Did that make you rewind? 👇", "Who saw that coming? 👇",
+    "Best moment of the day so far? 👇",
 ]
 FAN_SHARE = [
     "Send this to the friend who says GTA is boring", "Your GTA 6 partner needs to see this",
