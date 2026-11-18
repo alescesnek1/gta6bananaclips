@@ -1352,5 +1352,89 @@
     "vod_offset": 2907,
     "cluster": 1,
     "added": 1795015726
+  },
+  "kick_clip_01M7QB1PQ1JTDEBN7AFG5XVDKX": {
+    "id": "kick_clip_01M7QB1PQ1JTDEBN7AFG5XVDKX",
+    "url": "https://kick.com/adinross/clips/clip_01M7QB1PQ1JTDEBN7AFG5XVDKX",
+    "channel": "adinross",
+    "platform": "kick",
+    "title": "Angry Hooker 🤬",
+    "views": 609,
+    "created": 1795005979,
+    "category": "Grand Theft Auto VI (GTA)",
+    "added": 1795016663,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/adinross/20261118_kick_clip_01M7QB1PQ1JTDEBN7AFG5XVDKX/source.mp4",
+    "peak": 23.85,
+    "cut": [
+      15.57,
+      28.0
+    ],
+    "dur": 28.02,
+    "tags": [
+      "rage",
+      "wow"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.6,
+      "first-reaction": 0.2,
+      "wow": 0.54,
+      "_loud": 3.2,
+      "_motion": 9.3
+    },
+    "quote": "Hey, hey, hey, hey, hey, hey.",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "proven": [],
+    "evidence": {
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.23,
+    "signals": {
+      "siren": 0.0,
+      "impact": 9.0,
+      "loud": 1.6,
+      "motion": 10.5,
+      "sustained": 0.33,
+      "spike": 2.3,
+      "laugh": 0,
+      "static": 0.27,
+      "letterbox": 0.0,
+      "luma": 12.3,
+      "dark": 0.42
+    }
+  },
+  "twitch_PeppyWittyJaguarItsBoshyTime-Y7W5ETNtNFcXOjYn": {
+    "id": "twitch_PeppyWittyJaguarItsBoshyTime-Y7W5ETNtNFcXOjYn",
+    "url": "https://www.twitch.tv/ishowspeed/clip/PeppyWittyJaguarItsBoshyTime-Y7W5ETNtNFcXOjYn",
+    "channel": "ishowspeed",
+    "platform": "twitch",
+    "title": "here",
+    "views": 510,
+    "created": 1795008697,
+    "category": "Grand Theft Auto VI",
+    "cluster": 1,
+    "added": 1795016663
   }
 }
