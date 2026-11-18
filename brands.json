@@ -49,21 +49,17 @@
     "max_per_day": 10,
     "top3": true,
     "long_calendar": {
-      "_napoveda": "Long-form serie podle dne ZVEREJNENI (beh posila e-mail den predem). Ales 17. 11.: jen 3x tydne na kanal. Seznam = tydenni rotace. Den bez zaznamu = zadne video. Tematicka serie bez 15 overenych momentu -> hlavni serie.",
-      "special": {
-        "2026-11-20": "first-reactions"
-      },
-      "phases": [
-        {
-          "from": "2026-11-19",
-          "days": {
-            "tue": "funny-day",
-            "thu": "streamer-week",
-            "sun": "banana-league"
-          }
-        }
-      ]
+      "_napoveda": "Ales 18. 11.: long-form se dela HNED, jak je zasoba klipu (zadny den v tydnu, zadny den predem). Beh kazde 2 h vezme dalsi serii z rotace; ma-li pool na silny dil (long_target_min po strizich, nikdy pod 5 min), postavi ho a hned posle e-mail, jinak tise preskoci. Prvni dil kanalu = first (kdyz ma material). Nejvys 1 dil za long_min_gap_h hodin, po chybe dalsi pokus za long_retry_h.",
+      "rotation": [
+        "funny-day",
+        "streamer-week",
+        "banana-league"
+      ],
+      "first": "first-reactions"
     },
+    "long_min_gap_h": 20,
+    "long_target_min": 8,
+    "long_retry_h": 6,
     "long_flags": {
       "_napoveda": "Vypinace novych prvku long-formu (false = vypnuto).",
       "tier_list": true,
@@ -132,24 +128,18 @@
     "top3": false,
     "music_volume": 0.11,
     "long_calendar": {
-      "_napoveda": "Long-form serie podle dne ZVEREJNENI (beh posila e-mail den predem). Ales 17. 11.: jen 3x tydne na kanal. Seznam = tydenni rotace. Den bez zaznamu = zadne video. Tematicka serie bez 15 overenych momentu -> hlavni serie. Fanpage = THE STORY (bez poradi): Po noc jednoho streamera, St same-mission kdyz je multi-POV jinak After Dark, So After Dark.",
-      "special": {
-        "2026-11-20": "first-reactions"
-      },
-      "phases": [
-        {
-          "from": "2026-11-19",
-          "days": {
-            "mon": "streamer-night",
-            "wed": [
-              "after-dark"
-            ],
-            "sat": "after-dark"
-          }
-        }
+      "_napoveda": "Ales 18. 11.: long-form se dela HNED, jak je zasoba klipu (zadny den v tydnu, zadny den predem). Beh kazde 2 h vezme dalsi serii z rotace; ma-li pool na silny dil (long_target_min po strizich, nikdy pod 5 min), postavi ho a hned posle e-mail, jinak tise preskoci. Prvni dil kanalu = first (kdyz ma material). Nejvys 1 dil za long_min_gap_h hodin, po chybe dalsi pokus za long_retry_h. Fanpage = THE STORY (bez poradi): noc jednoho streamera, pak same-mission kdyz je multi-POV (pozice same_mission_slot v rotaci) jinak After Dark, pak After Dark.",
+      "rotation": [
+        "streamer-night",
+        "after-dark",
+        "after-dark"
       ],
-      "same_mission_day": "wed"
+      "first": "first-reactions",
+      "same_mission_slot": 1
     },
+    "long_min_gap_h": 20,
+    "long_target_min": 8,
+    "long_retry_h": 6,
     "long_flags": {
       "_napoveda": "Vypinace novych prvku long-formu (false = vypnuto).",
       "tier_list": true,
@@ -163,7 +153,7 @@
     "_flags": "Prepinace launch prvku (17. 11.): false = hned vypnuto, bez zmeny kodu. qa = automaticka kontrola shortu pred publikaci. league = radek \"#N in the Banana League this week\" v popisku, league_chip = cip \"#N THIS WEEK\" na karte skore (top 10).",
     "hook_v2": true,
     "model_sticker": true,
-    "heat": true,
+    "heat": false,
     "qa": true,
     "_exp": "Experimenty (experimenty.py, docs/dva-ucty.md): max exp_max_per_day denne navic ke kvote, zapina je az data (dost silneho materialu), meri se 48 h po vydani; koncept pod 60 % klasiky po 5 postech se sam vypne (experimenty.json), nad 100 % smi 2x denne. false = vypnuto hned.",
     "exp_multi_pov": true,
