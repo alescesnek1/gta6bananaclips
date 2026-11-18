@@ -22,7 +22,9 @@
     "golden": false,
     "live": true,
     "viewers": 27341,
-    "spike_z": 64.0
+    "spike_z": 64.0,
+    "nocount": true,
+    "nocount_why": "Ales 18. 11.: cutscena/titulky ze hry, zustava venku, nepocita se do kvoty"
   },
   "live_clix_1795000387": {
     "url": "https://6afd8ca945b6c9383fbf8907--gta6bananaclips-media.netlify.app/20261118/live_clix_1795000387.mp4",
@@ -47,6 +49,8 @@
     "golden": false,
     "live": true,
     "viewers": 10991,
-    "spike_z": 11.0
+    "spike_z": 11.0,
+    "nocount": true,
+    "nocount_why": "Ales 18. 11.: cutscena/titulky ze hry, zustava venku, nepocita se do kvoty"
   }
 }

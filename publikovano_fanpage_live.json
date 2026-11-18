@@ -22,7 +22,9 @@
     "golden": false,
     "live": true,
     "viewers": 11630,
-    "spike_z": 23.0
+    "spike_z": 23.0,
+    "nocount": true,
+    "nocount_why": "Ales 18. 11.: cutscena/titulky ze hry, zustava venku, nepocita se do kvoty"
   },
   "live_tyrone_1795000943": {
     "url": "https://6afd8f144704a1bad8543144--gta6bananaclips-media.netlify.app/20261118/live_tyrone_1795000943.mp4",
@@ -47,6 +49,8 @@
     "golden": false,
     "live": true,
     "viewers": 10067,
-    "spike_z": 10.5
+    "spike_z": 10.5,
+    "nocount": true,
+    "nocount_why": "Ales 18. 11.: cutscena/titulky ze hry, zustava venku, nepocita se do kvoty"
   }
 }

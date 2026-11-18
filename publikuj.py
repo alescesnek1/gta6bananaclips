@@ -967,7 +967,8 @@ def budget_level():
 def used_today(day, recs=None):
     """Posts of the quota today, both writers (the Top 3 and experiments are extras, never counted)."""
     recs = records() if recs is None else recs
-    return sum(in_day(rec, day) for k, rec in recs.items() if not k.startswith(("top3_", "exp_")))
+    return sum(in_day(rec, day) for k, rec in recs.items()
+               if not k.startswith(("top3_", "exp_")) and not rec.get("nocount"))   # nocount: Aleš excluded it
 
 def extra_score(day, src_cfg):
     """Score a clip needs to go out OVER the obligatory quota: the brand's extra_ramp (launch week
@@ -1031,7 +1032,7 @@ def quota_dues(day, recs):
     """Due times of the day's quota posts (Top 3 and experiments are extras, not counted)."""
     out = []
     for k, rec in recs.items():
-        if not k.startswith(("top3_", "exp_")) and in_day(rec, day):
+        if not k.startswith(("top3_", "exp_")) and not rec.get("nocount") and in_day(rec, day):
             out.append(datetime.fromisoformat(rec["due"]))
     return out
 
@@ -1103,7 +1104,7 @@ def day_plan(day, now, recs=None, n_hot=0):
     room_end = datetime.combine(day, datetime.min.time(), TZ) + timedelta(hours=src.get("hot_room_until_h", 20))
     room = src.get("hot_room", 2) if now < room_end else 0
     slot_cap = max(0, max(must, top - room) - used)
-    taken = {rec.get("slot") or rec.get("due") for rec in recs.values()}
+    taken = {rec.get("slot") or rec.get("due") for rec in recs.values() if not rec.get("deleted")}
     free = [t for t in slot_times(day, len(SLOTS))
             if jittered(t, day) > now + timedelta(minutes=20) and t.isoformat() not in taken]
     horizon = now + timedelta(hours=src.get("plan_horizon_h", 3))

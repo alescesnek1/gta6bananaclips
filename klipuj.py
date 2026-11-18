@@ -4518,8 +4518,15 @@ def cmd_live(a):
         if time.time() >= next_poll:                  # who is live right now
             try:
                 data = helix("streams", {"game_id": games[0]["id"], "first": 50}).get("data") or []
+                # Aleš 18. 11.: don't burn the day on no-name streamers - watch the star streamers (sources.json
+                # star_streamers) from min_viewers, anyone else only when the stream is huge (live_nonstar_viewers)
+                cfg_l = load_json(SOURCES, {})
+                stars_l = {x.lower() for x in cfg_l.get("star_streamers", [])}
+                big = cfg_l.get("live_nonstar_viewers", 40000)
                 top = [x for x in data if (x.get("language") or "en").startswith("en")
-                       and x["viewer_count"] >= a.min_viewers and x["user_login"].lower() not in blocked][: a.n_streams]
+                       and x["user_login"].lower() not in blocked
+                       and (x["viewer_count"] >= big or (x["user_login"].lower() in stars_l
+                                                         and x["viewer_count"] >= a.min_viewers))][: a.n_streams]
                 streams = {x["user_login"].lower(): x for x in top}
                 meter.join(list(streams))
                 log(f"live: {len(streams)} streams: " + ", ".join(f"{k} {v['viewer_count']}" for k, v in list(streams.items())[:8]))
