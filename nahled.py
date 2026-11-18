@@ -19,6 +19,7 @@ Usage:
 
 import argparse
 import json
+import re
 import random
 import subprocess
 import sys
@@ -370,10 +371,32 @@ def thumb_brand(z):
     """brands.json -> <brand> -> long_flags -> thumb_brand (default on)."""
     return bool(((K.load_json(K.BRANDS, {}).get(z) or {}).get("long_flags") or {}).get("thumb_brand", True))
 
-def build_prompt(znacka, tags, text, scene, key_object, face_side, seed="", episode=None, tier="S", heat=5):
+NO_FACE = ("There is no photo of the streamer: show a young streamer with a gaming headset instead, an invented "
+           "person, not anyone real. Make the expression extremely exaggerated: {emotion}, eyes wide, mouth wide open, "
+           "eyebrows up. Place them large on the {face_side} third, cut out with a thin white outline and a soft "
+           "{color_name} rim glow, shoulders cropped by the bottom edge.")
+
+def renumber(text, mapping):
+    """'Image 2' -> 'Image 1' etc. in one pass (the attachments are numbered by what is really attached)."""
+    return re.sub(r"\b([Ii])mage (\d)\b", lambda m: f"{m.group(1)}mage {mapping.get(int(m.group(2)), int(m.group(2)))}",
+                  text)
+
+def build_prompt(znacka, tags, text, scene, key_object, face_side, seed="", episode=None, tier="S", heat=5,
+                 has_face=True):
+    """The Gemini / ChatGPT prompt. Without the streamer's face (no facecam) image 1 is missing: the game
+    frame becomes image 1 and the brand image 2, exactly like the attachment names (posli_mail)."""
     other = "left" if face_side == "right" else "right"
     color_name, hx = COLOR_NAME[znacka]
     emotion = next((EMO_PROMPT[t] for t in tags or [] if t in EMO_PROMPT), "pure shock")
+    out = _prompt(znacka, emotion, face_side, other, color_name, hx, scene, key_object, text, seed, episode, tier, heat)
+    if has_face:
+        return out
+    lines = out.split("\n")
+    lines = [NO_FACE.format(emotion=emotion, face_side=face_side, color_name=color_name) if l.startswith("Image 1 is")
+             else l for l in lines]
+    return renumber("\n".join(lines), {2: 1, 3: 2})
+
+def _prompt(znacka, emotion, face_side, other, color_name, hx, scene, key_object, text, seed, episode, tier, heat):
     return PROMPT.format(emotion=emotion, face_side=face_side, other_side=other, text_side=other, color_name=color_name,
                          hex=hx, scene=scene.rstrip("."), key_object=key_object, circle_line="", text=text.upper(),
                          brand_line=brand_line(znacka, seed, other, emotion) if thumb_brand(znacka) else "",
@@ -432,7 +455,8 @@ def prepare_long(meta_path):
         brand_ref(m["znacka"], d / "znacka.png")
     else:
         (d / "znacka.png").unlink(missing_ok=True)
-    one = min(m["moments"], key=lambda x: x["rank"])
+    # 18. 11.: tier / HEAT of the STRONGEST moment (series score, then fun) - in THE STORY rank 1 is just the first
+    one = max(m["moments"], key=lambda x: (x.get("score") or 0, x.get("fun") or 0))
     tier, heat = one.get("tier") or "S", max(1, min(5, round(5 * (one.get("fun") or 0.8) + 0.5)))
     scene, key, how = scene_text(d / "frame.jpg", used.get("tags"))
     face_side = "right" if (date_ord(m.get("datum")) + (0 if m["znacka"] == "bananas" else 1)) % 2 else "left"
@@ -442,9 +466,7 @@ def prepare_long(meta_path):
     res.update(face2=("face2.jpg" if face2 else None), face2_channel=face2,
                scene=scene, key_object=key, scene_from=how, face_side=face_side, tier=tier, heat=heat,
                prompt=build_prompt(m["znacka"], used.get("tags"), texts[0], scene, key, face_side, seed,
-                                   tier=tier, heat=heat, episode=m.get("episode")) if False else
-                   build_prompt(m["znacka"], used.get("tags"), texts[0], scene, key, face_side, seed,
-                                   m.get("episode"), tier, heat))
+                                   m.get("episode"), tier, heat, has_face=bool(res.get("face"))))
     (d / "meta.json").write_text(json.dumps(res, indent=2, ensure_ascii=False), encoding="utf-8")
     m.update(nahled_vstup=str(d), nahled_prompt=res["prompt"], nahled_texts=texts)
     meta_path.write_text(json.dumps(m, indent=2, ensure_ascii=False), encoding="utf-8")

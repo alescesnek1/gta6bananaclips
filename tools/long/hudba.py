@@ -30,6 +30,42 @@ XFADE = 1.6                                   # s, equal-power crossfade between
 BLOCK = 5                                     # moments per music block (4-5)
 
 
+BEAT_SPAN = 240.0                 # s of a track analysed for its beat grid (a block is 4-5 moments, ~60-90 s)
+
+
+def refine_grid(path, start, dur, T, phase):
+    """
+    klipuj.beat_grid measures the period in 10 ms steps: over a 90 s block that alone can drift by half a
+    beat. The period is refined in 0.5 ms steps (and the phase with it) on the kick onsets of the whole span:
+    the grid whose beats sit on the most onset energy wins. Returns (T, phase).
+    """
+    try:
+        raw = subprocess.run(["ffmpeg", "-nostdin", "-v", "error", "-ss", f"{start:.2f}", "-t", f"{dur:.2f}", "-i", str(path),
+                              "-af", "lowpass=150,highpass=40", "-ac", "1", "-ar", "4000", "-f", "s16le", "-"],
+                             capture_output=True, timeout=120).stdout
+    except subprocess.TimeoutExpired:
+        return T, phase
+    a = np.frombuffer(raw, np.int16).astype(np.float64)
+    if a.size < 4000 * 8:
+        return T, phase
+    e = np.sqrt(np.convolve(a * a, np.ones(40) / 40, mode="same"))[::40]       # 100 Hz envelope
+    on = np.maximum(0, np.diff(e, prepend=e[0]))
+    best = (-1.0, T, phase)
+    for TT in np.arange(T - 0.012, T + 0.0125, 0.0005):
+        if TT <= 0.2:
+            continue
+        n = int((on.size / 100 - 0.01) / TT)
+        if n < 4:
+            continue
+        for ph in np.arange(0.0, TT, 0.01):
+            idx = np.round((ph + TT * np.arange(n)) * 100).astype(int)
+            idx = idx[idx < on.size]
+            sc = float(on[idx].sum())
+            if sc > best[0]:
+                best = (sc, float(TT), float(ph))
+    return best[1], best[2]
+
+
 def tracks(brand):
     """Tracks of the brand that exist on disk, weakest energy first."""
     rows = [t for t in (json.loads(DB.read_text(encoding="utf-8")).get("tracks") if DB.exists() else []) or []
@@ -102,8 +138,9 @@ class Plan:
         sys.path.insert(0, str(HERE))
         import klipuj as K
         b = self.track(i)
-        if i not in self._beats:
-            self._beats[i] = K.beat_grid(b["path"], b["start"], 60)
+        if i not in self._beats:                               # 18. 11.: the grid of the WHOLE block (a 60 s
+            g = K.beat_grid(b["path"], b["start"], BEAT_SPAN)  # estimate drifts off the beat later in the block)
+            self._beats[i] = refine_grid(b["path"], b["start"], BEAT_SPAN, *g) if g else None
         g = self._beats[i]
         return (g[0], t_block + g[1]) if g else None
 

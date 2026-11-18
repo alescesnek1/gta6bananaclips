@@ -49,6 +49,7 @@ TZ = ZoneInfo("Europe/Prague")
 W, H, FPS = 1920, 1080, 30
 LAUNCH = date(2026, 11, 19)
 GAME_OUT = date(2026, 11, 18)                  # first day with real GTA 6 gameplay (NZ unlock)
+GAME_OUT_TS = datetime(2026, 11, 18, 12, 0, tzinfo=TZ).timestamp()   # the unlock itself: 18. 11. 12:00 Prague
 FONT_B = HERE / "fonts" / "cap" / "montserrat-900.ttf"
 FONT_M = HERE / "fonts" / "montserrat-600.ttf"
 COL = {"bananas": "FFE135", "fanpage": "FF4FD8"}
@@ -63,6 +64,7 @@ MIN_VERIFIED = 15                 # a themed series needs this many verified mom
 MIN_VIDEO = 300.0                 # shorter than 5:00: no video
 CHAPTER_EXTRA = {"bananas": 1.9, "fanpage": 0.0}           # the tier list placement after every moment
 COLD_SHOT = 1.9                   # cold open: <= 2 s per moment, the build-up, never the cut used later
+COLD_MAX = 2.5                    # 18. 11.: a cold open shot starts on a sentence, so it may run up to 2.5 s
 sys.path.insert(0, str(HERE / "tools" / "long"))            # tier, endcard, hudba, zabava
 
 # Every series: categories it needs (None = any moment), tag weights for ranking, the vision question
@@ -71,31 +73,31 @@ SERIES = {
     "funny-day": {"cats": None, "w": {"funny": 1.0, "rage": 0.6, "fail": 0.6, "wow": 0.4, "physics": 0.5}, "days": 1,
                   "title": "GTA 6 Funniest Moments #{n} ({who})"},
     "wild-day": {"cats": None, "w": {"crash": 1.0, "chase": 0.9, "stunt": 0.8, "wow": 0.7, "rage": 0.5, "glitch": 0.5},
-                 "days": 2, "title": "Wildest GTA 6 Moments #{n} ({who})"},
+                 "days": 2, "title": "GTA 6 Wildest Moments #{n} ({who})"},
     "streamer-night": {"cats": None, "w": {"crash": 0.8, "chase": 0.8, "wow": 0.8, "funny": 0.6, "rage": 0.5},
-                       "days": 1, "night": True, "title": "{lead}'s Night in Vice City #{n}"},
+                       "days": 1, "night": True, "title": "{lead}'s Night in GTA 6 Vice City #{n}"},
     "after-dark": {"cats": None, "w": {"crash": 1.0, "chase": 0.9, "stunt": 0.8, "wow": 0.7, "rage": 0.5},
-                   "days": 1, "title": "Vice City After Dark #{n} ({who})"},
+                   "days": 1, "title": "GTA 6 Vice City After Dark #{n} ({who})"},
     "banana-league": {"cats": None, "w": {"funny": 1.0, "rage": 0.6, "fail": 0.6, "wow": 0.5}, "days": 7, "reuse": True,
-                      "league": True, "title": "Banana League Week #{n} - GTA 6 Streamer Tier List ({who})"},
+                      "league": True, "title": "GTA 6 Banana League Week #{n} - Streamer Tier List ({who})"},
     "same-mission": {"cats": None, "w": {"funny": 0.6, "wow": 0.6, "crash": 0.5, "mission": 0.5}, "days": 7,
-                     "same_mission": True, "title": "Same Mission, {k} Streamers #{n} ({who})"},
+                     "same_mission": True, "title": "GTA 6: Same Mission, {k} Streamers #{n} ({who})"},
     "first-reactions": {"cats": {"first-reaction", "wow"}, "w": {"first-reaction": 1.0, "wow": 0.7, "funny": 0.5},
-                        "days": 0, "title": "Streamers' First Reactions to Vice City #{n} ({who})"},
+                        "days": 0, "title": "GTA 6: Streamers' First Reactions to Vice City #{n} ({who})"},
     "rage": {"cats": {"rage"}, "w": {"rage": 1.0, "fail": 0.4}, "days": 7, "title": "GTA 6 Rage Moments #{n} ({who})"},
     "streamer-week": {"cats": None, "w": {"funny": 0.6, "wow": 0.6, "crash": 0.5}, "days": 7, "streamer": True,
                       "title": "{lead} in GTA 6 #{n} - Best Moments of the Week"},
     "physics": {"cats": {"physics", "glitch", "crash"}, "w": {"physics": 1.0, "glitch": 0.8, "crash": 0.6, "funny": 0.5},
-                "verify": "physics", "days": 7, "title": "Streamers vs GTA 6 Physics #{n} ({who})"},
+                "verify": "physics", "days": 7, "title": "GTA 6 Physics vs Streamers #{n} ({who})"},
     "fails": {"cats": {"fail"}, "w": {"fail": 1.0, "funny": 0.5, "crash": 0.4}, "verify": "fail", "days": 7,
               "title": "GTA 6 Fails of the Week #{n} ({who})"},
     "missions": {"cats": {"mission"}, "w": {"mission": 1.0, "fail": 0.6, "funny": 0.4}, "verify": "mission", "days": 7,
-                 "title": "Streamers vs GTA 6 Missions - Mission Fails #{n} ({who})"},
+                 "title": "GTA 6 Mission Fails: Streamers vs Missions #{n} ({who})"},
     "try-not-to-laugh": {"cats": {"funny"}, "w": {"funny": 1.0, "fail": 0.5}, "days": 7, "min_conf": 0.6,
-                         "title": "Try Not to Laugh: GTA 6 Streamers #{n} ({who})"},
+                         "title": "GTA 6 Try Not to Laugh: Streamers #{n} ({who})"},
     "top-week": {"cats": None, "w": None, "days": 7, "reuse": True,
-                 "title": {"bananas": "Top {k} Funniest GTA 6 Moments of the Week #{n} ({who})",
-                           "fanpage": "Moments That Broke the Internet - Night #{n} ({who})"}},
+                 "title": {"bananas": "GTA 6 Top {k} Funniest Moments of the Week #{n} ({who})",
+                           "fanpage": "GTA 6 Moments That Broke the Internet #{n} ({who})"}},
     "chases": {"cats": {"chase"}, "w": {"chase": 1.0, "crash": 0.5, "escape": 0.5}, "verify": "chase", "days": 7,
                "title": "GTA 6 Craziest Police Chases #{n} ({who})"},
     "crashes-stunts": {"cats": {"crash", "stunt"}, "w": {"crash": 1.0, "stunt": 1.0, "physics": 0.4},
@@ -105,12 +107,13 @@ SERIES = {
     "escapes": {"cats": {"escape"}, "w": {"escape": 1.0, "chase": 0.6}, "verify": "escape", "days": 7,
                 "title": "GTA 6 Clutch Police Escapes #{n} ({who})"},
     "easter-eggs": {"cats": {"easter-egg"}, "w": {"easter-egg": 1.0, "wow": 0.4}, "verify": "easter-egg", "days": 7,
-                    "title": "Easter Eggs and Secrets Streamers Found in GTA 6 #{n} ({who})"},
+                    "title": "GTA 6 Easter Eggs and Secrets Streamers Found #{n} ({who})"},
     "heists": {"cats": {"mission"}, "w": {"mission": 1.0, "chase": 0.4, "wow": 0.4}, "verify": "mission", "days": 7,
                "title": "GTA 6 Best Heists and Missions #{n} ({who})"},
     "streamer": {"cats": None, "w": {"funny": 0.5, "wow": 0.5}, "days": 7, "title": "{lead} GTA 6 Best Moments #{n}"},
 }
 DAILY = {"bananas": "funny-day", "fanpage": "wild-day"}
+RESERVE_VERIFY = 10               # themed series: verified leftovers kept for the reserve (each costs a vision call)
 WD = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
 
 def series_key(serie):
@@ -146,10 +149,13 @@ def titles_texts(z, serie, n, d, moments):
     t = t[z] if isinstance(t, dict) else t
     who = ", ".join(names(moments))
     lead = names(moments, 1)[0] if moments else ""
-    out = t.format(n=n, who=who, lead=lead, k=len({m["channel"] for m in moments}))
-    while len(out) > 100 and "," in out:
+    k = len(moments) if sk == "top-week" else len({m["channel"] for m in moments})
+    out = t.format(n=n, who=who, lead=lead, k=k).replace(" ()", "")
+    while len(out) > 100 and "," in out:                   # YouTube title limit: names drop from the end
         out = out.rsplit(",", 1)[0] + ")"
-    return out[:100]
+    if len(out) > 100 and "({" in t:                       # one very long name: no names at all
+        out = t.format(n=n, who="", lead=lead, k=k).replace(" ()", "")
+    return out[:100].rstrip(" -:(")
 
 def window_for(serie, run_day, a):
     """Moments window for a run on run_day: daily series = yesterday, themed / weekly = last 7 days,
@@ -160,12 +166,14 @@ def window_for(serie, run_day, a):
     else:
         days = SERIES[series_key(serie)]["days"]
         do = run_day - timedelta(days=1)
-        od = LAUNCH if days == 0 else do - timedelta(days=max(days, 1) - 1)
-        # 18. 11. (Aleš): GTA 6 unlocks in NZ on 18. 11. 12:00 Prague; anything earlier in the category
-        # is Just Chatting / other games, never a "GTA 6" compilation
+        od = GAME_OUT if days == 0 else do - timedelta(days=max(days, 1) - 1)   # first reactions: since the unlock
         od = max(od, GAME_OUT)
     t0 = datetime(od.year, od.month, od.day, tzinfo=TZ).timestamp()
     t1 = datetime(do.year, do.month, do.day, tzinfo=TZ).timestamp() + 86400
+    if not a.hra:
+        # 18. 11. (Aleš): GTA 6 unlocks in NZ on 18. 11. 12:00 Prague; anything earlier in the category is
+        # Just Chatting / trailers / other games, never a "GTA 6" compilation (the test category is exempt)
+        t0 = max(t0, GAME_OUT_TS)
     return od, do, t0, t1
 
 def candidates(a, serie, t0, t1, used):
@@ -201,15 +209,23 @@ def with_seg(r):
     """Row ready for the similarity checks: source, words, cut, facecam box."""
     r = ready_quiet(r)
     if r.get("source") and r.get("cut"):
-        r.setdefault("seg", list(segment_times(r)))
+        if not r.get("seg"):
+            st = segment_times(r)
+            if st is None:                                 # no sentence-safe cut: not usable
+                return r
+            r["seg"] = list(st)
         moment_words(r)
         r.setdefault("cam", K.load_json(K.STREAMERS, {}).get(r["channel"], {}).get("cam"))
     return r
 
+MISSION_CANDS = 120               # same-mission: download + Whisper of more would not fit the run
+
 def mission_groups(rows):
-    """Same anchor (shared NPC lines) AND different outcomes, >= 3 streamers; canned scenes out (podobnost.py)."""
+    """Same anchor (shared NPC lines) AND different outcomes, >= 3 streamers; canned scenes out (podobnost.py).
+    Only the MISSION_CANDS most viewed candidates are looked at (each one may need a download + Whisper)."""
     import kategorie
     import podobnost
+    rows = sorted(rows, key=lambda r: -(r.get("views") or 0))[:MISSION_CANDS]
     rows = [with_seg(r) for r in rows]
     rows = [r for r in rows if r.get("seg")]
     return podobnost.refine_groups(kategorie.same_mission(rows), rows)
@@ -243,7 +259,7 @@ def classified(r):
     if r.get("cats") is None:
         import kategorie
         words = moment_words(r)
-        a0, b0 = segment_times(r)
+        a0, b0 = segment_times(r) or r["cut"]              # classification only: the HPC cut when no safe one
         r.update(kategorie.classify(words, r["source"], r.get("peak"), r.get("title"), r.get("created") or 0,
                                     r.get("views") or 0, a0, b0))
         K.pool_add({k: r.get(k) for k in K.POOL_KEYS} | {k: r.get(k) for k in ("cats", "primary", "proven", "evidence",
@@ -267,14 +283,14 @@ def qualifies(r, serie, z, verify=True, vis_cache=None):
     cfg = SERIES[sk]
     static = (r.get("signals") or {}).get("static")
     if static is None and r.get("source"):
-        a0, b0 = r.get("seg") or segment_times(r)
+        a0, b0 = r.get("seg") or segment_times(r) or r["cut"]
         static = kategorie.static_share(r["source"], a0, b0)
         r.setdefault("signals", {})["static"] = static
     if static is not None and static > kategorie.STATIC_MAX:
         return False, "not gameplay (static screen)"
     sig = r.setdefault("signals", {})
     if "dark" not in sig and r.get("source"):
-        a0, b0 = r.get("seg") or segment_times(r)
+        a0, b0 = r.get("seg") or segment_times(r) or r["cut"]
         sig["luma"], sig["dark"] = kategorie.darkness(r["source"], a0, b0)
     if (sig.get("dark") or 0) > 0.5:
         return False, "too dark"
@@ -304,12 +320,19 @@ def qualifies(r, serie, z, verify=True, vis_cache=None):
             return False, "vision: not gameplay"
         if tp is False:
             return False, "vision says no"
+        if need and (gp is None or (q and tp is None)):
+            # 18. 11.: a themed series promises its topic in the title. Without the vision check (budget used
+            # up, network error) nothing is approved silently: the moment is out (the main series keeps
+            # the static-picture gameplay filter above and does not need it)
+            log(f"  ::warning:: vision unavailable, themed moment {r['id'][-16:]} not approved")
+            return False, "vision unavailable (themed)"
     return True, "ok"
 
-def pick_episode(a, serie, cands, z, verify=True, vis_cache=None):
+def pick_episode(a, serie, cands, z, verify=True, vis_cache=None, reserve_ids=()):
     """
     Verified, entertaining moments for one episode, best first, + the verified leftover (reserve).
-    Every moment is cut (segment_times) so the length is known.
+    Every moment is cut (segment_times, sentence-safe) so the length is known; no safe cut = out.
+    The series' reserve (already verified) is looked at first, then the rest by views.
     """
     sk = series_key(serie)
     w = SERIES[sk]["w"] or SERIES[main_series(z)]["w"]
@@ -339,7 +362,8 @@ def pick_episode(a, serie, cands, z, verify=True, vis_cache=None):
         import kategorie
         groups = mission_groups(cands)
         cands = [r for r in cands if groups and r["id"] in groups[0]]
-    cands = sorted(cands, key=lambda r: (r.get("views") or 0), reverse=True)[: a.max_kandidatu]
+    reserve_ids = set(reserve_ids)
+    cands = sorted(cands, key=lambda r: (r["id"] not in reserve_ids, -(r.get("views") or 0)))[: a.max_kandidatu]
     good, why = [], {}
     for r in cands:
         try:
@@ -360,12 +384,21 @@ def pick_episode(a, serie, cands, z, verify=True, vis_cache=None):
         if zabava.low_action(r):                           # low motion + low loudness + no laughter / scream
             why["low action"] = why.get("low action", 0) + 1
             continue
-        s, e = segment_times(r)
+        try:
+            st = segment_times(r)
+        except Exception as e_:
+            log(f"  skip {r['id']}: cut: {str(e_)[-120:]}")
+            st = None
+        if st is None:                                     # 18. 11.: no sentence-safe start / end -> out
+            why["no sentence-safe cut"] = why.get("no sentence-safe cut", 0) + 1
+            continue
+        s, e = st
         if e - s < zabava.MIN_LEN:                         # source too short for a >= 10 s chapter
             why["too short"] = why.get("too short", 0) + 1
             continue
         pk = r.get("peak")
-        keep = (zabava.tight_cut(moment_words(r), r["source"], s, e, pk if pk is not None and s < pk < e else None)
+        keep = (zabava.tight_cut(moment_words(r), r["source"], s, e, pk if pk is not None and s < pk < e else None,
+                                 cutter=cutter_for(r))
                 if K.has_audio(r["source"]) else [(s, e)])  # no sound: nothing to measure, the plain cut
         if keep is None:                                   # > 2 s of nothing around the payoff
             why["dead stretch"] = why.get("dead stretch", 0) + 1
@@ -388,7 +421,11 @@ def pick_episode(a, serie, cands, z, verify=True, vis_cache=None):
     themed = bool(SERIES[sk].get("cats"))
     for r in good:
         full = len(picked) >= a.max_momentu or (total >= a.delka and len(picked) >= a.min_momentu)
-        if verify and (not full or themed):                # main series: leftovers are not used, no vision for them
+        if full and (not themed or len(rest) >= RESERVE_VERIFY):
+            if not themed:                                 # leftovers: no more vision calls (shared daily budget);
+                rest.append(r)                             # an unverified one never goes to a themed reserve
+            continue
+        if verify:                                         # main series: leftovers are not used, no vision for them
             ok, reason = qualifies(r, serie, z, True, vis_cache)
             if not ok:
                 why[reason] = why.get(reason, 0) + 1
@@ -447,9 +484,8 @@ def plan_day(a, z, publish_day, run_day, used, eps, res, vis_cache=None, verify=
         od, do, t0, t1 = window_for(s, run_day, a)
         reserve_ids = {r["id"] for r in reserve_rows(z, s, run_day, res)}
         cands = candidates(a, s, t0, t1, used)
-        # the reserve of this series goes first (it is already verified), then the new ones
-        cands.sort(key=lambda r: (r["id"] not in reserve_ids,))
-        picked, rest, why, lead = pick_episode(a, s, cands, z, verify, vis_cache)
+        # the reserve of this series goes first (it is already verified), then the new ones by views
+        picked, rest, why, lead = pick_episode(a, s, cands, z, verify, vis_cache, reserve_ids)
         need = MIN_VERIFIED if SERIES[series_key(s)].get("cats") else a.min_momentu_hlavni
         enough = len(picked) >= min(need, a.min_momentu) and episode_ok(picked, z)
         tried.append((s, len(picked), round(video_len(picked, z)), why))
@@ -466,10 +502,20 @@ def plan_day(a, z, publish_day, run_day, used, eps, res, vis_cache=None, verify=
     return plan
 
 def commit_plan(a, z, plan, used, eps, res, run_day):
-    """After a built (or simulated) episode: number up, used moments, reserve, maybe a promotion."""
+    """After a built (or simulated) episode: number up, used moments, reserve, maybe a promotion.
+    Returns the undo record (undo_plan) - long.yml rolls the state back when the e-mail did not go out,
+    so the numbering never skips a video Aleš never got."""
     s = series_key(plan["serie"])
+    undo = {"z": z, "s": s, "eps": (eps.get(z) or {}).get(s), "res": (res.get(z) or {}).get(s),
+            "used": {}, "promo": None}
+
+    def mark(i):
+        if i not in undo["used"]:
+            undo["used"][i] = used.get(i)
+
     eps.setdefault(z, {})[s] = plan["episode"]
     for r in plan["picked"]:
+        mark(r["id"])
         used[r["id"]] = {"znacka": z, "serie": s, "datum": plan["day"]}
     until = str(run_day + timedelta(days=7))
     themed = bool(SERIES[s].get("cats"))                  # main / weekly series: leftovers stay free for others
@@ -479,6 +525,8 @@ def commit_plan(a, z, plan, used, eps, res, run_day):
     merged = {x["id"]: x for x in old + keep}
     res.setdefault(z, {})[s] = list(merged.values())
     for x in merged.values():                             # nobody else takes a reserved moment
+        if x["id"] not in used:
+            mark(x["id"])
         used.setdefault(x["id"], {"znacka": z, "serie": s, "datum": plan["day"], "reserve": True})
     # material for 2+ more episodes and the series' next slot > 3 days away: an extra episode in the
     # next calendar slot of this channel (replacing that day's series)
@@ -487,10 +535,42 @@ def commit_plan(a, z, plan, used, eps, res, run_day):
         nxt = next((day + timedelta(days=i) for i in range(1, 15) if calendar_series(z, day + timedelta(days=i)) == s), None)
         free = next((day + timedelta(days=i) for i in range(1, 8) if calendar_series(z, day + timedelta(days=i))), None)
         if free and (nxt is None or (nxt - day).days > 3) and calendar_series(z, free) not in ("top-week", "first-reactions"):
-            res.setdefault("_promo", {}).setdefault(z, {})[str(free)] = s
+            pr = res.setdefault("_promo", {}).setdefault(z, {})
+            undo["promo"] = [str(free), pr.get(str(free))]
+            pr[str(free)] = s
     cutoff = str(run_day - timedelta(days=30))
     for k in [k for k, v in used.items() if v.get("datum", "") < cutoff]:
         used.pop(k)
+    return undo
+
+def undo_plan(undo, used, eps, res):
+    """Reverse one commit_plan (only what it changed; the other brand's changes made since stay)."""
+    z, s = undo["z"], undo["s"]
+    if undo["eps"] is None:
+        (eps.get(z) or {}).pop(s, None)
+    else:
+        eps.setdefault(z, {})[s] = undo["eps"]
+    if undo["res"] is None:
+        (res.get(z) or {}).pop(s, None)
+    else:
+        res.setdefault(z, {})[s] = undo["res"]
+    for i, old in undo["used"].items():
+        if old is None:
+            used.pop(i, None)
+        else:
+            used[i] = old
+    if "built" in undo:                                   # the publish day is free again (a retry may build it)
+        if undo["built"] is None:
+            (eps.get("_built") or {}).pop(z, None)
+        else:
+            eps.setdefault("_built", {})[z] = undo["built"]
+    if undo.get("promo"):
+        day, old = undo["promo"]
+        pr = (res.get("_promo") or {}).get(z) or {}
+        if old is None:
+            pr.pop(day, None)
+        else:
+            pr[day] = old
 
 
 def log(msg):
@@ -582,6 +662,15 @@ INTRO = {
     "after-dark": "Vice City after dark: the night's chaos from GTA 6 streamers, in the order it happened.",
 }
 INTRO_OTHER = "The best GTA 6 streamer moments, counted down to number one."
+# fanpage = THE STORY: no ranking, so never "counted down" (18. 11.)
+INTRO_STORY = {
+    "first-reactions": "Streamers seeing Vice City in GTA 6 for the first time, in the order it happened.",
+    "streamer-night": INTRO["streamer-night"],
+    "after-dark": INTRO["after-dark"],
+    "same-mission": "One GTA 6 mission, played by several streamers, each one ending differently.",
+}
+INTRO_STORY_OTHER = "GTA 6 streamer moments from Vice City, in the order they happened."
+KEYWORDS = "Game: GTA 6 (Grand Theft Auto VI), Vice City."
 
 def fmt_t(s):
     s = int(s)
@@ -590,38 +679,70 @@ def fmt_t(s):
 def description(z, serie, d, moments, chapters):
     key = "streamer" if serie.startswith("streamer:") else serie
     day = f"day {day_n(d)}" if d >= LAUNCH else d.strftime("%B %d").replace(" 0", " ")
-    intro = INTRO.get(key, INTRO_OTHER).format(day=day, n=len(moments), name=names(moments, 1)[0],
-                                               topic=SERIES[key]["title"] if isinstance(SERIES[key]["title"], str) else "")
-    lines = [intro, "", "Chapters:"] + [f"{fmt_t(t)} {label}" for t, label in chapters]
+    tmpl = (INTRO_STORY.get(key, INTRO_STORY_OTHER) if story_mode(z) else INTRO.get(key, INTRO_OTHER))
+    intro = tmpl.format(day=day, n=len(moments), name=names(moments, 1)[0],
+                        topic=SERIES[key]["title"] if isinstance(SERIES[key]["title"], str) else "")
+    lines = [intro, KEYWORDS, "", "Chapters:"] + [f"{fmt_t(t)} {clean_label(label)}" for t, label in chapters]
     seen, credits = set(), []
     for m in sorted(moments, key=lambda m: m["rank"]):
         if m["channel"] not in seen:
             seen.add(m["channel"])
             credits.append(f"{m.get('name') or m['channel']}: {K.home_url(m)}")
-    lines += ["", "Streamers in this video (go follow them):"] + credits
-    lines += ["", "Every clip belongs to its streamer and was clipped by viewers. "
-              "If you are in it and want it out, comment and we cut it.", ""]
-    tag = "#gta6bananaclips" if z == "bananas" else "#gta6fanpageclip"
-    lines.append(f"#gta6 #gtavi #gta6clips {tag}")
-    return "\n".join(lines)
+    tail = ["", "Every clip belongs to its streamer and was clipped by viewers. "
+            "If you are in it and want it out, comment and we cut it.", "",
+            f"#gta6 #gtavi #grandtheftauto6 #vicecity {'#gta6bananaclips' if z == 'bananas' else '#gta6fanpageclip'}"]
+    head = lines + ["", "Streamers in this video (go follow them):"]
+    while credits and len("\n".join(head + credits + tail)) > DESC_MAX:   # YouTube: 5000 characters
+        credits.pop()
+    return "\n".join(head + credits + tail)
+
+DESC_MAX, TAGS_MAX = 5000, 500
+
+def clean_label(label):
+    """Chapter label: data only (#rank / time + streamer). No viewer titles, #hashtags, links or swears."""
+    t = re.sub(r"https?://\S+|www\.\S+", "", str(label))
+    t = re.sub(r"(?<!\S)#(?!\d)\w+", "", t)                 # #hashtag out, "#3" (the rank) stays
+    t = " ".join(w for w in t.split() if not K.SWEAR_RE.match(K._tok(w)))
+    return re.sub(r"\s+", " ", t).strip(" -") or "Moment"
+
+SERIES_TAGS = {
+    "funny-day": ["gta 6 funny moments", "gta 6 funny"], "wild-day": ["gta 6 crazy moments", "gta 6 chaos"],
+    "glitches": ["gta 6 glitches", "gta 6 bugs"], "chases": ["gta 6 police chase", "gta 6 car crash"],
+    "top-week": ["gta 6 best moments", "gta 6 top moments"],
+    "first-reactions": ["gta 6 first reaction", "gta 6 reaction", "streamers react to gta 6"],
+    "after-dark": ["gta 6 night", "gta 6 vice city night"], "streamer-night": ["gta 6 stream highlights"],
+    "banana-league": ["gta 6 tier list", "gta 6 funny moments"], "same-mission": ["gta 6 mission", "gta 6 missions"],
+    "rage": ["gta 6 rage"], "fails": ["gta 6 fails"], "physics": ["gta 6 physics"], "streamer-week": ["gta 6 highlights"],
+}
 
 def yt_tags(z, serie, moments):
-    base = ["gta 6", "gta vi", "gta 6 gameplay", "gta 6 streamers", "gta 6 moments", "vice city"]
-    per = {"funny-day": ["gta 6 funny moments", "gta 6 funny"], "wild-day": ["gta 6 crazy moments", "gta 6 chaos"],
-           "glitches": ["gta 6 glitches", "gta 6 bugs"], "chases": ["gta 6 police chase", "gta 6 car crash"],
-           "top-week": ["gta 6 best moments", "gta 6 top moments"]}.get(serie, ["gta 6 best moments"])
-    return per + base + [n.lower() for n in names(moments, 8)] + [f"{n.lower()} gta 6" for n in names(moments, 3)]
+    """Search keywords: the series, the game in every spelling, the streamers. <= 500 characters (YouTube
+    counts a comma per tag and quotes around a tag with spaces)."""
+    base = ["gta 6", "gta vi", "grand theft auto 6", "grand theft auto vi", "gta 6 vice city", "vice city",
+            "gta 6 gameplay", "gta 6 streamers", "gta 6 moments"]
+    per = SERIES_TAGS.get(series_key(serie), ["gta 6 best moments"])
+    nm = [n.lower() for n in names(moments, 8)]
+    out, size = [], 0
+    for t in per + base + [f"{n} gta 6" for n in nm[:3]] + nm:
+        t = re.sub(r"[<>,\"]", "", t).strip()[:100]
+        cost = len(t) + (2 if " " in t else 0) + (1 if out else 0)
+        if t and t not in out and size + cost <= TAGS_MAX:
+            out.append(t)
+            size += cost
+    return out
 
-def suggested_slot(z, serie, d, now=None):
+def tags_len(tags):
+    return sum(len(t) + (2 if " " in t else 0) for t in tags) + max(0, len(tags) - 1)
+
+def suggested_slot(z, serie, d, publish):
     """
-    When to publish (Prague). Aleš 17. 11.: the e-mail comes a day ahead, so the slot is always
-    TOMORROW (day after the run), US afternoon = Prague evening; each brand its own time, moved
+    When to publish (Prague): on the PUBLISH day of the plan (the calendar day this video is for; the
+    e-mail comes a day ahead), US afternoon = Prague evening; each brand its own time, moved
     -20..+20 min per day, never :00 / :30 (like shorts). Weekly a bit earlier than the daily.
     """
-    now = now or datetime.now(TZ)
     hh, mm = {("bananas", 0): (20, 40), ("fanpage", 0): (22, 10),
               ("bananas", 1): (19, 40), ("fanpage", 1): (21, 10)}[(z, int(serie == "top-week"))]
-    base_day = now.date() + timedelta(days=1)
+    base_day = publish
     t = datetime(base_day.year, base_day.month, base_day.day, hh, mm, tzinfo=TZ)
     rnd = random.Random(f"{d}:{z}:{serie}:long")
     t += timedelta(minutes=rnd.randint(-20, 20))
@@ -648,14 +769,26 @@ def ready(r):
 
 def segment_times(r):
     """HPC cut on the 16:9 source: start on a sentence ~10 s before the payoff, end ~2-3.5 s after
-    (tools/long/zabava.py; Aleš 17. 11.: tighter heads and tails, average moment 12-16 s)."""
+    (tools/long/zabava.py; Aleš 17. 11.: tighter heads and tails, average moment 12-16 s). Aleš 18. 11.:
+    never mid-sentence - None when there is no sentence-safe cut or the words are unknown (Whisper
+    failed): the moment is dropped, never cut blind."""
     import zabava
-    dur = r.get("dur") or K.duration(r["source"])
     try:
         words = moment_words(r)
-    except Exception:
-        words = []
-    return zabava.snap_segment(words, r["cut"], r.get("peak"), dur)
+    except Exception as e:
+        log(f"  words {r['id'][-16:]}: {str(e)[-100:]} -> dropped")
+        return None
+    return zabava.snap_segment(words, r["cut"], r.get("peak"), cutter_for(r).dur, cutter_for(r))
+
+def cutter_for(r):
+    """zabava.Cutter of the moment's source (words + fine loudness), cached on the row."""
+    import zabava
+    c = r.get("_cutter")
+    if c is None or c.w != [tuple(x) for x in (r.get("words") or [])]:
+        dur = r.get("dur") or K.duration(r["source"])
+        c = zabava.Cutter.of(moment_words(r), r["source"], dur)
+        r["_cutter"] = c
+    return c
 
 # -----------------------------------------------------------------------------
 # render
@@ -887,7 +1020,8 @@ def render_moment(m, out, z, rank, idx, tmp, venc, teaser=False, banana=False, c
     """
     s, e = m["seg"]
     src = m["source"]
-    if not K.has_audio(src):
+    if not K.has_audio(src):                              # no sound: nobody can be cut mid-sentence
+        m["cutqa"] = {"start": s, "end": e, "jumps": 0, "first": "", "last": "", "problems": []}
         render_silent({**m, "seg": [s, min(e, s + cut_to) if cut_to else e]}, out, z, rank, idx, tmp, venc)
         return K.duration(out)
     dur_src = K.duration(src)
@@ -895,11 +1029,19 @@ def render_moment(m, out, z, rank, idx, tmp, venc, teaser=False, banana=False, c
     peak = m.get("peak")
     peak = peak if peak is not None and s < peak < e else None
     import zabava
+    cut = cutter_for(m)
     keep = [tuple(k) for k in (m.get("keep") or [])] if not cut_to else None
     if not keep or abs(keep[0][0] - s) > 0.01 or keep[-1][1] > e + 0.01:
-        keep = zabava.tight_cut(words, src, s, e, peak) or (K.dead_air(words, src, s, e, peak) if words else [(s, e)])
+        keep = (zabava.tight_cut(words, src, s, e, peak, cutter=cut)
+                or cut.safe_pieces(K.dead_air(words, src, s, e, peak) if words else [(s, e)]))
     if sum(y - x for x, y in keep) < 8.0:                 # chapters need >= 10 s (moment + tier placement)
         keep = [(s, e)]
+    cut.window(s, e)                                      # 18. 11.: what the viewer hears at every cut
+    first, last = cut.edge_words(keep[0][0], keep[-1][1])
+    m["cutqa"] = {"start": round(keep[0][0], 2), "end": round(keep[-1][1], 2), "jumps": len(keep) - 1,
+                  "first": first, "last": last, "problems": cut.report(keep)}
+    log(f"    cut {keep[0][0]:.2f}-{keep[-1][1]:.2f} ({len(keep) - 1} jumps): '{first} ... {last}'"
+        + (f"  PROBLEM {m['cutqa']['problems']}" if m["cutqa"]["problems"] else ""))
     card_file = K.RATING / f"score_{K.banana_rating(m.get('views'))}.webm"
     card = card_on and z == "bananas" and card_file.exists()
     tail = min(CARD, max(0.0, dur_src - e)) if card else 0.0
@@ -982,14 +1124,14 @@ def render_moment(m, out, z, rank, idx, tmp, venc, teaser=False, banana=False, c
         g.append(f"{vlast}[{n}:v]overlay=x={tx}:y={ty}:eof_action=pass[vch]")
         vlast, n = "[vch]", n + 1
     if sticker and main_end > 4.0:                        # our presenter reacts over the end of the moment: she
-        t0 = max(0.5, (pk + 0.5) if pk is not None else 0.0, main_end - 1.75)     # slides up from the edge
-        t1 = min(main_end, t0 + 1.7)                                              # and leaves the same way
-        e = (f"if(lt(t,{t0 + 0.32:.2f}),1-pow(1-(t-{t0:.2f})/0.32,3),"
-             f"if(gt(t,{t1 - 0.26:.2f}),1-pow(1-({t1:.2f}-t)/0.26,2),1))")
+        st0 = max(0.5, (pk + 0.5) if pk is not None else 0.0, main_end - 1.75)    # slides up from the edge
+        st1 = min(main_end, st0 + 1.7)                                            # and leaves the same way
+        slide = (f"if(lt(t,{st0 + 0.32:.2f}),1-pow(1-(t-{st0:.2f})/0.32,3),"
+                 f"if(gt(t,{st1 - 0.26:.2f}),1-pow(1-({st1:.2f}-t)/0.26,2),1))")
         ins.extend(["-c:v", "libvpx-vp9", "-i", str(sticker)])
-        g.append(f"[{n}:v]scale=-2:600,setpts=PTS+{t0:.2f}/TB[ms];{vlast}[ms]overlay="
-                 f"x={'60' if hits(1300, 500, 1920, 1080) else 'W-w-60'}:y='H-h*max(0,{e})':"
-                 f"enable='between(t,{t0:.2f},{t1:.2f})':eof_action=pass[vms]")
+        g.append(f"[{n}:v]scale=-2:600,setpts=PTS+{st0:.2f}/TB[ms];{vlast}[ms]overlay="
+                 f"x={'60' if hits(1300, 500, 1920, 1080) else 'W-w-60'}:y='H-h*max(0,{slide})':"
+                 f"enable='between(t,{st0:.2f},{st1:.2f})':eof_action=pass[vms]")
         vlast, n = "[vms]", n + 1
     gain = level_gain(src, keep, t0, words)
     a = (f"[ac]volume={gain:.2f}dB,{TAME}"
@@ -1184,16 +1326,32 @@ def render_cold_open(top3, out, z, tmp, venc):
     payoff starts), punched in 1.15x so it is a different shot than the moment later. Hard cuts, credits.
     Weakest of the three first, #1 last.
     """
-    parts = []
-    for i, m in enumerate(reversed(top3)):
+    import zabava
+    parts, picks = [], []
+    for m in top3:                                         # the strongest 3 with a clean shot (a candidate list)
         p = m.get("peak") or (m["seg"][0] + m["seg"][1]) / 2
-        e = min(K.duration(m["source"]), p + 0.3)
-        s = max(0.0, e - COLD_SHOT)
-        mm = {**m, "seg": [s, e]}
+        se = zabava.cold_shot(cutter_for(m), p, COLD_MAX) if K.has_audio(m["source"]) else True
+        if se:
+            picks.append((m, se))
+        if len(picks) == 3:
+            break
+    for i, (m, se) in enumerate(reversed(picks)):
+        p = m.get("peak") or (m["seg"][0] + m["seg"][1]) / 2
+        if se is not True:                                 # 18. 11.: start on a sentence, end between words
+            s, e = se
+            first, last = cutter_for(m).edge_words(s, e)
+            log(f"  cold open {m['channel']} {s:.2f}-{e:.2f}: '{first} ... {last}'")
+        else:
+            e = min(K.duration(m["source"]), p + 0.3)
+            s = max(0.0, e - COLD_SHOT)
         seg = tmp / f"cold_{i}.mp4"
-        render_moment_plain(mm, seg, z, i, tmp, venc, punch=1.15)
+        render_moment_plain({**m, "seg": [s, e]}, seg, z, i, tmp, venc, punch=1.15)
         parts.append(seg)
+    if not parts:                                          # nothing clean: the video starts with the countdown
+        log("  cold open: no sentence-safe shot, none")
+        return False
     concat(parts, out)
+    return True
 
 def render_moment_plain(m, out, z, idx, tmp, venc, punch=1.0):
     s, e = m["seg"]
@@ -1262,6 +1420,9 @@ def build_story(a, picked, d, tmp):
     mlen = K.duration(music) if music else 0.0
     m0 = (mstart + 7) % max(mlen - 12, 1.0) if music else 0.0
     import hudba
+    for m in picked:
+        m.pop("rank", None)
+        m.pop("at", None)
     story = sorted(picked, key=lambda m: ((m.get("video_id") or ""), m.get("vod_offset") or 0)
                    if serie == "streamer-night" else (m.get("created") or 0, m.get("vod_offset") or 0))
     for i, m in enumerate(story, 1):
@@ -1282,8 +1443,8 @@ def build_story(a, picked, d, tmp):
         return dur
 
     cold = tmp / "cold.mp4"                                # the 3 strongest build-ups first: it starts in action
-    render_cold_open(sorted(story, key=lambda m: -m.get("score", 0))[:3], cold, z, tmp, venc)
-    add(cold, "cold")
+    if render_cold_open(sorted(story, key=lambda m: -m.get("score", 0)), cold, z, tmp, venc):
+        add(cold, "cold")
     groups = []
     for m in story:
         lab = chapter_label(m, serie)
@@ -1295,28 +1456,35 @@ def build_story(a, picked, d, tmp):
         louder.append((t, t + CHAPTER_CARD))
         for mi, m in enumerate(ms):
             seg = tmp / f"m{m['rank']:02d}.mp4"
-            cut_to = None
             bi = block_of(played, len(story))[0]
             if bi == len(block_starts):                    # a new music block starts with this moment
                 block_starts.append(t)
             played += 1
             if plan and serie == "after-dark":             # the beat of the track playing in this block
                 beats = plan.beats(bi, block_starts[bi])
-            if beats:                                      # After Dark: the cut lands on a beat
-                T, ph = beats
-                natural = moment_len(m)
-                end = t + natural
-                k = math.floor((end - ph) / T)
-                target = ph + k * T
-                if target - t > 6.0:
-                    cut_to = target - t
-            log(f"  {lab} {m['channel']} {m['seg'][0]:.1f}-{m['seg'][1]:.1f} s" + (f" -> {cut_to:.2f} s on beat" if cut_to else ""))
+            on_beat = ""
+            if beats and K.has_audio(m["source"]):         # After Dark: the cut lands on a beat - never inside
+                import zabava                              # a sentence: extended to a later beat instead
+                keep = [tuple(k) for k in (m.get("keep") or [m["seg"]])]
+                pk = m.get("peak")
+                fit = zabava.beat_fit(cutter_for(m), keep, beats[0], beats[1], t,
+                                      pk if pk is not None and m["seg"][0] < pk < m["seg"][1] else None)
+                if fit:
+                    m = {**m, "keep": fit, "seg": [fit[0][0], fit[-1][1]], "play": sum(y - x for x, y in fit)}
+                    story[story.index(next(x for x in story if x["id"] == m["id"]))] = m
+                    ms[mi] = m
+                    on_beat = f" -> {m['play']:.2f} s on beat"
+            log(f"  {lab} {m['channel']} {m['seg'][0]:.1f}-{m['seg'][1]:.1f} s{on_beat}")
             last_of_chapter = mi == len(ms) - 1 and gi < len(groups) - 1 and flag(z, "model_cards")
-            render_moment(m, seg, z, None, m["rank"], tmp, venc, story=True, cut_to=cut_to,
+            render_moment(m, seg, z, None, m["rank"], tmp, venc, story=True, cut_to=None,
                           chapter=lab if mi == 0 else None,   # the title over the running picture, no black card
                           sticker=model_sticker(f"{d}:{gi}") if last_of_chapter else None)
             m["at"] = round(t, 2)
-            info["moments"].append({"rank": m["rank"], "channel": m["channel"], "at": t, "id": m["id"]})
+            for x in picked:                               # the caller's rows get the time and the cut check
+                if x["id"] == m["id"]:
+                    x.update(at=m["at"], cutqa=m.get("cutqa"), seg=m["seg"], keep=m.get("keep"), play=m.get("play"))
+            info["moments"].append({"rank": m["rank"], "channel": m["channel"], "at": t, "id": m["id"],
+                                    "cut": m.get("cutqa")})
             info.setdefault("lens", []).append(add(seg, "moment"))
     end = tmp / "outro.mp4"
     end_card(z, end, venc)
@@ -1365,6 +1533,9 @@ def build(a, picked, d, tmp, tiers=True):
     mpos = lambda i: (mstart + 7 * i) % max(mlen - 12, 1.0)
     import hudba
     import zabava
+    for m in picked:                                       # a previous attempt (QA fallback) must not leave ranks
+        m.pop("rank", None)
+        m.pop("at", None)
     ranked = list(reversed(zabava.order_countdown(picked, lambda m: m.get("primary"))))   # best first, with variety
     if SERIES[series_key(a.serie)].get("league") and flag(z, "league"):
         try:
@@ -1406,8 +1577,8 @@ def build(a, picked, d, tmp, tiers=True):
         return dur
 
     cold = tmp / "cold.mp4"
-    render_cold_open(ranked[:3], cold, z, tmp, venc)
-    add(cold, "cold")                                      # ~6 s: too short for a chapter, it belongs to the first one
+    if render_cold_open(ranked, cold, z, tmp, venc):
+        add(cold, "cold")                                  # ~6 s: too short for a chapter, it belongs to the first one
     louder = [(max(0.0, t - 0.6), t + 0.4)]
     if tiers:
         import tier
@@ -1426,13 +1597,14 @@ def build(a, picked, d, tmp, tiers=True):
         render_moment(m, seg, z, m["rank"], i, tmp, venc,
                       banana=z == "bananas" and m["rank"] <= 5 and flag(z, "banana_reaction"),
                       badge=f"#{lg['rank']} · {lg['avg']:.1f} AVG" if lg else None)
-        title = re.sub(r"\s+", " ", m.get("title") or "").strip()[:50]
-        chapters.append((t if chapters else 0, f"#{m['rank']} {m.get('name') or m['channel']}" + (f" - {title}" if title else "")))
+        # 18. 11.: chapters are data only - never the viewer's raw clip title (hashtags, links, swears)
+        chapters.append((t if chapters else 0, f"#{m['rank']} {m.get('name') or m['channel']}"))
         m["at"] = round(t, 2)
         louder.append((t, t + 0.7))
         if block_of(i, len(order))[0] == len(block_starts):   # a new music block starts with this moment
             block_starts.append(t)
-        info["moments"].append({"rank": m["rank"], "channel": m["channel"], "at": t, "id": m["id"]})
+        info["moments"].append({"rank": m["rank"], "channel": m["channel"], "at": t, "id": m["id"],
+                                "cut": m.get("cutqa")})
         info.setdefault("lens", []).append(add(seg, "moment"))
         if tiers:
             stings.append((t, tier.LAND_FR * TIER_ANIM))
@@ -1513,6 +1685,12 @@ def qa_long(out, chapters, info, min_len, max_len=900.0):
             bad.append(f"average moment {sum(lens) / len(lens):.1f} s (> 20)")
     if info["tiers"] and info["board_entries"] != info["n_moments"]:
         bad.append(f"tier board has {info['board_entries']} entries for {info['n_moments']} moments")
+    for m in info["moments"]:                             # 18. 11.: every cut between sentences
+        cq = m.get("cut")
+        if cq is None:
+            bad.append(f"cut: #{m['rank']} {m['channel']} has no cut check")
+        elif cq.get("problems"):
+            bad.append(f"cut: #{m['rank']} {m['channel']}: {'; '.join(cq['problems'])}")
     p = subprocess.run(["ffmpeg", "-nostdin", "-hide_banner", "-i", str(out),
                         "-vf", "blackdetect=d=1.5:pic_th=0.97:pix_th=0.06,freezedetect=n=0.002:d=4",
                         "-af", "ebur128=peak=true,silencedetect=n=-50dB:d=2", "-f", "null", "-"],
@@ -1543,12 +1721,67 @@ def qa_long(out, chapters, info, min_len, max_len=900.0):
         + ("OK" if not bad else "; ".join(bad)))
     return bad
 
+def qa_texts(title, desc, tags, chapters):
+    """The texts that go out: title with "GTA 6" <= 100 chars, description <= 5000 with >= 3 chapters from
+    0:00 (YouTube shows chapters only then), tags <= 500 characters. Returns problems ([] = OK)."""
+    bad = []
+    if "GTA 6" not in title or len(title) > 100:
+        bad.append(f"title {title!r} ({len(title)} chars, needs 'GTA 6', <= 100)")
+    if len(desc) > DESC_MAX:
+        bad.append(f"description {len(desc)} chars (> {DESC_MAX})")
+    if len(chapters) < 3 or chapters[0][0] != 0 or "\n0:00 " not in "\n" + desc:
+        bad.append(f"chapters: {len(chapters)}, first at {chapters[0][0] if chapters else '-'} (needs >= 3 from 0:00)")
+    if tags_len(tags) > TAGS_MAX:
+        bad.append(f"tags {tags_len(tags)} chars (> {TAGS_MAX})")
+    return bad
+
+def video_moments(picked, info):
+    """The moments that are really in the built video, in rank order (banana-league plays one moment per
+    streamer, so some picked rows were never ranked; they are not used, not described, not in the meta)."""
+    order = {x["id"]: i for i, x in enumerate(info["moments"])}
+    return sorted((m for m in picked if m["id"] in order), key=lambda m: (m.get("rank", 10 ** 6), order[m["id"]]))
+
+def failed_path(z, publish, serie):
+    return OUT / z / f"{publish}_{(serie or 'long').replace(':', '-')}.failed.json"
+
+def write_failed(z, publish, serie, reason):
+    """Aleš 18. 11.: every failure comes by e-mail, never silence. long.yml mails every *.failed.json."""
+    fp = failed_path(z, publish, serie)
+    fp.parent.mkdir(parents=True, exist_ok=True)
+    fp.write_text(json.dumps({"znacka": z, "serie": serie, "publish_day": str(publish), "duvod": reason},
+                             ensure_ascii=False, indent=2), encoding="utf-8")
+    print(f"::warning::Long-form {z} {publish}: {reason}")
+    return fp
+
+def thumb_variants(left, after):
+    """AI thumbnail variants for this brand: the daily image budget (Cloudflare resets 00:00 UTC) is shared,
+    so with another brand still to come this one takes at most its half (and 2), never 0 when any is left."""
+    if left <= 0:
+        return 0
+    return max(1, min(3 if after <= 0 else 2, left // (1 + max(0, after))))
+
+def rollback(meta_path):
+    """long.yml: the e-mail did not go out -> the state goes back (number, used moments, reserve)."""
+    m = json.loads(Path(meta_path).read_text(encoding="utf-8"))
+    if not m.get("undo"):
+        print(f"{meta_path}: nothing to roll back")
+        return 0
+    used, eps, res = K.load_json(USED, {}), K.load_json(EPISODES, {}), K.load_json(RESERVE, {})
+    undo_plan(m["undo"], used, eps, res)
+    K.save_json(USED, used)
+    K.save_json(EPISODES, eps)
+    K.save_json(RESERVE, res)
+    print(f"::warning::{m['znacka']} {m['serie']} #{m['episode']}: e-mail failed, state rolled back")
+    return 0
+
 # -----------------------------------------------------------------------------
 
 def main():
     global MIN_VERIFIED, MIN_VIDEO
     p = argparse.ArgumentParser(description="long-form YouTube compilations (16:9) from stream moments")
-    p.add_argument("--znacka", required=True, choices=["bananas", "fanpage"])
+    p.add_argument("--znacka", choices=["bananas", "fanpage"])
+    p.add_argument("--vratit", help="roll the state back for this .meta.json (long.yml: the e-mail failed)")
+    p.add_argument("--znovu", action="store_true", help="build even when the publish day is already done")
     p.add_argument("--serie", default=None, help="override the calendar: " + ", ".join(SERIES) + ", streamer:<login>")
     p.add_argument("--den", help="publish day YYYY-MM-DD (default tomorrow, Prague): its calendar series")
     p.add_argument("--od", help="first day of moments (YYYY-MM-DD, Prague)")
@@ -1570,14 +1803,44 @@ def main():
     p.add_argument("--bez-nahledu", action="store_true")
     p.add_argument("--out", help="also copy the video here (e.g. out/_ukazka/long_bananas.mp4)")
     a = p.parse_args()
+    if a.vratit:
+        return rollback(a.vratit)
+    if not a.znacka:
+        p.error("--znacka is required")
     MIN_VERIFIED, MIN_VIDEO = a.min_overeno, a.min_video
     if a.serie and series_key(a.serie) not in SERIES:
         sys.exit(f"unknown series {a.serie}")
     K.WHISPER_MODEL = a.whisper
-    z = a.znacka
     run_day = datetime.now(TZ).date()
     publish = date.fromisoformat(a.den) if a.den else run_day + timedelta(days=1)
+    if a.kalendar or a.zkouska:
+        return make(a, run_day, publish)
+    try:                                                   # never silence: any crash becomes a .failed.json
+        return make(a, run_day, publish)
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        write_failed(a.znacka, publish, a.serie or "long", f"crash: {type(e).__name__}: {str(e)[-300:]}")
+        return 1
+
+def calendar_run(a):
+    """The regular run (cron 23:25 UTC or the 24/7 PC dispatch ~00:30): no forced series, no test category."""
+    return not (a.serie or a.hra or getattr(a, "znovu", False))
+
+def make(a, run_day, publish):
+    z = a.znacka
     used, eps, res = K.load_json(USED, {}), K.load_json(EPISODES, {}), K.load_json(RESERVE, {})
+    done = (eps.get("_built") or {}).get(z)
+    if calendar_run(a) and not a.kalendar and done == str(publish):
+        # 18. 11.: long.yml runs twice a night (fallback cron + the PC's dispatch): one video and one e-mail per
+        # brand and publish day. Only a built + mailed video marks the day (a failed run / failed e-mail does not)
+        print(f"::notice::Long-form {z} {publish}: already built in an earlier run tonight, skipping")
+        if not a.zkouska:
+            skip = OUT / z / f"{publish}.skip.json"
+            skip.parent.mkdir(parents=True, exist_ok=True)
+            skip.write_text(json.dumps({"znacka": z, "publish_day": str(publish), "duvod": "already built"},
+                                       ensure_ascii=False), encoding="utf-8")
+        return 0
     vis = {}
     if a.kalendar:                                         # simulation: nothing is saved
         print(f"\n{z}: calendar from {publish} ({a.kalendar} days), moments {a.od or 'per series'}..{a.do or ''}")
@@ -1595,7 +1858,15 @@ def main():
         return 0
     plan = plan_day(a, z, publish, run_day, used, eps, res, vis, not a.bez_overeni)
     if not plan.get("serie"):
-        print(f"::warning::Long-form {z} {publish}: {plan['note']}")
+        if a.zkouska or not plan.get("planned"):           # the calendar has no long-form that day: nothing to say
+            print(f"::notice::Long-form {z} {publish}: {plan['note']}")
+            if not a.zkouska:
+                skip = OUT / z / f"{publish}.skip.json"
+                skip.parent.mkdir(parents=True, exist_ok=True)
+                skip.write_text(json.dumps({"znacka": z, "publish_day": str(publish), "duvod": plan["note"]},
+                                           ensure_ascii=False), encoding="utf-8")
+            return 0
+        write_failed(z, publish, plan["planned"], plan["note"])  # < 5 min of material: Aleš gets an e-mail
         return 0
     picked = plan["picked"]
     log(f"{z} {plan['serie']} #{plan['episode']} for {publish}: {len(picked)} moments ~{plan['length'] / 60:.1f} min, "
@@ -1609,63 +1880,94 @@ def main():
     do = date.fromisoformat(plan["do"])
     tmp = OUT / f"_tmp_{z}_{os.getpid()}"
     tmp.mkdir(parents=True, exist_ok=True)
-    problems = []
+    problems, out, texts = [], None, None
+    attempts = [True] if story_mode(z) else [True, False]  # a story has no tier list: no second identical build
     try:
-        for tiers in (True, False):                        # QA failed: once more as a plain countdown
+        for i_try, tiers in enumerate(attempts + ["cut"]):
+            if tiers == "cut":                             # the QA found unsafe cuts: those moments out, once more
+                bad_ids = {m["id"] for m in picked if (m.get("cutqa") or {}).get("problems")}
+                if not bad_ids or len(picked) - len(bad_ids) < max(3, a.min_momentu_hlavni):
+                    break
+                picked = [m for m in picked if m["id"] not in bad_ids]
+                if video_len(picked, z) < MIN_VIDEO:
+                    problems.append(f"after dropping {len(bad_ids)} unsafe cuts the video is under {MIN_VIDEO:.0f} s")
+                    break
+                log(f"  dropping {len(bad_ids)} moments with unsafe cuts and building again")
+                tiers = attempts[-1]
             for f in tmp.glob("*"):
                 shutil.rmtree(f) if f.is_dir() else f.unlink()
-            out, chapters, dur, info = build(a, picked, do, tmp, tiers=tiers)
-            problems = qa_long(out, chapters, info, MIN_VIDEO)
+            try:
+                out, chapters, dur, info = build(a, picked, do, tmp, tiers=tiers)
+                problems = qa_long(out, chapters, info, MIN_VIDEO)
+            except Exception as e:                         # a crash is a failed attempt, the next one may work
+                import traceback
+                traceback.print_exc()
+                problems = [f"crash: {type(e).__name__}: {str(e)[-300:]}"]
+                continue
+            if not problems:                               # the texts that go out (data of the built video)
+                moments = video_moments(picked, info)
+                lead = reach(moments)
+                texts = (titles_texts(z, a.serie, plan["episode"], do, moments),
+                         description(z, a.serie, do, moments, chapters), yt_tags(z, a.serie, moments))
+                problems = qa_texts(texts[0], texts[1], texts[2], chapters)
             if not problems:
                 break
-            log(f"  QA failed ({'with' if tiers else 'without'} tier list): {'; '.join(problems)}")
+            log(f"  QA failed (attempt {i_try + 1}, tiers {tiers}): {'; '.join(problems)}")
     finally:
         for f in tmp.glob("*"):
             shutil.rmtree(f) if f.is_dir() else f.unlink()
         tmp.rmdir()
-    if problems:
-        fail = out.with_name(out.name.replace(".mp4", ".failed.json"))
-        out.unlink(missing_ok=True)
-        fail.write_text(json.dumps({"znacka": z, "serie": a.serie, "publish_day": str(publish),
-                                    "duvod": "; ".join(problems)}, ensure_ascii=False, indent=2), encoding="utf-8")
-        print(f"::warning::Long-form {z} {publish} failed QA: {'; '.join(problems)}")
+    if problems or texts is None:
+        if out is not None:
+            Path(out).unlink(missing_ok=True)
+        write_failed(z, publish, a.serie, "; ".join(problems) or "no video built")
         return 0
-    moments = sorted(picked, key=lambda m: m["rank"])
-    lead = reach(moments)
     log(f"  most viral streamer: {lead} ({max(m['reach'] for m in moments):,} reach)")
-    slot = suggested_slot(z, a.serie, do)
+    for m in moments:
+        cq = m.get("cutqa") or {}
+        log(f"  cut #{m['rank']} {m['channel']}: '{cq.get('first')}' ... '{cq.get('last')}'")
+    slot = suggested_slot(z, a.serie, do, publish)
+    strongest = max(moments, key=lambda m: (m.get("score") or 0, m.get("fun") or 0))
     meta = {
         "znacka": z, "kanal": "gta6bananaclips" if z == "bananas" else "gta6fanpageclip",
         "serie": a.serie, "episode": plan["episode"], "datum": str(do), "od": plan["od"], "do": plan["do"],
         "publish_day": str(publish), "poznamka": plan["note"],
-        "title": titles_texts(z, a.serie, plan["episode"], do, moments),
-        "description": description(z, a.serie, do, moments, chapters),
-        "tags": yt_tags(z, a.serie, moments), "video": str(out), "duration_s": round(dur, 1),
+        "title": texts[0], "description": texts[1], "tags": texts[2], "video": str(out), "duration_s": round(dur, 1),
         "nahrat": slot.isoformat(), "playlist": a.serie if not a.serie.startswith("streamer:") else "streamers",
         "moments": [{k: m.get(k) for k in ("id", "rank", "channel", "name", "url", "title", "views", "tags", "peak",
                                            "seg", "at", "source", "platform", "reach", "tag_scores", "primary",
-                                           "proven", "fun", "tier")} for m in moments],
+                                           "proven", "fun", "tier", "score", "cutqa")} for m in moments],
+        "strongest": strongest["id"],
         "music": info.get("music") or [],
         "made_at": datetime.now(TZ).isoformat(timespec="seconds"),
     }
     mp = out.with_name(out.name.replace(".mp4", ".meta.json"))
-    mp.write_text(json.dumps(meta, indent=2, ensure_ascii=False), encoding="utf-8")
     log(f"  -> {out} ({dur / 60:.1f} min), '{meta['title']}', upload {slot:%Y-%m-%d %H:%M}")
-    commit_plan(a, z, plan, used, eps, res, run_day)      # the number goes up only now, after the build
+    plan["picked"] = moments                              # only what is in the video is used (league: a subset)
+    meta["undo"] = commit_plan(a, z, plan, used, eps, res, run_day)   # the number goes up only now
+    if calendar_run(a):                                   # this publish day is done (rolled back if the e-mail fails)
+        meta["undo"]["built"] = (eps.get("_built") or {}).get(z)
+        eps.setdefault("_built", {})[z] = str(publish)
+    mp.write_text(json.dumps(meta, indent=2, ensure_ascii=False), encoding="utf-8")
     K.save_json(USED, used)
     K.save_json(EPISODES, eps)
     K.save_json(RESERVE, res)
     if not a.bez_nahledu:
         try:
             import nahled
-            import nahled_ai
             nahled.prepare_long(mp)
+        except Exception as e:                             # the e-mail still goes out, it says the inputs are missing
+            log(f"  thumbnail inputs: {str(e)[-200:]}")
+        try:
+            import nahled_ai
             meta = json.loads(mp.read_text(encoding="utf-8"))
-            thumb = nahled_ai.make(Path(meta["nahled_vstup"]))
-            meta["thumbnail"] = thumb
-            mp.write_text(json.dumps(meta, indent=2, ensure_ascii=False), encoding="utf-8")
-        except Exception as e:                             # no thumbnail is fine: YouTube picks a frame
-            log(f"  thumbnail: {str(e)[-200:]}")
+            left = nahled_ai.budget_left()[0]
+            n = thumb_variants(left, int(os.environ.get("LONG_BRANDS_AFTER") or 0))
+            if meta.get("nahled_vstup") and n:
+                meta["thumbnail"] = nahled_ai.make(Path(meta["nahled_vstup"]), variants=n)
+                mp.write_text(json.dumps(meta, indent=2, ensure_ascii=False), encoding="utf-8")
+        except Exception as e:                             # no backup thumbnail is fine: Aleš makes the real one
+            log(f"  AI thumbnail: {str(e)[-200:]}")
     if a.out:
         Path(a.out).parent.mkdir(parents=True, exist_ok=True)
         Path(a.out).write_bytes(out.read_bytes())

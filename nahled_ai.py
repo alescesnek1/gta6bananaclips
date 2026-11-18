@@ -38,7 +38,7 @@ import numpy as np
 
 HERE = Path(__file__).resolve().parent
 MODEL = os.environ.get("CF_MODEL", "@cf/black-forest-labs/flux-2-klein-9b")
-BUDGET = HERE / "nahled_ai_budget.json"
+BUDGET = Path(os.environ.get("NAHLED_AI_BUDGET") or HERE / "nahled_ai_budget.json")   # env: tests keep the repo clean
 NEURONS = {"@cf/black-forest-labs/flux-2-klein-9b": 1460, "@cf/black-forest-labs/flux-2-klein-4b": 140}
 TW, TH = 1280, 720
 FONTS = {"bananas": HERE / "fonts" / "cap" / "montserrat-900.ttf", "fanpage": HERE / "fonts" / "cap" / "anton.ttf"}
@@ -222,10 +222,11 @@ def score(path, tbox):
 VISION = "@cf/meta/llama-3.2-11b-vision-instruct"   # ~10 neurons per call (one 640 px image, short answer)
 
 def vision_left():
-    """Vision calls left today (CF_MAX_VISION, default 60, shared by topic checks and the scene description)."""
+    """Vision calls left today (CF_MAX_VISION, default 120 ~ 1 200 neurons, shared by topic checks and the scene
+    description; the day is Cloudflare's: it resets at 00:00 UTC = 01:00 Prague)."""
     day = datetime.now(timezone.utc).date().isoformat()
     b = json.loads(BUDGET.read_text(encoding="utf-8")) if BUDGET.exists() else {}
-    return int(os.environ.get("CF_MAX_VISION", "60")) - b.get(day, {}).get("vision", 0)
+    return int(os.environ.get("CF_MAX_VISION", "120")) - b.get(day, {}).get("vision", 0)
 
 def vision_spend():
     day = datetime.now(timezone.utc).date().isoformat()

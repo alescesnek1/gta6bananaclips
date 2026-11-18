@@ -65,6 +65,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # two triggers a night (cron 23:25 UTC + the 24/7 PC's dispatch ~00:30): the second run waits in the
+      # concurrency queue and must see the state the first one pushed (long_episodes.json -> _built), not the
+      # commit it was triggered on -> one video and one e-mail per brand and day
+      - name: latest state
+        run: git fetch -q origin "${GITHUB_REF_NAME}" && git reset -q --hard "origin/${GITHUB_REF_NAME}"
+
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -100,13 +106,18 @@ jobs:
           echo "plan: $z / ${s:-daily series}"
 
       - name: compile
+        timeout-minutes: 290                # a hung compile must still leave time for the e-mails below
         run: |
           extra=""
           [ -n "${{ inputs.od }}" ] && extra="$extra --od ${{ inputs.od }}"
           [ -n "${{ inputs.do }}" ] && extra="$extra --do ${{ inputs.do }}"
           [ -n "${{ inputs.den }}" ] && extra="$extra --den ${{ inputs.den }}"
           [ -n "${{ inputs.delka }}" ] && extra="$extra --delka ${{ inputs.delka }} --min-video 60 --min-momentu 6 --min-overeno 3"
-          for z in ${{ steps.plan.outputs.brands }}; do
+          brands="${{ steps.plan.outputs.brands }}"
+          left=$(echo $brands | wc -w)
+          for z in $brands; do
+            left=$((left - 1))
+            export LONG_BRANDS_AFTER=$left   # AI thumbnail budget: leave the next brand its share
             s="${{ steps.plan.outputs.serie }}"
             if [ -n "${{ inputs.hra }}" ]; then
               python kompilace.py --znacka "$z" ${s:+--serie "$s"} $extra --hra "${{ inputs.hra }}" || echo "::warning::kompilace $z selhala"
@@ -146,20 +157,58 @@ jobs:
             out/_long/*/*/nahled*.jpg
           retention-days: 7
 
+      # a video without its artifact link still gets its e-mail (the link line says it is missing)
       - name: e-mail bananas
+        id: mail_b
         continue-on-error: true            # one failed e-mail must not swallow the next one
-        if: steps.art_b.outputs.artifact-url != ''
+        if: always() && hashFiles('out/_long/bananas/*.meta.json') != ''
         run: python posli_mail.py out/_long/bananas/*.meta.json --odkaz "${{ steps.art_b.outputs.artifact-url }}"
 
       - name: e-mail fanpage
+        id: mail_f
         continue-on-error: true            # one failed e-mail must not swallow the next one
-        if: steps.art_f.outputs.artifact-url != ''
+        if: always() && hashFiles('out/_long/fanpage/*.meta.json') != ''
         run: python posli_mail.py out/_long/fanpage/*.meta.json --odkaz "${{ steps.art_f.outputs.artifact-url }}"
 
-      - name: e-mail about a video that failed QA (no link)
+      # never silence (Aleš 18. 11.): a brand that left neither a video, nor a failed note, nor a "no long-form
+      # today" mark (crash, timeout, kill) gets a failed note now
+      - name: missing result -> failed note
+        if: always()
+        run: |
+          z="${{ inputs.znacka }}"; [ -z "$z" ] && z=obe        # not from the plan step: it may never have run
+          for z in $([ "$z" = obe ] && echo bananas fanpage || echo "$z"); do
+            compgen -G "out/_long/$z/*.meta.json" >/dev/null && continue
+            compgen -G "out/_long/$z/*.failed.json" >/dev/null && continue
+            compgen -G "out/_long/$z/*.skip.json" >/dev/null && continue
+            mkdir -p out/_long/$z
+            python - "$z" <<'PY'
+          import json, sys
+          from datetime import datetime, timedelta
+          from zoneinfo import ZoneInfo
+          z = sys.argv[1]
+          day = str(datetime.now(ZoneInfo("Europe/Prague")).date() + timedelta(days=1))
+          json.dump({"znacka": z, "serie": "?", "publish_day": day,
+                     "duvod": "kompilace skončila bez videa i bez zprávy (pád, časový limit) - viz log běhu"},
+                    open(f"out/_long/{z}/{day}_crash.failed.json", "w", encoding="utf-8"), ensure_ascii=False)
+          PY
+          done
+
+      - name: e-mail about a video that failed (no link)
         continue-on-error: true            # one failed e-mail must not swallow the next one
-        if: hashFiles('out/_long/*/*.failed.json') != ''
+        if: always() && hashFiles('out/_long/*/*.failed.json') != ''
         run: python posli_mail.py out/_long/*/*.failed.json
+
+      # the e-mail of a video did not go out: its state goes back (number, used moments, reserve), so the
+      # numbering never skips a video Aleš never got
+      - name: roll back the state of a video whose e-mail failed
+        if: always()
+        run: |
+          if [ -n "$(ls out/_long/bananas/*.meta.json 2>/dev/null)" ] && [ "${{ steps.mail_b.outcome }}" != "success" ]; then
+            for f in out/_long/bananas/*.meta.json; do python kompilace.py --vratit "$f"; done
+          fi
+          if [ -n "$(ls out/_long/fanpage/*.meta.json 2>/dev/null)" ] && [ "${{ steps.mail_f.outcome }}" != "success" ]; then
+            for f in out/_long/fanpage/*.meta.json; do python kompilace.py --vratit "$f"; done
+          fi
 
       - name: save state (used moments, episodes, reserve, AI budget)
         if: always()

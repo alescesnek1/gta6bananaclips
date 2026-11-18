@@ -12,15 +12,18 @@ Běh je každý den kolem 00:25 a dělá video na **zítřek**. E-mail tedy při
   - pondělí: „<Streamer>'s Night in Vice City #N“ (jeden streamer, jeden den),
   - středa: „Same Mission, N Streamers #N“, když najdeme stejnou misi u ≥ 3 streamerů, jinak „Vice City After Dark #N“,
   - sobota: „Vice City After Dark #N“ (noc napříč streamery, střihy do rytmu hudby).
-- 20. 11. na obou: „Streamers' First Reactions to Vice City“.
-- Číslo dílu (#N) má každá série zvlášť (`long_episodes.json`). Zvýší se, až když video opravdu vznikne.
+- 20. 11. na obou: „GTA 6: Streamers' First Reactions to Vice City“ (momenty od odemčení hry 18. 11. 12:00).
+- Každý název začíná „GTA 6“ (u noci jednoho streamera hned po jeho jménu), má do 100 znaků a jména streamerů v závorce.
+- Číslo dílu (#N) má každá série zvlášť (`long_episodes.json`). Zvýší se, až když video opravdu vznikne. Když se e-mail s videem neodešle, číslo, použité momenty i rezerva se vrátí zpět (`kompilace.py --vratit`), takže žádný díl nechybí.
+- Momenty berou jen čas od odemčení hry (18. 11. 12:00 Praha), nic dřívějšího.
 - Téma bere jen momenty s důkazem ze 2 nezávislých zdrojů. Jeden z nich vždy musí být řeč nebo název klipu, druhý zvuk (siréna, náraz, křik) nebo pohyb obrazu. Pak to ještě potvrdí model Llama Vision otázkou ano/ne.
 - Nudné momenty (ticho, chůze, menu) nejdou nikam.
 - Konzervované scény (holič, obchod, oblečení, tetování, sedání do židle, cutscény, menu) jsou u všech hráčů stejné: když mají dva streameři skoro stejný herní obraz (facecam se maskuje), oba momenty jdou ven. Cutscéna = černé pruhy nahoře i dole. „Same Mission“ bere jen skupiny ≥ 3 streamerů se stejným začátkem a různým výsledkem (`podobnost.py`).
 - Moment musí být hraní: obraz z větší části statický (prohlížeč, předávání cen, „SIGNAL LOST“) = ven. Pak to ještě jednou kontroluje Llama Vision na 4 snímcích, ve stejném volání jako téma. Vision sám prohlížeč přes hru nepoznal, chytil ho až test statického obrazu.
 - Méně než 15 ověřených momentů → vyjde hlavní série kanálu a v e-mailu je řádek „POZNÁMKA“.
 - Nevyužité ověřené momenty tématu jdou na 7 dní do rezervy (`long_reserve.json`). Druhý kanál ani jiná série je nevezmou.
-- Video kratší než 5 min se nedělá.
+- Video kratší než 5 min se nedělá. Když video nevznikne (málo materiálu, neprošlo kontrolou, program spadl nebo vypršel čas), vždy přijde e-mail s důvodem. Den, kdy podle kalendáře long-form není, e-mail nemá.
+- Téma (např. first reactions) bez ověření modelem Llama Vision (došel rozpočet, výpadek) moment nevezme; hlavní série jede dál jen s testem statického obrazu.
 
 ## Stavba videa bananas (pevná)
 Tier board je klasický TierMaker (`tools/long/tier.py`): černá plocha, pastelové štítky S–D. Závěrečná karta je z `tools/long/endcard.py`; hotové kopie jsou v `assets/long/end_*.mp4`. Fanpage si sama vezme `assets/outro/fanpage_outro_16x9.mp4`, až bude existovat.
@@ -36,6 +39,8 @@ Tier board je klasický TierMaker (`tools/long/tier.py`): černá plocha, pastel
 - Moment s malým pohybem, tichým zvukem a bez smíchu nebo křiku vypadne („low action“).
 - Hluché úseky delší než 2 s (nikdo nemluví, nic není hlasité, obraz stojí) se vystřihnou. Když takový úsek leží přímo u pointy, moment vypadne celý.
 - Střih je těsnější: začátek na větě asi 10 s před pointou, konec 2–3,5 s po ní. Průměrný moment vychází na 12–16 s.
+- **Nikdy uprostřed věty (18. 11.):** začátek jen před začátkem věty (hledá se 7–12,5 s před pointou, pak až 15 s), konec jen po konci věty (2–3,6 s po pointě, pak až 8 s). Klip diváka, který začíná nebo končí, zatímco streamer mluví, se na tom místě nestřihne. Střih nesmí padnout ani do místa, kde je hlasitost řeči a Whisper tam nic nenapsal. Když se bezpečný střih najít nedá, moment vypadne. Střihy hluchých míst jen za dokončenou větou (tečka, nebo nová věta s velkým písmenem), nikdy dvě půlky jedné věty. Cold open začíná na začátku věty a končí mezi slovy. After Dark se kvůli beatu nezkracuje do věty, prodlouží se na další beat. Kontrola (QA) projde každý střih každého momentu; špatný moment vypadne a video se postaví znovu.
+- Kapitoly v popisku jsou jen „#N streamer“ (u fanpage čas + streamer), žádné názvy klipů od diváků.
 
 ## Hudba (`tools/long/hudba.py`, databáze `assets/hudba/long/`)
 - Hraje pod celým videem bez přestávky. Po každém bloku 4–5 momentů se skladba prolnutím vymění, pořadí jde od klidnější po nejsilnější, takže energie roste k #1.
@@ -52,7 +57,9 @@ Než se video pošle, zkontroluje se:
 - počet položek na boardu a pořadí #N,
 - žádný moment dvakrát a průměrná délka momentu do 21 s.
 
-Když kontrola neprojde, zkusí se video bez tier listu. Když neprojde ani pak, přijde jen krátký e-mail „video na <datum> se nepovedlo: <důvod>“.
+Kontroluje se i text: název s „GTA 6“ do 100 znaků, popis do 5 000 znaků s aspoň 3 kapitolami od 0:00, tagy do 500 znaků.
+
+Když kontrola neprojde, zkusí se video bez tier listu (fanpage nemá tier list, tam se nestaví dvakrát totéž). Momenty se špatným střihem vypadnou a video se postaví ještě jednou. Když neprojde ani pak, přijde jen krátký e-mail „video na <datum> se nepovedlo: <důvod>“.
 
 ## Vypínače (`brands.json` → `long_flags`)
 `tier_list`, `league`, `thumb_brand` (banán / naše modelka na náhledu), `multi_pov`, `banana_reaction`, `tier_sting`: `false` = vypnuto. `tier_intro`: `true` = zapnuto.
@@ -110,7 +117,7 @@ Pro každý kanál: youtube.com/verify → ověř telefonním číslem. Bez toho
 2. Šablona **Workers AI** (Use template). Oprávnění Workers AI: Read + Edit. Účet: tvůj. Create Token a token zkopíruj (ukáže se jen jednou).
 3. Account ID: dash.cloudflare.com → Workers & Pages → vpravo „Account ID“.
 4. GitHub secrets: `CF_API_TOKEN`, `CF_ACCOUNT_ID`.
-- Model: FLUX.2 [klein] 9B (`@cf/black-forest-labs/flux-2-klein-9b`). Jedna miniatura 1280×720 stojí zhruba 1 460 neuronů. Zdarma je 10 000 neuronů denně (reset 00:00 UTC), proto nejvýš 6 obrázků denně pro oba účty dohromady (`nahled_ai_budget.json`, proměnná `CF_MAX_IMAGES`).
+- Model: FLUX.2 [klein] 9B (`@cf/black-forest-labs/flux-2-klein-9b`). Jedna miniatura 1280×720 stojí zhruba 1 460 neuronů. Zdarma je 10 000 neuronů denně (reset 00:00 UTC), proto nejvýš 6 obrázků denně pro oba účty dohromady (`nahled_ai_budget.json` počítá den UTC jako Cloudflare, proměnná `CF_MAX_IMAGES`). Bananas jde první a nechá fanpage polovinu (každý účet max. 2 varianty, když jde ještě druhý). Kontroly Llama Vision: max. 120 denně (`CF_MAX_VISION`, ~10 neuronů za dotaz).
 - Bezpečnostní filtr modelu některé herní snímky odmítne (pád z budovy, zbraně) a někdy i lidi. Skript to pak zkusí jednou bez herního snímku. Když ani to nevyjde, miniatura nebude.
 
 ## Ruční spuštění a test

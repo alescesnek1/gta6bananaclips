@@ -46,14 +46,17 @@ def popis(m):
     return f"{m['title']}\n\n{m['description']}\n\nTAGY:\n{', '.join(m.get('tags', []))}\n"
 
 def attachments(m):
-    """[(file name in the e-mail, path)] in the order the prompt refers to them."""
+    """[(file name in the e-mail, path)] numbered like the prompt's images: without the streamer's face the
+    game frame is image 1 and the brand image 2 (nahled.build_prompt renumbers the same way)."""
     out = []
     d = Path(m["nahled_vstup"]) if m.get("nahled_vstup") else None
     if d and d.exists():
-        for src, name in (("face.jpg", "1_tvar.jpg"), ("frame.jpg", "2_scena.jpg"), ("znacka.png", "3_znacka.png"),
-                          ("face2.jpg", "4_tvar2.jpg")):
+        k = 0
+        for src, name in (("face.jpg", "tvar.jpg"), ("frame.jpg", "scena.jpg"), ("znacka.png", "znacka.png"),
+                          ("face2.jpg", "tvar2.jpg")):
             if (d / src).exists():
-                out.append((name, d / src))
+                k += 1
+                out.append((f"{k}_{name}", d / src))
     if m.get("thumbnail") and Path(m["thumbnail"]).exists():
         out.append(("zaloha_nahled_ai.jpg", Path(m["thumbnail"])))
     return out
@@ -65,6 +68,20 @@ def texts_for(m):
     names = [n for n, _ in files]
     has = lambda n: n in names
     den = ["pondělí", "úterý", "středa", "čtvrtek", "pátek", "sobota", "neděle"][when.weekday()]
+    first = lambda suffix: next((n for n in names if n.endswith("_" + suffix)), None)
+    end_screen = ({"bananas": ["Video končí kartou s banánem. Rámečky pro prvky YouTube: vlevo a vpravo nahoře dvě "
+                               "videa, uprostřed mezi nimi kruh pro odběr. Postup:",
+                               "1) Přidej prvek Video → „Nejnovější nahrané“ a přetáhni ho do levého rámečku.",
+                               f"2) Přidej prvek Playlist → \"{m.get('playlist', m['serie'])}\" (série) a přetáhni ho "
+                               "do pravého rámečku.",
+                               "3) Přidej prvek Odběr a přetáhni ho do kruhu uprostřed."],
+                   "fanpage": ["Video končí kartou s modelkou. Rámečky pro prvky YouTube jsou v pravém sloupci nad "
+                               "sebou: dvě videa a pod nimi kruh pro odběr. Postup:",
+                               "1) Přidej prvek Video → „Nejnovější nahrané“ a přetáhni ho do horního rámečku.",
+                               f"2) Přidej prvek Playlist → \"{m.get('playlist', m['serie'])}\" (série) a přetáhni ho "
+                               "do druhého rámečku.",
+                               "3) Přidej prvek Odběr a přetáhni ho do kruhu pod nimi."]})[
+        "fanpage" if m.get("znacka") == "fanpage" else "bananas"]
     lines = [
         f"KANÁL: YouTube {kanal}",
         f"NAPLÁNOVAT NA: {den} {when:%d.%m.%Y} v {when:%H:%M} (čas Praha)",
@@ -76,17 +93,13 @@ def texts_for(m):
         f"{when:%d.%m. %H:%M} (Praha), playlist \"{m.get('playlist', m['serie'])}\", kategorie Hry, pro děti NE.",
         "",
         "===== KONCOVÁ OBRAZOVKA (Studio → Úpravy → Koncová obrazovka) =====",
-        f"Video končí kartou {('s modelkou' if m.get('znacka') == 'fanpage' else 's banánem')}, v níž jsou "
-        "nakreslené rámečky přesně pro prvky YouTube (vpravo / nahoře). Postup:",
-        "1) Přidej prvek Video → „Nejnovější nahrané“ a přetáhni ho do horního rámečku.",
-        f"2) Přidej prvek Playlist → \"{m.get('playlist', m['serie'])}\" (série) a přetáhni ho do druhého rámečku.",
-        "3) Přidej prvek Odběr a přetáhni ho do kruhu.",
+        *end_screen,
         "4) Časování: všechny tři prvky nech běžet až do konce videa (celá závěrečná karta).",
         "Další díly: v koncové obrazovce dej „Importovat z videa“ a vyber předchozí díl, prvky sednou samy.",
         "",
         "===== NÁHLED – Gemini/ChatGPT =====",
-        "1) Nahraj přílohy " + ", ".join(n for n in ("1_tvar.jpg", "2_scena.jpg", "3_znacka.png") if has(n))
-        + (" (4_tvar2.jpg jen když chceš druhého streamera)" if has("4_tvar2.jpg") else "") + ".",
+        "1) Nahraj přílohy " + ", ".join(n for n in names if not n.endswith("_tvar2.jpg") and n[:1].isdigit())
+        + (f" ({first('tvar2.jpg')} jen když chceš druhého streamera)" if first("tvar2.jpg") else "") + ".",
         "2) Vlož prompt níže.",
         "3) Nech vygenerovat 3 varianty.",
         "4) Nejlepší dej do YouTube Studia jako miniaturu, další dvě do Test & Compare.",
@@ -94,8 +107,8 @@ def texts_for(m):
         "Pozor: náhled bez nahoty a sugestivních póz, jinak YouTube omezí reklamy nebo dá věkové omezení.",
     ]
     if not has("1_tvar.jpg"):
-        lines.append("Pozor: obličej streamera se nenašel (bez facecamu). Vynech v promptu větu o Image 1, "
-                     "nebo nahraj jeho fotku sám.")
+        lines.append("Pozor: obličej streamera se nenašel (bez facecamu). Prompt je na to upravený: obrázky jsou "
+                     "očíslované podle příloh a místo streamera nakreslí vymyšleného hráče se sluchátky.")
     tx = m.get("nahled_texts") or []
     if tx:
         lines += ["", "Text na náhled (první je v promptu, jiný jen přepiš v uvozovkách):"]
@@ -169,14 +182,17 @@ def main():
     a = p.parse_args()
     load_env()
     keys = [os.environ.get(k) for k in ("MAIL_FROM", "MAIL_APP_PASSWORD", "MAIL_TO")]
+    status = 0
     for mp in a.meta:
         m = json.loads(Path(mp).read_text(encoding="utf-8"))
         if mp.endswith(".failed.json"):                   # QA stopped the video: a short note, no link
             msg = EmailMessage(policy=SMTP)
             kanal = "gta6bananaclips" if m.get("znacka") == "bananas" else "gta6fanpageclip"
-            msg["Subject"] = f"[{kanal}] video na {m.get('publish_day')} se nepovedlo: {m.get('duvod', '')[:120]}"
-            body = (f"Long-form {m.get('serie')} na {m.get('publish_day')} neprošel automatickou kontrolou ani "
-                    f"bez tier listu, proto se neposílá.\nDůvod: {m.get('duvod')}\n")
+            why = " ".join(str(m.get("duvod", "")).split())       # a crash reason may hold newlines (ffmpeg)
+            msg["Subject"] = f"[{kanal}] video na {m.get('publish_day')} se nepovedlo: {why[:120]}"
+            body = (f"Long-form {m.get('serie')} na {m.get('publish_day')} se nepovedl (málo materiálu, automatická "
+                    f"kontrola nebo pád), proto video nepřijde a nic se nenahrává.\nDůvod: {m.get('duvod')}\n"
+                    "Stav (čísla dílů, použité momenty) se nezměnil.\n")
             msg.set_content(body)
             files = []
         else:
@@ -189,6 +205,9 @@ def main():
             print(f"Předmět: {msg['Subject']}")
             print(body)
             print("Přílohy: " + ", ".join(part.get_filename() for part in msg.iter_attachments()))
+            if os.environ.get("GITHUB_ACTIONS") == "true":  # on GitHub nothing reached Aleš: long.yml rolls back
+                print("::error::E-mail se neodeslal (chybí secrets MAIL_*).")
+                status = 2
             continue
         msg["From"], msg["To"] = keys[0], keys[2]
         try:
@@ -198,8 +217,8 @@ def main():
             print(f"e-mail odeslán: {msg['Subject']}")
         except Exception as e:                          # never print the addresses or the password
             print(f"::error::E-mail se neodeslal ({type(e).__name__}).")
-            return 1
-    return 0
+            status = 1                                  # the other notes of this batch are still tried
+    return status
 
 if __name__ == "__main__":
     sys.exit(main())
