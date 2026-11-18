@@ -1345,13 +1345,89 @@
     "channel": "zoil",
     "platform": "twitch",
     "title": "banned",
-    "views": 518,
+    "views": 1490,
     "created": 1795001898,
     "category": "Grand Theft Auto VI",
     "video_id": "2932212372",
     "vod_offset": 2907,
     "cluster": 1,
-    "added": 1795015726
+    "added": 1795023264,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/zoil/20261118_twitch_SillyTangibleStrawberryVoteNay-gI1V8xjNV_DdVAuK/source.mp4",
+    "peak": 24.05,
+    "cut": [
+      15.07,
+      27.23
+    ],
+    "dur": 30.02,
+    "tags": [
+      "wow"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.25,
+      "first-reaction": 0.2,
+      "wow": 0.37,
+      "_loud": 7.2,
+      "_motion": 4.7
+    },
+    "quote": "it. Oh! Crazy. Oh,",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.25,
+      "rage": 0.25,
+      "fail": 0.25,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.6
+    },
+    "primary": "wow",
+    "proven": [
+      "wow"
+    ],
+    "evidence": {
+      "funny": [
+        "loud"
+      ],
+      "rage": [
+        "loud"
+      ],
+      "fail": [
+        "loud"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "loud",
+        "text"
+      ]
+    },
+    "fun": 0.59,
+    "signals": {
+      "siren": 0.0,
+      "impact": 25.7,
+      "loud": 8.8,
+      "motion": 4.6,
+      "sustained": 0.0,
+      "spike": 2.3,
+      "laugh": 0,
+      "static": 0.36,
+      "letterbox": 0.0,
+      "luma": 15.4,
+      "dark": 0.17
+    }
   },
   "kick_clip_01M7QB1PQ1JTDEBN7AFG5XVDKX": {
     "id": "kick_clip_01M7QB1PQ1JTDEBN7AFG5XVDKX",
@@ -1991,5 +2067,19 @@
     "vod_offset": 4450,
     "cluster": 1,
     "added": 1795022400
+  },
+  "twitch_GracefulNimblePeppermintGrammarKing-gwZm5tSIlpdLgCg-": {
+    "id": "twitch_GracefulNimblePeppermintGrammarKing-gwZm5tSIlpdLgCg-",
+    "url": "https://www.twitch.tv/ohnepixel/clip/GracefulNimblePeppermintGrammarKing-gwZm5tSIlpdLgCg-",
+    "channel": "ohnepixel",
+    "platform": "twitch",
+    "title": "bang",
+    "views": 801,
+    "created": 1795021501,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932275268",
+    "vod_offset": 17517,
+    "cluster": 1,
+    "added": 1795023264
   }
 }
