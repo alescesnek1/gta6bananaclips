@@ -52,5 +52,30 @@
     "spike_z": 10.5,
     "nocount": true,
     "nocount_why": "Ales 18. 11.: cutscena/titulky ze hry, zustava venku, nepocita se do kvoty"
+  },
+  "live_xqc_1795006752": {
+    "url": "https://6afda213d36254879262a5dd--gta6bananaclips-media.netlify.app/20261118/live_xqc_1795006752.mp4",
+    "path": "20261118/live_xqc_1795006752.mp4",
+    "due": "2026-11-18T14:05:00+01:00",
+    "draft": false,
+    "posts": {
+      "6afc4355ece6dfde5ff6769a": "6afda21661bd3b7f60c0f82d",
+      "6afc433aece6dfde5ff6749b": "6afda21961bd3b7f60c0f92e",
+      "6afc42e6ece6dfde5ff66dca": "6afda2194f494ff3a1e36b8a",
+      "6afc4429ece6dfde5ff683db": "6afda21a5f355732b1d0c80a",
+      "6afc4413ece6dfde5ff68286": "6afda21a5f355732b1d0c87e",
+      "6afc43ffece6dfde5ff68162": "6afda21b0aec53ca4399b2ef"
+    },
+    "mb": 8.4,
+    "channel": "xqc",
+    "platform": "twitch",
+    "score": 0,
+    "hot": true,
+    "rating": 9,
+    "views": 0,
+    "golden": false,
+    "live": true,
+    "viewers": 87128,
+    "spike_z": 45.0
   }
 }
