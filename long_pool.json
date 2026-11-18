@@ -2719,7 +2719,7 @@
       "_loud": 1.8,
       "_motion": 8.0
     },
-    "quote": "wait wait wait wait wait wait wait wait He was",
+    "quote": "wait wait wait wait wait wait hold on He was",
     "rendered": [
       "bananas"
     ],
@@ -2738,7 +2738,7 @@
       "first-reaction": 0.25,
       "wow": 0.0
     },
-    "primary": "rage",
+    "primary": "fail",
     "proven": [],
     "evidence": {
       "rage": [
@@ -2800,12 +2800,12 @@
     "channel": "ohnepixel",
     "platform": "twitch",
     "title": "ohnePixel gets into a high-speed chase",
-    "views": 1300,
+    "views": 1381,
     "created": 1795028729,
     "category": "Grand Theft Auto VI",
     "video_id": "2932275268",
     "vod_offset": 24585,
     "cluster": 1,
-    "added": 1795033793
+    "added": 1795033968
   }
 }
