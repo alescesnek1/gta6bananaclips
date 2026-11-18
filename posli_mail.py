@@ -9,7 +9,8 @@ in Gemini / ChatGPT. Per video one e-mail:
               prompt, steps, a tip), title, full description (chapters + credits), tags
   attachments 1_tvar.jpg (streamer's face at the strongest emotion), 2_scena.jpg (payoff frame without
               chat/HUD), 3_tvar2.jpg (second streamer, optional), zaloha_nahled_ai.jpg (Cloudflare FLUX
-              backup thumbnail, optional), popis.txt, prompt.txt
+              backup thumbnail, optional), story_odkaz.jpg (Instagram story for the link sticker,
+              stories.link_story), popis.txt, prompt.txt
 Gmail SMTP (smtp.gmail.com:465 SSL) with an app password. Secrets: MAIL_FROM, MAIL_APP_PASSWORD,
 MAIL_TO. The addresses are never printed. Without them the e-mail goes to the job log instead.
 --uloz DIR saves the e-mail (.eml + .html + attachments) instead of sending - for tests.
@@ -60,6 +61,8 @@ def attachments(m):
                 out.append((f"{k}_{name}", d / src))
     if m.get("thumbnail") and Path(m["thumbnail"]).exists():
         out.append(("zaloha_nahled_ai.jpg", Path(m["thumbnail"])))
+    if m.get("_story") and Path(m["_story"][0]).exists():
+        out.append(("story_odkaz.jpg", Path(m["_story"][0])))
     return out
 
 def texts_for(m):
@@ -94,6 +97,13 @@ def texts_for(m):
         f"Ve Studiu: nahraj video, vlož název, popis a tagy, miniaturu z Gemini/ChatGPT, naplánuj na "
         f"{when:%d.%m. %H:%M} (Praha), playlist \"{m.get('playlist', m['serie'])}\", kategorie Hry, pro děti NE.",
         "",
+        *(["===== INSTAGRAM STORY S ODKAZEM =====",
+           f"Po nahrání videa: Instagram {kanal} → story → nahraj přílohu story_odkaz.jpg → nálepka Odkaz → "
+           "vlož odkaz na video → sdílet (30 s).",
+           f"Nálepku Odkaz dej {m['_story'][1]}, na volné místo mimo obličej. Odkaz na naplánované video "
+           f"funguje až od zveřejnění, story proto sdílej až po {when:%H:%M}.",
+           f"Story s „link in bio“ jde sama asi 2 h po {when:%H:%M}, proto video zveřejni v čase výše.",
+           ""] if has("story_odkaz.jpg") else []),
         "===== KONCOVÁ OBRAZOVKA (Studio → Úpravy → Koncová obrazovka) =====",
         *end_screen,
         "4) Časování: všechny tři prvky nech běžet až do konce videa (celá závěrečná karta).",
@@ -147,16 +157,35 @@ def as_html(body):
         out.append("</pre>")
     return "<html><body style=\"font-family:sans-serif;font-size:14px\">" + "\n".join(out) + "</body></html>"
 
+def link_story(m):
+    """stories.link_story -> (path, where the sticker goes) or None; never stops the e-mail."""
+    if not m.get("title"):
+        return None
+    try:
+        import stories
+        return stories.link_story(m)
+    except Exception as e:
+        print(f"::warning::story_odkaz.jpg se nevyrobil ({type(e).__name__}: {str(e)[:160]})")
+        return None
+
 def build(m, link):
     m = {**m, "_odkaz": link}
+    m["_story"] = link_story(m)
     subject, body, files = texts_for(m)
     msg = EmailMessage(policy=SMTP)
     msg["Subject"] = subject
     msg.set_content(body)
     msg.add_alternative(as_html(body), subtype="html")
-    for name, path in files:
+    for name, path in list(files):
         sub = "png" if name.endswith(".png") else "jpeg"
-        msg.add_attachment(path.read_bytes(), maintype="image", subtype=sub, filename=name)
+        try:
+            data = path.read_bytes()
+        except OSError:
+            if name != "story_odkaz.jpg":                # only the optional story may go missing
+                raise
+            files.remove((name, path))
+            continue
+        msg.add_attachment(data, maintype="image", subtype=sub, filename=name)
     msg.add_attachment(popis(m).encode("utf-8"), maintype="text", subtype="plain", filename="popis.txt")
     if m.get("nahled_prompt"):
         msg.add_attachment(m["nahled_prompt"].encode("utf-8"), maintype="text", subtype="plain", filename="prompt.txt")
