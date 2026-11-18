@@ -87,7 +87,19 @@ YT_COOKIES = HERE / "youtube_cookies.txt"
 def run(cmd, timeout=None):
     """Run a command, raise RuntimeError with its stderr tail if it fails or hangs."""
     if cmd[0] == "yt-dlp" and YT_COOKIES.exists() and any("youtube.com" in c or "youtu.be" in c for c in cmd):
-        cmd = [cmd[0], "--cookies", str(YT_COOKIES)] + cmd[1:]
+        try:
+            return _run([cmd[0], "--cookies", str(YT_COOKIES)] + cmd[1:], timeout)
+        except RuntimeError as e:
+            # 18. 11.: the 24/7 PC's cookies broke (bad format / expired) and stopped its whole YouTube path;
+            # a home connection works without them (only age-restricted videos need a sign-in) -> once more
+            # without the cookie file
+            if not re.search(r"cookie|netscape|sign in|not a bot|confirm your age", str(e), re.I):
+                raise
+            log(f"  yt-dlp: cookies failed ({str(e)[-120:]}), trying without them")
+            return _run(cmd, timeout)
+    return _run(cmd, timeout)
+
+def _run(cmd, timeout=None):
     try:
         p = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace",
                            stdin=subprocess.DEVNULL, timeout=timeout)

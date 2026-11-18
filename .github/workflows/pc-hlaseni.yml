@@ -1,0 +1,25 @@
+# The 24/7 PC reports in (worker/beh.ps1, every 30 min): the tail of its out\worker.log, so its state
+# (YouTube path, clock) can be read from anywhere without going to the PC. The PC's token can only
+# start workflows (Actions: read and write), not push - so the report travels as a dispatch input.
+# The log is redacted on the PC (long token-like strings -> ***); this repo is public.
+name: pc-hlaseni
+
+on:
+  workflow_dispatch:
+    inputs:
+      log:
+        description: "tail of out\\worker.log (redacted)"
+        required: false
+        default: ""
+
+permissions: {}
+
+jobs:
+  hlaseni:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    steps:
+      - name: worker.log (24/7 PC)
+        env:
+          LOG: ${{ inputs.log }}
+        run: printf '%s\n' "$LOG"

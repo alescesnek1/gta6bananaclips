@@ -68,6 +68,23 @@ if ($token -and (Due "long" 115)) {
     }
 }
 
+# --- 1c) report in every 30 min (18. 11.: nobody could see what the PC does without going to it): the tail
+# of worker.log as a dispatch input of pc-hlaseni.yml (the token can start workflows, not push). Public repo:
+# long token-like strings are masked, at most 15000 characters.
+if ($token -and (Test-Path $log) -and (Due "hlaseni" 28)) {
+    try {
+        $tail = (Get-Content $log -Tail 80 -ErrorAction Stop) -join "`n"
+        $tail = $tail -replace '[A-Za-z0-9_\-]{32,}', '***' -replace '[^\x09\x0A\x20-\x7E]', '?'
+        if ($tail.Length -gt 15000) { $tail = $tail.Substring($tail.Length - 15000) }
+        $body = @{ ref = "main"; inputs = @{ log = "$(Get-Date -Format s) $env:COMPUTERNAME`n$tail" } } | ConvertTo-Json -Compress
+        Invoke-RestMethod -Method Post -Uri "https://api.github.com/repos/aleshrani/gta6bananaclips/actions/workflows/pc-hlaseni.yml/dispatches" `
+            -Headers @{ Authorization = "Bearer $token"; Accept = "application/vnd.github+json"; "User-Agent" = "gta6-pc" } `
+            -Body $body -ContentType "application/json" | Out-Null
+    } catch {
+        "$(Get-Date -Format s) report FAILED: $($_.Exception.Message)" | Out-File $log -Append -Encoding utf8
+    }
+}
+
 # --- 2) YouTube, every 30 min, in its OWN process (worker\youtube.ps1): a YouTube render can take up to
 # 2 h and the task runs with MultipleInstances IgnoreNew - in this process it stopped the clock above.
 # Its own lock file (PID) makes sure only one YouTube batch runs at a time.
