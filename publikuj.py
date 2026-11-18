@@ -602,6 +602,14 @@ def is_star(m, src_cfg):
     stars = {x.lower() for x in src_cfg.get("star_streamers", [])}
     return str(m.get("channel") or "").lower() in stars and (m.get("score") or 0) >= src_cfg.get("star_min_score", 300)
 
+def star_tier(m, src_cfg):
+    """0 = top star (star_tier1: Kai Cenat, IShowSpeed, xQc - Aleš 18. 11.: they go before everyone),
+    1 = other star streamer, 2 = not a star."""
+    if not is_star(m, src_cfg):
+        return 2
+    top = {x.lower() for x in src_cfg.get("star_tier1", [])}
+    return 0 if str(m.get("channel") or "").lower() in top else 1
+
 def hot_pick(cands, recs, now, limit, src_cfg, day=None, blocked=None):
     """
     Hot clips this run may post NOW, paced so one run (or a burst of runs) never burns the day:
@@ -614,7 +622,7 @@ def hot_pick(cands, recs, now, limit, src_cfg, day=None, blocked=None):
     """
     hs = src_cfg.get("hot_score", 2000)
     hot = [m for m in cands if is_hot(m, src_cfg)]
-    hot.sort(key=lambda m: (not exceptional(m, src_cfg), not is_star(m, src_cfg), not is_live(m),
+    hot.sort(key=lambda m: (not exceptional(m, src_cfg), star_tier(m, src_cfg), not is_live(m),
                             -(m.get("score") or 0), -(m.get("spike_z") or 0)))
     dues = quota_dues(day, recs) if day else None
     times, live_times = [], []

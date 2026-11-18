@@ -176,11 +176,49 @@
     "typicalgamer"
   ],
   "star_min_score": 300,
-  "pace_weights": [3, 3, 3, 2.5, 2, 1, 0.5, 0.5, 1.5, 1.5, 1.5, 1, 1, 1, 1.5, 1.5, 1.5, 2, 2.5, 2.5, 3, 3, 3, 3],
+  "pace_weights": [
+    3,
+    3,
+    3,
+    2.5,
+    2,
+    1,
+    0.5,
+    0.5,
+    1.5,
+    1.5,
+    1.5,
+    1,
+    1,
+    1,
+    1.5,
+    1.5,
+    1.5,
+    2,
+    2.5,
+    2.5,
+    3,
+    3,
+    3,
+    3
+  ],
   "pace_burst": 2,
-  "reserve_until": {"22": 3, "03": 1},
-  "exceptional": {"score_x": 4, "star_x": 2, "live_z": 25},
+  "reserve_until": {
+    "22": 3,
+    "03": 1
+  },
+  "exceptional": {
+    "score_x": 4,
+    "star_x": 2,
+    "live_z": 25
+  },
   "upgrade_x": 3,
   "_pace_napoveda": "Ales 18. 11.: nespalit posty dne v prvnich minutach. Vsechny posty znacky (horke, hvezdy, live, bezne) do casu t <= ceil(max_per_day x podil vahy publika uplynuly od 12:00) (+ pace_burst jen pro horke/hvezdy/live). pace_weights = 24 vah po hodinach Prahy (index 0 = 00:00; [] = krivka vypnuta). reserve_until: do 22:00 zustanou 3 posty z max_per_day volne, do 03:00 1. exceptional: klip se score >= score_x x hot_score, hvezda >= star_x x hot_score, live se spike_z >= live_z smi krivku i rezervu prelomit (nikdy max_per_day). upgrade_x: zadrzeny horky klip >= tolikrat silnejsi nez naplanovany bezny post jen zaloguje (mazat v Bufferu smi jen Ales). Dohaneni minima krivku prebije.",
-  "_star_napoveda": "Ales 18. 11.: klip svetoveho streamera (star_streamers) mladsi nez hot_max_age_h a se score >= star_min_score jde hned (horka cesta), pokud projde nudou a QA."
+  "_star_napoveda": "Ales 18. 11.: klip svetoveho streamera (star_streamers) mladsi nez hot_max_age_h a se score >= star_min_score jde hned (horka cesta), pokud projde nudou a QA.",
+  "star_tier1": [
+    "kaicenat",
+    "ishowspeed",
+    "xqc"
+  ],
+  "_star_tier_napoveda": "Ales 18. 11.: Kai Cenat, IShowSpeed a xQc maji prednost pred ostatnimi hvezdami (DarkViperAU, TypicalGamer...)."
 }

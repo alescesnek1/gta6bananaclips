@@ -3971,7 +3971,8 @@ def cmd_batch(a):
                         and virality(c) >= cfg.get("star_min_score", 300))
             hot = [c for c in live if (virality(c) >= a.hot_score or star(c)) and c.get("created")
                    and now - c["created"] <= cfg.get("hot_max_age_h", 3) * 3600]
-            hot.sort(key=lambda c: (not star(c), -virality(c)))   # stars first
+            top = {x.lower() for x in cfg.get("star_tier1", [])}
+            hot.sort(key=lambda c: (not star(c), c["channel"].lower() not in top, -virality(c)))   # Kai/Speed/xQc first, then stars
             total += process(hot, a.clean, limit=a.hot, tried=tried)
     total += process(yt, a.clean, limit=min(a.yt, a.max - total))
     min_pool = load_json(SOURCES, {}).get("long_pool_min_views", 300)
@@ -4665,7 +4666,7 @@ def main():
     lv = sub.add_parser("live", help="launch: live chat spikes of GTA VI streams -> instant shorts")
     lv.add_argument("--hours", type=float, default=5.7, help="how long to watch (GitHub job limit is 6 h)")
     lv.add_argument("--streamu", dest="n_streams", type=int, default=15, help="watch the chat of the N biggest streams")
-    lv.add_argument("--min-viewers", type=int, default=1500)
+    lv.add_argument("--min-viewers", type=int, default=8000)   # Aleš 18. 11.: 1500 is far too low for GTA 6
     lv.add_argument("--z", type=float, default=6.0, help="how far the chat must jump over its last 5 min")
     lv.add_argument("--cool", type=int, default=180, help="seconds between two spikes of one channel")
     lv.add_argument("--hra", help="other Twitch category (test before the launch, e.g. 'Grand Theft Auto V')")
