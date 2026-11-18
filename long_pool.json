@@ -1084,15 +1084,16 @@
     "channel": "xqc",
     "platform": "twitch",
     "title": "xQc is freakyy as shittt",
-    "views": 559,
+    "views": 578,
     "created": 1795004579,
     "category": "Grand Theft Auto VI",
-    "added": 1795012543,
+    "added": 1795012998,
     "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/xqc/20261118_twitch_PluckyAggressiveYogurtSuperVinlin-NOm5zhuzbWEM1Lnm/source.mp4",
     "peak": 7.8500000000000005,
     "cut": [
       0.0,
-      11.63
+      11.63,
+      19.3
     ],
     "dur": 19.3,
     "tags": [],
@@ -1115,11 +1116,11 @@
       "funny": 0.25,
       "rage": 0.25,
       "fail": 0.25,
-      "physics": 0.25,
-      "glitch": 0.0,
+      "physics": 0.6,
+      "glitch": 0.25,
       "chase": 0.0,
-      "crash": 0.25,
-      "stunt": 0.25,
+      "crash": 0.6,
+      "stunt": 0.6,
       "escape": 0.0,
       "easter-egg": 0.0,
       "mission": 0.0,
@@ -1139,35 +1140,42 @@
         "loud"
       ],
       "physics": [
-        "impact"
+        "impact",
+        "motion-spike"
       ],
       "crash": [
-        "impact"
+        "impact",
+        "motion-spike"
       ],
       "stunt": [
-        "impact"
+        "impact",
+        "motion-spike"
       ],
       "first-reaction": [
         "launch-days"
       ],
       "wow": [
         "loud"
+      ],
+      "glitch": [
+        "motion-spike"
       ]
     },
     "fun": 0.52,
     "signals": {
       "siren": 0.0,
       "impact": 61.7,
-      "loud": 10.5,
+      "loud": 10.7,
       "motion": 4.2,
       "sustained": 0.02,
-      "spike": 4.1,
+      "spike": 7.9,
       "laugh": 0,
-      "static": 0.09,
+      "static": 0.1,
       "letterbox": 0.0,
-      "luma": 51.0,
+      "luma": 51.4,
       "dark": 0.0
-    }
+    },
+    "primary": "physics"
   },
   "twitch_UnusualMoistSharkBIRB-Wlz2wmgaTOQAniKu": {
     "id": "twitch_UnusualMoistSharkBIRB-Wlz2wmgaTOQAniKu",
@@ -1175,11 +1183,22 @@
     "channel": "clix",
     "platform": "twitch",
     "title": "Wtf",
-    "views": 1388,
+    "views": 1463,
     "created": 1795004260,
     "category": "Grand Theft Auto VI",
     "video_id": "2932204601",
     "vod_offset": 6180,
-    "added": 1795012755
+    "added": 1795013179
+  },
+  "twitch_ObliqueProtectiveSardinePJSalt-AEA-GOY38N4ROLcJ": {
+    "id": "twitch_ObliqueProtectiveSardinePJSalt-AEA-GOY38N4ROLcJ",
+    "url": "https://www.twitch.tv/lacy/clip/ObliqueProtectiveSardinePJSalt-AEA-GOY38N4ROLcJ",
+    "channel": "lacy",
+    "platform": "twitch",
+    "title": "what is going on in GTA 6",
+    "views": 541,
+    "created": 1795004850,
+    "category": "Grand Theft Auto VI",
+    "added": 1795013179
   }
 }
