@@ -2122,5 +2122,17 @@
     "vod_offset": 2286,
     "cluster": 1,
     "added": 1795023924
+  },
+  "twitch_CreativeHeadstrongAniseFunRun-_f88pOqgLQhawQRA": {
+    "id": "twitch_CreativeHeadstrongAniseFunRun-_f88pOqgLQhawQRA",
+    "url": "https://www.twitch.tv/ishowspeed/clip/CreativeHeadstrongAniseFunRun-_f88pOqgLQhawQRA",
+    "channel": "ishowspeed",
+    "platform": "twitch",
+    "title": "HAHAHAHH",
+    "views": 516,
+    "created": 1795011761,
+    "category": "Grand Theft Auto VI",
+    "cluster": 1,
+    "added": 1795024353
   }
 }
