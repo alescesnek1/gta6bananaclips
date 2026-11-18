@@ -1,8 +1,8 @@
 {
   "_napoveda": "Dva ucty (znacky). Kazdy ma vlastni Buffer klice, kanaly, zaznam publikovaneho, kvotu, vzhled titulku, hudbu a strih. Kazdy klip jde na jeden ucet (stridave podle poradi); Kazdy ucet ma JINE klipy (Ales 17. 11.: stejne klipy na obou by druhy ucet znehodnotily) - both_score je vypnuty.",
   "both_score": 1000000000000.0,
-  "netlify_gb_soft": 50,
-  "netlify_gb_hard": 70,
+  "netlify_gb_soft": 85,
+  "netlify_gb_hard": 100,
   "bananas": {
     "name": "gta6bananaclips",
     "buffer_keys": [

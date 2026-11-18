@@ -139,10 +139,36 @@
   "max_per_day": 10,
   "good_score": 1000,
   "extra_score": 5000,
-  "netlify_gb_month": 45,
+  "netlify_gb_month": 100,
   "youtube_prelaunch": {
     "until": "2026-11-19",
     "per_day": 3,
     "days": 7
-  }
+  },
+  "star_streamers": [
+    "kaicenat",
+    "ishowspeed",
+    "xqc",
+    "jynxzi",
+    "caseoh_",
+    "adinross",
+    "zackrawrr",
+    "hasanabi",
+    "summit1g",
+    "sketch",
+    "lacy",
+    "stableronaldo",
+    "fanum",
+    "dukedennis",
+    "agent00",
+    "tarik",
+    "shroud",
+    "timthetatman",
+    "nickmercs",
+    "lirik",
+    "moistcr1tikal",
+    "sypherpk"
+  ],
+  "star_min_score": 300,
+  "_star_napoveda": "Ales 18. 11.: klip svetoveho streamera (star_streamers) mladsi nez hot_max_age_h a se score >= star_min_score jde hned (horka cesta), pokud projde nudou a QA."
 }
