@@ -97,7 +97,7 @@ class AfterPeak(unittest.TestCase):                        # 5
     def test_fix_cuts_never_ends_before_payoff_plus_3(self):
         # end at 6.5 (inside 'god.'): plain re-snap could fall back to 3.8 ('me!'), before the payoff
         a, b, segs, hook, fixed, left = K.fix_cuts(W, 0.5, 6.5, [(0.5, 6.5)], None, dur=12.0, peak=6.0)
-        self.assertGreaterEqual(b, 9.0 - 0.01)
+        self.assertGreaterEqual(b, 6.0 + K.AFTER_PEAK - 0.01)              # loop rule 18. 11.: >= 1.2 s after the payoff
         self.assertTrue(K.ok_end(W, b), b)
         self.assertEqual(left, [])
 
@@ -105,7 +105,7 @@ class AfterPeak(unittest.TestCase):                        # 5
         ws = W[:7] + [(6.0, 6.2, "Oh"), (6.2, 6.6, "my"), (6.6, 9.9, "goooood")]   # talks to the end
         a, b, segs, hook, fixed, left = K.fix_cuts(K.cut_words(ws, 10.0), 0.5, 6.4, [(0.5, 6.4)], None,
                                                    dur=10.0, peak=6.0)
-        self.assertGreaterEqual(b, 9.0 - 0.01)               # moved forward as far as it must
+        self.assertGreaterEqual(b, 6.0 + K.AFTER_PEAK - 0.01)  # moved forward as far as it must
         self.assertTrue(left)                                # but the source cuts the word: the clip fails
 
     def test_trim_points_floor(self):
@@ -142,7 +142,7 @@ class QaStructure(unittest.TestCase):                      # 4, 13
         self.assertEqual(self.qa(self.plan()), [])
 
     def test_too_little_after_climax(self):
-        probs = self.qa(self.plan(peak=15.6))
+        probs = self.qa(self.plan(peak=16.5))
         self.assertTrue(any("after the climax" in p for p in probs), probs)
 
     def test_long_hook(self):
