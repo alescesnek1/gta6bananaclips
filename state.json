@@ -442,7 +442,9 @@
       1795004292,
       573,
       1795004599,
-      579
+      579,
+      1795004899,
+      581
     ],
     "twitch_NimbleFrozenBeanOSsloth-S2n7zCkGDTOWP_mP": [
       1795001014,
@@ -467,7 +469,9 @@
       528,
       1795004292,
       1795004599,
-      529
+      529,
+      1795004899,
+      532
     ],
     "twitch_CloudyLivelyHareCharlieBitMe-8lGWQ2aObfK8dyAR": [
       1795001911,
@@ -490,7 +494,9 @@
       594,
       1795004292,
       1795004599,
-      609
+      609,
+      1795004899,
+      631
     ],
     "kick_clip_01M7Q5876Z0GVGGNFWGHMRKKZR": [
       1795003185,
@@ -505,11 +511,19 @@
       516,
       1795004292,
       1795004599,
-      526
+      526,
+      1795004899,
+      540
     ],
     "twitch_AstuteArtsyEaglePeteZaroll-h-8smz8Kb6qltijo": [
       1795004599,
-      501
+      501,
+      1795004899,
+      516
+    ],
+    "twitch_RelievedRichRhinocerosPeteZaroll-qOXHVQ3XVK3asCkK": [
+      1795004899,
+      500
     ]
   },
   "rr": "bananas",
