@@ -12,7 +12,7 @@
   },
   "failed": {
     "twitch_IntelligentAbstemiousBasenjiOMGScoots-6o4BuG8nzW3K8qWx": 3,
-    "twitch_RelievedRichRhinocerosPeteZaroll-qOXHVQ3XVK3asCkK": 1
+    "twitch_RelievedRichRhinocerosPeteZaroll-qOXHVQ3XVK3asCkK": 2
   },
   "other_game": {
     "twitch_3007922283": "World of Warcraft",
@@ -450,7 +450,9 @@
       1795005499,
       587,
       1795005798,
-      588
+      588,
+      1795006404,
+      591
     ],
     "twitch_NimbleFrozenBeanOSsloth-S2n7zCkGDTOWP_mP": [
       1795001014,
@@ -483,7 +485,9 @@
       1795005499,
       534,
       1795005798,
-      536
+      536,
+      1795006404,
+      541
     ],
     "twitch_CloudyLivelyHareCharlieBitMe-8lGWQ2aObfK8dyAR": [
       1795001911,
@@ -513,7 +517,9 @@
       655,
       1795005499,
       700,
-      1795005798
+      1795005798,
+      1795006404,
+      749
     ],
     "kick_clip_01M7Q5876Z0GVGGNFWGHMRKKZR": [
       1795003185,
@@ -534,7 +540,9 @@
       1795005194,
       551,
       1795005499,
-      565
+      565,
+      1795006404,
+      593
     ],
     "twitch_AstuteArtsyEaglePeteZaroll-h-8smz8Kb6qltijo": [
       1795004599,
@@ -546,7 +554,9 @@
       1795005499,
       559,
       1795005798,
-      582
+      582,
+      1795006404,
+      612
     ],
     "twitch_RelievedRichRhinocerosPeteZaroll-qOXHVQ3XVK3asCkK": [
       1795004899,
@@ -556,17 +566,25 @@
       1795005499,
       569,
       1795005798,
-      606
+      606,
+      1795006404,
+      672
     ],
     "twitch_CautiousSuperSnoodKappaWealth-3CVX9GlGsGZia1vf": [
       1795005499,
       511,
       1795005798,
-      530
+      530,
+      1795006404,
+      553
     ],
     "twitch_SlickStylishBeaverStrawBeary-ljpqadoCXEhYwJx5": [
       1795005798,
       509
+    ],
+    "kick_clip_01M7Q51JSHH80CZXCCA0V2ND3A": [
+      1795006404,
+      501
     ]
   },
   "rr": "bananas",
@@ -610,7 +628,7 @@
     ]
   },
   "failed_why": {
-    "twitch_RelievedRichRhinocerosPeteZaroll-qOXHVQ3XVK3asCkK": "QA failed: {'bananas': {'ok': False, 'look': 'old', 'problems': ['true peak 2.5 dBTP (> -1)', 'loudness -16.1 LUFS (target -14)'], 'cuts': {'start': 2.13, 'end': 25.97, 'jumps': 1, 'fixed': [], 'problems': [], 'first': '30 seconds! 20 seconds.', 'last': '6 officially comes out in 10,'}, 'mix': {'spe"
+    "twitch_RelievedRichRhinocerosPeteZaroll-qOXHVQ3XVK3asCkK": "QA failed: {'bananas': {'ok': False, 'look': 'old', 'problems': ['true peak 2.8 dBTP (> -1)', 'loudness -16.2 LUFS (target -14)'], 'cuts': {'start': 2.13, 'end': 25.97, 'jumps': 1, 'fixed': [], 'problems': [], 'first': '30 seconds! 20 seconds.', 'last': '6 officially comes out in 10,'}, 'mix': {'spe"
   },
   "moments": {
     "2932194507": [
