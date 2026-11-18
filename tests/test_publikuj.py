@@ -400,6 +400,51 @@ class JustInTimeDay(unittest.TestCase):
                 self.assertTrue(rec and rec["hot"])
 
 
+class ExplodingDay(unittest.TestCase):
+    """
+    Aleš 18. 11.: a stream explodes at 13:00 (15 hot clips within an hour) and explodes even more at 23:00.
+    The day-long pace must not burn the posts at 13:00: posts stay free for 23:00, the biggest 23:00 clips
+    go out, the minimum is met, max_per_day never exceeded, slots never :00 / :30.
+    """
+    D = date(2026, 11, 26)                  # minimum 8, max 10 per brand
+
+    def test_explosion_at_13_and_bigger_at_23(self):
+        d = self.D
+        hs = json.loads((HERE / "sources.json").read_text(encoding="utf-8"))["hot_score"]
+        with tempfile.TemporaryDirectory() as t:
+            sim = Sim(t)
+            JustInTimeDay.world(self, sim)                                    # the normal flow of clips
+            sim.pool = [c for c in sim.pool if not c["id"].startswith(("hot", "live"))]
+            sim.live = []
+            for i in range(15):                                               # 13:00-14:00: hot, not exceptional
+                arrive = at(d, "13:00") + timedelta(minutes=4 * i)
+                sim.clip(f"e13_{i}", f"loud{i % 3}", int(hs * (1.3 + 0.1 * i)), arrive - timedelta(minutes=10), arrive)
+            big = []
+            rank = [3, 14, 7, 0, 11, 5, 13, 1, 9, 12, 2, 6, 10, 4, 8]       # how big, in order of arrival
+            for i in range(15):                                               # 23:00-24:00: much bigger
+                arrive = at(d, "23:00") + timedelta(minutes=4 * i)
+                views = int(hs * (2 + 0.9 * rank[i]))
+                sim.clip(f"e23_{i}", f"loud{i % 3}", views, arrive - timedelta(minutes=10), arrive)
+                big.append((views, f"e23_{i}"))
+            with sim.patched():
+                sim.day(d, 10)
+                JustInTimeDay.check_day(self, sim, 10)
+                recs = {**sim.records("bananas"), **sim.records("fanpage")}
+                for brand in ("bananas", "fanpage"):
+                    P.set_brand(brand)
+                    dues = sorted(datetime.fromisoformat(r["due"]) for k, r in sim.records(brand).items()
+                                  if P.in_day(r, d) and not k.startswith(("top3_", "exp_")))
+                    self.assertLessEqual(sum(x < at(d, "15:00") for x in dues), 3, f"{brand}: 13:00 burned the day")
+                    self.assertLessEqual(sum(x < at(d, "16:00") for x in dues), 4, f"{brand}: 13:00 burned the day")
+                    self.assertLessEqual(sum(x < at(d, "22:00") for x in dues), 7, f"{brand}: no reserve for 22:00+")
+                    self.assertGreaterEqual(sum(x >= at(d, "23:00") for x in dues), 2, f"{brand}: nothing left for 23:00")
+                # the biggest clips of the 23:00 explosion went out (each on one account)
+                for views, cid in sorted(big, reverse=True)[:3]:
+                    self.assertIn(cid, recs, f"{cid} ({views} views) not published")
+                # of the 13:00 explosion, not all 15 burned the day
+                self.assertLess(sum(k.startswith("e13_") for k in recs), 15)
+
+
 class Concurrency(unittest.TestCase):
     def test_normal_and_fast_never_double(self):
         """A live clip is in the live-inbox: the normal run publishes it (hot), the fast run right after

@@ -74,14 +74,125 @@ class NinthTenth(unittest.TestCase):
     def test_hot_room_released_after_20(self):
         d = date(2026, 11, 26)
         recs = {f"c{i}": {"due": at(d, "14:05").isoformat()} for i in range(8)}
+        # hot_room only: 8 posts at 14:05 are far over the day-long pace (tested in DayPace), so it is off here
         with mock.patch.object(P, "daily_quota", lambda day: 8), mock.patch.object(P, "max_per_day", lambda day: 10), \
-                mock.patch.object(P, "budget_level", lambda: 0):
+                mock.patch.object(P, "budget_level", lambda: 0), mock.patch.object(P, "pace_fits", lambda *a, **k: True):
             before = P.day_plan(d, at(d, "19:00"), recs)
             after = P.day_plan(d, at(d, "20:05"), recs)
         self.assertEqual(before["slots"], 0)                     # 9th / 10th kept for hot clips until 20:00
         self.assertEqual(before["cap"], 2)                       # ... which may always use them
         self.assertGreater(after["slots"], 0)                    # after 20:00 a strong clip may take them
         self.assertLessEqual(after["slots"], 2)
+
+
+class DayPace(unittest.TestCase):
+    """Day-long pacing (Aleš 18. 11.): the curve, the evening reserve, exceptional clips, upgrade log."""
+    D = date(2026, 11, 26)
+
+    def lim(self, hm, plus=0, hot=False):
+        return P.pace_limit(self.D, at(self.D, hm, plus), SRC, hot)
+
+    def test_curve_and_reserve(self):
+        with mock.patch.object(P, "max_per_day", lambda day: 10):
+            pts = [at(self.D, "12:00") + timedelta(minutes=15 * i) for i in range(96)]
+            for hot in (False, True):
+                lims = [P.pace_limit(self.D, t, SRC, hot) for t in pts]
+                self.assertEqual(lims, sorted(lims))                          # never goes down
+            self.assertLessEqual(self.lim("14:00", hot=True), 3)               # an early explosion: max 3
+            self.assertLessEqual(self.lim("21:59", hot=True), 7)               # 3 stay free until 22:00
+            self.assertLessEqual(self.lim("02:59", 1, hot=True), 9)            # 1 until 03:00
+            self.assertEqual(self.lim("11:59", 1), 10)                         # the whole day by the end
+            self.assertLess(self.lim("18:00"), self.lim("18:00", hot=True))   # the burst is for hot clips
+            # the curve follows the audience: 05:00-08:00 adds little, 20:00-01:00 much
+            self.assertLessEqual(self.lim("08:00", 1) - self.lim("05:00", 1), 1)
+            off = {**SRC, "pace_weights": [], "reserve_until": {}}
+            self.assertEqual(P.pace_limit(self.D, at(self.D, "13:00"), off), 10)
+
+    def test_fits_counts_later_posts(self):
+        with mock.patch.object(P, "max_per_day", lambda day: 10):
+            now = at(self.D, "21:00")
+            # 6 posts already and one scheduled at 21:40: a hot one now must keep 21:40 under the curve too
+            dues = [at(self.D, "14:10"), at(self.D, "17:10"), at(self.D, "18:40"), at(self.D, "19:50"),
+                    at(self.D, "20:10"), at(self.D, "20:40"), at(self.D, "21:40")]
+            self.assertFalse(P.pace_fits(dues, now, self.D, SRC, hot=True))   # 8 before 22:00 > 10 - 3
+            self.assertTrue(P.pace_fits(dues[:5], now, self.D, SRC, hot=True))
+
+    def test_exceptional(self):
+        star = SRC["star_streamers"][0]
+        self.assertTrue(P.exceptional(clip("a", score=4 * HS), SRC))
+        self.assertFalse(P.exceptional(clip("b", score=3.9 * HS), SRC))
+        self.assertTrue(P.exceptional(clip("c", channel=star, score=2 * HS), SRC))
+        self.assertFalse(P.exceptional(clip("d", channel=star, score=1.9 * HS), SRC))
+        self.assertTrue(P.exceptional(clip("live_e", live=True, z=25, score=0), SRC))
+        self.assertFalse(P.exceptional(clip("live_f", live=True, z=24, score=0), SRC))
+
+    def test_hot_pick_paced_but_exceptional_breaks_it(self):
+        with mock.patch.object(P, "max_per_day", lambda day: 10):
+            now = at(self.D, "13:30")
+            recs = {f"r{i}": {"due": at(self.D, "13:0%d" % i).isoformat(), "hot": True} for i in range(3)}
+            for r in recs.values():
+                r["due"] = (now - timedelta(minutes=40)).isoformat()          # out of the 30 min gap
+            blocked = []
+            self.assertEqual(P.hot_pick([clip("x", score=2 * HS)], recs, now, 10, SRC, day=self.D, blocked=blocked), [])
+            self.assertEqual([m["id"] for m in blocked], ["x"])                # the pace held it back
+            big = P.hot_pick([clip("y", score=4 * HS)], recs, now, 10, SRC, day=self.D)
+            self.assertEqual([m["id"] for m in big], ["y"])                    # exceptional: through
+            full = {f"f{i}": {"due": (now - timedelta(minutes=40 + i)).isoformat()} for i in range(10)}
+            self.assertEqual(P.hot_pick([clip("z", score=9 * HS)], full, now, 0, SRC, day=self.D), [])  # never > max
+
+    def test_upgrade_only_logged(self):
+        now = at(self.D, "21:00")
+        recs = {"weak": {"due": at(self.D, "22:10").isoformat(), "score": 900, "hot": False},
+                "done": {"due": at(self.D, "20:10").isoformat(), "score": 100}}
+        with mock.patch.object(P, "log", lambda msg: None), contextlib.redirect_stdout(io.StringIO()):
+            notes = P.upgrade_note([clip("big", score=3000)], recs, now, SRC)
+            self.assertEqual(len(notes), 1)
+            self.assertIn("weak", notes[0])
+            self.assertIn("approval", notes[0])
+            self.assertEqual(P.upgrade_note([clip("mid", score=2000)], recs, now, SRC), [])   # < 3x: nothing
+        self.assertIn("weak", recs)                                            # nothing deleted
+
+
+class TitlesAndStars(unittest.TestCase):
+    def test_title_from_real_tags_only(self):
+        m = {"id": "c1", "channel": "kaicenat", "platform": "twitch", "tags": ["crash", "wow"],
+             "tag_scores": {"crash": 0.8, "wow": 0.3}}
+        P.set_brand("bananas")
+        t = P.title_line(m)
+        self.assertTrue(t.startswith("Kai Cenat "))
+        self.assertTrue(any(ph in t for ph in P.TITLE_ACTIONS["crash"]))
+        m["tag_scores"]["crash"] = 0.2                                         # weak tag: claim no event
+        self.assertTrue(any(ph in P.title_line(m) for ph in P.TITLE_NEUTRAL))
+        self.assertTrue(any(ph in P.title_line({"id": "c2", "channel": "xqc"}) for ph in P.TITLE_NEUTRAL))
+
+    def test_brands_differ_and_lengths(self):
+        m = {"id": "c3", "channel": "rayasianboy", "platform": "twitch", "tags": ["glitch"],
+             "tag_scores": {"glitch": 0.9}, "quote": "bro what is happening " * 3}
+        out = {}
+        with mock.patch.object(P, "league_line", lambda m: ""):
+            for brand in ("bananas", "fanpage"):
+                P.set_brand(brand)
+                out[brand] = P.youtube_title(m)
+                self.assertLessEqual(len(out[brand]), 100)
+                self.assertTrue(out[brand].endswith(" #shorts"))
+                for svc in P.NETS:
+                    text = P.caption(m, svc)
+                    self.assertTrue(text.startswith("RayAsianBoy "), f"{brand} {svc}")   # the title line first
+                    self.assertNotIn("@", text)
+                    if svc in ("twitter", "threads"):
+                        self.assertLessEqual(P.x_len(text), 270)
+                    else:
+                        self.assertIn("#rayasianboy", text)
+        P.set_brand("bananas")
+        self.assertNotEqual(out["bananas"], out["fanpage"])
+
+    def test_new_stars_and_crossover(self):
+        for login in ("n3on", "rakai", "rayasianboy", "kelo"):
+            self.assertIn(login, SRC["star_streamers"])
+        self.assertTrue(P.crossover({"title": "Kai Cenat and xQc race in GTA 6"}, SRC))
+        self.assertFalse(P.crossover({"title": "Kai Cenat drives into the sketch shop"}, SRC))   # 'sketch' = a word
+        self.assertTrue(P.crossover({"title": "kaicenat meets Sketch"}, SRC))
+        self.assertFalse(P.crossover({"title": "xqc alone"}, SRC))
 
 
 class ExpItemsNeverTwice(unittest.TestCase):

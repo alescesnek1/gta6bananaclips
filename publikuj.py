@@ -536,10 +536,52 @@ def candidates(znacka=None):
         m["age_h"] = age_h
         m["score"] = ((m.get("views") or 0) / (max(age_h, 0) + 1) ** 0.5   # same "virality" as klipuj.batch
                       * (1 + min(m.get("growth") or 0, 3)) * (1 + 0.5 * ((m.get("cluster") or 1) - 1)))
+        if crossover(m, load_json(HERE / "sources.json", {})):    # >= 2 star streamers named: x 1.5
+            m["score"] *= 1.5
+            m["crossover"] = True
         out.append(m)
     # viewer-made Twitch/Kick clips first: a YouTube window's "views" are the whole video's,
     # not comparable, so YouTube only fills what is left (and at most youtube_per_day)
     return sorted(out, key=lambda m: (m.get("platform") == "youtube", -m["score"]))
+
+# Display names for titles and the crossover check (login -> how people write it). Unknown logins: the
+# login itself, capitalised. Logins that are ordinary words count only as the capitalised name.
+NAMES = {"kaicenat": "Kai Cenat", "ishowspeed": "IShowSpeed", "xqc": "xQc", "jynxzi": "Jynxzi", "caseoh_": "CaseOh",
+         "adinross": "Adin Ross", "zackrawrr": "Asmongold", "hasanabi": "HasanAbi", "summit1g": "summit1g",
+         "sketch": "Sketch", "lacy": "Lacy", "stableronaldo": "Stable Ronaldo", "fanum": "Fanum",
+         "dukedennis": "Duke Dennis", "agent00": "Agent00", "tarik": "Tarik", "shroud": "shroud",
+         "timthetatman": "TimTheTatman", "nickmercs": "NICKMERCS", "lirik": "LIRIK", "moistcr1tikal": "Moistcr1tikal",
+         "sypherpk": "SypherPK", "n3on": "N3on", "rakai": "Rakai", "rayasianboy": "RayAsianBoy", "kelo": "Kelo",
+         "sodapoppin": "Sodapoppin", "jasontheween": "JasonTheWeen", "plaqueboymax": "PlaqueBoyMax",
+         "darkviperau": "DarkViperAU", "ninja": "Ninja", "ludwig": "Ludwig", "valkyrae": "Valkyrae"}
+WORD_LOGINS = {"sketch", "lacy", "tarik", "kelo", "ninja", "fanum", "shroud"}
+
+def display_name(m):
+    ch = str(m.get("channel") or "").lstrip("@")
+    name = m.get("name") if isinstance(m.get("name"), str) and m.get("name").strip() else None
+    return NAMES.get(ch.lower()) or name or (ch[:1].upper() + ch[1:] if ch else "This streamer")
+
+def crossover(m, src):
+    """The clip's title / quote / transcript names >= 2 star streamers (a crossover: both fan bases care)."""
+    text = " ".join(str(m.get(k) or "") for k in ("title", "quote"))
+    if m.get("short") and not m.get("remote"):
+        tr = Path(m["short"]).parent / "transcript.txt"
+        if tr.exists():
+            try:
+                text += " " + tr.read_text(encoding="utf-8", errors="ignore")[:20000]
+            except OSError:
+                pass
+    hits = set()
+    for login in {x.lower() for x in src.get("star_streamers", [])}:
+        name = NAMES.get(login, login)
+        if login in WORD_LOGINS:                     # 'sketch', 'lacy': only the capitalised name counts
+            found = re.search(r"(?<![\w])" + re.escape(name) + r"(?![\w])", text)
+        else:
+            pats = [re.escape(name), re.escape(login.rstrip("_"))]
+            found = re.search(r"(?<![\w])(" + "|".join(pats) + r")(?![\w])", text, re.I)
+        if found:
+            hits.add(login)
+    return len(hits) >= 2
 
 def is_live(m):
     """A clip cut from a live chat explosion (klipuj.py live)."""
@@ -560,17 +602,21 @@ def is_star(m, src_cfg):
     stars = {x.lower() for x in src_cfg.get("star_streamers", [])}
     return str(m.get("channel") or "").lower() in stars and (m.get("score") or 0) >= src_cfg.get("star_min_score", 300)
 
-def hot_pick(cands, recs, now, limit, src_cfg):
+def hot_pick(cands, recs, now, limit, src_cfg, day=None, blocked=None):
     """
     Hot clips this run may post NOW, paced so one run (or a burst of runs) never burns the day:
     at most hot_per_run (2) per run, a viewer / star clip only hot_gap_min (30) after the brand's last
     hot post, a live clip only live_gap_min (20) after its last live post - unless it is exceptional
-    (score >= 3 x hot_score, or a live chat explosion with spike_z >= hot_bypass_z). Star streamers'
-    clips first, then live, then by score.
+    (score >= 3 x hot_score, or a live chat explosion with spike_z >= hot_bypass_z). Exceptional clips
+    first (they may break the day's pace), then star streamers' clips, then live, then by score.
+    day = the publishing day: every post must also fit the day-long pace + evening reserve (pace_fits,
+    with the burst) unless it is exceptional(); clips held back only by the pace go to `blocked`.
     """
     hs = src_cfg.get("hot_score", 2000)
     hot = [m for m in cands if is_hot(m, src_cfg)]
-    hot.sort(key=lambda m: (not is_star(m, src_cfg), not is_live(m), -(m.get("score") or 0), -(m.get("spike_z") or 0)))
+    hot.sort(key=lambda m: (not exceptional(m, src_cfg), not is_star(m, src_cfg), not is_live(m),
+                            -(m.get("score") or 0), -(m.get("spike_z") or 0)))
+    dues = quota_dues(day, recs) if day else None
     times, live_times = [], []
     for rec in recs.values():
         if not rec.get("hot"):
@@ -595,7 +641,13 @@ def hot_pick(cands, recs, now, limit, src_cfg):
                 continue
             if not live and any(abs(now - t) < gap for t in times):
                 continue
+        if dues is not None and not exceptional(m, src_cfg) and not pace_fits(dues, now, day, src_cfg, hot=True):
+            if blocked is not None:
+                blocked.append(m)
+            continue
         out.append(m)
+        if dues is not None:
+            dues.append(now)
         times.append(now)
         if live:
             live_times.append(now)
@@ -706,20 +758,57 @@ def chat_line(m):
     x = m.get("chat_x")
     return f"Chat went {int(x)}× during this" if isinstance(x, (int, float)) and x >= 3 else ""
 
+# Titles (18. 11., what the big clip channels do): "{Streamer} {what happened} In GTA 6! 😭" - the name and
+# the event are what people search. The action comes only from the moment's own tags (transcript + the
+# viewer's clip title, klipuj.moment_tags) when the tag is strong (tag_scores >= TITLE_MIN); otherwise a
+# neutral line that claims no event. Bananas and fanpage get different phrases / emoji for the same clip.
+# SlopMonster lint 5/5.
+TITLE_ACTIONS = {
+    "crash": ["Crashes Hard In GTA 6", "Can't Stop Crashing In GTA 6", "Wrecks Everything In GTA 6"],
+    "chase": ["Gets Into A Wild Chase In GTA 6", "Tries To Get Away In GTA 6", "Goes On The Run In GTA 6"],
+    "funny": ["Can't Stop Laughing In GTA 6", "Is Crying Laughing In GTA 6", "Loses It Laughing In GTA 6"],
+    "glitch": ["Finds A Crazy Glitch In GTA 6", "Runs Into A Weird Glitch In GTA 6", "Breaks GTA 6 With A Glitch"],
+    "rage": ["Rages Out In GTA 6", "Gets So Mad In GTA 6", "Hits Breaking Point In GTA 6"],
+    "first-reaction": ["Can't Believe How GTA 6 Looks", "Sees Vice City In GTA 6", "Reacts To GTA 6 Graphics"],
+}
+TITLE_NEUTRAL = ["Can't Believe This In GTA 6", "Wasn't Ready For This In GTA 6",
+                 "Did Not See This Coming In GTA 6", "Reacts To This GTA 6 Moment"]
+TITLE_MIN = 0.5
+
+def title_action(m):
+    """The strongest real tag of the moment as a phrase pool, or the neutral pool."""
+    sc = m.get("tag_scores") or {}
+    for tag in m.get("tags") or []:
+        if tag in TITLE_ACTIONS and (sc.get(tag) or 0) >= TITLE_MIN:
+            return TITLE_ACTIONS[tag]
+    return TITLE_NEUTRAL
+
+def title_line(m):
+    """'Kai Cenat Crashes Hard In GTA 6! 😭' (no hashtags; the brand picks a different phrase and emoji)."""
+    pool = title_action(m)
+    k = int(hashlib.md5(str(m.get("id")).encode()).hexdigest(), 16) + (1 if ZNACKA == "fanpage" else 0)
+    return f"{display_name(m)} {pool[k % len(pool)]}! {['😭', '💀'][k % 2]}".replace("@", "")
+
+def tag_login(m):
+    t = re.sub(r"[^a-z0-9_]", "", str(m.get("channel") or "").lower())
+    return f"#{t}" if t else ""
+
 def caption_fanpage(m, service):
     rnd = random.Random(f"{m['id']}:{service}:fanpage")
-    s = (m.get("channel") or "they")[:1].upper() + (m.get("channel") or "they")[1:]
-    hook = rot(FAN_BAIT, m, service).format(s=s)          # comment bait first, a share trigger after
+    s = display_name(m) if m.get("channel") else "they"
+    title = title_line(m)                                 # what happened first (searchable), then the quote
+    hook = rot(FAN_BAIT, m, service).format(s=s)          # comment bait, a share trigger after
     q = quote_of(m)
     q = f"\"{q}\"" if q else ""
     cta = rot(FAN_SHARE, m, service, 3).format(s=s)
     chat = chat_line(m)
     src = f"Streamer: {home(m)}"
     if service in ("twitter", "threads"):
-        text = "\n\n".join(x for x in (hook, q, chat, cta, f"{src} #GTA6") if x)
-        return text if x_len(text) <= X_MAX else "\n\n".join(x for x in (hook, f"{src} #GTA6") if x)
-    tags = rnd.sample(FAN_HASHTAGS, 2)
-    return "\n\n".join(x for x in (hook, q, chat, cta, src, " ".join(["#gta6", "#gta6clips"] + tags)) if x)
+        text = "\n\n".join(x for x in (title, q, hook, chat, cta, f"{src} #GTA6") if x)
+        return text if x_len(text) <= X_MAX else "\n\n".join(x for x in (title, hook, f"{src} #GTA6") if x)
+    tags = rnd.sample(FAN_HASHTAGS, 1)
+    return "\n\n".join(x for x in (title, q, hook, chat, cta, src,
+                                   " ".join(y for y in ["#gta6", tag_login(m), "#gta6clips"] + tags if y)) if x)
 
 # Experiments (experimenty.py, their own slot): one line about the format, every streamer credited.
 # SlopMonster lint 5/5 + Codex cleanse. {s} = the first streamer, {k} = how many.
@@ -774,7 +863,7 @@ def _caption(m, service):
     # 17. 11.: comment bait first, the streamer's own words, banana score + league rank (data),
     # a share trigger, credit; a different line per post AND network (rot)
     rnd = random.Random(f"{m['id']}:{service}")
-    s = (m.get("channel") or "they")[:1].upper() + (m.get("channel") or "they")[1:]
+    s = display_name(m) if m.get("channel") else "they"
     hook = rot(BAIT, m, service).format(s=s)
     q = quote_of(m)
     q = f"“{q}”" if q else ""
@@ -784,12 +873,13 @@ def _caption(m, service):
     data = " · ".join(y for y in (score, league_line(m), chat_line(m)) if y)
     cta = rot(SHARE, m, service, 3).format(s=s)
     src = f"🎮 {home(m)}"
+    title = title_line(m)                            # 18. 11.: "{Streamer} {what happened} In GTA 6! 😭" first
     if service in ("twitter", "threads"):            # short: X counts 280 characters
-        text = "\n\n".join(x for x in (hook, q, chat_line(m), cta, f"{src} #GTA6") if x)
-        return text if x_len(text) <= X_MAX else "\n\n".join(x for x in (hook, f"{src} #GTA6") if x)
-    tags = rnd.sample(HASHTAGS, 2)
-    return "\n\n".join(x for x in (hook, q, data, cta, src,
-                                   " ".join(["#gta6", "#gta6bananaclips"] + tags)) if x)
+        text = "\n\n".join(x for x in (title, q, hook, chat_line(m), cta, f"{src} #GTA6") if x)
+        return text if x_len(text) <= X_MAX else "\n\n".join(x for x in (title, hook, f"{src} #GTA6") if x)
+    tags = rnd.sample(HASHTAGS, 1)
+    return "\n\n".join(x for x in (title, q, hook, data, cta, src,
+                                   " ".join(y for y in ["#gta6", tag_login(m), "#gta6bananaclips"] + tags if y)) if x)
 
 def youtube_title(m):
     """
@@ -802,11 +892,8 @@ def youtube_title(m):
         items = m.get("items") or [{"channel": "streamers"}]
         t = EXP_TITLES.get(m.get("concept"), "GTA 6 moments").format(s=items[0]["channel"], k=len(items))
         return t[:90] + " #shorts"
-    t = (m.get("title") or "").strip()
-    if len(t) < 12 or JUNK_RE.search(t) or sum(c.isalpha() for c in t) < len(t) / 2:
-        t = (m.get("quote") or "").strip() or ("wild reaction" if ZNACKA == "fanpage" else "insane moment")
-    head = f"{m['channel']} GTA 6 moment: " if ZNACKA == "fanpage" else f"GTA 6: {m['channel']} - "
-    return head + t[: 100 - len(head) - len(" #shorts")] + " #shorts"
+    t = title_line(m)                                # 18. 11.: streamer + what happened, like the big clip channels
+    return t[: 100 - len(" #shorts")] + " #shorts"
 
 def in_day(rec, day):
     """Is the post due inside this publishing day (12:00 that day to 12:00 the next, Prague)?"""
@@ -890,6 +977,93 @@ def remaining_max(day, recs=None):
     """Up to max_per_day (10) when the extra clips are strong enough (Aleš: 8 is a must, 10 if worth it)."""
     return max(0, max_per_day(day) - used_today(day, recs))
 
+# Day-long pacing (Aleš 18. 11.: "don't burn the day's posts in the first minutes when a stream explodes -
+# it may explode even more later"). Every post of the brand (hot, star, live, normal) fits a cumulative
+# curve over the publishing window: posts due by t <= ceil(max_per_day x audience weight elapsed by t)
+# (+ pace_burst for hot / star / live clips - the burst is their headroom above the normal pace), and
+# until 22:00 Prague 3 posts of max_per_day stay free (US prime), until 03:00 1 (reserve_until).
+# Weights per Prague hour favour US/UK prime (18-04) and the AU morning (08-11), low 05-08.
+#   hour:  0  1  2  3    4  5  6    7    8    9    10   11 12 13 14   15   16   17 18   19   20 21 22 23
+PACE_WEIGHTS = [3, 3, 3, 2.5, 2, 1, 0.5, 0.5, 1.5, 1.5, 1.5, 1, 1, 1, 1.5, 1.5, 1.5, 2, 2.5, 2.5, 3, 3, 3, 3]
+RESERVE_UNTIL = {"22": 3, "03": 1}
+EXCEPTIONAL = {"score_x": 4, "star_x": 2, "live_z": 25}
+
+def window_start(day):
+    return datetime.combine(day, datetime.min.time(), TZ) + timedelta(hours=12)
+
+def pace_share(day, t, weights):
+    """Share of the window's audience weight (12:00 day .. 12:00 next, Prague hours) elapsed by t."""
+    hours = (t.astimezone(TZ).replace(tzinfo=None) - window_start(day).replace(tzinfo=None)).total_seconds() / 3600
+    acc = 0.0
+    for i in range(24):
+        acc += weights[(12 + i) % 24] * min(1.0, max(0.0, hours - i))
+    return acc / (sum(weights) or 1)
+
+def pace_limit(day, t, src, hot=False):
+    """How many of the day's posts may be due by t: the audience curve (+ burst for hot clips),
+    the evening reserve, never over max_per_day. pace_weights [] in sources.json = curve off."""
+    mx = max_per_day(day)
+    w = src.get("pace_weights", PACE_WEIGHTS)
+    lim = mx
+    if w and len(w) == 24 and sum(w) > 0:
+        lim = math.ceil(mx * pace_share(day, t, w) - 1e-9) + (src.get("pace_burst", 2) if hot else 0)
+    for hh, keep in (src.get("reserve_until", RESERVE_UNTIL) or {}).items():
+        h = int(hh)
+        end = datetime.combine(day + timedelta(days=0 if h >= 12 else 1), datetime.min.time(), TZ) + timedelta(hours=h)
+        if t < end:
+            lim = min(lim, mx - keep)
+    return max(0, min(mx, lim))
+
+def quota_dues(day, recs):
+    """Due times of the day's quota posts (Top 3 and experiments are extras, not counted)."""
+    out = []
+    for k, rec in recs.items():
+        if not k.startswith(("top3_", "exp_")) and in_day(rec, day):
+            out.append(datetime.fromisoformat(rec["due"]))
+    return out
+
+def pace_fits(dues, u, day, src, hot=False):
+    """Does one more post due at u keep every point from u on under the curve?"""
+    pts = sorted(dues + [u])
+    for i, v in enumerate(pts, 1):
+        if v >= u and i > pace_limit(day, v, src, hot):
+            return False
+    return True
+
+def upgrade_note(blocked, recs, now, src):
+    """A hot clip held back by the pace / the day's budget while a much weaker normal post (upgrade_x,
+    3 x) still waits in Buffer (scheduled, due > now): only logged. Deleting a Buffer post needs Aleš's
+    approval - nothing is deleted automatically; both go out only when the budget allows."""
+    x = src.get("upgrade_x", 3)
+    waiting = []
+    for k, rec in recs.items():
+        try:
+            due = datetime.fromisoformat(rec.get("due") or "")
+        except ValueError:
+            continue
+        if not k.startswith(("top3_", "exp_")) and not rec.get("hot") and due > now and rec.get("score"):
+            waiting.append((rec["score"], due, k))
+    notes = []
+    for m in sorted(blocked, key=lambda m: -(m.get("score") or 0))[:3]:
+        weak = [w for w in waiting if w[0] * x <= (m.get("score") or 0)]
+        if weak:
+            s, due, k = min(weak)
+            notes.append(f"UPGRADE? hot {m['id']} (score {m.get('score', 0):.0f}) held back by the pace, "
+                         f"{x}x stronger than the scheduled {k} (score {s:.0f}, {due:%H:%M}) - Buffer post kept, "
+                         f"deleting it needs Ales's approval")
+    for n in notes:
+        log(n)
+        print(f"::notice::{n}")
+    return notes
+
+def exceptional(m, src):
+    """A clip big enough to break the pace and the evening reserve (never max_per_day): score >= 4 x
+    hot_score, a star streamer's clip >= 2 x hot_score, a live chat explosion with spike_z >= 25."""
+    hs, ex = src.get("hot_score", 2000), {**EXCEPTIONAL, **(src.get("exceptional") or {})}
+    s = m.get("score") or 0
+    return (s >= ex["score_x"] * hs or (is_star(m, src) and s >= ex["star_x"] * hs)
+            or (is_live(m) and (m.get("spike_z") or 0) >= ex["live_z"]))
+
 def day_plan(day, now, recs=None, n_hot=0):
     """
     How much THIS run commits (shared by `den` and `zbyva`, so render and publishing agree):
@@ -924,8 +1098,22 @@ def day_plan(day, now, recs=None, n_hot=0):
     later = len(free) - len(near)
     owed = max(0, max(0, must - used) - max(0, later - src.get("plan_spare_slots", 1)))
     owed = min(owed, len(free), slot_cap)
+    # pacing: a near slot only when its post stays under the normal curve (no burst) and the evening
+    # reserve; this run's hot posts (n_hot, due ~now) count first. Catch-up for the minimum beats the
+    # pace (the minimum must be reached by the end of the window), never max_per_day.
+    dues = quota_dues(day, recs) + [now] * n_hot
+    paced = []
+    for t in near:
+        if len(paced) >= slot_cap:
+            break
+        u = jittered(t, day)
+        if pace_fits(dues, u, day, src):
+            paced.append(t)
+            dues.append(u)
+    use = paced + [t for t in free if t not in paced][: max(0, owed - len(paced))]
+    use = sorted(use)[:slot_cap]
     return {"used": used, "must": must, "cap": cap, "level": level, "free": free, "near": near,
-            "owed": owed, "slots": min(slot_cap, len(free), max(len(near), owed)), "later": later}
+            "owed": owed, "slots": len(use), "use": use, "paced": len(paced), "later": later}
 
 def post_input(ch, m, video_url, due, draft):
     service = ch["service"].lower()
@@ -1076,9 +1264,12 @@ def cmd_den(a):
     # day has quota left up to max_per_day (they may run ahead of the planned pace)
     p0 = day_plan(day, now, recs)
     hot_due = (now + timedelta(minutes=2)).replace(second=0, microsecond=0)   # the deploy below takes ~1 min
-    hot = []
+    hot, blocked = [], []
     if in_day({"due": hot_due.isoformat()}, day):
-        hot = hot_pick(cands, recs, hot_due, min(a.n, p0["cap"]), src_cfg)
+        hot = hot_pick(cands, recs, hot_due, min(a.n, p0["cap"]), src_cfg, day=day, blocked=blocked)
+        if p0["cap"] <= 0:
+            blocked = [m for m in cands if is_hot(m, src_cfg)]
+        upgrade_note(blocked, recs, now, src_cfg)
     for m in hot:
         m["hot"] = True
         log(f"HOT{' (live)' if is_live(m) else ''}: {m['channel']} '{m.get('title', '')[:40]}' -> {hot_due:%H:%M}")
@@ -1107,7 +1298,7 @@ def cmd_den(a):
             if m.get("platform") == "youtube":
                 yt_left -= 1
             picks.append(m)
-    slots = [None] * len(hot) + p["free"][: len(picks)]        # earliest free slots (the near ones first)
+    slots = [None] * len(hot) + p["use"][: len(picks)]         # paced near slots (+ catch-up), earliest first
     picks = hot + picks
     times = [hot_due if s is None else jittered(s, day) for s in slots]
     chans = load_json(CHANNELS, [])
@@ -1117,7 +1308,8 @@ def cmd_den(a):
     mode = "ZKOUŠKA" if a.zkouska else ("NAOSTRO" if a.ostre else "koncepty")
     log(f"{day} [{ZNACKA}{' fast' if FAST else ''}]: {len(picks)} shorts ({len(hot)} hot) - day {p0['used']}/{p0['must']}"
         f" (max {p0['used'] + p0['cap']}), {len(p['near'])} free slots in the next {src_cfg.get('plan_horizon_h', 3)} h,"
-        f" catch-up {p['owed']}, {p['later']} later; over the minimum only score >= {extra}"
+        f" catch-up {p['owed']}, {p['later']} later, pace now {len(quota_dues(day, recs))}/{pace_limit(day, now, src_cfg)}"
+        f" (+burst {pace_limit(day, now, src_cfg, hot=True)}); over the minimum only score >= {extra}"
         f" x {len(chans) or '?'} channels ({mode})")
     if os.environ.get("GITHUB_ACTIONS") and not a.ostre and not a.zkouska:
         print("::warning::Buffer: jen KONCEPTY, nic nevyjde. Na GitHubu nastav promennou OSTRE=1.")
@@ -1812,6 +2004,17 @@ def cmd_zbyva(a):
             pass
     if recent:
         hot, hs = min(hot, 1), 3 * hs
+    # day-long pace (pace_fits with the burst): when it has no room for a hot post now, only an
+    # exceptional clip (4 x hot_score, it may break the pace) is worth rendering
+    dues = quota_dues(day, records())
+    room = 0
+    while room < hot and pace_fits(dues + [now] * room, now, day, src, hot=True):
+        room += 1
+    if room < hot:
+        ex = {**EXCEPTIONAL, **(src.get("exceptional") or {})}
+        hot = room if room else min(hot, 1)
+        if not room:
+            hs = max(hs, int(ex["score_x"] * src.get("hot_score", 2000)))
     if a.plan:
         print(p["slots"], p["owed"], good_n, int(good), int(extra), hot, hs)
     else:
