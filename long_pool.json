@@ -2242,13 +2242,71 @@
     "channel": "kaicenat",
     "platform": "twitch",
     "title": "\"ahhhhfuhhh\"",
-    "views": 722,
+    "views": 2492,
     "created": 1795008718,
     "category": "Grand Theft Auto VI",
     "video_id": "2932305259",
     "vod_offset": 1870,
     "cluster": 1,
-    "added": 1795023924
+    "added": 1795044517,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/kaicenat/20261118_twitch_AgreeableHyperCockroachCeilingCat-_dmoVo8X--AU1Sq7/source.mp4",
+    "peak": 24.950000000000003,
+    "cut": [
+      16.97,
+      28.97
+    ],
+    "dur": 30.02,
+    "tags": [],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 0.2,
+      "wow": 0.0,
+      "_loud": 1.5,
+      "_motion": 20.5
+    },
+    "quote": "",
+    "rendered": [
+      "fanpage"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "proven": [],
+    "evidence": {
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.28,
+    "signals": {
+      "siren": 0.0,
+      "impact": 11.3,
+      "loud": 2.1,
+      "motion": 10.2,
+      "sustained": 0.25,
+      "spike": 3.3,
+      "laugh": 0,
+      "static": 0.04,
+      "letterbox": 0.0,
+      "luma": 44.4,
+      "dark": 0.0
+    }
   },
   "twitch_TubularAwkwardFrogPanicBasket-16J-tuUOS6Kxw8bS": {
     "id": "twitch_TubularAwkwardFrogPanicBasket-16J-tuUOS6Kxw8bS",
