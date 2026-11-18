@@ -2191,11 +2191,11 @@
     "channel": "ishowspeed",
     "platform": "twitch",
     "title": "HAHAHAHH",
-    "views": 1570,
+    "views": 1651,
     "created": 1795011761,
     "category": "Grand Theft Auto VI",
     "cluster": 1,
-    "added": 1795034743,
+    "added": 1795035390,
     "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/ishowspeed/20261118_twitch_CreativeHeadstrongAniseFunRun-_f88pOqgLQhawQRA/source.mp4",
     "peak": 24.950000000000003,
     "cut": [
@@ -2897,10 +2897,10 @@
     "channel": "n3on",
     "platform": "kick",
     "title": "neon crashing out at stripper lol",
-    "views": 1651,
+    "views": 1740,
     "created": 1795007347,
     "category": "Grand Theft Auto VI (GTA)",
-    "added": 1795034662,
+    "added": 1795035295,
     "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/n3on/20261118_kick_clip_01M7QCCG08XKJGGNGN2NG1J3EN/source.mp4",
     "peak": 171.05,
     "cut": [
@@ -2983,5 +2983,16 @@
       "luma": 25.9,
       "dark": 0.0
     }
+  },
+  "twitch_AbstruseIncredulousFennelSeemsGood-aRIbqcXBbvi5gRo7": {
+    "id": "twitch_AbstruseIncredulousFennelSeemsGood-aRIbqcXBbvi5gRo7",
+    "url": "https://www.twitch.tv/nickmercs/clip/AbstruseIncredulousFennelSeemsGood-aRIbqcXBbvi5gRo7",
+    "channel": "nickmercs",
+    "platform": "twitch",
+    "title": "HOOO Deerrr XD",
+    "views": 503,
+    "created": 1795032463,
+    "category": "Grand Theft Auto VI",
+    "added": 1795035467
   }
 }
