@@ -1077,5 +1077,109 @@
       "luma": 72.1,
       "dark": 0.0
     }
+  },
+  "twitch_PluckyAggressiveYogurtSuperVinlin-NOm5zhuzbWEM1Lnm": {
+    "id": "twitch_PluckyAggressiveYogurtSuperVinlin-NOm5zhuzbWEM1Lnm",
+    "url": "https://www.twitch.tv/xqc/clip/PluckyAggressiveYogurtSuperVinlin-NOm5zhuzbWEM1Lnm",
+    "channel": "xqc",
+    "platform": "twitch",
+    "title": "xQc is freakyy as shittt",
+    "views": 559,
+    "created": 1795004579,
+    "category": "Grand Theft Auto VI",
+    "added": 1795012543,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/xqc/20261118_twitch_PluckyAggressiveYogurtSuperVinlin-NOm5zhuzbWEM1Lnm/source.mp4",
+    "peak": 7.8500000000000005,
+    "cut": [
+      0.0,
+      11.63
+    ],
+    "dur": 19.3,
+    "tags": [],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 0.2,
+      "wow": 0.0,
+      "_loud": 4.6,
+      "_motion": 4.2
+    },
+    "quote": "",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.25,
+      "rage": 0.25,
+      "fail": 0.25,
+      "physics": 0.25,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.25
+    },
+    "proven": [],
+    "evidence": {
+      "funny": [
+        "loud"
+      ],
+      "rage": [
+        "loud"
+      ],
+      "fail": [
+        "impact",
+        "loud"
+      ],
+      "physics": [
+        "impact"
+      ],
+      "crash": [
+        "impact"
+      ],
+      "stunt": [
+        "impact"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "loud"
+      ]
+    },
+    "fun": 0.52,
+    "signals": {
+      "siren": 0.0,
+      "impact": 61.7,
+      "loud": 10.5,
+      "motion": 4.2,
+      "sustained": 0.02,
+      "spike": 4.1,
+      "laugh": 0,
+      "static": 0.09,
+      "letterbox": 0.0,
+      "luma": 51.0,
+      "dark": 0.0
+    }
+  },
+  "twitch_UnusualMoistSharkBIRB-Wlz2wmgaTOQAniKu": {
+    "id": "twitch_UnusualMoistSharkBIRB-Wlz2wmgaTOQAniKu",
+    "url": "https://www.twitch.tv/clix/clip/UnusualMoistSharkBIRB-Wlz2wmgaTOQAniKu",
+    "channel": "clix",
+    "platform": "twitch",
+    "title": "Wtf",
+    "views": 1388,
+    "created": 1795004260,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932204601",
+    "vod_offset": 6180,
+    "added": 1795012755
   }
 }
