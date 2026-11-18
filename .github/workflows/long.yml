@@ -71,12 +71,18 @@ jobs:
           cache: pip
           cache-dependency-path: requirements-ci.txt
 
+      # static ffmpeg 9.0 (pinned BtbN build, cached): apt-get took 5-15 min per run on a slow mirror
+      - uses: actions/cache@v4
+        with:
+          path: ~/ffmpeg-static
+          key: ffmpeg-btbn-n9.0.2-57-linux64-gpl-v1
+
       - name: ffmpeg
-        run: sudo apt-get update -q && sudo apt-get install -y -q --no-install-recommends ffmpeg
+        run: bash .github/ffmpeg.sh
 
       - name: python deps (CPU torch)
         run: |
-          pip install torch --index-url https://download.pytorch.org/whl/cpu
+          pip install torch==2.15.0 --index-url https://download.pytorch.org/whl/cpu
           pip install -r requirements-ci.txt
 
       - uses: actions/cache@v4

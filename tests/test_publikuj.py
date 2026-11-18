@@ -173,7 +173,7 @@ class Sim:
             P.EXTRA_MB, P.POOL_FILE = self.t / "netlify_extra.json", self.t / "long_pool.json"
             with mock.patch.dict(os.environ, env), \
                     mock.patch.object(P, "inbox_items", lambda: [dict(m) for m in self.live if m["arrive"] <= P.NOW]), \
-                    mock.patch.object(P, "inbox_deploy", lambda files, inbox, title=None: "https://media.test/d"), \
+                    mock.patch.object(P, "inbox_deploy", lambda files, inbox, title=None, essential=False: "https://media.test/d"), \
                     mock.patch.object(P, "prune_drafts", lambda days=4: None), \
                     mock.patch.object(P, "is_public", lambda url: True), \
                     mock.patch.object(P, "http", lambda *a, **k: (200, b"x")), \
@@ -333,8 +333,14 @@ class JustInTimeDay(unittest.TestCase):
         self.assertIsNotNone(rec, f"{cid} not published")
         self.assertTrue(rec["hot"])
         self.assertLessEqual(datetime.fromisoformat(rec["due"]), arrive + timedelta(minutes=within))
-        modes = {str(i["mode"]) for b, c, s, i in sim.posts if c == cid}
-        self.assertEqual(modes, {"shareNow"})
+        # 18. 11.: the networks 0-4 min apart - one shareNow, the rest scheduled a few minutes later
+        modes = [str(i["mode"]) for b, c, s, i in sim.posts if c == cid]
+        self.assertIn("shareNow", modes)
+        self.assertLessEqual(set(modes), {"shareNow", "customScheduled"})
+        for b, c, s, i in sim.posts:
+            if c == cid and "dueAt" in i:
+                due = datetime.fromisoformat(i["dueAt"].replace("Z", "+00:00"))
+                self.assertLessEqual(due, datetime.fromisoformat(rec["due"]) + timedelta(minutes=6))
 
     def run_day(self, cadence, scarce=False):
         with tempfile.TemporaryDirectory() as t:

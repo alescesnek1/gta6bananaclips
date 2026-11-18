@@ -1,8 +1,10 @@
-# GitHub Actions (Linux, CPU). torch CPU is installed first by the workflow.
-numpy>=2.0
-opencv-python-headless>=4.10,<5
-onnxruntime>=1.20
-openai-whisper
-yt-dlp[default]
-tzdata
-Pillow>=10
+# GitHub Actions (Linux, CPU). torch CPU is installed first by the workflow (torch==2.15.0, CPU index).
+# Pinned 18. 11. to the versions of the last green run (44264831163): no surprise upgrade mid-launch.
+# yt-dlp: when Twitch / Kick change and downloads break, bump this line to the newest release.
+numpy==2.5.5
+opencv-python-headless==4.14.0.94
+onnxruntime==1.32.0
+openai-whisper==20250625
+yt-dlp[default]==2026.10.26
+tzdata==2026.6
+Pillow==13.0.0

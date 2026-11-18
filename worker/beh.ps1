@@ -55,15 +55,32 @@ if ($token -and (Due "github" $(if ($launch) { 4 } else { 25 }))) {
     }
 }
 
-# --- 2) YouTube, every 30 min
+# --- 1b) long-form once a day around 00:30 Prague (GitHub's cron for long.yml ran 5 h late)
+if ($token -and (($now.Hour -eq 0 -and $now.Minute -ge 25) -or $now.Hour -eq 1) -and (Due "long" 600)) {
+    try {
+        Invoke-RestMethod -Method Post -Uri "https://api.github.com/repos/aleshrani/gta6bananaclips/actions/workflows/long.yml/dispatches" `
+            -Headers @{ Authorization = "Bearer $token"; Accept = "application/vnd.github+json"; "User-Agent" = "gta6-pc" } `
+            -Body '{"ref":"main"}' -ContentType "application/json" | Out-Null
+        "$(Get-Date -Format s) long-form run started" | Out-File $log -Append -Encoding utf8
+    } catch {
+        "$(Get-Date -Format s) long-form run FAILED: $($_.Exception.Message)" | Out-File $log -Append -Encoding utf8
+    }
+}
+
+# --- 2) YouTube, every 30 min, in its OWN process (worker\youtube.ps1): a YouTube render can take up to
+# 2 h and the task runs with MultipleInstances IgnoreNew - in this process it stopped the clock above.
+# Its own lock file (PID) makes sure only one YouTube batch runs at a time.
 if (-not (Due "youtube" 25)) { exit 0 }
-& {
-    "=== $(Get-Date -Format s)"
-    # always the newest code and publikovano.json from GitHub (local changes to tracked files are dropped)
-    git fetch -q origin main
-    git reset -q --hard origin/main
-    # before the launch (19. 11.) trailer reactions up to 7 days old, after it only fresh videos
-    $days = if ($now -lt [datetime]"2026-11-19") { 7 } else { 1 }
-    & $py klipuj.py --whisper small.en batch --jen-yt --yt 3 --max 3 --days $days
-    & $py publikuj.py schranka --uklid
-} *>> $log
+$ylock = Join-Path $dir "out\youtube.lock"
+if (Test-Path $ylock) {
+    $old = (Get-Content $ylock -Raw -ErrorAction SilentlyContinue)
+    $age = ($now - (Get-Item $ylock).LastWriteTime).TotalHours
+    if ($old -and $age -lt 3 -and (Get-Process -Id ([int]$old.Trim()) -ErrorAction SilentlyContinue)) {
+        "$(Get-Date -Format s) youtube batch still running (pid $($old.Trim())), skipped" | Out-File $log -Append -Encoding utf8
+        exit 0
+    }
+}
+$p = Start-Process -FilePath "powershell.exe" -WindowStyle Hidden -PassThru `
+    -ArgumentList @("-NoProfile", "-ExecutionPolicy", "Bypass", "-File", (Join-Path $PSScriptRoot "youtube.ps1"))
+$p.Id | Set-Content $ylock -Encoding ascii
+"$(Get-Date -Format s) youtube batch started (pid $($p.Id))" | Out-File $log -Append -Encoding utf8

@@ -30,7 +30,7 @@ concurrency:
 jobs:
   live:
     runs-on: ubuntu-24.04
-    timeout-minutes: 355
+    timeout-minutes: 360
     env:
       NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
       NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
@@ -39,6 +39,9 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       PYTHONUTF8: "1"
     steps:
+      - name: job start time (the watch time is what is left of the 6 h)
+        run: echo "JOB_T0=$(date +%s)" >> "$GITHUB_ENV"
+
       - uses: actions/checkout@v4
 
       - uses: actions/setup-python@v5
@@ -51,12 +54,18 @@ jobs:
         with:
           deno-version: v2.x
 
+      # static ffmpeg 9.0 (pinned BtbN build, cached): apt-get took 5-15 min per run on a slow mirror
+      - uses: actions/cache@v4
+        with:
+          path: ~/ffmpeg-static
+          key: ffmpeg-btbn-n9.0.2-57-linux64-gpl-v1
+
       - name: ffmpeg
-        run: sudo apt-get update -q && sudo apt-get install -y -q --no-install-recommends ffmpeg
+        run: bash .github/ffmpeg.sh
 
       - name: python deps (CPU torch)
         run: |
-          pip install torch --index-url https://download.pytorch.org/whl/cpu
+          pip install torch==2.15.0 --index-url https://download.pytorch.org/whl/cpu
           pip install -r requirements-ci.txt
 
       - uses: actions/cache@v4
@@ -66,6 +75,11 @@ jobs:
 
       - name: watch live chats and clip the explosions
         run: |
-          args="--hours ${{ inputs.hodin || '5.7' }}"
+          # watch until 340 min after the job start (setup included), then up to 15 min to finish the
+          # queued renders; the job timeout is 360 min, so it is never killed in the middle of a short
+          left=$(( 340 * 60 - ($(date +%s) - JOB_T0) ))
+          hours=$(python -c "print(round(max(0.2, min(float('${{ inputs.hodin || '5.7' }}'), $left / 3600)), 2))")
+          echo "watching $hours h"
+          args="--hours $hours"
           if [ -n "${{ inputs.hra }}" ]; then args="$args --ted --hra '${{ inputs.hra }}'"; fi
           eval python klipuj.py --whisper small.en live $args

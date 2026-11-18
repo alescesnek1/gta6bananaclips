@@ -212,6 +212,11 @@ def brand_keys():
         return keys
     return buffer_keys()
 
+class RateLimited(RuntimeError):
+    """Buffer says wait longer than RATE_MAX_WAIT: the clip is skipped this run (the next run retries)."""
+
+RATE_MAX_WAIT = 120
+
 def gql(query, key="BUFFER_API_KEY"):
     body = json.dumps({"query": query}).encode()
     headers = {"Authorization": f"Bearer {os.environ[key]}", "Content-Type": "application/json"}
@@ -220,8 +225,11 @@ def gql(query, key="BUFFER_API_KEY"):
             data = json.loads(http(API, body, headers, "POST", 60)[1])
             break
         except urllib.error.HTTPError as e:
-            if e.code == 429 and attempt < 2:      # rate limit: wait as told
-                wait = int(e.headers.get("Retry-After") or 60) if (e.headers.get("Retry-After") or "60").isdigit() else 60
+            if e.code == 429:                      # rate limit: wait as told, but never longer than 2 min
+                ra = e.headers.get("Retry-After") or ""
+                wait = int(ra) if ra.isdigit() else 60
+                if wait > RATE_MAX_WAIT or attempt >= 2:
+                    raise RateLimited(f"Buffer rate limit (Retry-After {ra or '?'} s) - skipped this run")
                 log(f"  Buffer rate limit, waiting {wait}s")
                 time.sleep(wait)
                 if lock_lost():                    # the wait may have outlived our publishing lock
@@ -276,12 +284,16 @@ def prune_drafts(days=4):
     """Delete our own draft deploys (media / inboxes) older than `days` - Buffer has long fetched them."""
     try:
         site = os.environ["NETLIFY_SITE_ID"]
-        for d in netlify(f"/sites/{site}/deploys?per_page=100"):
-            if d.get("title") not in (MEDIA_TITLE, INBOX_TITLE, "live-inbox") or d.get("context") == "production":
-                continue
-            age = datetime.now(timezone.utc) - datetime.fromisoformat(d["created_at"].replace("Z", "+00:00"))
-            if age > timedelta(days=days):
-                netlify(f"/deploys/{d['id']}", method="DELETE")
+        for page in range(1, 6):                       # newest first: the old drafts are further down
+            ds = netlify(f"/sites/{site}/deploys?per_page=100&page={page}") or []
+            for d in ds:
+                if d.get("title") not in (MEDIA_TITLE, INBOX_TITLE, "live-inbox") or d.get("context") == "production":
+                    continue
+                age = datetime.now(timezone.utc) - datetime.fromisoformat(d["created_at"].replace("Z", "+00:00"))
+                if age > timedelta(days=days):
+                    netlify(f"/deploys/{d['id']}", method="DELETE")
+            if len(ds) < 100:
+                break
     except Exception as e:
         log(f"  prune drafts: {e}")
 
@@ -289,14 +301,47 @@ def safe_name(clip_id):
     return re.sub(r"[^A-Za-z0-9_-]", "_", clip_id)
 
 def netlify(path, data=None, method=None, ctype="application/json", timeout=120):
+    """Netlify API call. 429 (deploys: 3 per minute) -> wait as told (max 120 s) and try again, 4 tries."""
     h = {"Authorization": f"Bearer {os.environ['NETLIFY_AUTH_TOKEN']}", "Content-Type": ctype}
-    return json.loads(http(f"{NETLIFY}{path}", data, h, method, timeout)[1] or b"null")
+    for attempt in range(4):
+        try:
+            return json.loads(http(f"{NETLIFY}{path}", data, h, method, timeout)[1] or b"null")
+        except urllib.error.HTTPError as e:
+            if e.code != 429 or attempt == 3:
+                raise
+            ra = e.headers.get("Retry-After") or ""
+            wait = min(int(ra) if ra.isdigit() else 25 * (attempt + 1), 120)
+            log(f"  Netlify rate limit, waiting {wait}s")
+            time.sleep(wait)
 
-def inbox_deploy(files, inbox, title=None):
+# Netlify allows ~100 deploys a day per site (and 3 a minute). Every writer deploys (den per brand,
+# live hand-over, experiments, Top 3, the PC's yt-inbox): non-essential deploys stop at DEPLOY_SOFT
+# in the last 24 h, the publishing deploy of `den` (essential) at DEPLOY_HARD.
+DEPLOY_SOFT, DEPLOY_HARD = 85, 97
+_deploys = {}
+
+def deploys_24h():
+    """Deploys of the site created in the last 24 h (newest 100 are enough to see the limit)."""
+    if "n" not in _deploys:
+        try:
+            ds = netlify(f"/sites/{os.environ['NETLIFY_SITE_ID']}/deploys?per_page=100") or []
+            cut = datetime.now(timezone.utc) - timedelta(hours=24)
+            _deploys["n"] = sum(1 for d in ds if d.get("created_at") and
+                                datetime.fromisoformat(d["created_at"].replace("Z", "+00:00")) >= cut)
+        except Exception as e:                    # unknown: do not block, the deploy itself will tell
+            log(f"  Netlify deploy count unknown ({str(e)[-80:]})")
+            _deploys["n"] = 0
+    return _deploys["n"]
+
+def inbox_deploy(files, inbox, title=None, essential=False):
     """
     files: {site path: local path}, inbox: bytes of inbox.json. A draft deploy (deploy preview,
     no credits) by file digest: Netlify asks only for files it doesn't have yet.
     """
+    n = deploys_24h()
+    if n >= (DEPLOY_HARD if essential else DEPLOY_SOFT):
+        raise RuntimeError(f"Netlify: {n} deploys in 24 h, {'essential' if essential else 'non-essential'} deploy skipped")
+    _deploys["n"] = n + 1
     site = os.environ["NETLIFY_SITE_ID"]
     blobs = {"/inbox.json": inbox, "/robots.txt": b"User-agent: *\nDisallow: /\n"}
     digests = {k: hashlib.sha1(v).hexdigest() for k, v in blobs.items()}
@@ -334,12 +379,20 @@ def inbox_items():
     if not (os.environ.get("NETLIFY_AUTH_TOKEN") and os.environ.get("NETLIFY_SITE_ID")):
         return []
     out = []
-    try:
-        deploys = netlify(f"/sites/{os.environ['NETLIFY_SITE_ID']}/deploys?per_page=50")
+    titles = ("live-inbox",) if FAST else (INBOX_TITLE, "live-inbox")       # fast path: live clips only
+    deploys = []
+    try:                                                      # newest first; media drafts may push an inbox down
+        for page in range(1, 4):
+            ds = netlify(f"/sites/{os.environ['NETLIFY_SITE_ID']}/deploys?per_page=100&page={page}") or []
+            deploys += ds
+            if len(ds) < 100 or all(any(d.get("title") == t and d.get("state") == "ready" for d in deploys)
+                                    for t in titles):
+                break
     except Exception as e:                                    # no inbox must never stop Twitch/Kick posts
         log(f"inbox: unreadable ({e})")
-        return []
-    for title in ("live-inbox",) if FAST else (INBOX_TITLE, "live-inbox"):   # fast path: live clips only
+        if not deploys:
+            return []
+    for title in titles:
         d = next((d for d in deploys if d.get("title") == title and d.get("state") == "ready"), None)
         if not d:
             continue
@@ -420,6 +473,17 @@ def inbox_short(m, znacka):
     return f"{m['base']}/{f}" if f else None
 
 PLAN_DAY = None                          # the publishing day `den` plans (trailer cut-off uses it, not the clock)
+MAX_FAILS = 2                            # a clip whose publishing failed this many times is skipped for good
+
+def fails_file():
+    """{clip id: failed publishing attempts} - committed with the records (zamek pust --uloz)."""
+    return HERE / "publikace_chyby.json"
+
+def add_fail(clip_id):
+    f = fails_file()
+    d = load_json(f, {})
+    d[clip_id] = int(d.get(clip_id) or 0) + 1
+    save_json(f, d)
 
 def candidates(znacka=None):
     """
@@ -435,6 +499,11 @@ def candidates(znacka=None):
     done = {}
     for f in all_record_files() + rec_files(znacka):
         done.update(load_json(f, {}))
+    for k, rec in list(done.items()):        # a clip used in an experiment never goes out again (either account)
+        if k.startswith("exp_"):
+            done.update({i: {} for i in rec.get("items") or [] if isinstance(i, str)})
+    fails = load_json(fails_file(), {})
+    done.update({k: {} for k, n in fails.items() if isinstance(n, int) and n >= MAX_FAILS})
     now = now_tz().timestamp()
     out, local = [], []
     for meta_file in OUT.glob("*/*/meta.json"):
@@ -477,14 +546,60 @@ def is_live(m):
     return bool(m.get("live")) or str(m.get("id", "")).startswith("live_")
 
 def is_hot(m, src_cfg=None):
-    """Goes out NOW (shareNow): a live chat clip, or a viewer clip spreading fast (score >= hot_score),
+    """Goes out NOW (shareNow): a live chat clip, a world-class streamer's clip (star_streamers, Aleš 18. 11.:
+    Kai Cenat / IShowSpeed carry the account), or a viewer clip spreading fast (score >= hot_score),
     both younger than hot_max_age_h (an old one waits for a normal slot). Never a YouTube window."""
     src_cfg = src_cfg if src_cfg is not None else load_json(HERE / "sources.json", {})
     if m.get("platform") == "youtube" or not m.get("created"):
         return False
     if m.get("age_h", 99) > src_cfg.get("hot_max_age_h", 3):
         return False
-    return is_live(m) or (m.get("score") or 0) >= src_cfg.get("hot_score", 2000)
+    return is_live(m) or is_star(m, src_cfg) or (m.get("score") or 0) >= src_cfg.get("hot_score", 2000)
+
+def is_star(m, src_cfg):
+    stars = {x.lower() for x in src_cfg.get("star_streamers", [])}
+    return str(m.get("channel") or "").lower() in stars and (m.get("score") or 0) >= src_cfg.get("star_min_score", 300)
+
+def hot_pick(cands, recs, now, limit, src_cfg):
+    """
+    Hot clips this run may post NOW, paced so one run (or a burst of runs) never burns the day:
+    at most hot_per_run (2) per run, a viewer / star clip only hot_gap_min (30) after the brand's last
+    hot post, a live clip only live_gap_min (20) after its last live post - unless it is exceptional
+    (score >= 3 x hot_score, or a live chat explosion with spike_z >= hot_bypass_z). Star streamers'
+    clips first, then live, then by score.
+    """
+    hs = src_cfg.get("hot_score", 2000)
+    hot = [m for m in cands if is_hot(m, src_cfg)]
+    hot.sort(key=lambda m: (not is_star(m, src_cfg), not is_live(m), -(m.get("score") or 0), -(m.get("spike_z") or 0)))
+    times, live_times = [], []
+    for rec in recs.values():
+        if not rec.get("hot"):
+            continue
+        try:
+            t = datetime.fromisoformat(rec.get("due") or "")
+        except ValueError:
+            continue
+        times.append(t)
+        if rec.get("live"):
+            live_times.append(t)
+    gap, lgap = timedelta(minutes=src_cfg.get("hot_gap_min", 30)), timedelta(minutes=src_cfg.get("live_gap_min", 20))
+    out = []
+    for m in hot:
+        if len(out) >= min(limit, src_cfg.get("hot_per_run", 2)):
+            break
+        live = is_live(m)
+        strong = ((m.get("score") or 0) >= 3 * hs or
+                  (live and (m.get("spike_z") or 0) >= src_cfg.get("hot_bypass_z", 25)))
+        if not strong:
+            if live and any(abs(now - t) < lgap for t in live_times):
+                continue
+            if not live and any(abs(now - t) < gap for t in times):
+                continue
+        out.append(m)
+        times.append(now)
+        if live:
+            live_times.append(now)
+    return out
 
 # Anti-spam: every post gets its own text (a quote from what the streamer said), no
 # @mentions (they would tag strangers / break X's automation rules), few rotating hashtags.
@@ -492,8 +607,41 @@ JUNK_RE = re.compile(r"leak|n[i1]gg|f[a@]gg|retard|\bkys\b", re.I)
 HASHTAGS = ["#gta", "#gaming", "#twitch", "#gtavi", "#gta6clips", "#vicecity", "#gamingclips", "#streamer"]
 
 def home(m):
-    return {"kick": f"kick.com/{m['channel']}", "youtube": f"youtube.com/@{m['channel']}"}.get(
-        m.get("platform"), f"twitch.tv/{m['channel']}")
+    """Credit link without an @ (youtube.com/@x would read as a mention / tag a stranger)."""
+    ch = str(m.get("channel") or "").lstrip("@")
+    return {"kick": f"kick.com/{ch}", "youtube": f"{ch} on YouTube"}.get(m.get("platform"), f"twitch.tv/{ch}")
+
+def quote_of(m):
+    """The streamer's own words for the caption, or "" when they look like junk / risky (JUNK_RE)."""
+    q = (m.get("quote") or "").strip().replace("@", "")
+    return "" if not q or JUNK_RE.search(q) else q
+
+URL_RE = re.compile(r"(?:https?://)?(?:[a-z0-9-]+\.)+(?:com|tv|net|org|gg|io|co|be)(?:/\S*)?", re.I)
+X_MAX = 270                                       # X counts 280 weighted characters; a margin
+
+def x_len(text):
+    """X's weighted length: a link counts 23, characters outside Latin / general punctuation (emoji, CJK) 2."""
+    n, pos = 0, 0
+    for u in URL_RE.finditer(text):
+        n += 23
+        for ch in text[pos:u.start()]:
+            n += _xw(ch)
+        pos = u.end()
+    return n + sum(_xw(ch) for ch in text[pos:])
+
+def _xw(ch):
+    c = ord(ch)
+    return 1 if (c <= 4351 or 8192 <= c <= 8205 or 8208 <= c <= 8223 or 8242 <= c <= 8247) else 2
+
+def x_fit(text, limit=X_MAX):
+    """Drop whole lines before the last one (credit + #GTA6) until X accepts it, then cut."""
+    lines = text.split("\n")
+    while x_len("\n".join(lines)) > limit and len(lines) > 2:
+        del lines[-2]
+    text = "\n".join(lines)
+    while x_len(text) > limit:
+        text = text[:-1]
+    return re.sub(r"\n{3,}", "\n\n", text).strip()
 
 # gta6fanpageclip: a curator of streamer reactions - no bananas, no score, its own hashtags
 FAN_HASHTAGS = ["#gtavi", "#gta6gameplay", "#gta6reaction", "#streamerclips", "#twitchclips",
@@ -546,8 +694,8 @@ def league_line(m):
     try:
         if "rows" not in _league:
             import liga
-            _league["rows"] = {r["channel"]: r["rank"] for r in liga.table(7)}
-        rank = _league["rows"].get(m.get("channel"))
+            _league["rows"] = {str(r["channel"]).lower(): r["rank"] for r in liga.table(7)}
+        rank = _league["rows"].get(str(m.get("channel") or "").lower())
     except Exception as e:                        # the league is a bonus: never cost a post
         log(f"  league: {e}")
         return ""
@@ -562,14 +710,14 @@ def caption_fanpage(m, service):
     rnd = random.Random(f"{m['id']}:{service}:fanpage")
     s = (m.get("channel") or "they")[:1].upper() + (m.get("channel") or "they")[1:]
     hook = rot(FAN_BAIT, m, service).format(s=s)          # comment bait first, a share trigger after
-    q = (m.get("quote") or "").strip()
+    q = quote_of(m)
     q = f"\"{q}\"" if q else ""
     cta = rot(FAN_SHARE, m, service, 3).format(s=s)
     chat = chat_line(m)
     src = f"Streamer: {home(m)}"
     if service in ("twitter", "threads"):
         text = "\n\n".join(x for x in (hook, q, chat, cta, f"{src} #GTA6") if x)
-        return text if len(text) <= 270 else "\n\n".join(x for x in (hook, f"{src} #GTA6") if x)
+        return text if x_len(text) <= X_MAX else "\n\n".join(x for x in (hook, f"{src} #GTA6") if x)
     tags = rnd.sample(FAN_HASHTAGS, 2)
     return "\n\n".join(x for x in (hook, q, chat, cta, src, " ".join(["#gta6", "#gta6clips"] + tags)) if x)
 
@@ -605,6 +753,12 @@ def caption_exp(m, service):
         HASHTAGS if ZNACKA == "bananas" else FAN_HASHTAGS, 2))
 
 def caption(m, service):
+    """Post text: never an @ anywhere (mentions tag strangers / break X's automation rules); X / Threads
+    within X's weighted limit."""
+    text = _caption(m, service).replace("@", "")
+    return x_fit(text) if service in ("twitter", "threads") else text
+
+def _caption(m, service):
     if m.get("platform") == "exp":
         return caption_exp(m, service)
     if ZNACKA == "fanpage" and m.get("platform") != "top3":
@@ -622,7 +776,7 @@ def caption(m, service):
     rnd = random.Random(f"{m['id']}:{service}")
     s = (m.get("channel") or "they")[:1].upper() + (m.get("channel") or "they")[1:]
     hook = rot(BAIT, m, service).format(s=s)
-    q = (m.get("quote") or "").strip()
+    q = quote_of(m)
     q = f"“{q}”" if q else ""
     score = (f"🍌 Banana score: {m['rating']}/10" + (" GOLDEN" if m.get("golden") else "")) if m.get("rating") else ""
     if re.search(r"score|bananas|1-10", hook, re.I):  # a guessing question: never spoil the answer in the text
@@ -632,7 +786,7 @@ def caption(m, service):
     src = f"🎮 {home(m)}"
     if service in ("twitter", "threads"):            # short: X counts 280 characters
         text = "\n\n".join(x for x in (hook, q, chat_line(m), cta, f"{src} #GTA6") if x)
-        return text if len(text) <= 270 else "\n\n".join(x for x in (hook, f"{src} #GTA6") if x)
+        return text if x_len(text) <= X_MAX else "\n\n".join(x for x in (hook, f"{src} #GTA6") if x)
     tags = rnd.sample(HASHTAGS, 2)
     return "\n\n".join(x for x in (hook, q, data, cta, src,
                                    " ".join(["#gta6", "#gta6bananaclips"] + tags)) if x)
@@ -755,9 +909,13 @@ def day_plan(day, now, recs=None, n_hot=0):
     level = budget_level()
     top = must if level else max_per_day(day)
     cap = max(0, top - used)
-    # slots never take the last hot_room posts of max_per_day: they stay for hot / live clips found
-    # later (21:00 US launch moment, a chat explosion after midnight); never below the minimum
-    slot_cap = max(0, max(must, top - src.get("hot_room", 2)) - used)
+    # slots never take the last hot_room posts of max_per_day while the US prime time is ahead: they stay
+    # for hot / live clips found later (21:00 US launch moment); never below the minimum. From
+    # hot_room_until (20:00 Prague) of the publishing day the room goes to normal slots too (only clips
+    # >= extra_score fill it, `den`), so a strong 9th / 10th clip is not stuck waiting for a hot one
+    room_end = datetime.combine(day, datetime.min.time(), TZ) + timedelta(hours=src.get("hot_room_until_h", 20))
+    room = src.get("hot_room", 2) if now < room_end else 0
+    slot_cap = max(0, max(must, top - room) - used)
     taken = {rec.get("slot") or rec.get("due") for rec in recs.values()}
     free = [t for t in slot_times(day, len(SLOTS))
             if jittered(t, day) > now + timedelta(minutes=20) and t.isoformat() not in taken]
@@ -808,11 +966,13 @@ def day_service_counts(done, chans, day):
 def create_post(inp, key):
     if lock_lost():                  # every publishing path (classics, hot, Top 3, experiments) stops here
         raise RuntimeError("publishing lock lost (zamek_ztracen) - not posted")
-    q = ("mutation { createPost(input: " + gql_value(inp) + ") { "
+    q = ("mutation { createPost(input: " + gql_value(inp) + ") { __typename "
          "... on PostActionSuccess { post { id } } ... on MutationError { message } } }")
-    res = gql(q, key)["createPost"]
+    res = gql(q, key)["createPost"] or {}
     if res.get("message"):
-        raise RuntimeError(res["message"])
+        raise RuntimeError(f"{res.get('__typename') or 'MutationError'}: {res['message']}")
+    if not (res.get("post") or {}).get("id"):
+        raise RuntimeError(f"Buffer createPost: unexpected answer {res.get('__typename') or res}")
     return res["post"]["id"]
 
 def slot_times(day, n):
@@ -835,6 +995,29 @@ def jittered(slot, day, znacka=None):
         shift[s] = rnd.choice([d for d in range(-25, 26)
                                if (datetime.strptime(s, "%H:%M") + timedelta(minutes=d)).minute not in (0, 30)])
     return slot + timedelta(minutes=shift[slot.strftime("%H:%M")])
+
+def off_grid(t):
+    """Never on the full / half hour."""
+    return t + timedelta(minutes=1) if t.minute in (0, 30) else t
+
+def fresh_due(t, rnd=None):
+    """A scheduled time that is (nearly) past by now - a slow deploy, a Buffer wait - becomes
+    now + 3..5 min (next full minute, never :00 / :30) instead of posting into the past."""
+    now = now_tz()
+    if t > now + timedelta(minutes=2):
+        return t
+    t = (now + timedelta(minutes=(rnd or random).randint(3, 5) + 1)).replace(second=0, microsecond=0)
+    return off_grid(t)
+
+def hot_stagger(clip_id, service, now):
+    """Hot post: the networks 0-4 min apart (not all six at the same second). (shareNow?, due):
+    offset 0 = shareNow, otherwise customScheduled at the next full minute + offset, never :00 / :30."""
+    order = list(NETS)
+    random.Random(f"{clip_id}:hot").shuffle(order)            # a different network leads every time
+    off = [0, 1, 2, 2, 3, 4][order.index(service)] if service in order else 0
+    if off == 0:
+        return True, now
+    return False, off_grid((now + timedelta(minutes=off + 1)).replace(second=0, microsecond=0))
 
 def net_due(due, day, service, znacka=None):
     """Each network a little later (0-9 min, its own draw per day + brand, so no fixed order),
@@ -895,7 +1078,7 @@ def cmd_den(a):
     hot_due = (now + timedelta(minutes=2)).replace(second=0, microsecond=0)   # the deploy below takes ~1 min
     hot = []
     if in_day({"due": hot_due.isoformat()}, day):
-        hot = [m for m in cands if is_hot(m, src_cfg)][: min(a.n, p0["cap"])]
+        hot = hot_pick(cands, recs, hot_due, min(a.n, p0["cap"]), src_cfg)
     for m in hot:
         m["hot"] = True
         log(f"HOT{' (live)' if is_live(m) else ''}: {m['channel']} '{m.get('title', '')[:40]}' -> {hot_due:%H:%M}")
@@ -974,15 +1157,27 @@ def cmd_den(a):
                 src.write_bytes(http(m["short"], timeout=300)[1])
             except Exception as e:
                 log(f"  inbox short unavailable, skipped: {m['short']} ({e})")
+                add_fail(m["id"])
                 continue
         files[rel] = src
         plan.append((m, due, rel))
     # the daily Top 3 (our own curated format): in the day's last stretch, once the minimum is met
-    top3 = None if FAST else make_top3(day, recs, plan, stage, final=p["later"] == 0)
+    try:
+        top3 = None if FAST else make_top3(day, recs, plan, stage, final=p["later"] == 0)
+    except Exception as e:                       # the Top 3 never costs the classics
+        log(f"top3: {str(e)[-200:]}")
+        top3 = None
     if top3:
         plan.append(top3)
         files[top3[2]] = top3[0].pop("file")
-    base = inbox_deploy(files, b"[]", MEDIA_TITLE)
+    if not files:
+        print("::warning::nothing to deploy (every short unavailable)")
+        return
+    try:
+        base = inbox_deploy(files, b"[]", MEDIA_TITLE, essential=True)
+    except Exception as e:                       # Netlify limit / outage: nothing can go out this run
+        print(f"::error::Netlify deploy failed, nothing posted this run: {str(e)[-200:]}")
+        sys.exit(1)
     prune_drafts()
 
     # 2) Buffer posts, one time slot per short, every channel (X/Threads capped per day: the cap
@@ -997,25 +1192,40 @@ def cmd_den(a):
             failed += 1
             break
         log(f"{due:%H:%M} {m['platform']}/{m['channel']} '{m.get('title', '')[:50]}' -> {url}")
-        if not is_public(url):
-            log("  not reachable after deploy, skipped")
-            failed += 1
-            continue
-        posts = {}
-        for i, ch in enumerate(chans):
-            service = ch["service"].lower()
-            if used.get(service, 0) >= caps.get(service, 99):
-                continue
-            ch_due = net_due(due, day, service)            # Aleš 17. 11.: each network a few minutes apart
-            m["now"] = bool(m.get("hot"))                  # hot path: everywhere NOW (Buffer shareNow)
-            try:
-                posts[ch["id"]] = create_post(post_input(ch, m, url, ch_due, not a.ostre), ch.get("key", "BUFFER_API_KEY"))
-                used[service] = used.get(service, 0) + 1
-                ok += 1
-                log(f"  {service}: ok")
-            except Exception as e:
+        posts, limited = {}, False
+        try:                                               # one clip's trouble never stops the others
+            if not is_public(url):
+                log("  not reachable after deploy, skipped")
                 failed += 1
-                log(f"  {service}: FAILED {e}")
+                add_fail(m["id"])
+                continue
+            for i, ch in enumerate(chans):
+                service = ch["service"].lower()
+                if used.get(service, 0) >= caps.get(service, 99):
+                    continue
+                if m.get("hot"):                           # hot: NOW, the networks 0-4 min apart
+                    m["now"], ch_due = hot_stagger(m["id"], service, now_tz())
+                else:                                      # Aleš 17. 11.: each network a few minutes apart
+                    m["now"] = False
+                    ch_due = fresh_due(net_due(due, day, service))
+                try:
+                    posts[ch["id"]] = create_post(post_input(ch, m, url, ch_due, not a.ostre), ch.get("key", "BUFFER_API_KEY"))
+                    used[service] = used.get(service, 0) + 1
+                    ok += 1
+                    log(f"  {service}: ok")
+                except RateLimited as e:                   # Buffer wants > 2 min: skip the rest of this clip now
+                    failed += 1
+                    limited = True
+                    log(f"  {service}: {e}")
+                    break
+                except Exception as e:
+                    failed += 1
+                    log(f"  {service}: FAILED {e}")
+        except Exception as e:
+            failed += 1
+            log(f"  FAILED {str(e)[-200:]}")
+        if not posts and not limited:                      # a rate limit is Buffer's problem, not the clip's
+            add_fail(m["id"])
         size = files.get(rel)
         mb = round(Path(size).stat().st_size / 1e6, 1) if size and Path(size).exists() else None
         rec = {"url": url, "path": rel, "due": due.isoformat(), "draft": not a.ostre, "posts": posts, "mb": mb,
@@ -1110,7 +1320,7 @@ def exp_post(a, day, now):
                 log(f"  exp {service}: daily cap reached, skipped")
                 continue
             try:
-                posts[ch["id"]] = create_post(post_input(ch, m, url, net_due(due, day, service), not a.ostre),
+                posts[ch["id"]] = create_post(post_input(ch, m, url, fresh_due(net_due(due, day, service)), not a.ostre),
                                               ch.get("key", "BUFFER_API_KEY"))
                 log(f"  exp {service}: ok")
             except Exception as e:
@@ -1141,9 +1351,14 @@ def top3_only(a, day, now, final=True):
     if not top3:
         return
     m, due, rel = top3
-    base = inbox_deploy({rel: m.pop("file")}, b"[]", MEDIA_TITLE)    # draft deploy, 0 credits
-    url = f"{base}/{rel}"
-    if not is_public(url):
+    try:
+        base = inbox_deploy({rel: m.pop("file")}, b"[]", MEDIA_TITLE)    # draft deploy, 0 credits
+        url = f"{base}/{rel}"
+        public = is_public(url)
+    except Exception as e:
+        print(f"::warning::Top 3: deploy failed {str(e)[-200:]}")
+        return
+    if not public:
         print("::warning::Top 3: not reachable after deploy")
         return
     chans = load_json(CHANNELS, [])
@@ -1154,7 +1369,7 @@ def top3_only(a, day, now, final=True):
             log(f"  top3 {service}: daily cap reached, skipped")
             continue
         try:
-            posts[ch["id"]] = create_post(post_input(ch, m, url, net_due(due, day, service), not a.ostre),
+            posts[ch["id"]] = create_post(post_input(ch, m, url, fresh_due(net_due(due, day, service)), not a.ostre),
                                           ch.get("key", "BUFFER_API_KEY"))
             log(f"  top3 {service}: ok")
         except Exception as e:
@@ -1237,12 +1452,32 @@ def make_top3(day, done, plan, stage, final=True):
     # built later now (last stretch of the day): never in the past - render + deploy + Buffer's fetch,
     # and never on the full / half hour
     due = max(due, (now_tz() + timedelta(minutes=25)).replace(second=0, microsecond=0))
-    if due.minute in (0, 30):
-        due += timedelta(minutes=1)
+    # never after the publishing window (12:00 next day): at the latest its end - 5 min (+ the networks'
+    # 0-9 min spread stays inside the next day's first slots' gap)
+    end = datetime.combine(day + timedelta(days=1), datetime.min.time(), TZ) + timedelta(hours=12)
+    due = min(due, end - timedelta(minutes=5 + 10))
+    if due < now_tz() + timedelta(minutes=10):
+        log("top3: the publishing window is over, skipped")
+        return None
+    due = off_grid(due)
     meta = {"id": key, "platform": "top3", "channel": "top3", "category": "Grand Theft Auto VI",
             "items": [best[i][1] for i in range(3)], "peak": 1.0, "score": 0, "file": out, "title": "Top 3"}
     log(f"top3: {', '.join(x[1]['channel'] for x in best)} -> {due:%d.%m %H:%M}")
     return meta, due, f"{day:%Y%m%d}/top3.mp4"
+
+def refresh_records():
+    """Overwrite the local record files with origin/main's (a long-running job's checkout is stale).
+    Read-only for git: fetch + show, nothing is committed. Keeps the local file when git fails."""
+    if git("fetch", "-q", "origin", "main")[0]:
+        log("inbox: git fetch failed, using the local records")
+        return
+    for f in all_record_files() + [fails_file()]:
+        rc, out, _ = git("show", f"origin/main:{f.name}")
+        if rc == 0 and out:
+            try:
+                save_json(f, json.loads(out))
+            except json.JSONDecodeError:
+                pass
 
 def cmd_schranka(a):
     """
@@ -1255,7 +1490,28 @@ def cmd_schranka(a):
     game = load_json(HERE / "sources.json", {}).get("game", "Grand Theft Auto VI|GTA ?VI|GTA ?6")
     cfg = brands_cfg()
     names = ["bananas"] + [k for k, v in cfg.items() if isinstance(v, dict) and k != "bananas"]
+    live_box = a.prefix.startswith("live")
+    if live_box:                                     # the live job's checkout is hours old: fresh records
+        refresh_records()
     done = {z: records(z) for z in names}            # both record files of each brand
+    for z in names:                                  # experiment clips never go out again
+        for k, rec in list(done[z].items()):
+            if k.startswith("exp_"):
+                done[z].update({i: {} for i in rec.get("items") or [] if isinstance(i, str)})
+    src_cfg = load_json(HERE / "sources.json", {})
+    open_brands = set(names)
+    if live_box:                                     # a live short only when its brand can still post today
+        keep_z = ZNACKA
+        try:
+            for z in names:
+                set_brand(z)
+                if ZNACKA == "fanpage" and budget_level() >= 2 or day_plan(pub_day(), now_tz(), records(z))["cap"] <= 0:
+                    open_brands.discard(z)
+        except Exception as e:
+            log(f"inbox: quota check failed ({str(e)[-100:]}), all brands open")
+            open_brands = set(names)
+        finally:
+            set_brand(keep_z)
     cutoff = time.time() - a.dni * 86400
     items, files = [], {}
     for meta_file in OUT.glob("*/*/meta.json"):
@@ -1272,9 +1528,11 @@ def cmd_schranka(a):
         # every brand version of the clip that its brand has not published yet (`file` = bananas,
         # `file_fanpage` = fanpage); the clip drops out once all its brands have published it
         item = {k: v for k, v in m.items() if k not in ("short", "shorts", "base", "source")}
+        if live_box and time.time() - (m.get("created") or 0) > src_cfg.get("hot_max_age_h", 3) * 3600:
+            continue                                 # too old for the hot path: it would never go out
         for z in names:
             short = brand_short(m, meta_file, z)
-            if not short or not Path(short).exists() or m.get("id") in done[z]:
+            if not short or not Path(short).exists() or m.get("id") in done[z] or z not in open_brands:
                 continue
             rel = f"yt/{safe_name(m['id'])}.mp4" if z == "bananas" else f"yt/{safe_name(m['id'])}_{z}.mp4"
             files[rel] = Path(short)
@@ -1294,8 +1552,11 @@ def cmd_schranka(a):
                 item.pop("long_file", None)
             items.append(item)
     now = time.time()                                # only the best few: `den` takes a handful a day anyway
-    items.sort(key=lambda m: -(m.get("views") or 0) / (max((now - (m.get("created") or now)) / 3600, 0) + 1) ** 0.5)
-    items = items[: a.max]
+    if live_box:                                     # live: the newest first (they go out by the hot path)
+        items.sort(key=lambda m: -(m.get("created") or 0))
+    else:
+        items.sort(key=lambda m: -(m.get("views") or 0) / (max((now - (m.get("created") or now)) / 3600, 0) + 1) ** 0.5)
+    items = items[: a.max or (40 if live_box else 10)]
     files = {m[k]: files[m[k]] for m in items for k in m if k in ("file", "long_file") or k.startswith("file_")}
     sent = HERE / f"schranka_{a.nazev}.json"          # ids of the live inbox (local, not in git)
     live = set(load_json(sent, []))
@@ -1303,7 +1564,11 @@ def cmd_schranka(a):
     if not new:
         log(f"inbox: nothing new ({len(items)} waiting, all already on Netlify)")
         return
-    url = inbox_deploy(files, json.dumps(items, ensure_ascii=False).encode(), a.nazev)
+    try:
+        url = inbox_deploy(files, json.dumps(items, ensure_ascii=False).encode(), a.nazev)
+    except Exception as e:                           # Netlify limit / outage: the next hand-over retries
+        print(f"::warning::inbox {a.nazev}: deploy failed ({str(e)[-200:]})")
+        sys.exit(1)
     save_json(sent, [m["id"] for m in items])
     log(f"inbox: {len(items)} shorts ({len(new)} new) -> {url}")
 
@@ -1343,7 +1608,7 @@ def push_records(path):
     if not (HERE / LOCK_UNTIL).exists():
         return True                              # no lock in use (local runs, tests)
     try:
-        ok = lock_release("den", [Path(path).name], tries=3, release=False)
+        ok = lock_release("den", [Path(path).name], tries=8, release=False)
     except Exception as e:
         log(f"records push: {str(e)[-120:]}")
         ok = False
@@ -1463,7 +1728,7 @@ def lock_release(who, save=(), cwd=None, tries=10, release=True):
             log(f"lock: {'released' if release else 'records pushed'} by {who}"
                 + (f", saved {', '.join(merged)}" if merged else ""))
             return True
-        time.sleep(3)
+        time.sleep(random.uniform(1.5, 6))           # random: two writers pushing at once do not collide again
     print(f"::error::zamek publikace: nepodarilo se uvolnit / ulozit zaznam ({who})")
     return False
 
@@ -1533,9 +1798,22 @@ def cmd_zbyva(a):
     good, extra = src.get("good_score", 1000), extra_score(day, src)
     p = day_plan(day, now)
     good_n = max(0, min(p["slots"] - p["owed"], p["must"] - p["used"] - p["owed"]))
-    hot = max(0, p["cap"] - p["slots"])
+    hot = min(max(0, p["cap"] - p["slots"]), src.get("hot_per_run", 2))
+    hs = int(src.get("hot_score", 2000))
+    # hot pacing (hot_pick): right after a hot post only an exceptional clip (3 x hot_score) may go out,
+    # so only such a clip is worth rendering (a rendered, unposted clip is lost with the runner)
+    gap = timedelta(minutes=src.get("hot_gap_min", 30))
+    recent = []
+    for rec in records().values():
+        try:
+            if rec.get("hot") and not rec.get("live") and abs(now - datetime.fromisoformat(rec.get("due") or "")) < gap:
+                recent.append(rec)
+        except ValueError:
+            pass
+    if recent:
+        hot, hs = min(hot, 1), 3 * hs
     if a.plan:
-        print(p["slots"], p["owed"], good_n, int(good), int(extra), hot, int(src.get("hot_score", 2000)))
+        print(p["slots"], p["owed"], good_n, int(good), int(extra), hot, hs)
     else:
         print(p["slots"])
 
@@ -1553,7 +1831,8 @@ def main():
     s = sub.add_parser("schranka", help="worker PC: YouTube shorts -> free Netlify draft deploy for GitHub")
     s.add_argument("--dni", type=float, default=3, help="only shorts rendered in the last N days")
     s.add_argument("--uklid", action="store_true", help="delete clip folders older than that")
-    s.add_argument("--max", type=int, default=10, help="at most this many shorts in the inbox (best first)")
+    s.add_argument("--max", type=int, default=None, help="at most this many shorts in the inbox (best first;"
+                   " default 10, live-inbox 40)")
     s.add_argument("--nazev", default=INBOX_TITLE, help="draft deploy title (yt-inbox, live-inbox)")
     s.add_argument("--prefix", default="", help="only shorts whose id starts with this (live_); default: YouTube")
     s.set_defaults(fn=cmd_schranka)

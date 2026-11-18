@@ -3609,8 +3609,17 @@ def cmd_batch(a):
                          limit=a.max - total, tried=tried)
         if a.hot:
             now = time.time()
-            total += process([c for c in live if virality(c) >= a.hot_score and c.get("created")
-                              and now - c["created"] <= 3 * 3600], a.clean, limit=a.hot, tried=tried)
+            cfg = load_json(SOURCES, {})
+            stars = {x.lower() for x in cfg.get("star_streamers", [])}
+            paced = a.hot_score > cfg.get("hot_score", 2000)   # publikuj zbyva: a hot post just went out
+
+            def star(c):                               # Aleš 18. 11.: Kai Cenat / IShowSpeed go out at once
+                return (not paced and c["channel"].lower() in stars
+                        and virality(c) >= cfg.get("star_min_score", 300))
+            hot = [c for c in live if (virality(c) >= a.hot_score or star(c)) and c.get("created")
+                   and now - c["created"] <= cfg.get("hot_max_age_h", 3) * 3600]
+            hot.sort(key=lambda c: (not star(c), -virality(c)))   # stars first
+            total += process(hot, a.clean, limit=a.hot, tried=tried)
     total += process(yt, a.clean, limit=min(a.yt, a.max - total))
     min_pool = load_json(SOURCES, {}).get("long_pool_min_views", 300)
     for c in live:                                     # missed the shorts quota: long-form may still use it
@@ -4028,28 +4037,35 @@ class ChatMeter:
 
     def spike(self, chan, z_min, cool):
         """
-        (z, msgs, x) when the last finished 5 s bin explodes over the channel's last 5 minutes;
-        x = plain messages in that bin / their 5-minute median (a real ratio, for the post text).
+        (z, msgs, x) when a finished 5 s bin since the last check explodes over the channel's 5 minutes
+        before it (all bins since the last check: a slow loop turn never misses an explosion; the
+        strongest one wins); x = plain messages in that bin / their 5-minute median (for the post text).
         """
         now = int(time.time() // 5) - 1
+        if not hasattr(self, "checked"):
+            self.checked = {}
+        first = max(self.checked.get(chan, now - 1) + 1, now - 24)    # at most the last 2 minutes
+        self.checked[chan] = now
         with self.lock:
             c = self.counts.get(chan, {})
             r = self.raw.get(chan, {})
-            for old in [k for k in c if k < now - 80]:
+            for old in [k for k in c if k < now - 110]:
                 del c[old]
-            for old in [k for k in r if k < now - 80]:
+            for old in [k for k in r if k < now - 110]:
                 del r[old]
-            hist = [c.get(i, 0) for i in range(now - 60, now)]
-            cur = c.get(now, 0)
-            rmed = float(np.median([r.get(i, 0) for i in range(now - 60, now)]))
-            rcur = r.get(now, 0)
-        if sum(1 for x in hist if x) < 20:            # not enough chat history yet
-            return None
-        med = float(np.median(hist))
-        mad = float(np.median([abs(x - med) for x in hist])) + 1
-        z = (cur - med) / mad
-        x = round(rcur / rmed) if rmed >= 1 else None
-        return (round(z, 1), cur, x) if z >= z_min and cur >= max(8, 3 * med) else None
+            bins = [(c.get(b, 0), [c.get(i, 0) for i in range(b - 60, b)],
+                     r.get(b, 0), [r.get(i, 0) for i in range(b - 60, b)]) for b in range(first, now + 1)]
+        best = None
+        for cur, hist, rcur, rhist in bins:
+            if sum(1 for x in hist if x) < 20:        # not enough chat history yet
+                continue
+            med = float(np.median(hist))
+            mad = float(np.median([abs(x - med) for x in hist])) + 1
+            z = (cur - med) / mad
+            if z >= z_min and cur >= max(8, 3 * med) and (best is None or z > best[0]):
+                rmed = float(np.median(rhist))
+                best = (round(z, 1), cur, round(rcur / rmed) if rmed >= 1 else None)
+        return best
 
 def vod_section(login, user_id, started_at, t_spike, before=32, after=6):
     """The window around a chat spike from the running stream's live VOD (no login needed)."""
@@ -4081,31 +4097,36 @@ def cmd_live(a):
     if not games:
         sys.exit(f"live: category '{game_name}' not found")
     blocked = {b.lower() for b in cfg.get("blocklist", [])}
-    meter, streams, queue, cooldown = ChatMeter(), {}, [], {}
-    end, next_poll, made = time.time() + a.hours * 3600, 0.0, 0
-    log(f"live: watching '{games[0]['name']}' for {a.hours} h")
-    while time.time() < end:
-        if time.time() >= next_poll:                  # who is live right now
+    import queue as Q
+    import threading
+    meter, streams, cooldown = ChatMeter(), {}, {}
+    jobs = Q.Queue()                                  # spikes waiting for the worker (one render at a time)
+    end, next_poll = time.time() + a.hours * 3600, 0.0
+    made = {"n": 0, "pending": False, "last_hand": 0.0}
+    gap = cfg.get("live_handover_min", 10) * 60       # Netlify: <= 3 deploys/min, ~100/day for everything
+
+    def hand_over(force=False):
+        """Batch the shorts made since the last hand-over into one live-inbox deploy (at most every `gap`)."""
+        if made["pending"] and (force or time.time() - made["last_hand"] >= gap):
+            made["pending"], made["last_hand"] = False, time.time()
             try:
-                data = helix("streams", {"game_id": games[0]["id"], "first": 50}).get("data") or []
-                top = [x for x in data if (x.get("language") or "en").startswith("en")
-                       and x["viewer_count"] >= a.min_viewers and x["user_login"].lower() not in blocked][: a.n_streams]
-                streams = {x["user_login"].lower(): x for x in top}
-                meter.join(list(streams))
-                log(f"live: {len(streams)} streams: " + ", ".join(f"{k} {v['viewer_count']}" for k, v in list(streams.items())[:8]))
+                hand_over_live()
             except Exception as e:
-                log(f"live: stream list failed ({str(e)[-100:]})")
-            next_poll = time.time() + 120
-        for lg in list(streams):                      # chat explosions
-            if time.time() < cooldown.get(lg, 0):
+                log(f"live: hand-over failed ({str(e)[-120:]})")
+                made["pending"] = True
+
+    def worker():
+        """Render + hand-over off the main loop, so the chat is watched (and spikes found) all the time."""
+        while True:
+            try:
+                job = jobs.get(timeout=20)
+            except Q.Empty:
+                hand_over()
                 continue
-            hit = meter.spike(lg, a.z, a.cool)
-            if hit:
-                cooldown[lg] = time.time() + a.cool
-                queue.append((time.time() - 2.5, lg, streams[lg], hit))
-                log(f"live: SPIKE {lg} z={hit[0]} msgs={hit[1]} -> cut in ~70 s")
-        while queue and time.time() >= queue[0][0] + 70:   # the live VOD has caught up
-            t_spike, lg, st, (z, msgs, chat_x) = queue.pop(0)
+            if job is None:
+                break
+            t_spike, lg, st, (z, msgs, chat_x) = job
+            time.sleep(max(0.0, t_spike + 70 - time.time()))   # the live VOD lags about a minute
             try:
                 sec = vod_section(lg, st["user_id"], st["started_at"], t_spike)
                 if not sec:
@@ -4126,20 +4147,59 @@ def cmd_live(a):
                      "--force-overwrites", "-o", str(src), url], timeout=300)
                 render(clip, src=src)
                 mark(clip["id"], True)
-                made += 1
-                log(f"live: short #{made} from {lg}")
-                hand_over_live()
+                made["n"] += 1
+                made["pending"] = True
+                log(f"live: short #{made['n']} from {lg}")
             except NotGameplay as e:
                 log(f"live: {lg} skipped: {e}")
             except Exception as e:
                 log(f"live: {lg} failed: {str(e)[-200:]}")
+            finally:
+                hand_over()
+
+    th = threading.Thread(target=worker, daemon=True)
+    th.start()
+    log(f"live: watching '{games[0]['name']}' for {a.hours} h")
+    while time.time() < end:
+        if time.time() >= next_poll:                  # who is live right now
+            try:
+                data = helix("streams", {"game_id": games[0]["id"], "first": 50}).get("data") or []
+                top = [x for x in data if (x.get("language") or "en").startswith("en")
+                       and x["viewer_count"] >= a.min_viewers and x["user_login"].lower() not in blocked][: a.n_streams]
+                streams = {x["user_login"].lower(): x for x in top}
+                meter.join(list(streams))
+                log(f"live: {len(streams)} streams: " + ", ".join(f"{k} {v['viewer_count']}" for k, v in list(streams.items())[:8]))
+            except Exception as e:
+                log(f"live: stream list failed ({str(e)[-100:]})")
+            next_poll = time.time() + 120
+        for lg in list(streams):                      # chat explosions
+            if time.time() < cooldown.get(lg, 0):
+                continue
+            try:
+                hit = meter.spike(lg, a.z, a.cool)
+            except Exception as e:
+                log(f"live: spike check {lg} failed ({str(e)[-80:]})")
+                continue
+            if hit:
+                cooldown[lg] = time.time() + a.cool
+                if jobs.qsize() >= 6:                 # the worker is far behind: old spikes would be stale anyway
+                    log(f"live: SPIKE {lg} z={hit[0]} dropped (render queue full)")
+                    continue
+                jobs.put((time.time() - 2.5, lg, streams[lg], hit))
+                log(f"live: SPIKE {lg} z={hit[0]} msgs={hit[1]} -> cut in ~70 s (queue {jobs.qsize()})")
         time.sleep(5)
-    log(f"live: done, {made} shorts")
+    jobs.put(None)                                    # finish what is queued (the job's timeout leaves room)
+    th.join(timeout=max(60, getattr(a, "drain_min", 15) * 60))
+    hand_over(force=True)
+    log(f"live: done, {made['n']} shorts")
 
 def hand_over_live():
     """Put the live shorts on the live-inbox and start the GitHub publish run right away."""
-    subprocess.run([sys.executable, str(HERE / "publikuj.py"), "schranka", "--nazev", "live-inbox", "--prefix", "live_"],
-                   timeout=900)
+    r = subprocess.run([sys.executable, str(HERE / "publikuj.py"), "schranka", "--nazev", "live-inbox", "--prefix", "live_",
+                        "--max", "40"], timeout=900)
+    if r.returncode:                                  # the live-inbox could not be updated: no publish run
+        log("live: live-inbox not updated, publish run not started")
+        return
     tok, repo = os.environ.get("GITHUB_TOKEN"), os.environ.get("GITHUB_REPOSITORY", "aleshrani/gta6bananaclips")
     if not tok:
         return
