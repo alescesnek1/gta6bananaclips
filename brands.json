@@ -35,6 +35,7 @@
     "watermark": "gta6bananaclips",
     "follow": "assets/follow/follow_bananas.webm",
     "ramp": {
+      "2026-11-17": 0,
       "2026-11-18": 8,
       "2026-11-19": 8,
       "2026-11-26": 8,
@@ -117,7 +118,7 @@
     "outro": "assets/outro/fanpage_outro_cap.mp4",
     "follow": "assets/follow/follow_fanpage.webm",
     "ramp": {
-      "2026-11-17": 2,
+      "2026-11-17": 0,
       "2026-11-18": 8,
       "2026-11-19": 8,
       "2026-11-26": 8
