@@ -226,15 +226,16 @@
     "channel": "xqc",
     "platform": "twitch",
     "title": "xQc commits Grand Theft Auto for the first time in GTA 6",
-    "views": 648,
+    "views": 888,
     "created": 1795000780,
     "category": "Grand Theft Auto VI",
-    "added": 1795003047,
+    "added": 1795003395,
     "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/xqc/20261118_twitch_WealthyNimbleHamsterDansGame-yrU7UShZomelh1Ke/source.mp4",
     "peak": 41.45,
     "cut": [
       20.73,
-      44.45
+      44.45,
+      6.63
     ],
     "dur": 54.37,
     "tags": [
@@ -246,7 +247,7 @@
     "tag_scores": {
       "funny": 0.0,
       "glitch": 0.0,
-      "chase": 0.5,
+      "chase": 0.58,
       "crash": 0.0,
       "rage": 0.65,
       "first-reaction": 1.0,
@@ -302,15 +303,106 @@
     "signals": {
       "siren": 0.0,
       "impact": 7.0,
-      "loud": 1.6,
+      "loud": 1.7,
       "motion": 21.3,
-      "sustained": 0.77,
-      "spike": 4.8,
+      "sustained": 0.81,
+      "spike": 5.4,
       "laugh": 0,
       "static": 0.03,
       "letterbox": 0.0,
       "luma": 73.3,
       "dark": 0.0
+    }
+  },
+  "kick_clip_01M7Q5876Z0GVGGNFWGHMRKKZR": {
+    "id": "kick_clip_01M7Q5876Z0GVGGNFWGHMRKKZR",
+    "url": "https://kick.com/adinross/clips/clip_01M7Q5876Z0GVGGNFWGHMRKKZR",
+    "channel": "adinross",
+    "platform": "kick",
+    "title": "GTA VI - It's HERE! 💯",
+    "views": 565,
+    "created": 1794999942,
+    "category": "Grand Theft Auto VI (GTA)",
+    "added": 1795003639,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/adinross/20261118_kick_clip_01M7Q5876Z0GVGGNFWGHMRKKZR/source.mp4",
+    "peak": 93.65,
+    "cut": [
+      62.15,
+      97.15
+    ],
+    "dur": 104.01,
+    "tags": [
+      "wow",
+      "rage",
+      "first-reaction"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.89,
+      "first-reaction": 0.68,
+      "wow": 1.0,
+      "_loud": 6.3,
+      "_motion": 9.4
+    },
+    "quote": "You're pretty mean you're also crazy Yo, yo",
+    "rendered": [
+      "fanpage"
+    ],
+    "cats": {
+      "funny": 0.25,
+      "rage": 0.25,
+      "fail": 0.25,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.95,
+      "wow": 1.0
+    },
+    "primary": "wow",
+    "proven": [
+      "first-reaction",
+      "wow"
+    ],
+    "evidence": {
+      "funny": [
+        "loud"
+      ],
+      "rage": [
+        "loud"
+      ],
+      "fail": [
+        "loud"
+      ],
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ],
+      "wow": [
+        "loud",
+        "text"
+      ]
+    },
+    "fun": 0.0,
+    "signals": {
+      "siren": 0.0,
+      "impact": 13.2,
+      "loud": 7.5,
+      "motion": 7.5,
+      "sustained": 0.16,
+      "spike": 2.9,
+      "laugh": 0,
+      "static": 0.16,
+      "letterbox": 0.0,
+      "luma": 12.8,
+      "dark": 0.57
     }
   }
 }

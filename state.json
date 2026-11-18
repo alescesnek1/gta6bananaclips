@@ -6,7 +6,8 @@
     "youtube_ClI-eATridI_943": 1794670115,
     "youtube_ClI-eATridI_1483": 1794670233,
     "youtube_EfX_QR_knWs_360": 1794673965,
-    "twitch_WealthyNimbleHamsterDansGame-yrU7UShZomelh1Ke": 1795003047
+    "twitch_WealthyNimbleHamsterDansGame-yrU7UShZomelh1Ke": 1795003395,
+    "kick_clip_01M7Q5876Z0GVGGNFWGHMRKKZR": 1795003639
   },
   "failed": {
     "twitch_IntelligentAbstemiousBasenjiOMGScoots-6o4BuG8nzW3K8qWx": 3
@@ -431,7 +432,9 @@
       560,
       1795002497,
       561,
-      1795002799
+      1795002799,
+      1795003185,
+      564
     ],
     "twitch_NimbleFrozenBeanOSsloth-S2n7zCkGDTOWP_mP": [
       1795001014,
@@ -447,7 +450,9 @@
       1795002497,
       512,
       1795002799,
-      515
+      515,
+      1795003185,
+      517
     ],
     "twitch_CloudyLivelyHareCharlieBitMe-8lGWQ2aObfK8dyAR": [
       1795001911,
@@ -455,16 +460,25 @@
     ],
     "twitch_WealthyNimbleHamsterDansGame-yrU7UShZomelh1Ke": [
       1795002799,
-      648
+      648,
+      1795003185,
+      888
     ],
     "twitch_SparklingGrotesqueArtichokeCorgiDerp-I3x3bsdsVQvrlIkt": [
       1795002799,
-      519
+      519,
+      1795003185,
+      546
+    ],
+    "kick_clip_01M7Q5876Z0GVGGNFWGHMRKKZR": [
+      1795003185,
+      565
     ]
   },
   "rr": "bananas",
   "rating_hist": [
-    648
+    648,
+    888
   ],
   "moments_ch": {
     "xqc": [
@@ -472,6 +486,18 @@
         1795003047,
         1795000780,
         "twitch_WealthyNimbleHamsterDansGame-yrU7UShZomelh1Ke"
+      ],
+      [
+        1795003395,
+        1795000780,
+        "twitch_WealthyNimbleHamsterDansGame-yrU7UShZomelh1Ke"
+      ]
+    ],
+    "adinross": [
+      [
+        1795003639,
+        1794999942,
+        "kick_clip_01M7Q5876Z0GVGGNFWGHMRKKZR"
       ]
     ]
   }
