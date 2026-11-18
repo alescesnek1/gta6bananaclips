@@ -1011,6 +1011,7 @@ def youtube_title(m):
         t = EXP_TITLES.get(m.get("concept"), "GTA 6 moments").format(s=items[0]["channel"], k=len(items))
         return t[:90] + " #shorts"
     t = title_line(m)                                # 18. 11.: streamer + what happened, like the big clip channels
+    t = re.sub(r"\s+", " ", re.sub(r"[^\x00- ]", "", t)).strip()   # no emoji: YouTube dropped it, "6!  #shorts"
     return t[: 100 - len(" #shorts")] + " #shorts"
 
 def in_day(rec, day):
