@@ -68,8 +68,12 @@ TZ = ZoneInfo("Europe/Prague")
 #   02:00   01:00     20:00    17:00    US east prime, west after work
 #   03:30   02:30     21:30    18:30    US east late, west prime
 #   05:00   04:00     23:00    20:00    US west prime time
+#   08:00   07:00     02:00    23:00    Australia/NZ evening (AEDT 18:00) - launch 18. 11.: AU/NZ play first
+#   10:00   09:00     04:00    01:00    Australia prime time (AEDT 20:00)
+#   11:00   10:00     05:00    02:00    Australia late, EU morning
 # (CET; during summer time everything shifts together, the pattern stays.)
-SLOTS = ["14:00", "17:00", "18:30", "20:00", "21:30", "23:00", "00:30", "02:00", "03:30", "05:00"]
+SLOTS = ["14:00", "17:00", "18:30", "20:00", "21:30", "23:00", "00:30", "02:00", "03:30", "05:00",
+         "08:00", "10:00", "11:00"]
 # Just-in-time (18. 11., before the launch): a run commits only the slots due within the next
 # plan_horizon_h hours (sources.json, default 3), with the best clips it has at that moment; the
 # rest of the day's quota stays open for better clips found later. Catch-up: when the free slots
