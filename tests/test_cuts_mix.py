@@ -85,7 +85,8 @@ class CutCheck(unittest.TestCase):
         self.assertEqual(len(probs), 5, probs)
         a, b, keep, hook, fixed, left = K.fix_cuts(W, 1.6, 4.7, segs, (4.3, 7.45), 20.0)
         self.assertEqual(left, [])
-        self.assertEqual(len(fixed), 5)
+        self.assertEqual(len(fixed), 6)              # + the 3.15 s hook (max HOOK_MAX)
+        self.assertLessEqual(hook[1] - hook[0], K.HOOK_MAX + 1e-6)
         self.assertEqual(len(keep), 1)              # the jump inside the sentence is gone
         self.assertTrue(K.ok_start(W, a) and K.ok_end(W, b))
         self.assertIsNone(K.in_word(W, hook[0]))
