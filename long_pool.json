@@ -1196,9 +1196,23 @@
     "channel": "lacy",
     "platform": "twitch",
     "title": "what is going on in GTA 6",
-    "views": 541,
+    "views": 575,
     "created": 1795004850,
     "category": "Grand Theft Auto VI",
-    "added": 1795013179
+    "added": 1795013550
+  },
+  "twitch_FurryAntsyRamenJonCarnage-ZcZa5r607qBCjERF": {
+    "id": "twitch_FurryAntsyRamenJonCarnage-ZcZa5r607qBCjERF",
+    "url": "https://www.twitch.tv/jasontheween/clip/FurryAntsyRamenJonCarnage-ZcZa5r607qBCjERF",
+    "channel": "jasontheween",
+    "platform": "twitch",
+    "title": "Put what",
+    "views": 502,
+    "created": 1795000492,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932190650",
+    "vod_offset": 4344,
+    "cluster": 1,
+    "added": 1795013550
   }
 }
