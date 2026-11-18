@@ -807,10 +807,12 @@ TITLE_ACTIONS = {
     "funny": ["Can't Stop Laughing In GTA 6", "Is Crying Laughing In GTA 6", "Loses It Laughing In GTA 6"],
     "glitch": ["Finds A Crazy Glitch In GTA 6", "Runs Into A Weird Glitch In GTA 6", "Breaks GTA 6 With A Glitch"],
     "rage": ["Rages Out In GTA 6", "Gets So Mad In GTA 6", "Hits Breaking Point In GTA 6"],
-    "first-reaction": ["Can't Believe How GTA 6 Looks", "Sees Vice City In GTA 6", "Reacts To GTA 6 Graphics"],
+    "first-reaction": ["Can't Believe How GTA 6 Looks", "Sees Vice City In GTA 6", "Reacts To GTA 6 Graphics",
+                       "Is Stunned By GTA 6", "Gets A First Look At GTA 6", "Can't Get Over GTA 6's Details"],
 }
 TITLE_NEUTRAL = ["Can't Believe This In GTA 6", "Wasn't Ready For This In GTA 6",
-                 "Did Not See This Coming In GTA 6", "Reacts To This GTA 6 Moment"]
+                 "Did Not See This Coming In GTA 6", "Reacts To This GTA 6 Moment",
+                 "Gets Caught Off Guard In GTA 6", "Has No Words For This In GTA 6"]
 TITLE_MIN = 0.5
 
 def title_action(m):
@@ -821,11 +823,85 @@ def title_action(m):
             return TITLE_ACTIONS[tag]
     return TITLE_NEUTRAL
 
-def title_line(m):
-    """'Kai Cenat Crashes Hard In GTA 6! 😭' (no hashtags; the brand picks a different phrase and emoji)."""
-    pool = title_action(m)
+# The viewer's own Twitch clip title says what happened in words people search ("xQc commits Grand Theft
+# Auto for the first time in GTA 6") - competitor analysis 18. 11.: the big clip channels title the
+# concrete event; our 3-phrase pool gave "... Sees Vice City In GTA 6!" three times on launch day. Used
+# only when it reads as a plain English sentence (no junk like "wtf" / "xaxaxa", no slurs, no spoilers).
+VIEWER_BAD = re.compile(r"\*|leak|spoil|ending|final mission|dies\b|death|betray|nigg|fag|retard|\bkys\b|"
+                        r"f+u+c+k|shit|bitch|cunt|whore|\bsex|nude|porn|\bslur|\bdrop\b|giveaway|sub\b|clip it",
+                        re.I)
+VIEWER_GLUE = re.compile(r"\b(the|a|an|to|in|for|of|on|at|with|gets|is|was|first|after|when|his|her|their)\b", re.I)
+
+def viewer_title(m):
+    """The Twitch viewer's clip title as a title, or "" (live chat clips / YouTube have none worth using)."""
+    if m.get("platform") != "twitch" or is_live(m):
+        return ""
+    t = re.sub(r"\s+", " ", str(m.get("title") or "")).strip(" .!?-")
+    if not t or not re.fullmatch(r"[A-Za-z0-9 ,.'!?&:-]+", t) or VIEWER_BAD.search(t):
+        return ""
+    if not 4 <= len(t.split()) <= 12 or not VIEWER_GLUE.search(t):
+        return ""
+    if t.isupper():
+        t = re.sub(r"\bGta\b", "GTA", re.sub(r"\bVi\b", "VI", t.title()))
+    name, login = display_name(m), str(m.get("channel") or "").lstrip("@")
+    lead = re.match(re.escape(login) + r"\b|" + re.escape(name) + r"\b", t, re.I) if login else None
+    t = name + t[lead.end():] if lead else t[:1].upper() + t[1:]   # "xqc commits" -> "xQc commits"
+    if not re.search(re.escape(name.split()[0]) + (f"|{re.escape(login)}" if login else ""), t, re.I):
+        t = f"{name}: {t}"
+    if not re.search(r"GTA ?(6|VI)|Grand Theft Auto", t, re.I):
+        t += " In GTA 6" if t.istitle() else " in GTA 6"
+    return t if len(t) <= 85 else ""
+
+_recent_titles = None
+_TITLE_CACHE = {}
+
+def recent_titles(hours=48):
+    """Title phrases of both brands' posts of the last `hours` (records' "title"): never the same twice."""
+    global _recent_titles
+    if _recent_titles is None:
+        cut = now_tz() - timedelta(hours=hours)
+        _recent_titles = set()
+        for f in all_record_files():
+            for rec in load_json(f, {}).values():
+                try:
+                    if isinstance(rec, dict) and rec.get("title") and datetime.fromisoformat(rec.get("due") or "") >= cut:
+                        _recent_titles.add(re.sub(r"[^a-z0-9 ]", "", rec["title"].lower()).strip())
+                except ValueError:
+                    pass
+    return _recent_titles
+
+def title_core(m):
+    """The title without the emoji: the viewer's title, else the first pool phrase not used in 48 h."""
+    vt = viewer_title(m)
+    used = recent_titles()
+    key = lambda t: re.sub(r"[^a-z0-9 ]", "", t.lower()).strip()
+    if vt and key(vt) not in used:
+        return vt
     k = int(hashlib.md5(str(m.get("id")).encode()).hexdigest(), 16) + (1 if ZNACKA == "fanpage" else 0)
-    return f"{display_name(m)} {pool[k % len(pool)]}! {['😭', '💀'][k % 2]}".replace("@", "")
+    name = display_name(m)
+    rot_ = lambda xs: xs[k % len(xs):] + xs[:k % len(xs)]
+    act = title_action(m)                                # the moment's real action first, neutral only after
+    phrases = rot_(act) + ([] if act is TITLE_NEUTRAL else rot_(TITLE_NEUTRAL))
+    for ph in phrases:                                   # a phrase nobody used (any streamer) first,
+        if not any(u.endswith(key(ph)) for u in used):
+            return f"{name} {ph}"
+    for ph in phrases:                                   # then one not used for this streamer
+        if key(f"{name} {ph}") not in used:
+            return f"{name} {ph}"
+    return f"{name} {phrases[0]}"
+
+def title_line(m):
+    """'Kai Cenat Crashes Hard In GTA 6! 😭' (no hashtags; brands differ in phrase and emoji). Fixed per clip
+    within a run (captions of every network and the record share it)."""
+    ck = json.dumps([ZNACKA, m.get("id"), m.get("title"), m.get("tags"), m.get("tag_scores")], sort_keys=True,
+                    default=str)
+    cache = _TITLE_CACHE                                 # per run: one clip = one title on every network
+    if ck not in cache:
+        k = int(hashlib.md5(str(m.get("id")).encode()).hexdigest(), 16) + (1 if ZNACKA == "fanpage" else 0)
+        core = title_core(m)
+        cache[ck] = f"{core.rstrip('.!?')}! {['😭', '💀'][k % 2]}".replace("@", "")
+        recent_titles().add(re.sub(r"[^a-z0-9 ]", "", core.lower()).strip())
+    return cache[ck]
 
 def tag_login(m):
     t = re.sub(r"[^a-z0-9_]", "", str(m.get("channel") or "").lower())
@@ -883,6 +959,10 @@ def caption(m, service):
     """Post text: never an @ anywhere (mentions tag strangers / break X's automation rules); X / Threads
     within X's weighted limit."""
     text = _caption(m, service).replace("@", "")
+    if service == "tiktok":                          # 18. 11.: 0 views on every TikTok - no outbound links there
+        text = re.sub(r"(?:https?://)?(?:www\.)?(twitch\.tv|kick\.com|youtube\.com)/([\w.-]+)",
+                      lambda mm: f"{mm.group(2)} on {'Twitch' if 'twitch' in mm.group(1) else 'Kick' if 'kick' in mm.group(1) else 'YouTube'}",
+                      text)
     return x_fit(text) if service in ("twitter", "threads") else text
 
 def _caption(m, service):
@@ -1473,7 +1553,7 @@ def cmd_den(a):
         rec = {"url": url, "path": rel, "due": due.isoformat(), "draft": not a.ostre, "posts": posts, "mb": mb,
                "channel": m.get("channel"), "platform": m.get("platform"), "score": round(m.get("score") or 0, 1),
                "hot": bool(m.get("hot")), "rating": m.get("rating"), "views": m.get("views"),   # Banana League (liga.py)
-               "golden": bool(m.get("golden"))}
+               "golden": bool(m.get("golden")), "title": title_line(m)}
         if is_live(m):                                     # live: the stream's audience is not clip views
             rec.update(live=True, viewers=m.get("viewers"), spike_z=m.get("spike_z"))
         if slot_of.get(m["id"]):
