@@ -161,7 +161,8 @@
     "twitch_FineKathishLardPupper-RcquWSMLqC5dI-Md": "Trees Hate You",
     "twitch_YawningSuspiciousMeatloafWow-gGYNOP3XQTjrlqNr": "Minecraft",
     "twitch_AgreeablePiliableEyeballChefFrank-o44Ijw9PsJ3BBCi1": "Fortnite",
-    "twitch_HardIgnorantGazelleKappaClaus-D9PVw-4kE2y2Pylb": "Just Chatting"
+    "twitch_HardIgnorantGazelleKappaClaus-D9PVw-4kE2y2Pylb": "Just Chatting",
+    "twitch_CloudyBlazingGoshawkAMPEnergy-nOhcQjzi6k-tB6iW": "Minecraft"
   },
   "views": {
     "twitch_WittyPiliablePineappleDogFace-gKUzhjDvgfnm4L66": [
@@ -427,6 +428,10 @@
     "twitch_HardIgnorantGazelleKappaClaus-D9PVw-4kE2y2Pylb": [
       1794957413,
       506
+    ],
+    "twitch_CloudyBlazingGoshawkAMPEnergy-nOhcQjzi6k-tB6iW": [
+      1794960509,
+      512
     ]
   },
   "rr": "bananas"
