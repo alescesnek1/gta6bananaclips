@@ -444,7 +444,9 @@
       1795004599,
       579,
       1795004899,
-      581
+      581,
+      1795005499,
+      587
     ],
     "twitch_NimbleFrozenBeanOSsloth-S2n7zCkGDTOWP_mP": [
       1795001014,
@@ -473,7 +475,9 @@
       1795004899,
       532,
       1795005194,
-      533
+      533,
+      1795005499,
+      534
     ],
     "twitch_CloudyLivelyHareCharlieBitMe-8lGWQ2aObfK8dyAR": [
       1795001911,
@@ -500,7 +504,9 @@
       1795004899,
       631,
       1795005194,
-      655
+      655,
+      1795005499,
+      700
     ],
     "kick_clip_01M7Q5876Z0GVGGNFWGHMRKKZR": [
       1795003185,
@@ -519,7 +525,9 @@
       1795004899,
       540,
       1795005194,
-      551
+      551,
+      1795005499,
+      565
     ],
     "twitch_AstuteArtsyEaglePeteZaroll-h-8smz8Kb6qltijo": [
       1795004599,
@@ -527,13 +535,21 @@
       1795004899,
       516,
       1795005194,
-      536
+      536,
+      1795005499,
+      559
     ],
     "twitch_RelievedRichRhinocerosPeteZaroll-qOXHVQ3XVK3asCkK": [
       1795004899,
       500,
       1795005194,
-      532
+      532,
+      1795005499,
+      569
+    ],
+    "twitch_CautiousSuperSnoodKappaWealth-3CVX9GlGsGZia1vf": [
+      1795005499,
+      511
     ]
   },
   "rr": "bananas",
