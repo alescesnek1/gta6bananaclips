@@ -151,7 +151,8 @@ def log_tail(text, n=12):
             lines.append(ln)
     err = next((i for i, ln in enumerate(lines) if ln.startswith("##[error]")), None)
     part = lines[max(0, err - n + 1): err + 1] if err is not None else lines[-n:]
-    return [clean(x) for x in part]
+    # "##[error]" / "::error::" printed again by the monitor would become annotations of ITS run
+    return [clean(re.sub(r"^##\[(\w+)\]", r"[\1] ", x)).replace("::", ": :") for x in part]
 
 def fmt_t(t):
     return t.astimezone(TZ).strftime("%d.%m. %H:%M") if t else "–"

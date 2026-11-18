@@ -176,7 +176,7 @@ class HealthAlerts(Env):
         self.assertTrue(h["live_bezi"])
         e = h["posledni_chyba"]
         self.assertEqual(e["krok"], "save state")
-        self.assertEqual(e["log"][-1], "##[error]stav se nepodarilo pushnout")
+        self.assertEqual(e["log"][-1], "[error] stav se nepodarilo pushnout")   # no annotation in our log
         joined = "\n".join(e["log"])
         self.assertNotIn("ghp_", joined)
         self.assertNotIn("robot@example.com", joined)
