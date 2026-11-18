@@ -9,7 +9,9 @@
   },
   "caps": {
     "twitter": 3,
-    "threads": 3
+    "threads": 3,
+    "tiktok": 3,
+    "youtube": 3
   },
   "blocklist": [],
   "twitch_game": "Grand Theft Auto VI",

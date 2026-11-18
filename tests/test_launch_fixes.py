@@ -213,7 +213,8 @@ class ExpItemsNeverTwice(unittest.TestCase):
                 (d / "short.mp4").write_bytes(b"x")
                 (d / "meta.json").write_text(json.dumps({
                     "id": "clip1", "channel": "kai", "platform": "twitch", "category": "Grand Theft Auto VI",
-                    "cam": [1, 1, 1, 1], "views": 5000, "shorts": {"bananas": "short.mp4"}}))
+                    "cam": [1, 1, 1, 1], "views": 5000, "shorts": {"bananas": "short.mp4"},
+                    "tag_scores": {"chase": 0.8}}))
                 P.inbox_items = lambda: []
                 with mock.patch.object(P, "log", lambda msg: None):
                     P.set_brand("bananas")

@@ -569,6 +569,10 @@ def candidates(znacka=None):
             m["score"] *= 2.0
         elif ch_c in {x.lower() for x in src_c.get("star_streamers", [])}:
             m["score"] *= 1.5
+        why = action_gate(m, src_c)
+        if why:
+            log(f"  not published ({why}): {m.get('id')}")
+            continue
         out.append(m)
     # viewer-made Twitch/Kick clips first: a YouTube window's "views" are the whole video's,
     # not comparable, so YouTube only fills what is left (and at most youtube_per_day)
@@ -802,11 +806,11 @@ def chat_line(m):
 # neutral line that claims no event. Bananas and fanpage get different phrases / emoji for the same clip.
 # SlopMonster lint 5/5.
 TITLE_ACTIONS = {
-    "crash": ["Crashes Hard In GTA 6", "Can't Stop Crashing In GTA 6", "Wrecks Everything In GTA 6"],
-    "chase": ["Gets Into A Wild Chase In GTA 6", "Tries To Get Away In GTA 6", "Goes On The Run In GTA 6"],
-    "funny": ["Can't Stop Laughing In GTA 6", "Is Crying Laughing In GTA 6", "Loses It Laughing In GTA 6"],
-    "glitch": ["Finds A Crazy Glitch In GTA 6", "Runs Into A Weird Glitch In GTA 6", "Breaks GTA 6 With A Glitch"],
-    "rage": ["Rages Out In GTA 6", "Gets So Mad In GTA 6", "Hits Breaking Point In GTA 6"],
+    "crash": ["CRASHES HARD In GTA 6", "Can't Stop CRASHING In GTA 6", "WRECKS Everything In GTA 6"],
+    "chase": ["Gets Into A WILD Chase In GTA 6", "Tries To GET AWAY In GTA 6", "Goes ON THE RUN In GTA 6"],
+    "funny": ["Can't Stop LAUGHING In GTA 6", "Is CRYING Laughing In GTA 6", "LOSES IT Laughing In GTA 6"],
+    "glitch": ["Finds A CRAZY Glitch In GTA 6", "Runs Into A WEIRD Glitch In GTA 6", "BREAKS GTA 6 With A Glitch"],
+    "rage": ["RAGES OUT In GTA 6", "Gets SO MAD In GTA 6", "Hits BREAKING POINT In GTA 6"],
     "first-reaction": ["Can't Believe How GTA 6 Looks", "Sees Vice City In GTA 6", "Reacts To GTA 6 Graphics",
                        "Is Stunned By GTA 6", "Gets A First Look At GTA 6", "Can't Get Over GTA 6's Details"],
 }
@@ -1012,6 +1016,9 @@ def youtube_title(m):
         return t[:90] + " #shorts"
     t = title_line(m)                                # 18. 11.: streamer + what happened, like the big clip channels
     t = re.sub(r"\s+", " ", re.sub(r"[^\x00- ]", "", t)).strip()   # no emoji: YouTube dropped it, "6!  #shorts"
+    tail = f" | {display_name(m)} GTA VI"            # keywords like the big clip channels ("... | xQc GTA VI")
+    if len(t) + len(tail) + len(" #shorts") <= 100:
+        t += tail
     return t[: 100 - len(" #shorts")] + " #shorts"
 
 def in_day(rec, day):
@@ -1178,6 +1185,34 @@ def upgrade_note(blocked, recs, now, src):
         log(n)
         print(f"::notice::{n}")
     return notes
+
+# Aleš 18. 11. odpoledne: "nezábavný obsah bez akce nemá šanci být virální" - a clip goes out only with
+# real action in it: a strong action tag (klipuj.moment_tags: crash / chase / glitch / funny / rage from
+# the transcript, the viewer's clip title, sound and picture motion) that beats plain "looking at GTA 6"
+# (first-reaction). Exceptions only by numbers (exceptional(): 4x hot_score, star 2x, live z >= live_z;
+# or a cluster of max(10, viewers/5000) viewer clips) and the render's own viral non-gameplay cut (person).
+ACTION_TAGS = ("crash", "chase", "glitch", "funny", "rage")
+ACTION_MIN = 0.5
+
+def action_gate(m, src):
+    """'' = may go out, else the reason it may not."""
+    if m.get("platform") in ("top3", "exp") or m.get("layout") == "person":
+        return ""
+    if exceptional(m, src) or (m.get("cluster") or 1) >= max(10, (m.get("viewers") or 0) / 5000):
+        return ""
+    sc = m.get("tag_scores") or {}
+    act = max((sc.get(t) or 0) for t in ACTION_TAGS)
+    if act < ACTION_MIN:
+        return f"no action: best action tag {act:.2f} < {ACTION_MIN}"
+    if (sc.get("first-reaction") or 0) > act + 0.15:
+        return f"mostly a first look at GTA 6 (first-reaction {sc.get('first-reaction'):.2f} > action {act:.2f})"
+    return ""
+
+def strong_clip(m, src):
+    """TikTok / YouTube (0 views on every post, 18. 11.): only a top streamer's clip or a clip over hot_score."""
+    top = {x.lower() for x in src.get("star_tier1", [])}
+    return (str(m.get("channel") or "").lower() in top or (m.get("score") or 0) >= src.get("hot_score", 2000) or exceptional(m, src)
+            or m.get("platform") == "top3")
 
 def exceptional(m, src):
     """A clip big enough to break the pace and the evening reserve (never max_per_day): score >= 4 x
@@ -1526,6 +1561,8 @@ def cmd_den(a):
                 service = ch["service"].lower()
                 if used.get(service, 0) >= caps.get(service, 99):
                     continue
+                if service in ("tiktok", "youtube") and not strong_clip(m, src_cfg):
+                    continue                               # 18. 11.: 0 views there - only the strongest 3/day
                 if m.get("hot"):                           # hot: NOW, the networks 0-4 min apart
                     m["now"], ch_due = hot_stagger(m["id"], service, now_tz())
                 else:                                      # Aleš 17. 11.: each network a few minutes apart
