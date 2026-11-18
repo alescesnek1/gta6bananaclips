@@ -1,0 +1,62 @@
+# gta6bananaclips: hourly monitor (monitor.py, stdlib only)
+#   runs of the last 3 h (denne / live / long), publishing per brand vs the day's quota, Buffer post metrics
+#   of the last 48 h (read-only), Netlify deploys + month transfer -> monitor/stav.json + monitor/stav.md
+#   e-mail: at once on a NEW alert (the same one again at most every 6 h), daily summary ~09:00 Prague
+# Secrets: BUFFER_API_KEY_1..4, NETLIFY_AUTH_TOKEN, NETLIFY_SITE_ID (or the variable), MAIL_FROM,
+#   MAIL_APP_PASSWORD, MAIL_TO. The repo is public: stav.* never hold secrets or addresses.
+
+name: monitor
+
+on:
+  schedule:
+    - cron: "7 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: monitor
+  cancel-in-progress: false
+
+jobs:
+  monitor:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      BUFFER_API_KEY_1: ${{ secrets.BUFFER_API_KEY_1 }}
+      BUFFER_API_KEY_2: ${{ secrets.BUFFER_API_KEY_2 }}
+      BUFFER_API_KEY_3: ${{ secrets.BUFFER_API_KEY_3 }}
+      BUFFER_API_KEY_4: ${{ secrets.BUFFER_API_KEY_4 }}
+      NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+      NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID || vars.NETLIFY_SITE_ID }}
+      MAIL_FROM: ${{ secrets.MAIL_FROM }}
+      MAIL_APP_PASSWORD: ${{ secrets.MAIL_APP_PASSWORD }}
+      MAIL_TO: ${{ secrets.MAIL_TO }}
+      PYTHONUTF8: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: monitor
+        run: python monitor.py
+
+      - name: save monitor state
+        if: always()
+        run: |
+          git config user.name "gta6bananaclips-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for f in monitor/stav.json monitor/stav.md; do [ -f "$f" ] && git add "$f"; done
+          git diff --cached --quiet && exit 0
+          git commit -q -m "monitor: stav $(date -u +%FT%H:%MZ)" -- monitor/stav.json monitor/stav.md
+          # other workflows push all the time (denne every 5 min on launch days): retry, never lose the state
+          for i in 1 2 3 4 5 6; do
+            if git pull -q --rebase --autostash; then git push -q && exit 0; else git rebase --abort 2>/dev/null || true; fi
+            sleep $((i * 5 + RANDOM % 7))
+          done
+          echo "::error::stav monitoru se nepodarilo pushnout (6 pokusu)"; exit 1
