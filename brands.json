@@ -113,7 +113,7 @@
     "watermark": "gta6fanpageclip",
     "outro": "assets/outro/fanpage_outro_cap.mp4",
     "outro_ab": 0,
-    "_outro_ab": "Majitel 18. 11. vecer: AI modelka nikde (short, outro, long-form, stories). Konec fanpage jen Follow karta pres bezici klip (A), outro B vypnuto.",
+    "_outro_ab": "Majitel 18. 11. vecer: outro s modelkou pryc (short B i long-form koncovka), konec fanpage jen Follow karta pres bezici klip; reakce modelky na pointe zustavaji.",
     "follow": "assets/follow/follow_fanpage.webm",
     "ramp": {
       "2026-11-17": 0,
@@ -154,7 +154,7 @@
     },
     "_flags": "Prepinace launch prvku (17. 11.): false = hned vypnuto, bez zmeny kodu. qa = automaticka kontrola shortu pred publikaci. league = radek \"#N in the Banana League this week\" v popisku, league_chip = cip \"#N THIS WEEK\" na karte skore (top 10).",
     "hook_v2": true,
-    "model_sticker": false,
+    "model_sticker": true,
     "heat": false,
     "qa": true,
     "_exp": "Experimenty (experimenty.py, docs/dva-ucty.md): max exp_max_per_day denne navic ke kvote, zapina je az data (dost silneho materialu), meri se 48 h po vydani; koncept pod 60 % klasiky po 5 postech se sam vypne (experimenty.json), nad 100 % smi 2x denne. false = vypnuto hned.",

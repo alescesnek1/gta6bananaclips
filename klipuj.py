@@ -4349,7 +4349,7 @@ def render(clip, src=None, clean=False):
                     heat_end = main_end if outro or not follow else min(main_end, fend - FOLLOW_DUR - 0.1)
                     if loop:                                      # nothing extra at the seam: only in the payoff part
                         heat_end = min(heat_end, hook_t - 0.1)
-                    if ending == "short" and b.get("model_sticker"):   # 18. 11. evening: model off -> no wink
+                    if ending == "short" and b.get("end_wink"):   # 18. 11. evening: the ending is the Follow card only
                         # the model's wink / smirk (banana size and place) right before the Follow card,
                         # after the payoff, one element at a time: Heat and the payoff sticker fit before it
                         e1 = (fend - FOLLOW_DUR - 0.05) if follow else fend

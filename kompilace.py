@@ -1463,7 +1463,7 @@ def flag(z, name, default=True):
 # No ranking, no tier list, no countdown, no #N on screen: chronological, cinematic, music carries it.
 
 MODEL_REAKCE = HERE / "assets" / "model_reakce"
-MODEL_IN_VIDEO = False
+MODEL_IN_VIDEO = True                                  # owner 18. 11.: her reactions stay, only the outro goes
 LETTERBOX = int((H - W / 2.35) / 2)                       # 2.35:1 bars: 131 px top and bottom
 
 def main_series(z):
