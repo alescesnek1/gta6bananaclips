@@ -210,7 +210,7 @@
   "exceptional": {
     "score_x": 4,
     "star_x": 2,
-    "live_z": 25
+    "live_z": 80
   },
   "upgrade_x": 3,
   "_pace_napoveda": "Ales 18. 11.: nespalit posty dne v prvnich minutach. Vsechny posty znacky (horke, hvezdy, live, bezne) do casu t <= ceil(max_per_day x podil vahy publika uplynuly od 12:00) (+ pace_burst jen pro horke/hvezdy/live). pace_weights = 24 vah po hodinach Prahy (index 0 = 00:00; [] = krivka vypnuta). reserve_until: do 22:00 zustanou 3 posty z max_per_day volne, do 03:00 1. exceptional: klip se score >= score_x x hot_score, hvezda >= star_x x hot_score, live se spike_z >= live_z smi krivku i rezervu prelomit (nikdy max_per_day). upgrade_x: zadrzeny horky klip >= tolikrat silnejsi nez naplanovany bezny post jen zaloguje (mazat v Bufferu smi jen Ales). Dohaneni minima krivku prebije.",
@@ -225,5 +225,8 @@
   "_live_publish_napoveda": "18. 11.: zapnuto s filtrem cutscén, titulky jen hlas streamera, live jen s facecamem (live job od c4687b2).",
   "live_nonstar_viewers": 40000,
   "publish_pause": false,
-  "_publish_pause_napoveda": "Docasna pauza publikovani pri oprave chyby (18. 11.: banan v rozjezdu misto na pointe). Po oprave false."
+  "_publish_pause_napoveda": "Docasna pauza publikovani pri oprave chyby (18. 11.: banan v rozjezdu misto na pointe). Po oprave false.",
+  "hot_bypass_z": 80,
+  "live_gap_min": 45,
+  "_pace_napoveda_1811": "18. 11.: kazdy live klip ma z>=25 (prah hlidace), takze live_z 25 obchazel tempo dne -> 3 posty fanpage do 14:30. Vyjimka jen z>=80, odstup live 45 min."
 }
