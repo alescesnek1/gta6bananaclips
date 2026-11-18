@@ -100,5 +100,28 @@
     "live": true,
     "viewers": 28352,
     "spike_z": 33.0
+  },
+  "live_kaicenat_1795008073": {
+    "url": "https://6afda75a293bf89b21f41ab5--gta6bananaclips-media.netlify.app/20261118/live_kaicenat_1795008073.mp4",
+    "path": "20261118/live_kaicenat_1795008073.mp4",
+    "due": "2026-11-18T14:27:00+01:00",
+    "draft": false,
+    "posts": {
+      "6afc4355ece6dfde5ff6769a": "6afda75e61bd3b7f60c371fa",
+      "6afc42e6ece6dfde5ff66dca": "6afda75f1c55ed7dd8031745",
+      "6afc4413ece6dfde5ff68286": "6afda76961bd3b7f60c3755c",
+      "6afc43ffece6dfde5ff68162": "6afda76a5f355732b1d3449b"
+    },
+    "mb": 13.9,
+    "channel": "kaicenat",
+    "platform": "twitch",
+    "score": 0,
+    "hot": true,
+    "rating": 9,
+    "views": 0,
+    "golden": false,
+    "live": true,
+    "viewers": 104329,
+    "spike_z": 58.0
   }
 }
