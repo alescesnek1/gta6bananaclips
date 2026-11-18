@@ -3773,6 +3773,9 @@ def edit_cut(src, words, d, clip, hpc=None, v2=False, info=None, peak=None):
             if hpc is not None:
                 hpc.update(peak=peak, cut=[round(info["loop"]["s"], 2), round(info["loop"]["e"], 2)], dur=round(dur, 2))
             return lp
+        # no room for the loop: the old plain cut had no length cap (18. 11.: Kai Cenat 34.6 s, Clix 38 s
+        # went out) - a short that isn't the loop edit breaks the owner's rule, so it is never rendered
+        raise RenderFailed("no loop edit possible (payoff / setup / sentence edges) - skipped, not cut the old way")
     tease = not LOOP and peak is not None and peak - a >= 4 and b - peak >= 0.3
     segs = dead_air(cw, src, a, b, peak)
     # hook (Aleš: 1 s looked like a cut by mistake; the rewind he did not like): ~2.5 s of the

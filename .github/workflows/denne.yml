@@ -79,15 +79,13 @@ jobs:
           deno-version: v2.x
 
       # static ffmpeg 9.0 (pinned BtbN build, cached): apt-get took 5-15 min per run on a slow mirror
-      - uses: actions/cache@v4
-        if: inputs.jen_publikace != 'ano'
+      - uses: actions/cache@v4             # the fast path too: ffprobe = the length gate before posting
         with:
           path: ~/ffmpeg-static
           key: ffmpeg-btbn-n9.0.2-57-linux64-gpl-v1
 
       - name: ffmpeg
-        if: inputs.jen_publikace != 'ano'   # the fast path posts ready shorts (no Top 3, no render)
-        run: bash .github/ffmpeg.sh
+        run: bash .github/ffmpeg.sh        # cached (~9 s); the fast path needs ffprobe for the length gate
 
       - name: python deps (CPU torch, no GPU on the runner)
         if: inputs.jen_publikace != 'ano'

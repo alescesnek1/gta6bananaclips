@@ -271,6 +271,24 @@ def netlify_deploy(files):
 def media_url(rel):
     return f"{os.environ['MEDIA_BASE_URL'].rstrip('/')}/{rel}"
 
+SHORT_LIMIT_S = 30.5          # klipuj STORY_CAP 30 s (classic loop short 12-20 s, cap 25)
+OUTRO_LIMIT_S = 15.5          # fanpage ending B: the full model outro after the clip
+
+def short_too_long(path, m):
+    """Gate before deploy: a short longer than the owner's cap never goes out (whatever rendered it).
+    Returns the reason or "". No ffprobe = no check (logged)."""
+    if not shutil.which("ffprobe"):
+        log("  length gate: ffprobe missing, not checked")
+        return ""
+    try:
+        r = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0",
+                            str(path)], capture_output=True, text=True, timeout=60)
+        d = float(r.stdout.strip())
+    except Exception:
+        return ""
+    limit = SHORT_LIMIT_S + (OUTRO_LIMIT_S if m.get("ending") == "outro" else 0)
+    return f"short {d:.1f} s over the {limit:.1f} s cap" if d > limit else ""
+
 def is_public(url):
     try:
         return http(url, method="HEAD", timeout=30)[0] == 200
@@ -1378,6 +1396,11 @@ def cmd_den(a):
                 log(f"  inbox short unavailable, skipped: {m['short']} ({e})")
                 add_fail(m["id"])
                 continue
+        too_long = short_too_long(src, m)
+        if too_long:                                 # 18. 11.: 34-42 s shorts from the old plain cut went out
+            log(f"  {too_long}, skipped")
+            add_fail(m["id"])
+            continue
         files[rel] = src
         plan.append((m, due, rel))
     # the daily Top 3 (our own curated format): in the day's last stretch, once the minimum is met
