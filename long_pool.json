@@ -2543,13 +2543,13 @@
     "channel": "quin69",
     "platform": "twitch",
     "title": "Missed chance !!!",
-    "views": 534,
+    "views": 535,
     "created": 1795027109,
     "category": "Grand Theft Auto VI",
     "video_id": "2932203147",
     "vod_offset": 28981,
     "cluster": 1,
-    "added": 1795031101
+    "added": 1795031266
   },
   "twitch_FlirtyFancyMangetoutKeepo-zrWg06dtnCooZ6IW": {
     "id": "twitch_FlirtyFancyMangetoutKeepo-zrWg06dtnCooZ6IW",
@@ -2557,10 +2557,10 @@
     "channel": "ishowspeed",
     "platform": "twitch",
     "title": "speed runs into a fight for the first time",
-    "views": 506,
+    "views": 512,
     "created": 1795010758,
     "category": "Grand Theft Auto VI",
     "cluster": 1,
-    "added": 1795031101
+    "added": 1795031266
   }
 }
