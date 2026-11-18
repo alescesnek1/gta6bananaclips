@@ -1221,12 +1221,12 @@
     "channel": "xqc",
     "platform": "twitch",
     "title": "xqc listening to gta VI radio",
-    "views": 565,
+    "views": 701,
     "created": 1795011370,
     "category": "Grand Theft Auto VI",
     "video_id": "2932113307",
     "vod_offset": 28017,
-    "added": 1795014550,
+    "added": 1795014914,
     "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/xqc/20261118_twitch_TriangularFaithfulMushroomTriHard-w7G2t3F9rpXJJxa8/source.mp4",
     "peak": 24.0,
     "cut": [
@@ -1310,5 +1310,19 @@
       "luma": 95.9,
       "dark": 0.0
     }
+  },
+  "twitch_TastyGoldenFlamingoHassanChop-43fCNikHeoMOC0Yg": {
+    "id": "twitch_TastyGoldenFlamingoHassanChop-43fCNikHeoMOC0Yg",
+    "url": "https://www.twitch.tv/ohnepixel/clip/TastyGoldenFlamingoHassanChop-43fCNikHeoMOC0Yg",
+    "channel": "ohnepixel",
+    "platform": "twitch",
+    "title": "Gooner?",
+    "views": 509,
+    "created": 1795004786,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932275268",
+    "vod_offset": 773,
+    "cluster": 1,
+    "added": 1795014957
   }
 }
