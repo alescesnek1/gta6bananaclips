@@ -553,7 +553,7 @@ NAMES = {"kaicenat": "Kai Cenat", "ishowspeed": "IShowSpeed", "xqc": "xQc", "jyn
          "timthetatman": "TimTheTatman", "nickmercs": "NICKMERCS", "lirik": "LIRIK", "moistcr1tikal": "Moistcr1tikal",
          "sypherpk": "SypherPK", "n3on": "N3on", "rakai": "Rakai", "rayasianboy": "RayAsianBoy", "kelo": "Kelo",
          "sodapoppin": "Sodapoppin", "jasontheween": "JasonTheWeen", "plaqueboymax": "PlaqueBoyMax",
-         "darkviperau": "DarkViperAU", "ninja": "Ninja", "ludwig": "Ludwig", "valkyrae": "Valkyrae"}
+         "darkviperau": "DarkViperAU", "typicalgamer": "TypicalGamer", "ninja": "Ninja", "ludwig": "Ludwig", "valkyrae": "Valkyrae"}
 WORD_LOGINS = {"sketch", "lacy", "tarik", "kelo", "ninja", "fanum", "shroud"}
 
 def display_name(m):
