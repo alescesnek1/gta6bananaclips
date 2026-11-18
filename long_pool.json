@@ -2625,11 +2625,11 @@
     "channel": "codenamepizza",
     "platform": "twitch",
     "title": "CALICO CAT",
-    "views": 546,
+    "views": 581,
     "created": 1795029848,
     "category": "Grand Theft Auto VI",
     "cluster": 1,
-    "added": 1795032281
+    "added": 1795032503
   },
   "twitch_TiredSecretiveChipmunkUncleNox-DfMhl81_JzpEi5pi": {
     "id": "twitch_TiredSecretiveChipmunkUncleNox-DfMhl81_JzpEi5pi",
@@ -2644,5 +2644,19 @@
     "vod_offset": 7010,
     "cluster": 1,
     "added": 1795032281
+  },
+  "twitch_MoralGracefulBorkGingerPower-vJkaq2y2EEZXfAiB": {
+    "id": "twitch_MoralGracefulBorkGingerPower-vJkaq2y2EEZXfAiB",
+    "url": "https://www.twitch.tv/kaicenat/clip/MoralGracefulBorkGingerPower-vJkaq2y2EEZXfAiB",
+    "channel": "kaicenat",
+    "platform": "twitch",
+    "title": "freaky kai",
+    "views": 964,
+    "created": 1795012191,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932305259",
+    "vod_offset": 5390,
+    "cluster": 1,
+    "added": 1795032503
   }
 }
