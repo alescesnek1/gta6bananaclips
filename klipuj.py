@@ -1181,14 +1181,23 @@ def transcribe(src):
     res = _whisper.transcribe(str(src), word_timestamps=True, condition_on_previous_text=False,
                               fp16=_whisper.device.type == "cuda", verbose=None)
     audio = whisper.load_audio(str(src))              # 16 kHz mono, for the singing check
+    game = game_words(src, _whisper)                  # what the GAME's audio says (songs, radio, cutscenes)
+    seen = {}
+    for seg in res["segments"]:                       # a line heard 2+ times in one clip = a chorus
+        key = re.sub(r"[^a-z ]", "", seg["text"].lower()).strip()
+        if len(key) >= 8:
+            seen[key] = seen.get(key, 0) + 1
     words, busy, dropped = [], [], 0
     for seg in res["segments"]:
-        # captions = what the STREAMER says (Aleš: they were lyrics of the in-game radio):
-        # drop segments Whisper itself doubts, repetitive ones (choruses) and sung ones
+        # captions = what the STREAMER says (Aleš: they were lyrics of the in-game radio; 18. 11. the
+        # GTA 6 intro song "starting from zero" on lacy's live short): drop segments Whisper itself
+        # doubts, repetitive ones (choruses), sung ones, and words the game's own audio also says
         sung = singing(audio[int(seg["start"] * 16000): int(seg["end"] * 16000)])
         ws = [(w["start"], w["end"], w["word"].strip()) for w in seg.get("words", []) if w["word"].strip()]
+        key = re.sub(r"[^a-z ]", "", seg["text"].lower()).strip()
         if (seg.get("no_speech_prob", 0) > 0.5 or seg.get("avg_logprob", 0) < -0.9
-                or seg.get("compression_ratio", 1) > 2.2 or sung > 0.45):
+                or seg.get("compression_ratio", 1) > 2.2 or sung > 0.45 or seen.get(key, 0) >= 2
+                or game_share(ws, game) >= 0.5):
             dropped += 1
             # no caption, but it may still be the streamer talking: keep it as occupied time for the cuts
             busy += [(s, e, BUSY) for s, e, _ in ws] or [(seg["start"], seg["end"], BUSY)]
@@ -1197,6 +1206,62 @@ def transcribe(src):
     if dropped:
         log(f"  captions: {dropped} segment(s) dropped as music/lyrics or unsure (kept as occupied time for cuts)")
     return Words(words, busy)
+
+# Game audio vs the streamer's mic (18. 11., lacy): a streamer's mic sits in the middle of the
+# stereo picture (L = R), the game's music and voices are wide. The SIDE channel (L - R) therefore
+# keeps the game and drops the mic - Whisper on it hears the song ("it's starting from zero") but not
+# the streamer. Words of the main transcript that the side also has at the same moment are the game's.
+SIDE_MIN_DB = -18.0      # side vs mid energy (speech band) under this: (almost) mono, nothing to separate
+GAME_TOL = 0.6           # s: a main word and a side word this close (same token) = the same sound
+
+def side_level(src):
+    """Side (L-R) vs mid (L+R) energy in the speech band, dB; None for mono / unreadable sound."""
+    try:
+        raw = subprocess.run(["ffmpeg", "-nostdin", "-v", "error", "-i", str(src), "-vn", "-ac", "2", "-ar", "16000",
+                              "-af", "highpass=f=300,lowpass=f=3400", "-f", "s16le", "-"],
+                             capture_output=True, timeout=300).stdout
+    except subprocess.TimeoutExpired:
+        return None
+    a = np.frombuffer(raw, np.int16).astype(np.float64)
+    if a.size < 32000:
+        return None
+    a = a.reshape(-1, 2)
+    mid, side = a[:, 0] + a[:, 1], a[:, 0] - a[:, 1]
+    em, es = float(np.mean(mid * mid)), float(np.mean(side * side))
+    return None if em < 1e-6 else 10 * math.log10(max(es, 1e-9) / em)
+
+def game_words(src, model):
+    """(start, end, token) of words in the game's audio (the side channel), [] when the sound is
+    (almost) mono or the pass fails - then only the other filters judge."""
+    lvl = side_level(src)
+    if lvl is None or lvl < SIDE_MIN_DB:
+        return []
+    side = Path(str(src) + ".side.wav")
+    try:
+        run(["ffmpeg", "-nostdin", "-y", "-v", "error", "-i", str(src), "-vn", "-af",
+             "pan=mono|c0=0.5*c0-0.5*c1,dynaudnorm", "-ar", "16000", str(side)], timeout=300)
+        res = model.transcribe(str(side), word_timestamps=True, condition_on_previous_text=False,
+                               fp16=model.device.type == "cuda", verbose=None, temperature=0.0)
+        out = [(w["start"], w["end"], _tok(w["word"])) for seg in res["segments"] for w in seg.get("words", [])
+               if _tok(w["word"])]
+        log(f"  game audio (side {lvl:.0f} dB): {len(out)} word(s) - not captioned where the streamer's track has them too")
+        return out
+    except Exception as e:
+        log(f"  game audio pass failed ({str(e)[-100:]})")
+        return []
+    finally:
+        side.unlink(missing_ok=True)
+
+def game_share(ws, game, tol=GAME_TOL):
+    """Share of the words ws (start, end, text) that the game's audio also says at that moment."""
+    if not ws or not game:
+        return 0.0
+    hit = 0
+    for s, e, t in ws:
+        tok = _tok(t)
+        if tok and any(g == tok and gs - tol <= s <= ge + tol for gs, ge, g in game):
+            hit += 1
+    return hit / len(ws)
 
 def singing(x, sr=16000):
     """
@@ -1296,6 +1361,26 @@ def swear_plan(words, card_at, sound_end=None):
         mute = [(m0, min(m1, sound_end)) for m0, m1 in mute if m0 < sound_end]
     return [w for w in masked if w[0] < card_at], mute
 
+# caption highlight (owner 18. 11.): key words coloured, fillers white
+FILLERS = set("""a an the and or but so if then than that this these those to of in on at by for with from up down
+out over into as is am are was were be been being do does did have has had i you he she it we they me him her us
+them my your his its our their mine yours just like um uh erm er ah oh okay ok yeah yep well really very kind sort
+gonna wanna gotta can could would should will shall may might must not no yes there here what who how when where why
+all some any one get got go going lot im i'm it's that's don't dont can't cant you're youre he's she's we're they're
+i'll i've let's lets literally actually basically""".split())
+POP = "{\\fscx90\\fscy90\\t(0,110,\\fscx108\\fscy108)}"     # the spoken word's pop without a colour
+
+def key_word(t):
+    """A word worth the highlight colour: a number, an exclamation, a swear (masked), or a content
+    word (not a filler, 3+ letters)."""
+    raw = t.strip("\"'()")
+    core = _tok(t)
+    if not core:
+        return False
+    if any(ch.isdigit() for ch in core) or raw.endswith("!") or "***" in core:
+        return True
+    return core not in FILLERS and len(core) >= 3
+
 def captions_ass(words, path, y, cap=None, per=2, anim="pop"):
     """
     Word-by-word captions. `cap` = the brand's caption style from brands.json (font, size,
@@ -1346,12 +1431,15 @@ def captions_ass(words, path, y, cap=None, per=2, anim="pop"):
             end = ch[i + 1][0] if i + 1 < len(ch) else chunk_end
             if anim == "bounce":
                 t = ch[i][2]
-                strong = len(t.strip(".,!?\"'")) >= 6 or t[-1:] in "!?"
+                strong = key_word(t)
                 c = ecol(emo[wi], hcol if strong else None)
                 text = ("{\\fscx0\\fscy0\\t(0,110,\\fscx115\\fscy115)\\t(110,180,\\fscx100\\fscy100)"
                         + (f"\\c&H{c}&" if c else "") + "}" + clean(t) + "{\\r}")
             else:
-                text = " ".join((hi % ecol(emo[wi], hcol) + clean(t) + "{\\r}") if j == i else clean(t)
+                # owner 18. 11.: KEY words (names, action verbs, nouns, exclamations, numbers) in the
+                # highlight colour, fillers white; the spoken word pops
+                text = " ".join(((hi % hcol) if key_word(t) else POP) + clean(t) + "{\\r}" if j == i else
+                                ("{\\c&H%s&}" % hcol + clean(t) + "{\\r}" if key_word(t) else clean(t))
                                 for j, (_, _, t, _) in enumerate(ch))
             # one very long word would run off the screen: shrink just that line
             n = len(" ".join(x[2] for x in ch))
@@ -1655,7 +1743,7 @@ def music_cfg(seed, total, music=None):
 def audio_mix(clip_audio, total, card_idx=None, card_at=0.0, music_idx=None, music_vol=0.4, sfx_idx=None, sfx_at=0.0,
               replay=None, mute=(), riser_idx=None, hit_idx=None, peak=None,
               clip_end=None, outro_idx=None, follow_idx=None, follow_at=0.0, extras=(), hook_gain=None,
-              voice_gain=0.0, music_env=None, voice_end=None, stems=False):
+              voice_gain=0.0, music_env=None, voice_end=None, stems=False, music_fade=False):
     """
     The short's sound: the clip's own audio + our music at one steady level (Aleš: always the
     same volume) + the score card's landing 'tups' + the hook flash whoosh (sfx, at sfx_at s).
@@ -1707,7 +1795,9 @@ def audio_mix(clip_audio, total, card_idx=None, card_at=0.0, music_idx=None, mus
         duck = (f",volume='if(between(t\\,{peak:.2f}\\,{peak + 0.6:.2f})\\,0.2\\,1)':eval=frame"
                 if peak is not None and hit_idx is not None else "")
         vol = f"volume='{music_env}':eval=frame" if music_env else f"volume={music_vol}"
-        f += f";[{music_idx}:a]atrim=0:{total:.3f},adeclick,{vol}{duck},{fmt},apad=whole_dur={total:.3f}"
+        # loop: the track fades in / out at the seam (the clip's own sound runs on continuously there)
+        mfade = (f",afade=t=in:d=0.25,afade=t=out:st={max(0.0, total - 0.3):.3f}:d=0.3" if music_fade else "")
+        f += f";[{music_idx}:a]atrim=0:{total:.3f},adeclick,{vol}{duck}{mfade},{fmt},apad=whole_dur={total:.3f}"
         f += (f"[mu0];[mu0]{key}sidechaincompress=threshold=0.03:ratio=4:attack=15:release=300:makeup=1[mu]"
               if key else "[mu]")
         parts.append("[mu]")
@@ -2517,10 +2607,11 @@ def qa_short(path, plan):
     if plan.get("card") and not (Path(plan["card"]).exists() and d >= plan["card_at"] + RATING_DUR - 0.3):
         probs.append("score card missing")
     # structure: hook <= 2.5 s; after the climax >= AFTER_PEAK s of the clip before the card / the end (loop, owner 18. 11.)
-    if (plan.get("hook_end") or 0) > HOOK_MAX + 0.05:
+    if (plan.get("hook_end") or 0) > HOOK_MAX + 0.05 and not plan.get("loop_cut"):   # loop edit: the opening is the whole payoff
         probs.append(f"hook {plan['hook_end']:.2f} s (max {HOOK_MAX})")
     if plan.get("peak") is not None:
-        after = (plan["card_at"] if plan.get("card") else plan["main_end"]) - plan["peak"]
+        after = (plan["loop_after"] if plan.get("loop_after") is not None else
+                 (plan["card_at"] if plan.get("card") else plan["main_end"]) - plan["peak"])
         if after < AFTER_PEAK - 0.05:
             probs.append(f"only {after:.1f} s after the climax (min {AFTER_PEAK:.1f})")
     # SEAMLESS LOOP (owner 18. 11.): the seam must not jump - sound level and the crop
@@ -2530,6 +2621,11 @@ def qa_short(path, plan):
             probs.append(f"loop seam: sound jumps {jump:.1f} dB (max {LOOP_JUMP_DB:.0f})")
         if (plan.get("seam_crop") or 0) > 0.05:
             probs.append(f"loop seam: crop jumps {plan['seam_crop']:.0%} of its width")
+        if plan.get("seam_src") is not None and abs(plan["seam_end"] - plan["seam_src"]) > 1.0 / FPS + 1e-6:
+            probs.append(f"loop seam: last frame {plan['seam_end']:.3f} s != first frame {plan['seam_src']:.3f} s of the source")
+    # the speech captioned fully (owner 18. 11.): >= CAP_COVER of Whisper's words in the short
+    if plan.get("caption_cov") is not None and plan["caption_cov"] < CAP_COVER:
+        probs.append(f"captions cover only {plan['caption_cov']:.0%} of the speech (min {CAP_COVER:.0%})")
     if plan.get("heat_on") and not plan.get("heat"):
         probs.append("heat missing")
     # the game band of the finished short must show the game (18. 11.: a talk + YouTube page passed)
@@ -3206,6 +3302,15 @@ LOOP_CLEAR = 0.3
 LOOP_XFADE = 0.2          # s, equal-power crossfade of the end's audio into the start's
 LOOP_EASE_FR = 6          # last frames whose crop eases to the first frame's
 LOOP_JUMP_DB = 6.0        # QA: audio level jump at the seam
+CAP_COVER = 0.80          # QA: captions show at least this share of Whisper's words (owner 18. 11.)
+
+def caption_coverage(caps, spoken, until):
+    """Share of the spoken (Whisper) words before `until` that got a caption (caps), matched by time."""
+    sp = [w for w in spoken if w[0] < until - 0.05 and w[2] != BUSY]
+    if not sp:
+        return None
+    got = {round(w[0], 2) for w in caps}
+    return sum(1 for w in sp if round(w[0], 2) in got) / len(sp)
 
 def loop_ease(xs, n, k=LOOP_EASE_FR):
     """Crop x per frame: the last k frames before frame n ease (smoothstep) to the first frame's x and
@@ -3414,6 +3519,85 @@ def dead_air(words, src, a, b, peak):
     keep.append((cur, b))
     return [(x, y) for x, y in keep if y - x > 0.05]
 
+def loop_p0(words, peak, lo=0.5, hi=1.5):
+    """
+    The loop point P0, lo..hi s before the payoff peak, on the output frame grid: a sentence start
+    there if any, else the longest pause between words, else peak - 1.0. It may sit inside a
+    sentence: the setup runs into it and the opening continues from it - continuous playback.
+    """
+    win = [w for w in words if peak - hi <= w[0] <= peak - lo and w[2] != BUSY]
+    starts = [w[0] - 0.05 for i, w in enumerate(words) if w in win and sent_start(words, i)]
+    if starts:
+        p = max(starts)
+    else:
+        gaps = [(y[0] - x[1], (x[1] + y[0]) / 2) for x, y in zip(words, words[1:])
+                if peak - hi <= (x[1] + y[0]) / 2 <= peak - lo and y[0] > x[1]]
+        p = max(gaps)[1] if gaps else peak - 1.0
+    return round(max(0.0, p) * FPS) / FPS
+
+def loop_cut(src, cw, words, d, peak, a, b, dur, ts, rms, v2, info):
+    """
+    The classic loop edit (owner 18. 11.): [P0 .. E] the payoff (from just before the peak through
+    the reaction to a sentence end E), then the transition (bananas flash, fanpage whip) to the setup
+    [S .. P0] (S = a strong sentence start 6-10 s before P0) that runs EXACTLY into P0 - so when the
+    platform loops, the last frame (P0) flows into the first (P0): real continuous footage and sound.
+    The score card / Follow card sit over the payoff's tail, never at the seam. Returns edit_cut's
+    tuple (source, words, payoff, card start, jump cuts, T = where the payoff part ends) or None
+    (no room for a loop: the plain cut).
+    """
+    p0 = loop_p0(cw, peak)
+    e = b
+    need = peak + 0.4 + RATING_DUR                    # the card (2.6 s) fits over the payoff's tail
+    if e < need:
+        e2 = end_from(cw, need, need, dur)
+        e = e2 if e2 is not None and e2 - p0 <= 6.0 else e
+    if not ok_end(cw, e):
+        e2 = end_from(cw, e, max(e, peak + AFTER_PEAK), dur)
+        if e2 is None:
+            return None
+        e = e2
+    e = min(dur, round(e * FPS) / FPS)
+    s = short_start(cw, p0, a, e, score=lambda t: open_score(ts, rms, t))
+    if p0 - s < SETUP_MIN - 1.0:
+        log(f"  loop: only {p0 - s:.1f} s of setup before the payoff, plain cut")
+        return None
+    s = round(s * FPS) / FPS
+    segs = [(x, y) for x, y in dead_air(cw, src, s, p0, None) if y - x > 0.05]
+    segs = segs or [(s, p0)]
+    segs[-1] = (segs[-1][0], p0)                      # the setup ends EXACTLY at P0 (the seam)
+    left = cut_problems(cw, s, e, segs, None)
+    left = [x for x in left if not x.startswith("end ") or not ok_end(cw, e)]
+    T = e - p0
+    flt = (f"[0:v]trim={p0:.4f}:{e:.4f},setpts=PTS-STARTPTS[v0];[0:a]atrim={p0:.4f}:{e:.4f},asetpts=PTS-STARTPTS[a0];"
+           + pieces(segs) + f"[v0][a0]{pairs(len(segs))}concat=n={len(segs) + 1}:v=1:a=1[v][a]")
+    out = d / ("edit_v2.mp4" if v2 else "edit_old.mp4")
+    encode(["ffmpeg", "-nostdin", "-y", "-hide_banner", "-loglevel", "error", "-i", str(src),
+            "-filter_complex", flt, "-map", "[v]", "-map", "[a]"], out)
+    starts, acc = [], T
+    for x, y in segs:
+        starts.append(acc)
+        acc += y - x
+    new = [(w0 - p0, w1 - p0, t) for w0, w1, t in words if w0 >= p0 - WORD_TOL and w1 <= e + WORD_TOL]
+    for w0, w1, t in words:
+        for (x, y), st in zip(segs, starts):
+            if x - WORD_TOL <= w0 and w1 <= y + WORD_TOL:
+                new.append((st + w0 - x, st + w1 - x, t))
+                break
+    new.sort()
+    card = max(peak + 0.4, e - RATING_DUR) - p0
+    sent = [w for w in words if s - WORD_TOL <= w[0] and w[1] <= p0 + WORD_TOL]
+    info["cuts"] = {"start": round(s, 2), "end": round(e, 2), "jumps": len(segs), "fixed": [], "problems": left,
+                    "first": " ".join(w[2] for w in sent[:6]),
+                    "last": " ".join([w[2] for w in words if p0 - WORD_TOL <= w[0] and w[1] <= e + WORD_TOL][-6:])}
+    info["loop"] = {"p0": round(p0, 3), "s": round(s, 3), "e": round(e, 3), "end_src": round(segs[-1][1], 3)}
+    info["voice_at"] = lambda end: None                # the sound runs on into the loop: never faded
+    if v2:
+        info["hook_peak"] = round(peak - p0, 3)
+    log(f"  loop: payoff {p0:.2f}-{e:.2f} s (peak {peak:.1f}), setup {s:.2f}-{p0:.2f} s, "
+        f"{acc:.1f} s total, {len(segs) - 1} jump cuts in the setup")
+    log(f"  loop opens on '{info['cuts']['last']}', setup starts '{info['cuts']['first']}'")
+    return out, Words(new), peak - p0, card, [round(x, 2) for x in starts], T
+
 def edit_cut(src, words, d, clip, hpc=None, v2=False, info=None, peak=None):
     """
     Cut the source before rendering: trim (Twitch/Kick; YouTube windows are already cut on
@@ -3440,8 +3624,12 @@ def edit_cut(src, words, d, clip, hpc=None, v2=False, info=None, peak=None):
         if peak is not None:
             log(f"  payoff {peak:.1f} s, reaction resolved at {resolve if resolve is None else round(resolve, 1)} s,"
                 f" end {b:.1f} s, setup {peak - a:.1f} s")
-    # SEAMLESS LOOP (owner 18. 11.): no payoff teaser, no flash / whip intro - the short starts in the
-    # clip on a strong sentence start and its end flows back into that start (loop_seam, loop_ease)
+    if LOOP and peak is not None and not clip.get("section") and has_audio(src):
+        lp = loop_cut(src, cw, words, d, peak, a, b, dur, ts, rms, v2, info)
+        if lp:
+            if hpc is not None:
+                hpc.update(peak=peak, cut=[round(info["loop"]["s"], 2), round(info["loop"]["e"], 2)], dur=round(dur, 2))
+            return lp
     tease = not LOOP and peak is not None and peak - a >= 4 and b - peak >= 0.3
     segs = dead_air(cw, src, a, b, peak)
     # hook (Aleš: 1 s looked like a cut by mistake; the rewind he did not like): ~2.5 s of the
@@ -3683,12 +3871,14 @@ def render(clip, src=None, clean=False):
         words_cut = words                                  # all words of the cut (the mix ducks under them)
         dur = duration(src)
         card_at = min(card_at, dur)
-        words = [w for w in words if w[0] < card_at]      # no captions / banana under the score card
+        loop = info.get("loop")                           # the loop edit: payoff [0, hook_t], setup to the seam
+        if not loop:
+            words = [w for w in words if w[0] < card_at]  # no captions / banana under the score card
         if bore is None:                                  # boredom gate, once per clip, on the cut it will show
             viral = bool(virality(clip) >= cfg.get("extra_score", 5000) or (clip.get("cluster") or 1) >= 2
                          or (clip.get("live") and (clip.get("spike_z") or 0) >= 10))
             try:
-                bore_probs, bore = boredom(src, words, peak, hook_t, card_at, viral=viral)
+                bore_probs, bore = boredom(src, words, peak, 0.0 if loop else hook_t, dur if loop else card_at, viral=viral)
             except Exception as e:                        # a broken probe is not a boring clip
                 bore_probs, bore = [], {"error": str(e)[-120:]}
             if os.environ.get("KLIPY_NO_BORE"):          # manual test renders only
@@ -3698,10 +3888,20 @@ def render(clip, src=None, clean=False):
                 raise RenderFailed(f"boring: {'; '.join(bore_probs)}")
         # swears anywhere in the clip's sound - also under the score card / fanpage tail, where the clip
         # keeps playing - are bleeped; captions (F***) stay before the card only
-        words, mute = swear_plan(words_cut, card_at)
-        reactions = pick_reactions(words, card_at, clip["id"], peak) if (BANANA / "reakce1.mp4").exists() else []
-        if hv2_cut and hook_t:                            # hook = teaser -> flash -> start, nothing else in it
+        # loop: the speech is captioned everywhere (owner 18. 11.: fully and continuously)
+        words, mute = swear_plan(words_cut, dur + 1.0 if loop else card_at)
+        reactions = pick_reactions(words, dur if loop else card_at, clip["id"], peak) if (BANANA / "reakce1.mp4").exists() else []
+        if hv2_cut and hook_t and not loop:               # hook = teaser -> flash -> start, nothing else in it
             reactions = [r for r in reactions if r[0] >= hook_t + 0.2]
+        if loop:                                          # the banana stays on the payoff; the card follows it
+            if peak is not None:                          # (the one in the opening lands on the peak itself)
+                reactions = [(round(peak + 0.05, 2) if t < hook_t else t, n) for t, n in reactions]
+                reactions = [r for i, r in enumerate(reactions) if r[0] >= hook_t or i == next(
+                    (k for k, x in enumerate(reactions) if x[0] < hook_t), -1)]
+            # owner 18. 11.: the score card and every end graphic sit at the VERY END, over the last
+            # seconds of the setup that runs into P0, and end with the video (the seam stays exact)
+            card_at = max(hook_t + 0.5, dur - RATING_DUR)
+            reactions = [r for r in reactions if r[0] < hook_t or r[0] + REACTIONS[r[1]][2] - REACTIONS[r[1]][1] < card_at - 0.2]
         ff = ["ffmpeg", "-nostdin", "-y", "-hide_banner", "-loglevel", "error", "-i", str(src)]
 
         # Render, check, and REPAIR instead of giving up (Aleš: a cut face or black bars must be fixed):
@@ -3761,7 +3961,7 @@ def render(clip, src=None, clean=False):
                         xs = shift_path(xs, shift * crop_w, lo, hi)
                     if LOOP and not (fan and fan_ending(clip["id"], b) == "outro"):
                         # the loop seam: the crop of the last frames eases back to the first frame's
-                        lend = (card_at + RATING_DUR + LOOP_CLEAR if b.get("score_card") else
+                        lend = (dur if loop else card_at + RATING_DUR + LOOP_CLEAR if b.get("score_card") else
                                 min(dur, card_at + FOLLOW_DUR + 0.2 + LOOP_CLEAR) if fan else min(dur, card_at + 0.4))
                         xs = loop_ease(xs, int(round(min(lend, dur) * FPS)))
                     track = "".join(f"{i / FPS:.4f} crop@g x {x};\n" for i, x in enumerate(xs))
@@ -3772,7 +3972,7 @@ def render(clip, src=None, clean=False):
                     if fan:   # Anton white, neon green highlight, thin dark outline (sleek, not the banana look)
                         n_chunks = captions_ass(words, ass, y=cap_y,     # on the seam (Aleš)
                                                 cap={**(b.get("caption") or {}), "outline": 3, "shadow": 0},
-                                                per=1, anim="bounce")
+                                                per=2, anim="pop")      # owner 18. 11.: like bananas - two words, key words pink
                     else:
                         cap_y = CAM_H if cam else 600
                         n_chunks = captions_ass(words, ass, y=cap_y, cap=b.get("caption"))   # face/game seam
@@ -3783,7 +3983,7 @@ def render(clip, src=None, clean=False):
                     rx = reactions if b.get("banana") else []
                     args = (cam, ff_path(cmds), int(xs[0]), crop_w, game_h, crop_h, top)
                     replay, push = None, None
-                    main_end = dur if b.get("score_card") else min(dur, card_at + 0.4)   # no card: ends with the story
+                    main_end = dur if b.get("score_card") or loop else min(dur, card_at + 0.4)   # no card: ends with the story
                     # HOOK v2 pacing: a visual change at least every ~1.2 s in the first 5 s
                     pace = [round(hook_t + 1.2 * k, 2) for k in range(1, 4) if hook_t + 1.2 * k < 5.0] if hv2 else []
                     if fan:
@@ -3802,10 +4002,10 @@ def render(clip, src=None, clean=False):
                     # outro_ab = its share, picked by clip id)
                     ending = fan_ending(clip["id"], b) if fan else None
                     end_model = None
-                    seam = LOOP_CLEAR if LOOP and ending != "outro" else 0.0   # overlays end before the loop seam
-                    if ending == "short":
+                    seam = LOOP_CLEAR if LOOP and ending != "outro" and not loop else 0.0   # overlays end before the seam
+                    if ending == "short" and not loop:
                         main_end = min(dur, card_at + FOLLOW_DUR + 0.2 + seam)   # footage that runs on after the story
-                    total = (card_at + RATING_DUR + seam if use_card else
+                    total = (dur if loop else card_at + RATING_DUR + seam if use_card else
                              main_end + (replay[2] - replay[1]) / 0.6 if replay else main_end)
                     # ending: the brand's outro joined after the clip; the Follow card over the last
                     # FOLLOW_DUR s of what is running then (outro / banana score card), never longer
@@ -3814,6 +4014,7 @@ def render(clip, src=None, clean=False):
                     clip_total = total
                     total += duration(outro) if outro else 0.0
                     fend = total - (0.0 if outro else seam)            # where the Follow card ends
+                    # (loop edit: the Follow card, like the score card, ends with the video)
                     follow = HERE / b["follow"] if b.get("follow") and not os.environ.get("KLIPY_NO_FOLLOW") else None
                     follow = follow if follow and follow.exists() and total > FOLLOW_DUR + 1 else None
                     mpath, mvol, mstart = music_cfg(clip["id"], total, b.get("music"))
@@ -3830,6 +4031,8 @@ def render(clip, src=None, clean=False):
                     sticker_box = (SLOT_X, SLOT_BOTTOM - STICKER_H, SLOT_X + STICKER_W, SLOT_BOTTOM)
                     plan_stickers = []
                     heat_end = main_end if outro or not follow else min(main_end, fend - FOLLOW_DUR - 0.1)
+                    if loop:                                      # nothing extra at the seam: only in the payoff part
+                        heat_end = min(heat_end, hook_t - 0.1)
                     if ending == "short":
                         # the model's wink / smirk (banana size and place) right before the Follow card,
                         # after the payoff, one element at a time: Heat and the payoff sticker fit before it
@@ -3851,12 +4054,12 @@ def render(clip, src=None, clean=False):
                                 mtags["tags"] = []
                         kinds = model_kinds(mtags["tags"])
                         hook_k = None
-                        if hv2 and hook_t >= 1.0:             # in the hook, on the scream
+                        if hv2 and hook_t >= 1.0 and not loop:             # in the hook, on the scream
                             r = model_reaction(kinds, f"{clip['id']}:hook")
                             if r:
                                 hook_k = r[0]
                                 plan_stickers.append((0.12, r[1], min(MODEL_BRIEF, hook_t - 0.17)))
-                        if peak is not None and peak >= hook_t + 0.3:
+                        if peak is not None and (peak >= hook_t + 0.3 or loop):   # loop: the payoff opens the short
                             t0 = peak - 0.1
                             room = min(main_end - 0.3, heat_end - 0.2) - t0
                             r = model_reaction(kinds, f"{clip['id']}:peak", avoid=(hook_k,))
@@ -3905,9 +4108,10 @@ def render(clip, src=None, clean=False):
                         elements.append((t0, t0 + dur_, f"model {f_.stem} (ending)", (BANANA_X, sy, BANANA_X + BANANA_W, SLOT_BOTTOM)))
                     if follow and ending == "short":              # (Follow card's visible box, see assets/follow)
                         elements.append((fend - FOLLOW_DUR, fend, "follow card", FOLLOW_BOX))
-                    if v2 and use_card and rank and b.get("league_chip") and total - (card_at + 1.75) > 0.4:
+                    chip_end = card_at + RATING_DUR if loop else total   # loop: the chip ends with the card
+                    if v2 and use_card and rank and b.get("league_chip") and chip_end - (card_at + 1.75) > 0.4:
                         try:                                  # part of the score card (same element), after the score lands
-                            cp, cx, cy = chip_frames(f"#{rank} THIS WEEK", d / f"_sticker{sfx}_chip", total - (card_at + 1.75))
+                            cp, cx, cy = chip_frames(f"#{rank} THIS WEEK", d / f"_sticker{sfx}_chip", chip_end - (card_at + 1.75))
                             sprites.append((card_at + 1.75, cp, cx, cy))
                         except Exception as e:
                             log(f"  league chip failed ({str(e)[-80:]})")
@@ -3927,7 +4131,7 @@ def render(clip, src=None, clean=False):
                     hook_peak = info.get("hook_peak") if hv2 else None
                     flt = reaction_overlay(build_filter(
                         *args, ass_file=ff_path(ass), zoom_at=None if fan else peak, beat=beat,
-                        punch=None if fan else zoom_jumps(words, jumps, card_at, hook=hook_t if hv2 else None),
+                        punch=None if fan else zoom_jumps(words, jumps, dur if loop else card_at, hook=hook_t if hv2 else None),
                         mark_file=ff_path(d / "mark.txt"), nf=src_norm(src),
                         grade=",".join(x for x in (b.get("grade"), FAN_LOOK if fan else "") if x),
                         punch_z=float(b.get("punch") or 1.08) - 1, wm_text=b.get("watermark") or BRAND,
@@ -3937,7 +4141,7 @@ def render(clip, src=None, clean=False):
                     card_idx = music_idx = sfx_idx = None
                     sfx_at = 0.0
                     if use_card:
-                        flt = card_overlay(flt, idx, card_at, max(0.0, total - dur))
+                        flt = card_overlay(flt, idx, card_at, max(0.0, (card_at + RATING_DUR if loop else total) - dur))
                         inputs += ["-c:v", "libvpx-vp9", "-i", str(card)]
                         card_idx, idx = idx, idx + 1
                     if mpath:                                     # each short starts the track somewhere else
@@ -3980,7 +4184,7 @@ def render(clip, src=None, clean=False):
                     v_end = info["voice_at"](a_end) if info.get("voice_at") and not replay else None
                     v_end = v_end if v_end is not None and v_end < a_end - 0.05 else None
                     vgain, menv, mixinfo = (0.0, None, {})
-                    hgain = hook_level(src, hook_t, card_at) if hook_t else None
+                    hgain = hook_level(src, hook_t, card_at) if hook_t and not loop else None   # loop: one continuous level at the seam
                     if has_audio(src):
                         try:
                             vgain, menv, mixinfo = mix_levels(src, words_cut, a_end, mpath, mstart, mvol, v_end, hgain)
@@ -3991,7 +4195,8 @@ def render(clip, src=None, clean=False):
                     mix = audio_mix(has_audio(src), total, card_idx, card_at, music_idx, mvol, sfx_idx, sfx_at, replay,
                                     mute_b, riser_idx, hit_idx, peak, clip_end=clip_total if outro else None,
                                     outro_idx=outro_idx, follow_idx=follow_idx, follow_at=fend - FOLLOW_DUR,
-                                    extras=extra_audio, hook_gain=hgain, voice_gain=vgain, music_env=menv, voice_end=v_end)
+                                    extras=extra_audio, hook_gain=hgain, voice_gain=vgain, music_env=menv, voice_end=v_end,
+                                    music_fade=bool(loop and not outro))
                     if menv:
                         try:
                             chk = mix_check(src, words_cut, a_end, mpath, mstart, vgain, menv, v_end, d, hgain)
@@ -4023,9 +4228,9 @@ def render(clip, src=None, clean=False):
                             log(f"  {b['key']}: loop seam failed ({str(e)[-120:]})")
                     made[b["key"]] = str(out)
                     plans[b["key"]] = dict(
-                        total=total, main_end=card_at if use_card else clip_total, card_at=card_at,
+                        total=total, main_end=total if loop and not outro else card_at if use_card else clip_total, card_at=card_at,
                         card=str(card) if use_card else None, heat_on=use_heat, heat=bool(heat_plan),
-                        loud_hook=hv2, elements=sorted(elements), face_bottom=cam_h if cam else 0,
+                        loud_hook=hv2 and not loop, elements=sorted(elements), face_bottom=cam_h if cam else 0,
                         cap_times=[(w0, w1 + 0.6) for w0, w1, _ in words],
                         cap_box=(40, cap_y - int(int((b.get("caption") or {}).get("size", CAP_SIZE)) * 0.65),
                                  1040, cap_y + int(int((b.get("caption") or {}).get("size", CAP_SIZE)) * 0.65)),
@@ -4033,7 +4238,9 @@ def render(clip, src=None, clean=False):
                         hook_end=hook_t, bore=bore, bore_probs=bore_probs, game_crop=(f"{W}:{game_h}:0:{cam_h}" if cam else None), non_game=non_game,
                         stickers=[Path(p).stem for _, p, _ in plan_stickers], mix=mixinfo,
                         cuts=info.get("cuts"), ending=("outro" if outro else "short") if fan else None,
-                        loop=bool(LOOP and not outro), seam_crop=abs(float(xs[min(len(xs), int(round(total * FPS))) - 1]) - float(xs[0])) / crop_w if len(xs) else 0.0)
+                        loop=bool(loop and not outro), loop_cut=bool(loop), seam_src=(loop or {}).get("p0"), seam_end=(loop or {}).get("end_src"),
+                        loop_after=((loop or {}).get("e", 0) - (loop or {}).get("p0", 0) - (peak or 0)) if loop else None,
+                        caption_cov=caption_coverage(words, words_cut, total if loop else card_at), seam_crop=abs(float(xs[min(len(xs), int(round(total * FPS))) - 1]) - float(xs[0])) / crop_w if len(xs) else 0.0)
                     log(f"  {b['key']}: captions {len(words)} words, {n_chunks} chunks; "
                         f"banana: {', '.join(f'{n} @{t:.1f}s' for t, n in rx) or 'none'}"
                         + (f"; replay {replay[1]:.1f}-{replay[2]:.1f} s" if replay else "")

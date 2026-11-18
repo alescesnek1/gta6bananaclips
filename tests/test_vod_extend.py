@@ -297,6 +297,55 @@ class SeamlessLoop(unittest.TestCase):                     # owner 18. 11.: no t
         self.assertTrue(K.LOOP)
 
 
+class LoopEdit(unittest.TestCase):                         # owner 18. 11.: payoff opens, setup runs into P0
+    def test_p0_before_the_peak_on_the_frame_grid(self):
+        p0 = K.loop_p0(W, 6.5)
+        self.assertTrue(6.5 - 1.5 - 0.06 <= p0 <= 6.5 - 0.5, p0)
+        self.assertAlmostEqual(p0 * K.FPS, round(p0 * K.FPS), places=6)
+
+    def test_p0_prefers_a_sentence_start(self):
+        ws = [(4.0, 4.4, "go."), (5.3, 5.6, "Oh"), (5.6, 5.9, "my"), (5.9, 6.4, "god")]
+        self.assertAlmostEqual(K.loop_p0(ws, 6.5), round((5.3 - 0.05) * K.FPS) / K.FPS)
+
+    def test_p0_without_words(self):
+        self.assertAlmostEqual(K.loop_p0([], 6.0), 5.0)
+
+
+class GameAudio(unittest.TestCase):                        # 18. 11.: the GTA 6 intro song on lacy's live short
+    def test_words_the_game_also_says(self):
+        game = [(11.0, 11.4, "starting"), (11.4, 11.6, "from"), (11.6, 12.0, "zero")]
+        song = [(11.1, 11.5, "Starting"), (11.5, 11.7, "from"), (11.7, 12.1, "zero")]
+        talk = [(37.0, 37.3, "Wait,"), (37.3, 37.5, "you"), (37.5, 37.8, "start")]
+        self.assertEqual(K.game_share(song, game), 1.0)
+        self.assertEqual(K.game_share(talk, game), 0.0)
+        self.assertEqual(K.game_share(song, []), 0.0)
+
+    def test_side_level(self):
+        sr = 16000
+        t = np.arange(sr * 3) / sr
+        tone = (np.sin(2 * np.pi * 800 * t) * 8000).astype(np.int16)
+        mono = np.stack([tone, tone], 1).tobytes()
+        wide = np.stack([tone, -tone // 2], 1).astype(np.int16).tobytes()
+        run = lambda raw: mock.patch.object(K.subprocess, "run", return_value=mock.Mock(stdout=raw))
+        with run(mono):
+            self.assertLess(K.side_level("x.mp4"), -60)
+        with run(wide):
+            self.assertGreater(K.side_level("x.mp4"), K.SIDE_MIN_DB)
+
+
+class Captions(unittest.TestCase):                         # owner 18. 11.: key words coloured, fillers white
+    def test_key_words(self):
+        for w in ("island!", "inmate", "Kai", "500", "F***", "crazy"):
+            self.assertTrue(K.key_word(w), w)
+        for w in ("the", "and", "so", "like", "um", "you're", "I"):
+            self.assertFalse(K.key_word(w), w)
+
+    def test_coverage(self):
+        spoken = [(1.0, 1.2, "a"), (2.0, 2.2, "b"), (3.0, 3.2, "c"), (4.0, 4.2, K.BUSY)]
+        self.assertAlmostEqual(K.caption_coverage(spoken[:2], spoken, 10.0), 2 / 3)
+        self.assertIsNone(K.caption_coverage([], [], 10.0))
+
+
 class FanEnding(unittest.TestCase):
     def test_deterministic_split(self):
         b = {"outro": "x.mp4", "outro_ab": 0.5}
