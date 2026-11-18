@@ -2536,5 +2536,31 @@
     "created": 1795020201,
     "category": "Grand Theft Auto VI",
     "added": 1795030186
+  },
+  "twitch_ExuberantAgileLorisTakeNRG-zB6_tty31ZyCrll-": {
+    "id": "twitch_ExuberantAgileLorisTakeNRG-zB6_tty31ZyCrll-",
+    "url": "https://www.twitch.tv/quin69/clip/ExuberantAgileLorisTakeNRG-zB6_tty31ZyCrll-",
+    "channel": "quin69",
+    "platform": "twitch",
+    "title": "Missed chance !!!",
+    "views": 534,
+    "created": 1795027109,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932203147",
+    "vod_offset": 28981,
+    "cluster": 1,
+    "added": 1795031101
+  },
+  "twitch_FlirtyFancyMangetoutKeepo-zrWg06dtnCooZ6IW": {
+    "id": "twitch_FlirtyFancyMangetoutKeepo-zrWg06dtnCooZ6IW",
+    "url": "https://www.twitch.tv/ishowspeed/clip/FlirtyFancyMangetoutKeepo-zrWg06dtnCooZ6IW",
+    "channel": "ishowspeed",
+    "platform": "twitch",
+    "title": "speed runs into a fight for the first time",
+    "views": 506,
+    "created": 1795010758,
+    "category": "Grand Theft Auto VI",
+    "cluster": 1,
+    "added": 1795031101
   }
 }
