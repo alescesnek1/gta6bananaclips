@@ -1317,13 +1317,75 @@
     "channel": "ohnepixel",
     "platform": "twitch",
     "title": "Gooner?",
-    "views": 525,
+    "views": 1642,
     "created": 1795004786,
     "category": "Grand Theft Auto VI",
     "video_id": "2932275268",
     "vod_offset": 773,
     "cluster": 1,
-    "added": 1795015116
+    "added": 1795026614,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/ohnepixel/20261118_twitch_TastyGoldenFlamingoHassanChop-43fCNikHeoMOC0Yg/source.mp4",
+    "peak": 14.65,
+    "cut": [
+      5.43,
+      19.47
+    ],
+    "dur": 25.48,
+    "tags": [],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.05,
+      "first-reaction": 0.2,
+      "wow": 0.04,
+      "_loud": 1.2,
+      "_motion": 2.0
+    },
+    "quote": "Alright, if everyone is fine with that, we're going to do that.",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.33,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "primary": "mission",
+    "proven": [],
+    "evidence": {
+      "mission": [
+        "text"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.0,
+    "signals": {
+      "siren": 0.0,
+      "impact": 14.7,
+      "loud": 1.3,
+      "motion": 1.4,
+      "sustained": 0.0,
+      "spike": 1.8,
+      "laugh": 0,
+      "static": 0.9,
+      "letterbox": 0.0,
+      "luma": 66.0,
+      "dark": 0.0
+    }
   },
   "twitch_GlamorousConcernedHerbsFutureMan-J1fdtFf4ZXDMBWLA": {
     "id": "twitch_GlamorousConcernedHerbsFutureMan-J1fdtFf4ZXDMBWLA",
@@ -1345,13 +1407,89 @@
     "channel": "zoil",
     "platform": "twitch",
     "title": "banned",
-    "views": 518,
+    "views": 1490,
     "created": 1795001898,
     "category": "Grand Theft Auto VI",
     "video_id": "2932212372",
     "vod_offset": 2907,
     "cluster": 1,
-    "added": 1795015726
+    "added": 1795023264,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/zoil/20261118_twitch_SillyTangibleStrawberryVoteNay-gI1V8xjNV_DdVAuK/source.mp4",
+    "peak": 24.05,
+    "cut": [
+      15.07,
+      27.23
+    ],
+    "dur": 30.02,
+    "tags": [
+      "wow"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.25,
+      "first-reaction": 0.2,
+      "wow": 0.37,
+      "_loud": 7.2,
+      "_motion": 4.7
+    },
+    "quote": "it. Oh! Crazy. Oh,",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.25,
+      "rage": 0.25,
+      "fail": 0.25,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.6
+    },
+    "primary": "wow",
+    "proven": [
+      "wow"
+    ],
+    "evidence": {
+      "funny": [
+        "loud"
+      ],
+      "rage": [
+        "loud"
+      ],
+      "fail": [
+        "loud"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "loud",
+        "text"
+      ]
+    },
+    "fun": 0.59,
+    "signals": {
+      "siren": 0.0,
+      "impact": 25.7,
+      "loud": 8.8,
+      "motion": 4.6,
+      "sustained": 0.0,
+      "spike": 2.3,
+      "laugh": 0,
+      "static": 0.36,
+      "letterbox": 0.0,
+      "luma": 15.4,
+      "dark": 0.17
+    }
   },
   "kick_clip_01M7QB1PQ1JTDEBN7AFG5XVDKX": {
     "id": "kick_clip_01M7QB1PQ1JTDEBN7AFG5XVDKX",
@@ -1991,5 +2129,412 @@
     "vod_offset": 4450,
     "cluster": 1,
     "added": 1795022400
+  },
+  "twitch_GracefulNimblePeppermintGrammarKing-gwZm5tSIlpdLgCg-": {
+    "id": "twitch_GracefulNimblePeppermintGrammarKing-gwZm5tSIlpdLgCg-",
+    "url": "https://www.twitch.tv/ohnepixel/clip/GracefulNimblePeppermintGrammarKing-gwZm5tSIlpdLgCg-",
+    "channel": "ohnepixel",
+    "platform": "twitch",
+    "title": "bang",
+    "views": 801,
+    "created": 1795021501,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932275268",
+    "vod_offset": 17517,
+    "cluster": 1,
+    "added": 1795023264
+  },
+  "twitch_SpikyAlertCookieDuDudu-o9wrV5cBrwlNKB_5": {
+    "id": "twitch_SpikyAlertCookieDuDudu-o9wrV5cBrwlNKB_5",
+    "url": "https://www.twitch.tv/kaicenat/clip/SpikyAlertCookieDuDudu-o9wrV5cBrwlNKB_5",
+    "channel": "kaicenat",
+    "platform": "twitch",
+    "title": "kai plays gta 6 first",
+    "views": 1638,
+    "created": 1794996389,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2858049515",
+    "vod_offset": 2520,
+    "added": 1795023629
+  },
+  "twitch_AgreeableHyperCockroachCeilingCat-_dmoVo8X--AU1Sq7": {
+    "id": "twitch_AgreeableHyperCockroachCeilingCat-_dmoVo8X--AU1Sq7",
+    "url": "https://www.twitch.tv/kaicenat/clip/AgreeableHyperCockroachCeilingCat-_dmoVo8X--AU1Sq7",
+    "channel": "kaicenat",
+    "platform": "twitch",
+    "title": "\"ahhhhfuhhh\"",
+    "views": 722,
+    "created": 1795008718,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932305259",
+    "vod_offset": 1870,
+    "cluster": 1,
+    "added": 1795023924
+  },
+  "twitch_TubularAwkwardFrogPanicBasket-16J-tuUOS6Kxw8bS": {
+    "id": "twitch_TubularAwkwardFrogPanicBasket-16J-tuUOS6Kxw8bS",
+    "url": "https://www.twitch.tv/kaicenat/clip/TubularAwkwardFrogPanicBasket-16J-tuUOS6Kxw8bS",
+    "channel": "kaicenat",
+    "platform": "twitch",
+    "title": "wtf is gta bro",
+    "views": 1438,
+    "created": 1795004462,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2858049515",
+    "vod_offset": 2286,
+    "cluster": 1,
+    "added": 1795023924
+  },
+  "twitch_CreativeHeadstrongAniseFunRun-_f88pOqgLQhawQRA": {
+    "id": "twitch_CreativeHeadstrongAniseFunRun-_f88pOqgLQhawQRA",
+    "url": "https://www.twitch.tv/ishowspeed/clip/CreativeHeadstrongAniseFunRun-_f88pOqgLQhawQRA",
+    "channel": "ishowspeed",
+    "platform": "twitch",
+    "title": "HAHAHAHH",
+    "views": 532,
+    "created": 1795011761,
+    "category": "Grand Theft Auto VI",
+    "cluster": 1,
+    "added": 1795024845
+  },
+  "twitch_WiseBusyStapleNononoCat--XYNEyYmRlr4KoEY": {
+    "id": "twitch_WiseBusyStapleNononoCat--XYNEyYmRlr4KoEY",
+    "url": "https://www.twitch.tv/ohnepixel/clip/WiseBusyStapleNononoCat--XYNEyYmRlr4KoEY",
+    "channel": "ohnepixel",
+    "platform": "twitch",
+    "title": "Ohnepixel agrees with Hasan.",
+    "views": 1229,
+    "created": 1795021637,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932275268",
+    "vod_offset": 17643,
+    "cluster": 4,
+    "added": 1795025105
+  },
+  "twitch_RoundOutstandingFungusStoneLightning-5YP8a2fVmgEKQEUk": {
+    "id": "twitch_RoundOutstandingFungusStoneLightning-5YP8a2fVmgEKQEUk",
+    "url": "https://www.twitch.tv/xqc/clip/RoundOutstandingFungusStoneLightning-5YP8a2fVmgEKQEUk",
+    "channel": "xqc",
+    "platform": "twitch",
+    "title": "GYAT! Mandy",
+    "views": 763,
+    "created": 1795009537,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932113307",
+    "vod_offset": 23886,
+    "cluster": 1,
+    "added": 1795025105
+  },
+  "twitch_TentativeFriendlySandpiperNotLikeThis-bnrx7Wfyqgfs7ZJg": {
+    "id": "twitch_TentativeFriendlySandpiperNotLikeThis-bnrx7Wfyqgfs7ZJg",
+    "url": "https://www.twitch.tv/kaicenat/clip/TentativeFriendlySandpiperNotLikeThis-bnrx7Wfyqgfs7ZJg",
+    "channel": "kaicenat",
+    "platform": "twitch",
+    "title": "gta 6 reaction",
+    "views": 673,
+    "created": 1794997747,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2858049515",
+    "vod_offset": 2390,
+    "cluster": 2,
+    "added": 1795026155
+  },
+  "twitch_TenuousFunWaspBigBrother-pWNf2GWhFy6gEUad": {
+    "id": "twitch_TenuousFunWaspBigBrother-pWNf2GWhFy6gEUad",
+    "url": "https://www.twitch.tv/kaicenat/clip/TenuousFunWaspBigBrother-pWNf2GWhFy6gEUad",
+    "channel": "kaicenat",
+    "platform": "twitch",
+    "title": "kai bank",
+    "views": 608,
+    "created": 1795008638,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932305259",
+    "vod_offset": 1836,
+    "cluster": 1,
+    "added": 1795026155
+  },
+  "twitch_BlueIcySnoodSaltBae-qKp3QE1R_FoncNN1": {
+    "id": "twitch_BlueIcySnoodSaltBae-qKp3QE1R_FoncNN1",
+    "url": "https://www.twitch.tv/ohnepixel/clip/BlueIcySnoodSaltBae-qKp3QE1R_FoncNN1",
+    "channel": "ohnepixel",
+    "platform": "twitch",
+    "title": "WHAT?!",
+    "views": 1162,
+    "created": 1795025266,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932275268",
+    "vod_offset": 21248,
+    "cluster": 2,
+    "added": 1795026614
+  },
+  "twitch_PeacefulGlutenFreeVultureShazBotstix-KgHnVnwwgZOeO6Xs": {
+    "id": "twitch_PeacefulGlutenFreeVultureShazBotstix-KgHnVnwwgZOeO6Xs",
+    "url": "https://www.twitch.tv/ohnepixel/clip/PeacefulGlutenFreeVultureShazBotstix-KgHnVnwwgZOeO6Xs",
+    "channel": "ohnepixel",
+    "platform": "twitch",
+    "title": "ohnePixel tries out the strip club's private dance in GTA 6",
+    "views": 1960,
+    "created": 1795025649,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932275268",
+    "vod_offset": 21273,
+    "cluster": 3,
+    "added": 1795027233,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/ohnepixel/20261118_twitch_PeacefulGlutenFreeVultureShazBotstix-KgHnVnwwgZOeO6Xs/source.mp4",
+    "peak": 32.75,
+    "cut": [
+      25.17,
+      37.4
+    ],
+    "dur": 60.01,
+    "tags": [
+      "first-reaction",
+      "wow",
+      "rage",
+      "glitch"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.3,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.7,
+      "first-reaction": 0.79,
+      "wow": 0.71,
+      "_loud": 6.2,
+      "_motion": 5.2
+    },
+    "quote": "I need to hold him.",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.25,
+      "rage": 0.25,
+      "fail": 0.25,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.95,
+      "wow": 0.25
+    },
+    "primary": "first-reaction",
+    "proven": [
+      "first-reaction"
+    ],
+    "evidence": {
+      "funny": [
+        "loud"
+      ],
+      "rage": [
+        "loud"
+      ],
+      "fail": [
+        "loud"
+      ],
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ],
+      "wow": [
+        "loud"
+      ]
+    },
+    "fun": 0.0,
+    "signals": {
+      "siren": 0.0,
+      "impact": 28.3,
+      "loud": 11.0,
+      "motion": 2.5,
+      "sustained": 0.0,
+      "spike": 3.1,
+      "laugh": 0,
+      "static": 0.38,
+      "letterbox": 0.0,
+      "luma": 12.5,
+      "dark": 0.58
+    }
+  },
+  "twitch_AmorphousStrangeLyrebirdFloof-gb8v0UybXlp5mRv9": {
+    "id": "twitch_AmorphousStrangeLyrebirdFloof-gb8v0UybXlp5mRv9",
+    "url": "https://www.twitch.tv/typicalgamer/clip/AmorphousStrangeLyrebirdFloof-gb8v0UybXlp5mRv9",
+    "channel": "typicalgamer",
+    "platform": "twitch",
+    "title": "Typical gamer gets suprised!",
+    "views": 504,
+    "created": 1795001619,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2930583379",
+    "vod_offset": 156199,
+    "cluster": 1,
+    "added": 1795027427
+  },
+  "twitch_EsteemedAlertBoarTTours-qTa7AtR3giDjQF5-": {
+    "id": "twitch_EsteemedAlertBoarTTours-qTa7AtR3giDjQF5-",
+    "url": "https://www.twitch.tv/ohnepixel/clip/EsteemedAlertBoarTTours-qTa7AtR3giDjQF5-",
+    "channel": "ohnepixel",
+    "platform": "twitch",
+    "title": "neuron activation",
+    "views": 1022,
+    "created": 1795017190,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932275268",
+    "vod_offset": 12980,
+    "cluster": 1,
+    "added": 1795027427
+  },
+  "twitch_AbstruseGrossMetalMVGame-LfXvAGlp6PoHBBwk": {
+    "id": "twitch_AbstruseGrossMetalMVGame-LfXvAGlp6PoHBBwk",
+    "url": "https://www.twitch.tv/lacy/clip/AbstruseGrossMetalMVGame-LfXvAGlp6PoHBBwk",
+    "channel": "lacy",
+    "platform": "twitch",
+    "title": "cars have security systems?",
+    "views": 702,
+    "created": 1795004593,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932194507",
+    "vod_offset": 7839,
+    "cluster": 1,
+    "added": 1795027685
+  },
+  "twitch_DepressedJollyBatteryKlappa-zR_WXGaFqKX9RKtk": {
+    "id": "twitch_DepressedJollyBatteryKlappa-zR_WXGaFqKX9RKtk",
+    "url": "https://www.twitch.tv/lacy/clip/DepressedJollyBatteryKlappa-zR_WXGaFqKX9RKtk",
+    "channel": "lacy",
+    "platform": "twitch",
+    "title": "w bump",
+    "views": 983,
+    "created": 1795000970,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932194507",
+    "vod_offset": 4273,
+    "cluster": 1,
+    "added": 1795027685
+  },
+  "twitch_AdventurousHonestTapirKeyboardCat-9Eii4tkWb1VjxGqf": {
+    "id": "twitch_AdventurousHonestTapirKeyboardCat-9Eii4tkWb1VjxGqf",
+    "url": "https://www.twitch.tv/oozie/clip/AdventurousHonestTapirKeyboardCat-9Eii4tkWb1VjxGqf",
+    "channel": "oozie",
+    "platform": "twitch",
+    "title": "absolute maniac",
+    "views": 506,
+    "created": 1795002438,
+    "category": "Grand Theft Auto VI",
+    "cluster": 1,
+    "added": 1795028039
+  },
+  "twitch_SavageEphemeralSwanPMSTwin-CdV0_Uj1h7SAGkLW": {
+    "id": "twitch_SavageEphemeralSwanPMSTwin-CdV0_Uj1h7SAGkLW",
+    "url": "https://www.twitch.tv/king_wolfe_/clip/SavageEphemeralSwanPMSTwin-CdV0_Uj1h7SAGkLW",
+    "channel": "king_wolfe_",
+    "platform": "twitch",
+    "title": "Forced Taught Empathy…",
+    "views": 504,
+    "created": 1795017396,
+    "category": "Grand Theft Auto VI",
+    "cluster": 1,
+    "added": 1795028039
+  },
+  "twitch_AwkwardColdbloodedBunnyKappaWealth-jwq_HEi8HgaRlves": {
+    "id": "twitch_AwkwardColdbloodedBunnyKappaWealth-jwq_HEi8HgaRlves",
+    "url": "https://www.twitch.tv/ohnepixel/clip/AwkwardColdbloodedBunnyKappaWealth-jwq_HEi8HgaRlves",
+    "channel": "ohnepixel",
+    "platform": "twitch",
+    "title": "horny ohne!",
+    "views": 1098,
+    "created": 1795025373,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932275268",
+    "vod_offset": 21410,
+    "cluster": 2,
+    "added": 1795028713,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/ohnepixel/20261118_twitch_AwkwardColdbloodedBunnyKappaWealth-jwq_HEi8HgaRlves/source.mp4",
+    "peak": 23.85,
+    "cut": [
+      13.37,
+      26.87
+    ],
+    "dur": 30.02,
+    "tags": [],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 0.2,
+      "wow": 0.0,
+      "_loud": 3.5,
+      "_motion": 3.7
+    },
+    "quote": "Wait, 300! Uhhh...",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "proven": [],
+    "evidence": {
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.0,
+    "signals": {
+      "siren": 0.0,
+      "impact": 15.0,
+      "loud": 2.1,
+      "motion": 2.4,
+      "sustained": 0.0,
+      "spike": 2.6,
+      "laugh": 0,
+      "static": 0.48,
+      "letterbox": 0.0,
+      "luma": 15.5,
+      "dark": 0.0
+    }
+  },
+  "twitch_ThoughtfulGoldenTurtleVoteNay-aqQZ9CeCoLkGoqU3": {
+    "id": "twitch_ThoughtfulGoldenTurtleVoteNay-aqQZ9CeCoLkGoqU3",
+    "url": "https://www.twitch.tv/theburntpeanut/clip/ThoughtfulGoldenTurtleVoteNay-aqQZ9CeCoLkGoqU3",
+    "channel": "theburntpeanut",
+    "platform": "twitch",
+    "title": "Bungulator Moves to NZ",
+    "views": 505,
+    "created": 1795012743,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932226282",
+    "vod_offset": 12896,
+    "cluster": 1,
+    "added": 1795028713
+  },
+  "twitch_DullCalmGullUWot-yyTc1tkQ0S4Gv-5E": {
+    "id": "twitch_DullCalmGullUWot-yyTc1tkQ0S4Gv-5E",
+    "url": "https://www.twitch.tv/lacy/clip/DullCalmGullUWot-yyTc1tkQ0S4Gv-5E",
+    "channel": "lacy",
+    "platform": "twitch",
+    "title": "OMG",
+    "views": 776,
+    "created": 1795020201,
+    "category": "Grand Theft Auto VI",
+    "added": 1795030186
   }
 }
