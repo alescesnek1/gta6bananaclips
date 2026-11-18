@@ -2924,7 +2924,10 @@ def render(clip, src=None, clean=False):
     whip = HERE / "assets" / "sfx" / "whip.wav"
     riser, hit = HERE / "assets" / "sfx" / "riser.wav", HERE / "assets" / "sfx" / "hit.wav"
     cfg = load_json(SOURCES, {})
-    nocam_ok = (clip.get("views") or 0) >= cfg.get("nocam_min_views", 5000) or (clip.get("cluster") or 1) >= 2
+    # YouTube: video views are not clip popularity, and a window without a facecam is someone's
+    # commentary / trailer re-upload (18. 11.: three such picks) -> YouTube needs the streamer's face
+    nocam_ok = clip.get("platform") != "youtube" and (
+        (clip.get("views") or 0) >= cfg.get("nocam_min_views", 5000) or (clip.get("cluster") or 1) >= 2)
 
     # Look passes: first the launch look (brands with any LAUNCH_FLAGS on), then - only for the
     # brands whose short failed QA - the proven old look; a short failing even that is dropped.
