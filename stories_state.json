@@ -75,7 +75,8 @@
     },
     "pool": {
       "bananas_07.jpg": "2026-11-18"
-    }
+    },
+    "long": {}
   },
   "fanpage": {
     "reposts": {
@@ -139,6 +140,7 @@
     },
     "pool": {
       "fanpage_07.jpg": "2026-11-18"
-    }
+    },
+    "long": {}
   }
 }
