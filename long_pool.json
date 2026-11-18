@@ -2081,5 +2081,18 @@
     "vod_offset": 17517,
     "cluster": 1,
     "added": 1795023264
+  },
+  "twitch_SpikyAlertCookieDuDudu-o9wrV5cBrwlNKB_5": {
+    "id": "twitch_SpikyAlertCookieDuDudu-o9wrV5cBrwlNKB_5",
+    "url": "https://www.twitch.tv/kaicenat/clip/SpikyAlertCookieDuDudu-o9wrV5cBrwlNKB_5",
+    "channel": "kaicenat",
+    "platform": "twitch",
+    "title": "kai plays gta 6 first",
+    "views": 1638,
+    "created": 1794996389,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2858049515",
+    "vod_offset": 2520,
+    "added": 1795023629
   }
 }
