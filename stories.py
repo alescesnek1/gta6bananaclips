@@ -523,6 +523,8 @@ def free_band(img, boxes, band_h, x0=0, x1=W):
 
 
 def wrap(text, font, maxw):
+    from cenzura import cenzura                       # 18. 11.: swears / sexual words starred
+    text = cenzura(text)
     lines, cur = [], ""
     for word in text.split():
         t = f"{cur} {word}".strip()

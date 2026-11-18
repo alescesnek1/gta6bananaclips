@@ -832,7 +832,7 @@ def title_action(m):
 # concrete event; our 3-phrase pool gave "... Sees Vice City In GTA 6!" three times on launch day. Used
 # only when it reads as a plain English sentence (no junk like "wtf" / "xaxaxa", no slurs, no spoilers).
 VIEWER_BAD = re.compile(r"\*|leak|spoil|ending|final mission|dies\b|death|betray|nigg|fag|retard|\bkys\b|"
-                        r"f+u+c+k|shit|bitch|cunt|whore|\bsex|nude|porn|\bslur|\bdrop\b|giveaway|sub\b|clip it",
+                        r"cunt|whore|\bsex|nude|porn|\bslur|\bdrop\b|giveaway|sub\b|clip it",   # plain swears: starred
                         re.I)
 VIEWER_GLUE = re.compile(r"\b(the|a|an|to|in|for|of|on|at|with|gets|is|was|first|after|when|his|her|their)\b", re.I)
 
@@ -962,7 +962,10 @@ def caption_exp(m, service):
 def caption(m, service):
     """Post text: never an @ anywhere (mentions tag strangers / break X's automation rules); X / Threads
     within X's weighted limit."""
-    text = _caption(m, service).replace("@", "")
+    from cenzura import cenzura, tag_ok              # 18. 11.: swears / sexual words starred ("str** club")
+    text = " ".join(w for w in _caption(m, service).replace("@", "").split(" ")
+                    if not w.startswith("#") or tag_ok(w))           # a starred hashtag finds nothing: dropped
+    text = cenzura(text)
     if service == "tiktok":                          # 18. 11.: 0 views on every TikTok - no outbound links there
         text = re.sub(r"(?:https?://)?(?:www\.)?(twitch\.tv|kick\.com|youtube\.com)/([\w.-]+)",
                       lambda mm: f"{mm.group(2)} on {'Twitch' if 'twitch' in mm.group(1) else 'Kick' if 'kick' in mm.group(1) else 'YouTube'}",
@@ -1019,6 +1022,8 @@ def youtube_title(m):
     tail = f" | {display_name(m)} GTA VI"            # keywords like the big clip channels ("... | xQc GTA VI")
     if len(t) + len(tail) + len(" #shorts") <= 100:
         t += tail
+    from cenzura import cenzura
+    t = cenzura(t)
     return t[: 100 - len(" #shorts")] + " #shorts"
 
 def in_day(rec, day):

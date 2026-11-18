@@ -44,6 +44,19 @@ def load_env():
             if v:
                 os.environ.setdefault(k.strip(), v)
 
+def cenzura_meta(m):
+    """18. 11.: swears / sexual words starred in everything pasted into YouTube (title, description, thumbnail
+    text and prompt); a tag with such a word is dropped (a starred tag finds nothing)."""
+    from cenzura import cenzura, tag_ok
+    for k in ("title", "description", "nahled_prompt"):
+        if isinstance(m.get(k), str):
+            m[k] = cenzura(m[k])
+    if isinstance(m.get("nahled_texts"), list):
+        m["nahled_texts"] = [cenzura(x) if isinstance(x, str) else x for x in m["nahled_texts"]]
+    if isinstance(m.get("tags"), list):
+        m["tags"] = [t for t in m["tags"] if not isinstance(t, str) or tag_ok(t)]
+    return m
+
 def popis(m):
     return f"{m['title']}\n\n{m['description']}\n\nTAGY:\n{', '.join(m.get('tags', []))}\n"
 
@@ -215,7 +228,7 @@ def main():
     keys = [os.environ.get(k) for k in ("MAIL_FROM", "MAIL_APP_PASSWORD", "MAIL_TO")]
     status = 0
     for mp in a.meta:
-        m = json.loads(Path(mp).read_text(encoding="utf-8"))
+        m = cenzura_meta(json.loads(Path(mp).read_text(encoding="utf-8")))
         if mp.endswith(".failed.json"):                   # QA stopped the video: a short note, no link
             msg = EmailMessage(policy=SMTP)
             kanal = "gta6bananaclips" if m.get("znacka") == "bananas" else "gta6fanpageclip"
