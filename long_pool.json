@@ -2439,5 +2439,91 @@
     "category": "Grand Theft Auto VI",
     "cluster": 1,
     "added": 1795028039
+  },
+  "twitch_AwkwardColdbloodedBunnyKappaWealth-jwq_HEi8HgaRlves": {
+    "id": "twitch_AwkwardColdbloodedBunnyKappaWealth-jwq_HEi8HgaRlves",
+    "url": "https://www.twitch.tv/ohnepixel/clip/AwkwardColdbloodedBunnyKappaWealth-jwq_HEi8HgaRlves",
+    "channel": "ohnepixel",
+    "platform": "twitch",
+    "title": "horny ohne!",
+    "views": 1098,
+    "created": 1795025373,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932275268",
+    "vod_offset": 21410,
+    "cluster": 2,
+    "added": 1795028713,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/ohnepixel/20261118_twitch_AwkwardColdbloodedBunnyKappaWealth-jwq_HEi8HgaRlves/source.mp4",
+    "peak": 23.85,
+    "cut": [
+      13.37,
+      26.87
+    ],
+    "dur": 30.02,
+    "tags": [],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 0.2,
+      "wow": 0.0,
+      "_loud": 3.5,
+      "_motion": 3.7
+    },
+    "quote": "Wait, 300! Uhhh...",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "proven": [],
+    "evidence": {
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.0,
+    "signals": {
+      "siren": 0.0,
+      "impact": 15.0,
+      "loud": 2.1,
+      "motion": 2.4,
+      "sustained": 0.0,
+      "spike": 2.6,
+      "laugh": 0,
+      "static": 0.48,
+      "letterbox": 0.0,
+      "luma": 15.5,
+      "dark": 0.0
+    }
+  },
+  "twitch_ThoughtfulGoldenTurtleVoteNay-aqQZ9CeCoLkGoqU3": {
+    "id": "twitch_ThoughtfulGoldenTurtleVoteNay-aqQZ9CeCoLkGoqU3",
+    "url": "https://www.twitch.tv/theburntpeanut/clip/ThoughtfulGoldenTurtleVoteNay-aqQZ9CeCoLkGoqU3",
+    "channel": "theburntpeanut",
+    "platform": "twitch",
+    "title": "Bungulator Moves to NZ",
+    "views": 505,
+    "created": 1795012743,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932226282",
+    "vod_offset": 12896,
+    "cluster": 1,
+    "added": 1795028713
   }
 }
