@@ -5537,7 +5537,11 @@ def cmd_live(a):
                 continue
             try:
                 # threshold from sources.json live_spike_z (read live, so it can be tuned without a restart)
-                hit = meter.spike(lg, load_json(SOURCES, {}).get("live_spike_z", a.z), a.cool)
+                # (live_spike_z_by: a lower bar per streamer - owner 18. 11.: IShowSpeed's outbursts / barking are
+                # always extra viral)
+                src_l = load_json(SOURCES, {})
+                hit = meter.spike(lg, (src_l.get("live_spike_z_by") or {}).get(lg.lower(), src_l.get("live_spike_z", a.z)),
+                                  a.cool)
             except Exception as e:
                 log(f"live: spike check {lg} failed ({str(e)[-80:]})")
                 continue

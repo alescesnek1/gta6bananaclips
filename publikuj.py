@@ -543,7 +543,7 @@ def candidates(znacka=None):
             continue                                 # the fast path only carries live chat clips
         if is_live(m) and not load_json(HERE / "sources.json", {}).get("live_publish", True):
             continue                                 # live clips paused (18. 11.: launch-day cutscenes / game dialogue)
-        if is_live(m) and (m.get("spike_z") or 0) < load_json(HERE / "sources.json", {}).get("live_spike_z", 0):
+        if is_live(m) and (m.get("spike_z") or 0) < live_z_min(m, load_json(HERE / "sources.json", {})):
             continue                                 # chat explosion below today's threshold (tuned in sources.json)
         if (m.get("platform") == "youtube" and (PLAN_DAY or pub_day()) >= date.fromisoformat(
                 (load_json(HERE / "sources.json", {}).get("youtube_prelaunch") or {}).get("until", "2026-11-19"))
@@ -1191,6 +1191,19 @@ def upgrade_note(blocked, recs, now, src):
 # the transcript, the viewer's clip title, sound and picture motion) that beats plain "looking at GTA 6"
 # (first-reaction). Exceptions only by numbers (exceptional(): 4x hot_score, star 2x, live z >= live_z;
 # or a cluster of max(10, viewers/5000) viewer clips) and the render's own viral non-gameplay cut (person).
+def live_z_min(m, src):
+    """The chat-explosion bar of this clip's streamer (live_spike_z_by, else live_spike_z)."""
+    return (src.get("live_spike_z_by") or {}).get(str(m.get("channel") or "").lower(), src.get("live_spike_z", 0))
+
+def outburst(m, src):
+    """Owner 18. 11.: IShowSpeed's outbursts (screaming, barking, jumping) are always extra viral: a streamer in
+    outburst_streamers with a loud payoff (moment_tags _loud: 95th pct of loudness / median) or a reaction tag."""
+    if str(m.get("channel") or "").lower() not in {x.lower() for x in src.get("outburst_streamers", [])}:
+        return False
+    sc = m.get("tag_scores") or {}
+    return ((sc.get("_loud") or 0) >= src.get("outburst_loud", 4.0)
+            or max((sc.get(t) or 0) for t in ("rage", "funny", "wow")) >= 0.3)
+
 ACTION_TAGS = ("crash", "chase", "glitch", "funny", "rage")
 ACTION_MIN = 0.5
 
@@ -1198,7 +1211,7 @@ def action_gate(m, src):
     """'' = may go out, else the reason it may not."""
     if m.get("platform") in ("top3", "exp") or m.get("layout") == "person":
         return ""
-    if exceptional(m, src) or (m.get("cluster") or 1) >= max(10, (m.get("viewers") or 0) / 5000):
+    if exceptional(m, src) or (m.get("cluster") or 1) >= max(10, (m.get("viewers") or 0) / 5000) or outburst(m, src):
         return ""
     sc = m.get("tag_scores") or {}
     act = max((sc.get(t) or 0) for t in ACTION_TAGS)
