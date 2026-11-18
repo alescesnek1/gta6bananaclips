@@ -902,5 +902,19 @@
     "vod_offset": 7362,
     "cluster": 3,
     "added": 1795008508
+  },
+  "twitch_PiercingSlipperyTortoiseDuDudu-ShespqH5CNlosqhC": {
+    "id": "twitch_PiercingSlipperyTortoiseDuDudu-ShespqH5CNlosqhC",
+    "url": "https://www.twitch.tv/xqc/clip/PiercingSlipperyTortoiseDuDudu-ShespqH5CNlosqhC",
+    "channel": "xqc",
+    "platform": "twitch",
+    "title": "XQC First Ever Gameplay Of GTA 6!!!",
+    "views": 503,
+    "created": 1795000392,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932113307",
+    "vod_offset": 16908,
+    "cluster": 1,
+    "added": 1795009105
   }
 }
