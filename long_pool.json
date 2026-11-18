@@ -2359,5 +2359,33 @@
       "luma": 12.5,
       "dark": 0.58
     }
+  },
+  "twitch_AmorphousStrangeLyrebirdFloof-gb8v0UybXlp5mRv9": {
+    "id": "twitch_AmorphousStrangeLyrebirdFloof-gb8v0UybXlp5mRv9",
+    "url": "https://www.twitch.tv/typicalgamer/clip/AmorphousStrangeLyrebirdFloof-gb8v0UybXlp5mRv9",
+    "channel": "typicalgamer",
+    "platform": "twitch",
+    "title": "Typical gamer gets suprised!",
+    "views": 504,
+    "created": 1795001619,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2930583379",
+    "vod_offset": 156199,
+    "cluster": 1,
+    "added": 1795027427
+  },
+  "twitch_EsteemedAlertBoarTTours-qTa7AtR3giDjQF5-": {
+    "id": "twitch_EsteemedAlertBoarTTours-qTa7AtR3giDjQF5-",
+    "url": "https://www.twitch.tv/ohnepixel/clip/EsteemedAlertBoarTTours-qTa7AtR3giDjQF5-",
+    "channel": "ohnepixel",
+    "platform": "twitch",
+    "title": "neuron activation",
+    "views": 1022,
+    "created": 1795017190,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932275268",
+    "vod_offset": 12980,
+    "cluster": 1,
+    "added": 1795027427
   }
 }
