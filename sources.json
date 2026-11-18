@@ -238,5 +238,9 @@
     "ishowspeed"
   ],
   "outburst_loud": 5.0,
-  "_outburst": "Majitel 18. 11.: IShowSpeed ma stejny prah vybuchu chatu jako ostatni (z 40, nezverejnovat vse). Jeho vykyv / stekani (hlasita pointa _loud >= 5) jen projde branou akce."
+  "_outburst": "Majitel 18. 11.: IShowSpeed ma stejny prah vybuchu chatu jako ostatni (z 40, nezverejnovat vse). Jeho vykyv / stekani (hlasita pointa _loud >= 5) jen projde branou akce.",
+  "youtube_primary": [
+    "ishowspeed"
+  ],
+  "youtube_primary_x": 8
 }

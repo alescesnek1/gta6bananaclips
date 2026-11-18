@@ -419,7 +419,13 @@ def pick_episode(a, serie, cands, z, verify=True, vis_cache=None, reserve_ids=()
         groups = mission_groups(cands)
         cands = [r for r in cands if groups and r["id"] in groups[0]]
     reserve_ids = set(reserve_ids)
-    cands = sorted(cands, key=lambda r: (r["id"] not in reserve_ids, -(r.get("views") or 0)))[: a.max_kandidatu]
+    # streamers whose main audience is on YouTube (IShowSpeed: 294k there, 33k on the Twitch simulcast, 18. 11.)
+    # have Twitch clip counts far below their reach: ranked with views x youtube_primary_x so they get looked at
+    src = K.load_json(K.SOURCES, {})
+    yp = {x.lower() for x in src.get("youtube_primary", [])}
+    boost = lambda r: (r.get("views") or 0) * (src.get("youtube_primary_x", 8)
+                                              if r.get("platform") == "twitch" and str(r.get("channel")).lower() in yp else 1)
+    cands = sorted(cands, key=lambda r: (r["id"] not in reserve_ids, -boost(r)))[: a.max_kandidatu]
     good, why = [], {}
     for r in cands:
         try:
