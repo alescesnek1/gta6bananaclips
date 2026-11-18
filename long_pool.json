@@ -1431,11 +1431,91 @@
     "channel": "ishowspeed",
     "platform": "twitch",
     "title": "here",
-    "views": 510,
+    "views": 697,
     "created": 1795008697,
     "category": "Grand Theft Auto VI",
     "cluster": 1,
-    "added": 1795016663
+    "added": 1795018767,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/ishowspeed/20261118_twitch_PeppyWittyJaguarItsBoshyTime-Y7W5ETNtNFcXOjYn/source.mp4",
+    "peak": 51.85,
+    "cut": [
+      39.7,
+      54.87
+    ],
+    "dur": 60.01,
+    "tags": [
+      "first-reaction",
+      "wow"
+    ],
+    "tag_scores": {
+      "funny": 0.16,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 1.0,
+      "wow": 0.5,
+      "_loud": 2.0,
+      "_motion": 8.8
+    },
+    "quote": "6 let's go gta 6 where to enable screen narration screen narration off",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.95,
+      "wow": 0.35
+    },
+    "primary": "first-reaction",
+    "proven": [
+      "first-reaction"
+    ],
+    "evidence": {
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion-spike"
+      ],
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.39,
+    "signals": {
+      "siren": 0.0,
+      "impact": 21.0,
+      "loud": 3.2,
+      "motion": 11.1,
+      "sustained": 0.3,
+      "spike": 23.7,
+      "laugh": 0,
+      "static": 0.02,
+      "letterbox": 0.0,
+      "luma": 39.9,
+      "dark": 0.2
+    }
   },
   "twitch_CallousInspiringRuffSuperVinlin-ZORXxsZrAvTCjx7k": {
     "id": "twitch_CallousInspiringRuffSuperVinlin-ZORXxsZrAvTCjx7k",
@@ -1506,5 +1586,30 @@
     "vod_offset": 1532,
     "cluster": 1,
     "added": 1795018400
+  },
+  "kick_clip_01M7QFDDYEWM7WHDG2PEYQXZNT": {
+    "id": "kick_clip_01M7QFDDYEWM7WHDG2PEYQXZNT",
+    "url": "https://kick.com/n3on/clips/clip_01M7QFDDYEWM7WHDG2PEYQXZNT",
+    "channel": "n3on",
+    "platform": "kick",
+    "title": "What is bro doing",
+    "views": 2116,
+    "created": 1795010538,
+    "category": "Grand Theft Auto VI (GTA)",
+    "added": 1795019021
+  },
+  "twitch_ModernBigWolfResidentSleeper-zUnNje_xisYIyfTG": {
+    "id": "twitch_ModernBigWolfResidentSleeper-zUnNje_xisYIyfTG",
+    "url": "https://www.twitch.tv/quin69/clip/ModernBigWolfResidentSleeper-zUnNje_xisYIyfTG",
+    "channel": "quin69",
+    "platform": "twitch",
+    "title": "father of 4 btw",
+    "views": 515,
+    "created": 1795015930,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932203147",
+    "vod_offset": 17852,
+    "cluster": 1,
+    "added": 1795019021
   }
 }
