@@ -1,0 +1,113 @@
+{
+  "cas": "2026-11-18T12:09:58+01:00",
+  "chyby": [],
+  "zdravi": {
+    "workflows": {
+      "denne-klipy": {
+        "success": 31,
+        "failure": 2,
+        "cancelled": 4,
+        "bezi": 1,
+        "jine": 0
+      },
+      "live-klipy": {
+        "success": 0,
+        "failure": 0,
+        "cancelled": 31,
+        "bezi": 2,
+        "jine": 0
+      },
+      "long-form": {
+        "success": 1,
+        "failure": 0,
+        "cancelled": 0,
+        "bezi": 0,
+        "jine": 0
+      }
+    },
+    "posledni_chyba": {
+      "workflow": "denne-klipy",
+      "cas": "2026-11-18T10:43:32+00:00",
+      "krok": "save state",
+      "log": [
+        "hint: Disable this message with \"git config set advice.mergeConflict false\"",
+        "Could not apply 0adb090... # stav: denni beh 2026-11-18",
+        "Auto-merging state.json",
+        "CONFLICT (content): Merge conflict in state.json",
+        "error: could not apply 0adb090... stav: denni beh 2026-11-18",
+        "hint: Resolve all conflicts manually, mark them as resolved with",
+        "hint: \"git add/rm <conflicted_files>\", then run \"git rebase --continue\".",
+        "hint: You can instead skip this commit: run \"git rebase --skip\".",
+        "hint: To abort and get back to the state before \"git rebase\", run \"git rebase --abort\".",
+        "hint: Disable this message with \"git config set advice.mergeConflict false\"",
+        "Could not apply 0adb090... # stav: denni beh 2026-11-18",
+        "##[error]stav se nepodarilo pushnout (6 pokusu)"
+      ]
+    },
+    "denne_posledni_uspech": "2026-11-18T11:08:26+00:00",
+    "denne_uspech_pred_min": 2,
+    "live_bezi": true,
+    "live_konec_pred_min": 4
+  },
+  "publikace": {
+    "okno": "18.11. 12:00 – 19.11. 12:00",
+    "den": "2026-11-18",
+    "znacky": {
+      "bananas": {
+        "postu": 0,
+        "navic": 0,
+        "minimum": 8,
+        "maximum": 10,
+        "hot": 0,
+        "star": 0,
+        "live": 0,
+        "drafty": 0,
+        "posledni": "2026-11-15T17:00:00+01:00",
+        "dalsi": null
+      },
+      "fanpage": {
+        "postu": 0,
+        "navic": 0,
+        "minimum": 8,
+        "maximum": 10,
+        "hot": 0,
+        "star": 0,
+        "live": 0,
+        "drafty": 0,
+        "posledni": null,
+        "dalsi": null
+      }
+    }
+  },
+  "vykon": {
+    "zmereno": 0,
+    "top5": [],
+    "prumer": {},
+    "nejnovejsi": [],
+    "chybi_klice": 0,
+    "chyby": [],
+    "postu_celkem": 0,
+    "nenalezeno": 0
+  },
+  "netlify": {
+    "gb_mesic": 1.2,
+    "gb_soft": 85,
+    "gb_hard": 100,
+    "gb_rozpocet": 100,
+    "deploye_24h": 5
+  },
+  "alerty": [
+    {
+      "klic": "selhani:denne-klipy",
+      "text": "denne-klipy: 2× selhal za 3 h"
+    }
+  ],
+  "denni_odeslano": null,
+  "alerty_stav": {
+    "selhani:denne-klipy": {
+      "od": "2026-11-18T12:09:58.340043+01:00",
+      "poslano": "2026-11-18T12:09:58+01:00"
+    }
+  },
+  "podpis": "selhani:denne-klipy"
+}
