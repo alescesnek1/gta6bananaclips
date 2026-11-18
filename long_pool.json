@@ -2569,13 +2569,13 @@
     "channel": "chiblee",
     "platform": "twitch",
     "title": "longest wheelie of his life",
-    "views": 507,
+    "views": 525,
     "created": 1795025221,
     "category": "Grand Theft Auto VI",
     "video_id": "2932192328",
     "vod_offset": 28763,
     "cluster": 1,
-    "added": 1795031825
+    "added": 1795032281
   },
   "twitch_GrossSmoggyLadiesFUNgineer-ke4af90JEX91EDuX": {
     "id": "twitch_GrossSmoggyLadiesFUNgineer-ke4af90JEX91EDuX",
@@ -2604,5 +2604,45 @@
     "vod_offset": 8280,
     "cluster": 1,
     "added": 1795031825
+  },
+  "twitch_AuspiciousTangentialChowderKreygasm-WJ1v2z2Dl1Lz0d89": {
+    "id": "twitch_AuspiciousTangentialChowderKreygasm-WJ1v2z2Dl1Lz0d89",
+    "url": "https://www.twitch.tv/clix/clip/AuspiciousTangentialChowderKreygasm-WJ1v2z2Dl1Lz0d89",
+    "channel": "clix",
+    "platform": "twitch",
+    "title": "🚨 FIRST PERSON TO PLAY GTA 🚨 EARLY ACCESS 🚨 24/7 MARATHON 🚨 PS5 GIVEAWAYS",
+    "views": 530,
+    "created": 1795000578,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932204601",
+    "vod_offset": 2526,
+    "cluster": 1,
+    "added": 1795032281
+  },
+  "twitch_BrainyPlumpMochaNotATK-vDazK_r-x9ckXLS4": {
+    "id": "twitch_BrainyPlumpMochaNotATK-vDazK_r-x9ckXLS4",
+    "url": "https://www.twitch.tv/codenamepizza/clip/BrainyPlumpMochaNotATK-vDazK_r-x9ckXLS4",
+    "channel": "codenamepizza",
+    "platform": "twitch",
+    "title": "CALICO CAT",
+    "views": 546,
+    "created": 1795029848,
+    "category": "Grand Theft Auto VI",
+    "cluster": 1,
+    "added": 1795032281
+  },
+  "twitch_TiredSecretiveChipmunkUncleNox-DfMhl81_JzpEi5pi": {
+    "id": "twitch_TiredSecretiveChipmunkUncleNox-DfMhl81_JzpEi5pi",
+    "url": "https://www.twitch.tv/clix/clip/TiredSecretiveChipmunkUncleNox-DfMhl81_JzpEi5pi",
+    "channel": "clix",
+    "platform": "twitch",
+    "title": "LOL",
+    "views": 531,
+    "created": 1795005082,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932204601",
+    "vod_offset": 7010,
+    "cluster": 1,
+    "added": 1795032281
   }
 }
