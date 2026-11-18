@@ -43,7 +43,7 @@ POOL_DIR = HERE / "assets" / "stories"
 FONTS = HERE / "fonts" / "cap"
 W, H = 1080, 1920
 
-STORY_NETS = ("instagram", "facebook")       # Buffer has a story type only here (see the docstring)
+STORY_NETS = ("instagram",)   # 18. 11.: FB story was cross-shared to IG by Meta -> the same reel twice on the IG story
 REPOST_DELAY = (20, 60)                      # min after the reel
 REPOST_MAX = 6                               # reposts per publishing day per brand
 REPOST_LEAD = 15                             # schedule once the reel is due within this many minutes
