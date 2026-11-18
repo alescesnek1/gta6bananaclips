@@ -3,34 +3,34 @@
 #   2. nahled / nahled_ai -> thumbnail inputs + AI thumbnail (Cloudflare Workers AI, if keys)
 #   3. artifact       -> the video for download (3 days)
 #   4. posli_mail.py  -> e-mail with title, description, tags, thumbnail(s) and the download link
-# Daily at ~00:25 Prague: the video for TOMORROW (the e-mail arrives a day ahead). Which series runs on
-# which day is the calendar in brands.json -> long_calendar (themed series fall back to the main one
-# when they lack verified moments; at most 1 video per channel per day). Manual: Actions -> Run workflow.
+# Every 2 h (Aleš 18. 11.: "upload as soon as we have a stock of clips", no calendar day, no day ahead).
+# Per brand: the cap (1 episode per brands.json long_min_gap_h, 20 h) -> the next series of the rotation
+# (brands.json -> long_calendar.rotation; the channel's first episode = first reactions) -> a strong
+# episode in the pool (long_target_min after cuts, never < 5 min)? build now + e-mail "NAHRÁT HNED" now :
+# a silent .skip.json (no e-mail). Triggers: this cron (fallback) + the 24/7 PC's dispatch every 2 h
+# (worker/beh.ps1). Manual: Actions -> Run workflow.
 #
 # Secrets: TWITCH_CLIENT_ID, TWITCH_CLIENT_SECRET (moments of the GTA VI category),
 #          CF_ACCOUNT_ID, CF_API_TOKEN (AI thumbnail; without: no thumbnail),
 #          MAIL_FROM, MAIL_APP_PASSWORD, MAIL_TO (Gmail; without: the e-mail goes to the job log)
-# Note: GitHub cron of a public repo can run hours late (seen 16. 11.); the run uses "yesterday"
-# in Prague time, so a late run still compiles the right day.
+# Note: GitHub cron of a public repo can run hours late (seen 16. 11.); the window of every series is
+# "since its last episode" (long_episodes.json -> _series_at), so a late or doubled run loses nothing.
 
 name: long-form
 
 on:
   schedule:
-    - cron: "25 23 * * *"          # 00:25 Prague (winter)
+    - cron: "25 */2 * * *"         # every 2 h (fallback; the PC dispatches every 2 h too)
   workflow_dispatch:
     inputs:
       znacka:
         description: "obe / bananas / fanpage"
         default: "obe"
       serie:
-        description: "empty = the calendar (brands.json long_calendar); or e.g. chases, top-week, streamer:<login>"
-        default: ""
-      den:
-        description: "publish day YYYY-MM-DD (empty = tomorrow)"
+        description: "empty = the rotation (brands.json long_calendar); or e.g. chases, top-week, streamer:<login>"
         default: ""
       od:
-        description: "first day YYYY-MM-DD (empty = yesterday / last 7 days for top-week)"
+        description: "first day YYYY-MM-DD (empty = since the series' last episode)"
         default: ""
       do:
         description: "last day YYYY-MM-DD"
@@ -65,9 +65,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # two triggers a night (cron 23:25 UTC + the 24/7 PC's dispatch ~00:30): the second run waits in the
-      # concurrency queue and must see the state the first one pushed (long_episodes.json -> _built), not the
-      # commit it was triggered on -> one video and one e-mail per brand and day
+      # two triggers every 2 h (cron + the 24/7 PC's dispatch): the second run waits in the concurrency queue
+      # and must see the state the first one pushed (long_episodes.json -> _last = the cap), not the commit it
+      # was triggered on -> one video and one e-mail per brand and long_min_gap_h
       - name: latest state
         run: git fetch -q origin "${GITHUB_REF_NAME}" && git reset -q --hard "origin/${GITHUB_REF_NAME}"
 
@@ -111,7 +111,6 @@ jobs:
           extra=""
           [ -n "${{ inputs.od }}" ] && extra="$extra --od ${{ inputs.od }}"
           [ -n "${{ inputs.do }}" ] && extra="$extra --do ${{ inputs.do }}"
-          [ -n "${{ inputs.den }}" ] && extra="$extra --den ${{ inputs.den }}"
           [ -n "${{ inputs.delka }}" ] && extra="$extra --delka ${{ inputs.delka }} --min-video 60 --min-momentu 6 --min-overeno 3"
           brands="${{ steps.plan.outputs.brands }}"
           left=$(echo $brands | wc -w)
@@ -170,8 +169,8 @@ jobs:
         if: always() && hashFiles('out/_long/fanpage/*.meta.json') != ''
         run: python posli_mail.py out/_long/fanpage/*.meta.json --odkaz "${{ steps.art_f.outputs.artifact-url }}"
 
-      # never silence (Aleš 18. 11.): a brand that left neither a video, nor a failed note, nor a "no long-form
-      # today" mark (crash, timeout, kill) gets a failed note now
+      # never silence (Aleš 18. 11.): a brand that left neither a video, nor a failed note, nor a skip mark
+      # (crash, timeout, kill) gets a failed note now + the retry wait (_fail), so it does not mail every 2 h
       - name: missing result -> failed note
         if: always()
         run: |
@@ -183,13 +182,20 @@ jobs:
             mkdir -p out/_long/$z
             python - "$z" <<'PY'
           import json, sys
-          from datetime import datetime, timedelta
+          from datetime import datetime
           from zoneinfo import ZoneInfo
           z = sys.argv[1]
-          day = str(datetime.now(ZoneInfo("Europe/Prague")).date() + timedelta(days=1))
-          json.dump({"znacka": z, "serie": "?", "publish_day": day,
+          now = datetime.now(ZoneInfo("Europe/Prague"))
+          kdy = now.strftime("%Y-%m-%d_%H%M")
+          json.dump({"znacka": z, "serie": "?", "publish_day": kdy[:10], "kdy": kdy,
                      "duvod": "kompilace skončila bez videa i bez zprávy (pád, časový limit) - viz log běhu"},
-                    open(f"out/_long/{z}/{day}_crash.failed.json", "w", encoding="utf-8"), ensure_ascii=False)
+                    open(f"out/_long/{z}/{kdy}_crash.failed.json", "w", encoding="utf-8"), ensure_ascii=False)
+          try:
+              eps = json.load(open("long_episodes.json", encoding="utf-8"))
+          except Exception:
+              eps = {}
+          eps.setdefault("_fail", {})[z] = now.isoformat(timespec="seconds")
+          json.dump(eps, open("long_episodes.json", "w", encoding="utf-8"), ensure_ascii=False, indent=2)
           PY
           done
 
@@ -210,13 +216,13 @@ jobs:
             for f in out/_long/fanpage/*.meta.json; do python kompilace.py --vratit "$f"; done
           fi
 
-      - name: save state (used moments, episodes, reserve, AI budget)
+      - name: save state (used moments, episodes, reserve, vision answers, AI budget)
         if: always()
         run: |
           git config user.name "gta6bananaclips-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -- long_pool.json streamers.json 2>/dev/null || true   # written by denne.yml, avoid conflicts
-          for f in long_used.json long_episodes.json long_reserve.json nahled_ai_budget.json; do [ -f "$f" ] && git add "$f"; done
+          for f in long_used.json long_episodes.json long_reserve.json long_vision.json nahled_ai_budget.json; do [ -f "$f" ] && git add "$f"; done
           git diff --cached --quiet && exit 0
           git commit -q -m "stav: long-form $(date -u +%F)"
           # another workflow may push in between (denne / long / live dispatches): retry, never lose the state

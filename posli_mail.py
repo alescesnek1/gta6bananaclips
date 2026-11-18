@@ -3,7 +3,8 @@ posli_mail.py - e-mail to Aleš with everything for a manual YouTube upload of a
 
 Aleš 17. 11.: no YouTube API; he uploads long-form in YouTube Studio himself and makes the thumbnail
 in Gemini / ChatGPT. Per video one e-mail:
-  subject     [<channel>] <title> - nahrát <date time>   (the suggested publish slot, Prague)
+  subject     [YouTube <channel>] NAHRÁT HNED – <title>  (Aleš 18. 11.: built as soon as there is a stock of
+              clips; the body has the next good publish slot >= 45 min ahead, Prague)
   body        download link, what to set in Studio, the THUMBNAIL block (3 text options, the filled-in
               prompt, steps, a tip), title, full description (chapters + credits), tags
   attachments 1_tvar.jpg (streamer's face at the strongest emotion), 2_scena.jpg (payoff frame without
@@ -84,7 +85,8 @@ def texts_for(m):
         "fanpage" if m.get("znacka") == "fanpage" else "bananas"]
     lines = [
         f"KANÁL: YouTube {kanal}",
-        f"NAPLÁNOVAT NA: {den} {when:%d.%m.%Y} v {when:%H:%M} (čas Praha)",
+        "NAHRÁT HNED (video je hotové teď, žádné čekání na den).",
+        f"ZVEŘEJNIT: {den} {when:%d.%m.%Y} v {when:%H:%M} (čas Praha) – nejbližší dobrý čas, aspoň 45 min od e-mailu",
         *([f"POZNÁMKA: {m['poznamka']}"] if m.get("poznamka") else []),
         f"Délka: {m.get('duration_s', 0) / 60:.1f} min",
         f"Video ke stažení (platí 3 dny, potřeba přihlášení na GitHub): {m.get('_odkaz') or '(chybí odkaz na artefakt)'}",
@@ -118,7 +120,7 @@ def texts_for(m):
         lines += ["", "Záloha: zaloha_nahled_ai.jpg je automatický náhled (Cloudflare), kdyby nebyl čas."]
     lines += ["", "===== NÁZEV =====", m["title"], "", "===== POPIS =====", m["description"], "",
               "===== TAGY =====", ", ".join(m.get("tags", []))]
-    subject = f"[YouTube {kanal}] naplánovat {den} {when:%d.%m. %H:%M} – {m['title']}"
+    subject = f"[YouTube {kanal}] NAHRÁT HNED – {m['title']}"
     return subject, "\n".join(lines), files
 
 def as_html(body):
@@ -189,10 +191,12 @@ def main():
             msg = EmailMessage(policy=SMTP)
             kanal = "gta6bananaclips" if m.get("znacka") == "bananas" else "gta6fanpageclip"
             why = " ".join(str(m.get("duvod", "")).split())       # a crash reason may hold newlines (ffmpeg)
-            msg["Subject"] = f"[{kanal}] video na {m.get('publish_day')} se nepovedlo: {why[:120]}"
-            body = (f"Long-form {m.get('serie')} na {m.get('publish_day')} se nepovedl (málo materiálu, automatická "
-                    f"kontrola nebo pád), proto video nepřijde a nic se nenahrává.\nDůvod: {m.get('duvod')}\n"
-                    "Stav (čísla dílů, použité momenty) se nezměnil.\n")
+            msg["Subject"] = f"[YouTube {kanal}] long-form se nepovedl ({m.get('serie')}): {why[:120]}"
+            body = (f"Long-form {m.get('serie')} ({m.get('kdy') or m.get('publish_day')}) se nepovedl (automatická "
+                    f"kontrola, pád nebo ruční běh bez materiálu), proto video nepřijde a nic se nenahrává.\n"
+                    f"Důvod: {m.get('duvod')}\n"
+                    "Stav (čísla dílů, použité momenty) se nezměnil. Automatický běh to zkusí znovu sám "
+                    "(nejdřív za long_retry_h hodin, brands.json).\n")
             msg.set_content(body)
             files = []
         else:

@@ -55,8 +55,9 @@ if ($token -and (Due "github" $(if ($launch) { 4 } else { 25 }))) {
     }
 }
 
-# --- 1b) long-form once a day around 00:30 Prague (GitHub's cron for long.yml ran 5 h late)
-if ($token -and (($now.Hour -eq 0 -and $now.Minute -ge 25) -or $now.Hour -eq 1) -and (Due "long" 600)) {
+# --- 1b) long-form every 2 h (Ales 18. 11.: upload as soon as there is a stock of clips; GitHub's cron
+# for long.yml ran 5 h late). The run itself decides: cap 1 per brand per 20 h, enough material or skip.
+if ($token -and (Due "long" 115)) {
     try {
         Invoke-RestMethod -Method Post -Uri "https://api.github.com/repos/aleshrani/gta6bananaclips/actions/workflows/long.yml/dispatches" `
             -Headers @{ Authorization = "Bearer $token"; Accept = "application/vnd.github+json"; "User-Agent" = "gta6-pc" } `

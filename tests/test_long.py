@@ -1,5 +1,6 @@
 """
-Long-form guards before the first GTA 6 run (18. 11.): the first-reactions window, sentence-safe cuts
+Long-form guards (18. 11.): the trigger "as soon as there is a stock of clips" (rotation, cap, retry wait,
+target length, window since the series' last episode, NAHRAT HNED e-mail + slot), sentence-safe cuts
 (start / end / jump / cold open / beat), the league subset, crash -> failed note, titles / tags /
 description limits, the QA of the texts and the state roll-back. Pure helpers + mocked build, no
 ffmpeg / Whisper / network.
@@ -42,7 +43,11 @@ def assert_safe(tc, cutter, s, e):
     tc.assertIsNone(K.in_word(cutter.w, e))
 
 
-class Window(unittest.TestCase):
+def prague(*a):
+    return datetime(*a, tzinfo=C.TZ)
+
+
+class Window(unittest.TestCase):                           # Aleš 18. 11.: since the series' last episode
     def a(self, **kw):
         return Namespace(od=None, do=None, hra=None, **kw)
 
@@ -50,23 +55,40 @@ class Window(unittest.TestCase):
         self.assertEqual(datetime.fromtimestamp(C.GAME_OUT_TS, timezone.utc),
                          datetime(2026, 11, 18, 11, 0, tzinfo=timezone.utc))
 
-    def test_first_reactions_window_not_empty(self):       # 1: tonight's run (19. 11.) makes 20. 11.
-        od, do, t0, t1 = C.window_for("first-reactions", date(2026, 11, 19), self.a())
+    def test_first_reactions_window(self):
+        od, do, t0, t1 = C.window_for("first-reactions", prague(2026, 11, 18, 20, 5), self.a())
+        self.assertEqual(t0, C.GAME_OUT_TS)
+        self.assertAlmostEqual(t1, prague(2026, 11, 18, 20, 5).timestamp())
+        od, do, t0, t1 = C.window_for("first-reactions", prague(2026, 11, 23, 9, 0), self.a())
+        self.assertEqual(t1 - t0, C.FIRST_HOURS * 3600)     # only the first hours after the unlock
         self.assertEqual(od, date(2026, 11, 18))
-        self.assertEqual(do, date(2026, 11, 18))
-        self.assertEqual(t0, C.GAME_OUT_TS)
-        self.assertGreater(t1 - t0, 11 * 3600)
 
-    def test_daily_window_clamped_to_unlock(self):         # 14
-        od, do, t0, t1 = C.window_for("funny-day", date(2026, 11, 19), self.a())
+    def test_window_since_last_episode_of_the_series(self):
+        now = prague(2026, 11, 21, 14, 25)
+        od, do, t0, t1 = C.window_for("funny-day", now, self.a(), {}, "bananas")
+        self.assertEqual(t0, C.GAME_OUT_TS)                 # no episode yet: since the unlock, not "yesterday"
+        self.assertEqual(t1, now.timestamp())
+        eps = {"_series_at": {"bananas": {"funny-day": "2026-11-20T08:25:00+01:00"}}}
+        od, do, t0, t1 = C.window_for("funny-day", now, self.a(), eps, "bananas")
+        self.assertEqual(t0, prague(2026, 11, 20, 8, 25).timestamp())
+        od, do, t0, t1 = C.window_for("funny-day", now, self.a(), eps, "fanpage")
+        self.assertEqual(t0, C.GAME_OUT_TS)                 # the other channel has its own window
+
+    def test_window_lookback_capped(self):
+        now = prague(2026, 12, 10, 12, 0)
+        od, do, t0, t1 = C.window_for("after-dark", now, self.a(), {}, "fanpage")
+        self.assertEqual(t1 - t0, C.LOOKBACK_DAYS * 86400)
+
+    def test_window_clamped_to_unlock(self):
+        od, do, t0, t1 = C.window_for("funny-day", prague(2026, 11, 18, 14, 0), self.a(), {}, "bananas")
         self.assertEqual(t0, C.GAME_OUT_TS)
-        od, do, t0, t1 = C.window_for("funny-day", date(2026, 11, 21), self.a())
-        self.assertEqual(od, date(2026, 11, 20))
-        self.assertGreater(t0, C.GAME_OUT_TS)
 
     def test_test_category_not_clamped(self):
         a = Namespace(od="2026-11-16", do="2026-11-17", hra="Grand Theft Auto V")
-        od, do, t0, t1 = C.window_for("funny-day", date(2026, 11, 19), a)
+        od, do, t0, t1 = C.window_for("funny-day", prague(2026, 11, 19, 1, 0), a)
+        self.assertLess(t0, C.GAME_OUT_TS)
+        od, do, t0, t1 = C.window_for("funny-day", prague(2026, 11, 17, 1, 0),
+                                      Namespace(od=None, do=None, hra="Grand Theft Auto V"))
         self.assertLess(t0, C.GAME_OUT_TS)
 
 
@@ -230,10 +252,49 @@ class Texts(unittest.TestCase):                            # 10, 21, 22
         self.assertTrue(C.qa_texts("GTA 6 " + "x" * 100, "\n0:00 a\n0:10 b\n0:20 c", [], [(0, "a"), (10, "b"), (20, "c")]))
         self.assertTrue(C.qa_texts("GTA 6", "x" * 5001, [], [(0, "a"), (10, "b"), (20, "c")]))
 
-    def test_slot_on_publish_day(self):                    # 23
-        t = C.suggested_slot("bananas", "first-reactions", date(2026, 11, 18), date(2026, 11, 20))
-        self.assertEqual(t.date(), date(2026, 11, 20))
+    def test_e_mail_subject_says_upload_now(self):       # Aleš 18. 11.
+        import posli_mail
+        m = {"znacka": "bananas", "kanal": "gta6bananaclips", "serie": "funny-day", "title": "GTA 6 Funniest Moments #3",
+             "description": "x", "tags": ["gta 6"], "nahrat": "2026-11-21T18:47:00+01:00", "playlist": "funny-day",
+             "duration_s": 540}
+        subject, body, _ = posli_mail.texts_for(m)
+        self.assertEqual(subject, "[YouTube gta6bananaclips] NAHRÁT HNED – GTA 6 Funniest Moments #3")
+        self.assertIn("NAHRÁT HNED", body)
+        self.assertIn("18:47", body)
+        self.assertIn("KONCOVÁ OBRAZOVKA", body)
+        self.assertIn("--- PROMPT ---", body)
+
+
+class Slot(unittest.TestCase):                             # Aleš 18. 11.: the next good slot >= 45 min ahead
+    def check(self, now, z="bananas"):
+        t = C.asap_slot(z, "funny-day", now)
+        self.assertGreaterEqual((t - now).total_seconds(), 45 * 60, (now, t))
         self.assertNotIn(t.minute, (0, 30))
+        return t
+
+    def test_daytime_goes_to_tonights_prime(self):
+        for h in (10, 13, 17):
+            t = self.check(prague(2026, 11, 21, h, 15))
+            self.assertEqual(t.date(), date(2026, 11, 21))
+            self.assertTrue(18 * 60 + 40 <= t.hour * 60 + t.minute <= 19 * 60 + 41, t)
+            t = self.check(prague(2026, 11, 21, h, 15), "fanpage")
+            self.assertTrue(19 * 60 + 40 <= t.hour * 60 + t.minute <= 20 * 60 + 41, t)
+
+    def test_evening_and_night_right_away(self):
+        for now in (prague(2026, 11, 21, 18, 10), prague(2026, 11, 21, 23, 0), prague(2026, 11, 22, 1, 52)):
+            t = self.check(now)
+            self.assertLessEqual((t - now).total_seconds(), 48 * 60, (now, t))
+
+    def test_early_morning_au_slot(self):
+        t = self.check(prague(2026, 11, 22, 4, 0))
+        self.assertTrue(8 * 60 + 10 <= t.hour * 60 + t.minute <= 9 * 60 + 41, t)
+        t = self.check(prague(2026, 11, 22, 7, 50))       # 08:36 is inside the AU slot already
+        self.assertLessEqual((t - prague(2026, 11, 22, 7, 50)).total_seconds(), 48 * 60)
+
+    def test_never_round(self):
+        for m in range(0, 60):
+            self.check(prague(2026, 11, 21, 22, m))
+            self.check(prague(2026, 11, 22, 8, m))
 
 
 class Budget(unittest.TestCase):                           # 3
@@ -245,86 +306,213 @@ class Budget(unittest.TestCase):                           # 3
         self.assertEqual(C.thumb_variants(0, 0), 0)
 
 
-class Failures(unittest.TestCase):                         # 9, 18
+CFG = {"long_min_gap_h": 20, "long_retry_h": 6, "long_target_min": 8,
+       "long_calendar": {"rotation": ["funny-day", "streamer-week", "banana-league"], "first": "first-reactions"}}
+NOW = prague(2026, 11, 21, 14, 25)
+
+
+class Failures(unittest.TestCase):                         # 9, 18 + the trigger / cap (Aleš 18. 11.)
     def setUp(self):
         self.tmp = Path(tempfile.mkdtemp())
-        self.old = C.OUT, C.USED, C.EPISODES, C.RESERVE, C.plan_day, C.build
+        self.old = C.OUT, C.USED, C.EPISODES, C.RESERVE, C.VISION, C.plan_run, C.build, C.brand_cfg
         C.OUT = self.tmp / "out"
         C.USED, C.EPISODES, C.RESERVE = self.tmp / "u.json", self.tmp / "e.json", self.tmp / "r.json"
+        C.VISION = self.tmp / "v.json"
+        C.brand_cfg = lambda z, key, default: CFG.get(key, default)
 
     def tearDown(self):
-        C.OUT, C.USED, C.EPISODES, C.RESERVE, C.plan_day, C.build = self.old
+        C.OUT, C.USED, C.EPISODES, C.RESERVE, C.VISION, C.plan_run, C.build, C.brand_cfg = self.old
         shutil.rmtree(self.tmp, ignore_errors=True)
 
-    def args(self):
-        return Namespace(znacka="bananas", serie=None, kalendar=0, zkouska=False, bez_overeni=True,
-                         min_momentu_hlavni=3, min_momentu=25, bez_nahledu=True, out=None, hra=None, znovu=False)
+    def args(self, **kw):
+        a = dict(znacka="bananas", serie=None, kalendar=0, zkouska=False, bez_overeni=True, min_momentu_hlavni=3,
+                 min_momentu=25, bez_nahledu=True, out=None, hra=None, znovu=False, od=None, do=None)
+        a.update(kw)
+        return Namespace(**a)
 
-    def test_second_run_same_night_skips(self):            # long.yml runs twice a night
-        C.EPISODES.write_text(json.dumps({"_built": {"bananas": "2026-11-20"}}), encoding="utf-8")
-        C.plan_day = lambda *a, **k: self.fail("planned although the day is built")
-        C.make(self.args(), date(2026, 11, 19), date(2026, 11, 20))
-        self.assertTrue((C.OUT / "bananas" / "2026-11-20.skip.json").exists())
+    def eps(self):
+        return json.loads(C.EPISODES.read_text(encoding="utf-8")) if C.EPISODES.exists() else {}
+
+    def test_cap_skips_within_20h(self):                   # two triggers / runs within the cap
+        C.EPISODES.write_text(json.dumps({"_last": {"bananas": {"serie": "funny-day", "next": 1,
+                                                                "at": "2026-11-20T19:00:00+01:00"}}}), encoding="utf-8")
+        C.plan_run = lambda *a, **k: self.fail("planned although the cap is on")
+        C.make(self.args(), NOW)
+        self.assertTrue(list((C.OUT / "bananas").glob("*.skip.json")))
         self.assertFalse(list((C.OUT / "bananas").glob("*.failed.json")))
 
-    def test_failed_run_does_not_block_a_retry(self):
-        C.plan_day = lambda *a, **k: {"day": "2026-11-20", "serie": None, "planned": "first-reactions", "note": "x"}
-        C.make(self.args(), date(2026, 11, 19), date(2026, 11, 20))
-        self.assertNotIn("_built", json.loads(C.EPISODES.read_text(encoding="utf-8")) if C.EPISODES.exists() else {})
+    def test_cap_over_after_20h(self):
+        eps = {"_last": {"bananas": {"serie": "funny-day", "next": 1, "at": "2026-11-20T18:00:00+01:00"}}}
+        self.assertIsNone(C.gate("bananas", eps, NOW))      # 20.4 h
+        self.assertIn("cap", C.gate("bananas", eps, prague(2026, 11, 21, 13, 0)))
+        self.assertIsNone(C.gate("fanpage", eps, NOW))      # per brand
 
-    def test_rollback_frees_the_publish_day(self):
-        used, eps, res = {}, {"_built": {"bananas": "2026-11-17"}}, {}
-        plan = {"serie": "funny-day", "episode": 1, "day": "2026-11-20", "picked": [{"id": "x", "score": 1}], "rest": []}
-        undo = C.commit_plan(Namespace(min_momentu=25), "bananas", plan, used, eps, res, date(2026, 11, 19))
-        undo["built"] = eps["_built"]["bananas"]
-        eps["_built"]["bananas"] = "2026-11-20"
-        C.undo_plan(undo, used, eps, res)
-        self.assertEqual(eps["_built"]["bananas"], "2026-11-17")
+    def test_retry_wait_after_failure(self):
+        eps = {"_fail": {"bananas": "2026-11-21T10:00:00+01:00"}}
+        self.assertIn("failed", C.gate("bananas", eps, NOW))
+        self.assertIsNone(C.gate("bananas", eps, prague(2026, 11, 21, 16, 5)))
 
-    def test_build_crash_writes_failed_note(self):
+    def test_not_enough_material_is_a_silent_skip(self):
+        C.plan_run = lambda *a, **k: {"day": "2026-11-21", "serie": None, "planned": "funny-day", "note": "málo"}
+        C.make(self.args(), NOW)
+        self.assertTrue(list((C.OUT / "bananas").glob("*.skip.json")))
+        self.assertFalse(list((C.OUT / "bananas").glob("*.failed.json")))
+        self.assertNotIn("_fail", self.eps())               # waiting for material is not a failure
+
+    def test_manual_run_without_material_mails(self):
+        C.plan_run = lambda *a, **k: {"day": "2026-11-21", "serie": None, "planned": "chases", "note": "málo"}
+        C.make(self.args(serie="chases"), NOW)
+        self.assertTrue(list((C.OUT / "bananas").glob("*_chases.failed.json")))
+
+    def test_build_crash_writes_failed_note_and_retry_wait(self):
         rows = [{"id": f"m{i}", "channel": f"c{i}", "score": 1.0, "fun": 0.6, "seg": [0, 15], "play": 15}
                 for i in range(25)]
-        C.plan_day = lambda *a, **k: {"day": "2026-11-20", "serie": "first-reactions", "planned": "first-reactions",
+        C.plan_run = lambda *a, **k: {"day": "2026-11-21", "serie": "first-reactions", "planned": "first-reactions",
                                       "note": "", "od": "2026-11-18", "do": "2026-11-18", "picked": rows, "rest": [],
-                                      "episode": 1, "lead": None, "length": 400}
+                                      "episode": 1, "lead": None, "length": 500, "next": 0}
 
         def boom(*a, **k):
             raise KeyError("rank")
         C.build = boom
-        C.make(self.args(), date(2026, 11, 19), date(2026, 11, 20))
-        f = C.OUT / "bananas" / "2026-11-20_first-reactions.failed.json"
-        self.assertTrue(f.exists())
-        self.assertIn("crash: KeyError", json.loads(f.read_text(encoding="utf-8"))["duvod"])
-        self.assertFalse(C.EPISODES.exists())              # no number taken
+        C.make(self.args(), NOW)
+        f = list((C.OUT / "bananas").glob("*_first-reactions.failed.json"))
+        self.assertTrue(f)
+        self.assertIn("crash: KeyError", json.loads(f[0].read_text(encoding="utf-8"))["duvod"])
+        eps = self.eps()
+        self.assertNotIn("bananas", eps)                    # no number taken
+        self.assertNotIn("_last", eps)                      # no cap
+        self.assertIn("bananas", eps["_fail"])              # the next try only after long_retry_h
 
-    def test_too_little_material_writes_failed_note(self):
-        C.plan_day = lambda *a, **k: {"day": "2026-11-20", "serie": None, "planned": "first-reactions",
-                                      "note": "Žádné video: málo materiálu"}
-        C.make(self.args(), date(2026, 11, 19), date(2026, 11, 20))
-        self.assertTrue((C.OUT / "bananas" / "2026-11-20_first-reactions.failed.json").exists())
+    def test_commit_and_rollback_of_the_cap(self):
+        used, res = {}, {}
+        eps = {"_last": {"bananas": {"serie": "funny-day", "next": 1, "at": "2026-11-19T20:00:00+01:00"}}}
+        plan = {"serie": "streamer-week", "episode": 1, "day": "2026-11-21", "picked": [{"id": "x", "score": 1}],
+                "rest": [], "next": 2}
+        undo = C.commit_plan(Namespace(min_momentu=25), "bananas", plan, used, eps, res, NOW.date(), NOW)
+        self.assertEqual(eps["_last"]["bananas"]["next"], 2)
+        self.assertEqual(eps["_series_at"]["bananas"]["streamer-week"], NOW.isoformat(timespec="seconds"))
+        self.assertIn("cap", C.gate("bananas", eps, prague(2026, 11, 22, 1, 0)))
+        undo = json.loads(json.dumps(undo))                # it travels through the meta.json
+        C.undo_plan(undo, used, eps, res)
+        self.assertEqual(eps["_last"]["bananas"]["at"], "2026-11-19T20:00:00+01:00")
+        self.assertNotIn("streamer-week", eps["_series_at"]["bananas"])
+        self.assertIsNone(C.gate("bananas", eps, NOW))
 
-    def test_calendar_day_off_is_a_skip_not_a_failure(self):
-        C.plan_day = lambda *a, **k: {"day": "2026-11-21", "serie": None, "planned": None, "note": "není"}
-        C.make(self.args(), date(2026, 11, 20), date(2026, 11, 21))
-        self.assertFalse(list((C.OUT / "bananas").glob("*.failed.json")))
-        self.assertTrue((C.OUT / "bananas" / "2026-11-21.skip.json").exists())
+    def test_old_meta_rollback_still_works(self):          # metas from before 18. 11. (no cap fields)
+        used, eps, res = {"x": {"znacka": "bananas", "serie": "funny-day", "datum": "2026-11-20"}}, {}, {}
+        C.undo_plan({"z": "bananas", "s": "funny-day", "eps": None, "res": None, "used": {"x": None}, "promo": None,
+                     "built": None}, used, eps, res)
+        self.assertNotIn("x", used)
 
     def test_rollback_keeps_the_other_brand(self):
         a = Namespace(min_momentu=25)
         used, eps, res = {}, {}, {}
         plan = {"serie": "first-reactions", "episode": 1, "day": "2026-11-20",
                 "picked": [{"id": "x", "score": 1}], "rest": [{"id": "r", "score": 0.5}]}
-        undo = C.commit_plan(a, "bananas", plan, used, eps, res, date(2026, 11, 19))
+        undo = C.commit_plan(a, "bananas", plan, used, eps, res, date(2026, 11, 19), NOW)
         plan2 = {"serie": "first-reactions", "episode": 1, "day": "2026-11-20",
                  "picked": [{"id": "y", "score": 1}], "rest": []}
-        C.commit_plan(a, "fanpage", plan2, used, eps, res, date(2026, 11, 19))
-        undo = json.loads(json.dumps(undo))                # it travels through the meta.json
+        C.commit_plan(a, "fanpage", plan2, used, eps, res, date(2026, 11, 19), NOW)
+        undo = json.loads(json.dumps(undo))
         C.undo_plan(undo, used, eps, res)
         self.assertNotIn("x", used)
         self.assertNotIn("r", used)
         self.assertIn("y", used)
         self.assertNotIn("first-reactions", eps.get("bananas", {}))
         self.assertEqual(eps["fanpage"]["first-reactions"], 1)
+        self.assertNotIn("bananas", eps["_last"])
+        self.assertIn("fanpage", eps["_last"])
+
+
+class Rotation(unittest.TestCase):                         # Aleš 18. 11.: the rotation, not weekdays
+    def setUp(self):
+        self.old = C.brand_cfg, C.candidates, C.pick_episode
+        C.brand_cfg = lambda z, key, default: CFG.get(key, default)
+        self.calls = []
+
+    def tearDown(self):
+        C.brand_cfg, C.candidates, C.pick_episode = self.old
+
+    def a(self, **kw):
+        base = {"serie": None, "hra": None, "znovu": False, "od": None, "do": None, "min_momentu": 25,
+                "min_momentu_hlavni": 3}
+        base.update(kw)
+        return Namespace(**base)
+
+    def rows(self, n, fun=0.6, play=15.0):
+        return [{"id": f"m{i}", "channel": f"c{i % 9}", "score": 1.0 - i / 100, "fun": fun, "seg": [0, play],
+                 "play": play} for i in range(n)]
+
+    def fake(self, material):
+        """material: {series: number of good moments}; the pool holds 2x that many candidates."""
+        C.candidates = lambda a, s, t0, t1, used: self.rows(2 * material.get(s, 0))
+
+        def pick(a, s, cands, z, verify=True, vis=None, reserve_ids=()):
+            self.calls.append(s)
+            return self.rows(material.get(s, 0)), [], {}, None
+        C.pick_episode = pick
+
+    def test_due_series(self):
+        self.assertEqual(C.due("bananas", {}), ("funny-day", 0, "first-reactions"))
+        eps = {"_last": {"bananas": {"serie": "first-reactions", "next": 0, "at": "x"}}}
+        self.assertEqual(C.due("bananas", eps), ("funny-day", 0, None))
+        eps["_last"]["bananas"]["next"] = 2
+        self.assertEqual(C.due("bananas", eps)[:2], ("banana-league", 2))
+        eps["_last"]["bananas"]["next"] = 3
+        self.assertEqual(C.due("bananas", eps)[:2], ("funny-day", 0))
+
+    def test_first_episode_is_first_reactions(self):
+        self.fake({"first-reactions": 36, "funny-day": 36})
+        plan = C.plan_run(self.a(), "bananas", NOW, {}, {}, {}, {}, False)
+        self.assertEqual(plan["serie"], "first-reactions")
+        self.assertEqual(plan["next"], 0)                   # the rotation did not move
+
+    def test_first_reactions_thin_falls_to_rotation(self):
+        self.fake({"first-reactions": 3, "funny-day": 36})
+        plan = C.plan_run(self.a(), "bananas", NOW, {}, {}, {}, {}, False)
+        self.assertEqual(plan["serie"], "funny-day")
+        self.assertEqual(plan["next"], 1)
+
+    def test_first_episode_waits_while_first_reactions_fill(self):
+        self.fake({"first-reactions": 3, "funny-day": 36})
+        plan = C.plan_run(self.a(), "bananas", prague(2026, 11, 19, 10, 0), {}, {}, {}, {}, False)
+        self.assertIsNone(plan["serie"])                    # within the first 36 h: no other series instead
+        self.assertEqual(self.calls, [])
+
+    def test_due_series_built_moves_the_rotation(self):
+        self.fake({"streamer-week": 36})
+        eps = {"_last": {"bananas": {"serie": "funny-day", "next": 1, "at": "x"}}}
+        plan = C.plan_run(self.a(), "bananas", NOW, {}, eps, {}, {}, False)
+        self.assertEqual((plan["serie"], plan["next"]), ("streamer-week", 2))
+
+    def test_thin_due_series_main_fallback_keeps_the_slot(self):
+        self.fake({"streamer-week": 4, "funny-day": 36})
+        eps = {"_last": {"bananas": {"serie": "funny-day", "next": 1, "at": "x"}}}
+        plan = C.plan_run(self.a(), "bananas", NOW, {}, eps, {}, {}, False)
+        self.assertEqual((plan["serie"], plan["next"]), ("funny-day", 1))
+
+    def test_below_target_waits(self):                     # ~6.8 min: over the 5 min floor, under the 8 min target
+        self.fake({"funny-day": 24})
+        eps = {"_last": {"bananas": {"serie": "funny-day", "next": 0, "at": "x"}}}
+        plan = C.plan_run(self.a(), "bananas", NOW, {}, eps, {}, {}, False)
+        self.assertIsNone(plan["serie"])
+        self.assertIn("8 min", plan["note"])
+        plan = C.plan_run(self.a(serie="funny-day"), "bananas", NOW, {}, eps, {}, {}, False)
+        self.assertEqual(plan["serie"], "funny-day")        # a manual run: the 5 min floor only
+
+    def test_thin_pool_never_downloads(self):              # cheap pre-check: no pick (download / Whisper / vision)
+        self.fake({"funny-day": 5})
+        eps = {"_last": {"bananas": {"serie": "funny-day", "next": 0, "at": "x"}}}
+        plan = C.plan_run(self.a(), "bananas", NOW, {}, eps, {}, {}, False)
+        self.assertIsNone(plan["serie"])
+        self.assertEqual(self.calls, [])
+
+    def test_weak_number_one_waits(self):
+        self.fake({"funny-day": 40})
+        rows = self.rows(40, fun=0.3)
+        C.pick_episode = lambda *a, **k: (rows, [], {}, None)
+        eps = {"_last": {"bananas": {"serie": "funny-day", "next": 0, "at": "x"}}}
+        self.assertIsNone(C.plan_run(self.a(), "bananas", NOW, {}, eps, {}, {}, False)["serie"])
 
 
 class Vision(unittest.TestCase):                           # 4

@@ -1,11 +1,17 @@
 """
 kompilace.py - long-form YouTube compilations (16:9, 8-15 min) from collected stream moments.
 
-  python kompilace.py --znacka bananas --serie funny-day                 # yesterday (Prague)
+  python kompilace.py --znacka bananas                                   # automatic run (long.yml every 2 h)
+  python kompilace.py --znacka bananas --serie funny-day                 # since the series' last episode
   python kompilace.py --znacka fanpage --serie wild-day --od 2026-11-19 --do 2026-11-19
-  python kompilace.py --znacka bananas --serie top-week                  # last 7 days
   python kompilace.py --znacka fanpage --serie streamer:xqc --od 2026-11-19 --do 2026-11-25
   python kompilace.py ... --zkouska                                      # plan only, no render
+
+Automatic run (Aleš 18. 11.: upload as soon as there is a stock of clips): at most one episode per
+brand per long_min_gap_h (brands.json); the due series of the rotation (long_calendar.rotation, the
+channel's first episode = long_calendar.first); built only when the pool holds a strong episode of
+long_target_min after cuts (never < 5 min), else a silent .skip.json. The e-mail says "NAHRÁT HNED"
+with the next good publish slot >= 45 min ahead (asap_slot).
 
 Series: funny-day, wild-day, glitches, chases, top-week, streamer:<login> (docs/long-form.md).
 
@@ -59,6 +65,7 @@ CARD = 2.6                        # bananas score card (s), the clip keeps runni
 
 EPISODES = Path(os.environ.get("LONG_EPISODES") or HERE / "long_episodes.json")   # {brand: {series: last #}}
 RESERVE = Path(os.environ.get("LONG_RESERVE") or HERE / "long_reserve.json")      # {brand: {series: [...]}}
+VISION = Path(os.environ.get("LONG_VISION") or HERE / "long_vision.json")         # {"id|question": [gp, tp, day]}
 FUN_MIN = 0.35                    # entertainment floor: quiet walking / shopping / menus never get in
 MIN_VERIFIED = 15                 # a themed series needs this many verified moments, else the main series
 MIN_VIDEO = 300.0                 # shorter than 5:00: no video
@@ -114,23 +121,62 @@ SERIES = {
 }
 DAILY = {"bananas": "funny-day", "fanpage": "wild-day"}
 RESERVE_VERIFY = 10               # themed series: verified leftovers kept for the reserve (each costs a vision call)
-WD = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
+LOOKBACK_DAYS = 7                 # a window "since the last episode" never reaches further back than this
+FIRST_HOURS = 36                  # first reactions: the first 36 h after the unlock
+SLOT_LEAD_MIN = 45                # the suggested publish time is at least this far from the e-mail
+MOMENT_MAX_EST = 20.0             # optimistic length of one moment (s): the cheap "is there enough?" pre-check
 
 def series_key(serie):
     return "streamer" if serie.startswith("streamer:") else serie
 
-def calendar_series(z, day):
-    """Series of the publish day from brands.json long_calendar (None = no long-form that day)."""
-    cal = (K.load_json(K.BRANDS, {}).get(z) or {}).get("long_calendar") or {}
-    if str(day) in (cal.get("special") or {}):
-        return cal["special"][str(day)]
-    for ph in cal.get("phases") or []:
-        if ph.get("from", "0000") <= str(day) <= ph.get("to", "9999"):
-            s = (ph.get("days") or {}).get(WD[day.weekday()])
-            if isinstance(s, list):                        # weekly rotation
-                s = s[day.isocalendar()[1] % len(s)]
-            return s
-    return main_series(z)
+def brand_cfg(z, key, default):
+    """A long-form setting of the brand in brands.json (brand key, else top-level key, else the default)."""
+    b = K.load_json(K.BRANDS, {})
+    return (b.get(z) or {}).get(key, b.get(key, default))
+
+def rotation(z):
+    """The brand's series in order (brands.json long_calendar.rotation) + the calendar block."""
+    cal = brand_cfg(z, "long_calendar", {}) or {}
+    return list(cal.get("rotation") or [main_series(z)]), cal
+
+def due(z, eps):
+    """
+    Aleš 18. 11.: no weekdays, no day ahead. (series, rotation slot, special) the channel makes next:
+    the rotation goes in order and moves on only when its series was really built; the very first
+    episode of the channel is the special (first reactions) when it has the material.
+    """
+    rot, cal = rotation(z)
+    last = (eps.get("_last") or {}).get(z) or {}
+    i = int(last.get("next") or 0) % len(rot)
+    return rot[i], i, (cal.get("first") if not last else None)
+
+def hours_since(iso, now):
+    return (now - datetime.fromisoformat(iso)).total_seconds() / 3600
+
+def gate(z, eps, now):
+    """Why the automatic run makes nothing for this brand now (None = it may build): at most one long-form
+    per long_min_gap_h (Aleš uploads by hand + YouTube cadence), after a failure the next try only after
+    long_retry_h (so a failure e-mail does not come every 2 h)."""
+    last = (eps.get("_last") or {}).get(z) or {}
+    gap = float(brand_cfg(z, "long_min_gap_h", 20))
+    if last.get("at") and hours_since(last["at"], now) < gap:
+        return f"cap: last long-form {hours_since(last['at'], now):.1f} h ago (< {gap:g} h)"
+    fail = (eps.get("_fail") or {}).get(z)
+    retry = float(brand_cfg(z, "long_retry_h", 6))
+    if fail and hours_since(fail, now) < retry:
+        return f"last attempt failed {hours_since(fail, now):.1f} h ago (next try after {retry:g} h)"
+    return None
+
+def target_len(z, a):
+    """Length the automatic run waits for (a strong episode, after cuts); manual / test runs: the floor only."""
+    if not calendar_run(a):
+        return MIN_VIDEO
+    return max(MIN_VIDEO, float(brand_cfg(z, "long_target_min", 8)) * 60)
+
+def enough_candidates(cands, z, target):
+    """Cheap pre-check before any download / Whisper / vision: even if every candidate made it with an
+    optimistic length, would it reach the target?"""
+    return len(cands) * (MOMENT_MAX_EST + CHAPTER_EXTRA[z]) + 3 * COLD_SHOT + 8.0 >= target
 
 # ---------------------------------------------------------------------------
 # state: episodes, reserve, promotions
@@ -157,23 +203,33 @@ def titles_texts(z, serie, n, d, moments):
         out = t.format(n=n, who="", lead=lead, k=k).replace(" ()", "")
     return out[:100].rstrip(" -:(")
 
-def window_for(serie, run_day, a):
-    """Moments window for a run on run_day: daily series = yesterday, themed / weekly = last 7 days,
-    first reactions = since the launch."""
+def window_for(serie, now, a, eps=None, z=None):
+    """
+    Moments window (Aleš 18. 11.): since the last episode of this series on this channel (or the unlock),
+    up to now, never more than LOOKBACK_DAYS back. First reactions: the first FIRST_HOURS after the unlock.
+    --od / --do override it (whole Prague days).
+    """
     if a.od or a.do:
         od = date.fromisoformat(a.od or a.do)
         do = date.fromisoformat(a.do or a.od)
+        t0 = datetime(od.year, od.month, od.day, tzinfo=TZ).timestamp()
+        t1 = datetime(do.year, do.month, do.day, tzinfo=TZ).timestamp() + 86400
     else:
-        days = SERIES[series_key(serie)]["days"]
-        do = run_day - timedelta(days=1)
-        od = GAME_OUT if days == 0 else do - timedelta(days=max(days, 1) - 1)   # first reactions: since the unlock
-        od = max(od, GAME_OUT)
-    t0 = datetime(od.year, od.month, od.day, tzinfo=TZ).timestamp()
-    t1 = datetime(do.year, do.month, do.day, tzinfo=TZ).timestamp() + 86400
+        sk = series_key(serie)
+        t1 = now.timestamp()
+        if sk == "first-reactions":
+            t0, t1 = GAME_OUT_TS, min(t1, GAME_OUT_TS + FIRST_HOURS * 3600)
+        else:
+            last = ((eps or {}).get("_series_at") or {}).get(z, {}).get(sk)
+            t0 = (datetime.fromisoformat(last).timestamp() if last else
+                  GAME_OUT_TS if not a.hra else t1 - max(SERIES[sk]["days"], 1) * 86400)
+            t0 = max(t0, t1 - LOOKBACK_DAYS * 86400)
     if not a.hra:
         # 18. 11. (Aleš): GTA 6 unlocks in NZ on 18. 11. 12:00 Prague; anything earlier in the category is
         # Just Chatting / trailers / other games, never a "GTA 6" compilation (the test category is exempt)
         t0 = max(t0, GAME_OUT_TS)
+    od = datetime.fromtimestamp(t0, TZ).date()
+    do = datetime.fromtimestamp(max(t0, t1 - 1), TZ).date()
     return od, do, t0, t1
 
 def candidates(a, serie, t0, t1, used):
@@ -450,64 +506,83 @@ def episode_ok(picked, z):
     """A part must stand on its own: >= 5 min, a strong #1 and cold open (Aleš: no weak part 2)."""
     if not picked or video_len(picked, z) < MIN_VIDEO:
         return False
-    if story_mode(z):                                      # a story has no #1 to carry: length + every moment fun
-        return True
+    if story_mode(z):                                      # a story has no #1, but it needs a climax (story arc)
+        return max(r.get("fun") or 0 for r in picked) >= 0.5
     top3 = sorted(picked, key=lambda r: -r["score"])[:3]
     return (top3[0].get("fun") or 0) >= 0.5 and sum(r.get("fun") or 0 for r in top3) / len(top3) >= 0.45
 
-def plan_day(a, z, publish_day, run_day, used, eps, res, vis_cache=None, verify=True):
+def plan_run(a, z, now, used, eps, res, vis_cache=None, verify=True):
     """
-    The series for the publish day (calendar, or a promotion), its moments, the fallback to the main
-    series when the topic is thin. Returns a plan dict (no files written).
+    Aleš 18. 11.: a long-form as soon as the pool holds a strong episode. Tries, in order: the channel's
+    first-episode special (first reactions), the series due in the rotation (or same-mission in its slot
+    when one mission was played by >= 3 streamers), then the main series. The first one with a strong
+    episode of target_len() wins. Returns a plan dict (no files written); serie None = not enough yet.
+    plan["next"] = the rotation slot due after this episode (moves on only when the due series is built).
     """
-    promo = (res.get("_promo") or {}).get(z, {}).get(str(publish_day))
-    serie = a.serie or promo or calendar_series(z, publish_day)
-    plan = {"day": str(publish_day), "serie": serie, "planned": serie, "note": ""}
-    if not serie:
-        plan.update(serie=None, note="podle kalendáře dnes long-form není")
-        return plan
-    if promo and not a.serie:
-        plan["note"] = f"Navíc díl série {promo} (má materiál na 2+ díly, její další termín je za víc než 3 dny)."
-    cal = (K.load_json(K.BRANDS, {}).get(z) or {}).get("long_calendar") or {}
-    if (not a.serie and not promo and flag(z, "multi_pov")
-            and cal.get("same_mission_day") == WD[publish_day.weekday()]):
-        try:                                               # multi-POV of one mission replaces the rotating theme
-            import kategorie
-            od, do, t0, t1 = window_for("same-mission", run_day, a)
-            if mission_groups(candidates(a, "same-mission", t0, t1, used)):
-                plan["note"] = f"Místo tématu {serie}: stejná mise od více streamerů."
-                serie = plan["serie"] = "same-mission"
-        except Exception as e:
-            log(f"  same mission: {str(e)[-120:]}")
+    rot, cal = rotation(z)
+    rot_s, slot, special = due(z, eps)
+    run_day = now.date()
+    target = target_len(z, a)
+    plan = {"day": str(run_day), "serie": None, "planned": a.serie or special or rot_s, "note": "", "next": slot}
+    if a.serie:
+        tries = [(a.serie, None)]
+    else:
+        if (slot == cal.get("same_mission_slot") and flag(z, "multi_pov")):
+            try:                                           # multi-POV of one mission replaces the slot's theme
+                od, do, t0, t1 = window_for("same-mission", now, a, eps, z)
+                if mission_groups(candidates(a, "same-mission", t0, t1, used)):
+                    plan["note"] = f"Místo tématu {rot_s}: stejná mise od více streamerů."
+                    rot_s = "same-mission"
+            except Exception as e:
+                log(f"  same mission: {str(e)[-120:]}")
+        if special and now.timestamp() < GAME_OUT_TS + FIRST_HOURS * 3600:
+            tries = [(special, None)]                      # its window is still filling: the first episode waits
+        else:                                              # for it (no main-series fallback either)
+            tries = ([(special, None)] if special else []) + [(rot_s, slot)]
+    if all(s != main_series(z) for s, _ in tries) and tries != [(special, None)]:
+        tries.append((main_series(z), None))
     tried = []
-    for s in [serie] + ([main_series(z)] if serie != main_series(z) else []):
-        od, do, t0, t1 = window_for(s, run_day, a)
-        reserve_ids = {r["id"] for r in reserve_rows(z, s, run_day, res)}
+    for s, sl in tries:
+        od, do, t0, t1 = window_for(s, now, a, eps, z)
         cands = candidates(a, s, t0, t1, used)
+        reserve_ids = {r["id"] for r in reserve_rows(z, s, run_day, res)}
+        if not enough_candidates(cands, z, target):
+            tried.append((s, 0, 0, {f"pool: jen {len(cands)} kandidátů": 1}))
+            continue
         # the reserve of this series goes first (it is already verified), then the new ones by views
         picked, rest, why, lead = pick_episode(a, s, cands, z, verify, vis_cache, reserve_ids)
         need = MIN_VERIFIED if SERIES[series_key(s)].get("cats") else a.min_momentu_hlavni
-        enough = len(picked) >= min(need, a.min_momentu) and episode_ok(picked, z)
-        tried.append((s, len(picked), round(video_len(picked, z)), why))
+        length = video_len(picked, z) if picked else 0.0
+        enough = len(picked) >= min(need, a.min_momentu) and episode_ok(picked, z) and length >= target
+        tried.append((s, len(picked), round(length), why))
         if enough:
-            n = episode_next(z, s, eps)
-            plan.update(serie=s, od=str(od), do=str(do), picked=picked, rest=rest, episode=n, lead=lead,
-                        length=round(video_len(picked, z)))
-            if s != serie:
+            plan.update(serie=s, od=str(od), do=str(do), picked=picked, rest=rest, episode=episode_next(z, s, eps),
+                        lead=lead, length=round(length), slot=sl,
+                        next=(sl + 1) % len(rot) if sl is not None else slot)
+            if s != tries[0][0]:
                 plan["note"] = (plan["note"] + " " if plan["note"] else "") + \
-                    f"Téma {serie} nemělo dost momentů ({tried[0][1]}) → vyšlo {s}."
+                    f"Série {tries[0][0]} ještě neměla na silný díl ({tried[0][1]} momentů) → vyšlo {s}."
             return plan
-    plan.update(serie=None, note=f"Žádné video: téma {serie} ani hlavní série nemají 5 min materiálu "
-                                 f"({'; '.join(f'{s}: {n} momentů, {l} s, vyřazeno {w}' for s, n, l, w in tried)}).", tried=tried)
+    plan.update(note=f"Zatím není na silný díl (cíl {target / 60:.0f} min po střizích): "
+                     f"{'; '.join(f'{s}: {n} momentů, {l} s, vyřazeno {w}' for s, n, l, w in tried)}.", tried=tried)
     return plan
 
-def commit_plan(a, z, plan, used, eps, res, run_day):
-    """After a built (or simulated) episode: number up, used moments, reserve, maybe a promotion.
-    Returns the undo record (undo_plan) - long.yml rolls the state back when the e-mail did not go out,
-    so the numbering never skips a video Aleš never got."""
+def commit_plan(a, z, plan, used, eps, res, run_day, now=None):
+    """After a built (or simulated) episode: number up, used moments, reserve; with now (a real GTA 6
+    episode): the channel's last episode (cap + rotation, eps["_last"]) and the series' window start
+    (eps["_series_at"]). Returns the undo record (undo_plan) - long.yml rolls the state back when the
+    e-mail did not go out, so the numbering never skips a video Aleš never got."""
     s = series_key(plan["serie"])
     undo = {"z": z, "s": s, "eps": (eps.get(z) or {}).get(s), "res": (res.get(z) or {}).get(s),
             "used": {}, "promo": None}
+    if now is not None:
+        undo["last"] = (eps.get("_last") or {}).get(z)
+        undo["series_at"] = (eps.get("_series_at") or {}).get(z, {}).get(s)
+        undo["fail"] = (eps.get("_fail") or {}).get(z)
+        eps.setdefault("_last", {})[z] = {"serie": s, "at": now.isoformat(timespec="seconds"),
+                                          "next": plan.get("next") or 0}
+        eps.setdefault("_series_at", {}).setdefault(z, {})[s] = now.isoformat(timespec="seconds")
+        (eps.get("_fail") or {}).pop(z, None)
 
     def mark(i):
         if i not in undo["used"]:
@@ -528,16 +603,6 @@ def commit_plan(a, z, plan, used, eps, res, run_day):
         if x["id"] not in used:
             mark(x["id"])
         used.setdefault(x["id"], {"znacka": z, "serie": s, "datum": plan["day"], "reserve": True})
-    # material for 2+ more episodes and the series' next slot > 3 days away: an extra episode in the
-    # next calendar slot of this channel (replacing that day's series)
-    if len(merged) >= 2 * a.min_momentu and plan["serie"] != main_series(z):
-        day = date.fromisoformat(plan["day"])
-        nxt = next((day + timedelta(days=i) for i in range(1, 15) if calendar_series(z, day + timedelta(days=i)) == s), None)
-        free = next((day + timedelta(days=i) for i in range(1, 8) if calendar_series(z, day + timedelta(days=i))), None)
-        if free and (nxt is None or (nxt - day).days > 3) and calendar_series(z, free) not in ("top-week", "first-reactions"):
-            pr = res.setdefault("_promo", {}).setdefault(z, {})
-            undo["promo"] = [str(free), pr.get(str(free))]
-            pr[str(free)] = s
     cutoff = str(run_day - timedelta(days=30))
     for k in [k for k, v in used.items() if v.get("datum", "") < cutoff]:
         used.pop(k)
@@ -559,12 +624,19 @@ def undo_plan(undo, used, eps, res):
             used.pop(i, None)
         else:
             used[i] = old
-    if "built" in undo:                                   # the publish day is free again (a retry may build it)
-        if undo["built"] is None:
-            (eps.get("_built") or {}).pop(z, None)
+    for key, sub, old in (("_last", None, undo.get("last", ...)), ("_series_at", s, undo.get("series_at", ...)),
+                          ("_fail", None, undo.get("fail", ...))):
+        if old is ...:                                    # an older meta without this part
+            continue
+        box = eps.setdefault(key, {})                     # the cap is free again: the next run may build
+        if sub is not None:
+            box = box.setdefault(z, {})
+        k = sub if sub is not None else z
+        if old is None:
+            box.pop(k, None)
         else:
-            eps.setdefault("_built", {})[z] = undo["built"]
-    if undo.get("promo"):
+            box[k] = old
+    if undo.get("promo"):                                 # metas from before 18. 11. (calendar promotions)
         day, old = undo["promo"]
         pr = (res.get("_promo") or {}).get(z) or {}
         if old is None:
@@ -734,21 +806,27 @@ def yt_tags(z, serie, moments):
 def tags_len(tags):
     return sum(len(t) + (2 if " " in t else 0) for t in tags) + max(0, len(tags) - 1)
 
-def suggested_slot(z, serie, d, publish):
+def asap_slot(z, serie, now):
     """
-    When to publish (Prague): on the PUBLISH day of the plan (the calendar day this video is for; the
-    e-mail comes a day ahead), US afternoon = Prague evening; each brand its own time, moved
-    -20..+20 min per day, never :00 / :30 (like shorts). Weekly a bit earlier than the daily.
+    Aleš 18. 11.: "NAHRÁT HNED". The publish time to set in Studio (Prague) = the next good slot at least
+    SLOT_LEAD_MIN from now, never :00 / :30 (like shorts):
+      18:00-03:00  right away (US/UK prime),
+      03:00-08:10  the AU evening slot (Sydney = Prague + 10 h): 08:10-09:20 bananas, 08:30-09:40 fanpage,
+      08:10-09:40  right away (inside the AU slot),
+      09:40-18:40  today's US/UK prime: 18:40-19:40 bananas, 19:40-20:40 fanpage.
     """
-    hh, mm = {("bananas", 0): (20, 40), ("fanpage", 0): (22, 10),
-              ("bananas", 1): (19, 40), ("fanpage", 1): (21, 10)}[(z, int(serie == "top-week"))]
-    base_day = publish
-    t = datetime(base_day.year, base_day.month, base_day.day, hh, mm, tzinfo=TZ)
-    rnd = random.Random(f"{d}:{z}:{serie}:long")
-    t += timedelta(minutes=rnd.randint(-20, 20))
+    now = now.astimezone(TZ)
+    t = (now + timedelta(minutes=SLOT_LEAD_MIN + 1)).replace(second=0, microsecond=0)
+    rnd = random.Random(f"{now:%Y-%m-%d}:{z}:{serie}:long")
+    hm = t.hour * 60 + t.minute
+    if 3 * 60 <= hm < 8 * 60 + 10:
+        t = max(t, t.replace(hour=8, minute=10) + timedelta(minutes=rnd.randint(0, 50) + (20 if z == "fanpage" else 0)))
+    elif 9 * 60 + 40 <= hm < 18 * 60 + 40:
+        h0 = 18 if z == "bananas" else 19
+        t = max(t, t.replace(hour=h0, minute=40) + timedelta(minutes=rnd.randint(0, 60)))
     while t.minute in (0, 30):
         t += timedelta(minutes=1)
-    return t.replace(second=0, microsecond=0)
+    return t
 
 # -----------------------------------------------------------------------------
 # selection
@@ -1741,17 +1819,56 @@ def video_moments(picked, info):
     order = {x["id"]: i for i, x in enumerate(info["moments"])}
     return sorted((m for m in picked if m["id"] in order), key=lambda m: (m.get("rank", 10 ** 6), order[m["id"]]))
 
-def failed_path(z, publish, serie):
-    return OUT / z / f"{publish}_{(serie or 'long').replace(':', '-')}.failed.json"
+def stamp(now):
+    """File name prefix of one run (a channel may get more than one episode a day when the cap is lowered)."""
+    return now.astimezone(TZ).strftime("%Y-%m-%d_%H%M")
 
-def write_failed(z, publish, serie, reason):
+def failed_path(z, when, serie):
+    return OUT / z / f"{when}_{(serie or 'long').replace(':', '-')}.failed.json"
+
+def write_failed(z, when, serie, reason):
     """Aleš 18. 11.: every failure comes by e-mail, never silence. long.yml mails every *.failed.json."""
-    fp = failed_path(z, publish, serie)
+    fp = failed_path(z, when, serie)
     fp.parent.mkdir(parents=True, exist_ok=True)
-    fp.write_text(json.dumps({"znacka": z, "serie": serie, "publish_day": str(publish), "duvod": reason},
-                             ensure_ascii=False, indent=2), encoding="utf-8")
-    print(f"::warning::Long-form {z} {publish}: {reason}")
+    fp.write_text(json.dumps({"znacka": z, "serie": serie, "publish_day": str(when)[:10], "kdy": str(when),
+                              "duvod": reason}, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(f"::warning::Long-form {z} {when}: {reason}")
     return fp
+
+def write_skip(z, when, reason):
+    """Nothing to make now (cap, not enough material yet): a mark for long.yml, no e-mail."""
+    print(f"::notice::Long-form {z} {when}: {reason}")
+    fp = OUT / z / f"{when}.skip.json"
+    fp.parent.mkdir(parents=True, exist_ok=True)
+    fp.write_text(json.dumps({"znacka": z, "kdy": str(when), "duvod": reason}, ensure_ascii=False), encoding="utf-8")
+    return fp
+
+def note_failure(z, now):
+    """An automatic attempt failed (QA, crash): the next try only after long_retry_h (gate)."""
+    eps = K.load_json(EPISODES, {})
+    eps.setdefault("_fail", {})[z] = now.isoformat(timespec="seconds")
+    K.save_json(EPISODES, eps)
+
+def vision_load():
+    """Vision answers survive between runs (long_vision.json): a run every 2 h must not ask about the same
+    moment again and again (shared daily budget). Only real answers are kept, 14 days."""
+    cut = str(datetime.now(TZ).date() - timedelta(days=14))
+    out = {}
+    for k, v in K.load_json(VISION, {}).items():
+        i, _, q = k.rpartition("|")
+        if v[2] >= cut:
+            out[(i, q or None)] = (v[0], v[1])
+    return out
+
+def vision_save(cache):
+    old = K.load_json(VISION, {})
+    today = str(datetime.now(TZ).date())
+    for (i, q), (gp, tp) in cache.items():
+        if gp is not None and (q is None or tp is not None):
+            k = f"{i}|{q or ''}"
+            old[k] = [gp, tp, old[k][2] if k in old else today]
+    cut = str(datetime.now(TZ).date() - timedelta(days=14))
+    K.save_json(VISION, {k: v for k, v in old.items() if v[2] >= cut})
 
 def thumb_variants(left, after):
     """AI thumbnail variants for this brand: the daily image budget (Cloudflare resets 00:00 UTC) is shared,
@@ -1781,9 +1898,8 @@ def main():
     p = argparse.ArgumentParser(description="long-form YouTube compilations (16:9) from stream moments")
     p.add_argument("--znacka", choices=["bananas", "fanpage"])
     p.add_argument("--vratit", help="roll the state back for this .meta.json (long.yml: the e-mail failed)")
-    p.add_argument("--znovu", action="store_true", help="build even when the publish day is already done")
-    p.add_argument("--serie", default=None, help="override the calendar: " + ", ".join(SERIES) + ", streamer:<login>")
-    p.add_argument("--den", help="publish day YYYY-MM-DD (default tomorrow, Prague): its calendar series")
+    p.add_argument("--znovu", action="store_true", help="build now even when the cap (long_min_gap_h) is not over")
+    p.add_argument("--serie", default=None, help="override the rotation: " + ", ".join(SERIES) + ", streamer:<login>")
     p.add_argument("--od", help="first day of moments (YYYY-MM-DD, Prague)")
     p.add_argument("--do", help="last day of moments (YYYY-MM-DD, Prague)")
     p.add_argument("--delka", type=float, default=560, help="target length of the moments (s); video 8-12 min")
@@ -1798,7 +1914,7 @@ def main():
     p.add_argument("--pages", type=int, default=3, help="Twitch API pages of 100 clips")
     p.add_argument("--whisper", default="small.en")
     p.add_argument("--zkouska", action="store_true", help="plan only, nothing rendered or saved")
-    p.add_argument("--kalendar", type=int, default=0, help="with --zkouska: simulate N publish days")
+    p.add_argument("--kalendar", type=int, default=0, help="simulate the next N episodes (rotation), nothing saved")
     p.add_argument("--bez-overeni", action="store_true", help="skip the vision check (test)")
     p.add_argument("--bez-nahledu", action="store_true")
     p.add_argument("--out", help="also copy the video here (e.g. out/_ukazka/long_bananas.mp4)")
@@ -1811,65 +1927,67 @@ def main():
     if a.serie and series_key(a.serie) not in SERIES:
         sys.exit(f"unknown series {a.serie}")
     K.WHISPER_MODEL = a.whisper
-    run_day = datetime.now(TZ).date()
-    publish = date.fromisoformat(a.den) if a.den else run_day + timedelta(days=1)
+    now = datetime.now(TZ)
     if a.kalendar or a.zkouska:
-        return make(a, run_day, publish)
+        return make(a, now)
+    auto = calendar_run(a)                                 # make() sets a.serie to the planned series
     try:                                                   # never silence: any crash becomes a .failed.json
-        return make(a, run_day, publish)
+        return make(a, now)
     except Exception as e:
         import traceback
         traceback.print_exc()
-        write_failed(a.znacka, publish, a.serie or "long", f"crash: {type(e).__name__}: {str(e)[-300:]}")
+        write_failed(a.znacka, stamp(now), a.serie or "long", f"crash: {type(e).__name__}: {str(e)[-300:]}")
+        if auto:
+            note_failure(a.znacka, now)
         return 1
 
 def calendar_run(a):
-    """The regular run (cron 23:25 UTC or the 24/7 PC dispatch ~00:30): no forced series, no test category."""
+    """The regular run (long.yml every 2 h: cron + the 24/7 PC dispatch): no forced series, no test category."""
     return not (a.serie or a.hra or getattr(a, "znovu", False))
 
-def make(a, run_day, publish):
+def make(a, now):
+    """
+    One run for one brand (Aleš 18. 11.: upload as soon as there is a stock of clips):
+    cap / retry gate -> the due series (rotation) -> strong episode in the pool? build now + e-mail now
+    (meta for posli_mail.py) : skip silently (.skip.json, no e-mail).
+    """
     z = a.znacka
+    when = stamp(now)
+    auto = calendar_run(a)                                 # before a.serie is set to the planned series below
     used, eps, res = K.load_json(USED, {}), K.load_json(EPISODES, {}), K.load_json(RESERVE, {})
-    done = (eps.get("_built") or {}).get(z)
-    if calendar_run(a) and not a.kalendar and done == str(publish):
-        # 18. 11.: long.yml runs twice a night (fallback cron + the PC's dispatch): one video and one e-mail per
-        # brand and publish day. Only a built + mailed video marks the day (a failed run / failed e-mail does not)
-        print(f"::notice::Long-form {z} {publish}: already built in an earlier run tonight, skipping")
-        if not a.zkouska:
-            skip = OUT / z / f"{publish}.skip.json"
-            skip.parent.mkdir(parents=True, exist_ok=True)
-            skip.write_text(json.dumps({"znacka": z, "publish_day": str(publish), "duvod": "already built"},
-                                       ensure_ascii=False), encoding="utf-8")
-        return 0
-    vis = {}
-    if a.kalendar:                                         # simulation: nothing is saved
-        print(f"\n{z}: calendar from {publish} ({a.kalendar} days), moments {a.od or 'per series'}..{a.do or ''}")
-        print(f"{'day':<11} {'planned':<17} {'series':<17} {'#':>3} {'len':>6} {'mom':>4} {'reserve':>7}  note")
-        for i in range(a.kalendar):
-            d = publish + timedelta(days=i)
-            plan = plan_day(a, z, d, d - timedelta(days=1), used, eps, res, vis, not a.bez_overeni)
-            if plan.get("serie"):
-                commit_plan(a, z, plan, used, eps, res, d - timedelta(days=1))
-                rsv = len(reserve_rows(z, plan["serie"], d, res))
-                print(f"{plan['day']:<11} {plan['planned'] or '-':<17} {plan['serie']:<17} {plan['episode']:>3} "
-                      f"{plan['length'] // 60:>3}:{plan['length'] % 60:02d} {len(plan['picked']):>4} {rsv:>7}  {plan['note']}")
-            else:
-                print(f"{plan['day']:<11} {plan['planned'] or '-':<17} {'-':<17} {'-':>3} {'-':>6} {'-':>4} {'-':>7}  {plan['note']}")
-        return 0
-    plan = plan_day(a, z, publish, run_day, used, eps, res, vis, not a.bez_overeni)
-    if not plan.get("serie"):
-        if a.zkouska or not plan.get("planned"):           # the calendar has no long-form that day: nothing to say
-            print(f"::notice::Long-form {z} {publish}: {plan['note']}")
+    if auto and not a.kalendar:
+        why = gate(z, eps, now)
+        if why:                                            # e.g. the other trigger of the same 2 h already built
             if not a.zkouska:
-                skip = OUT / z / f"{publish}.skip.json"
-                skip.parent.mkdir(parents=True, exist_ok=True)
-                skip.write_text(json.dumps({"znacka": z, "publish_day": str(publish), "duvod": plan["note"]},
-                                           ensure_ascii=False), encoding="utf-8")
+                write_skip(z, when, why)
             return 0
-        write_failed(z, publish, plan["planned"], plan["note"])  # < 5 min of material: Aleš gets an e-mail
+    vis = vision_load() if not a.hra else {}
+    if a.kalendar:                                         # simulation of the next episodes: nothing is saved
+        print(f"\n{z}: next {a.kalendar} episodes from now, moments {a.od or 'since the series'}..{a.do or 'now'}")
+        print(f"{'due':<17} {'series':<17} {'#':>3} {'len':>6} {'mom':>4}  note")
+        for i in range(a.kalendar):
+            plan = plan_run(a, z, now, used, eps, res, vis, not a.bez_overeni)
+            if not plan.get("serie"):
+                print(f"{plan['planned'] or '-':<17} {'-':<17} {'-':>3} {'-':>6} {'-':>4}  {plan['note']}")
+                break
+            commit_plan(a, z, plan, used, eps, res, now.date(), now)
+            print(f"{plan['planned'] or '-':<17} {plan['serie']:<17} {plan['episode']:>3} "
+                  f"{plan['length'] // 60:>3}:{plan['length'] % 60:02d} {len(plan['picked']):>4}  {plan['note']}")
+        return 0
+    plan = plan_run(a, z, now, used, eps, res, vis, not a.bez_overeni)
+    if vis and not a.zkouska and not a.hra:
+        vision_save(vis)
+    if not plan.get("serie"):
+        if a.zkouska or auto:                              # not enough for a strong episode yet: wait, no e-mail
+            if not a.zkouska:
+                write_skip(z, when, plan["note"])
+            else:
+                print(f"::notice::Long-form {z}: {plan['note']}")
+            return 0
+        write_failed(z, when, plan["planned"], plan["note"])   # a manual run asked for it: Aleš gets an e-mail
         return 0
     picked = plan["picked"]
-    log(f"{z} {plan['serie']} #{plan['episode']} for {publish}: {len(picked)} moments ~{plan['length'] / 60:.1f} min, "
+    log(f"{z} {plan['serie']} #{plan['episode']} now ({when}): {len(picked)} moments ~{plan['length'] / 60:.1f} min, "
         f"{len(plan['rest'])} to the reserve. {plan['note']}")
     if a.zkouska:
         for m in picked:
@@ -1920,18 +2038,20 @@ def make(a, run_day, publish):
     if problems or texts is None:
         if out is not None:
             Path(out).unlink(missing_ok=True)
-        write_failed(z, publish, a.serie, "; ".join(problems) or "no video built")
+        write_failed(z, when, a.serie, "; ".join(problems) or "no video built")
+        if auto:
+            note_failure(z, now)
         return 0
     log(f"  most viral streamer: {lead} ({max(m['reach'] for m in moments):,} reach)")
     for m in moments:
         cq = m.get("cutqa") or {}
         log(f"  cut #{m['rank']} {m['channel']}: '{cq.get('first')}' ... '{cq.get('last')}'")
-    slot = suggested_slot(z, a.serie, do, publish)
+    slot = asap_slot(z, a.serie, datetime.now(TZ))       # the build took a while: from the e-mail's time
     strongest = max(moments, key=lambda m: (m.get("score") or 0, m.get("fun") or 0))
     meta = {
         "znacka": z, "kanal": "gta6bananaclips" if z == "bananas" else "gta6fanpageclip",
         "serie": a.serie, "episode": plan["episode"], "datum": str(do), "od": plan["od"], "do": plan["do"],
-        "publish_day": str(publish), "poznamka": plan["note"],
+        "publish_day": str(slot.date()), "poznamka": plan["note"],
         "title": texts[0], "description": texts[1], "tags": texts[2], "video": str(out), "duration_s": round(dur, 1),
         "nahrat": slot.isoformat(), "playlist": a.serie if not a.serie.startswith("streamer:") else "streamers",
         "moments": [{k: m.get(k) for k in ("id", "rank", "channel", "name", "url", "title", "views", "tags", "peak",
@@ -1944,10 +2064,9 @@ def make(a, run_day, publish):
     mp = out.with_name(out.name.replace(".mp4", ".meta.json"))
     log(f"  -> {out} ({dur / 60:.1f} min), '{meta['title']}', upload {slot:%Y-%m-%d %H:%M}")
     plan["picked"] = moments                              # only what is in the video is used (league: a subset)
-    meta["undo"] = commit_plan(a, z, plan, used, eps, res, run_day)   # the number goes up only now
-    if calendar_run(a):                                   # this publish day is done (rolled back if the e-mail fails)
-        meta["undo"]["built"] = (eps.get("_built") or {}).get(z)
-        eps.setdefault("_built", {})[z] = str(publish)
+    # the number goes up only now; a real GTA 6 episode also starts the cap and moves the rotation on
+    # (all rolled back when the e-mail fails)
+    meta["undo"] = commit_plan(a, z, plan, used, eps, res, now.date(), None if a.hra else now)
     mp.write_text(json.dumps(meta, indent=2, ensure_ascii=False), encoding="utf-8")
     K.save_json(USED, used)
     K.save_json(EPISODES, eps)
