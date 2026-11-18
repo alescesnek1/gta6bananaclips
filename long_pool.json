@@ -3069,10 +3069,83 @@
     "channel": "nickmercs",
     "platform": "twitch",
     "title": "HOOO Deerrr XD",
-    "views": 520,
+    "views": 562,
     "created": 1795032463,
     "category": "Grand Theft Auto VI",
-    "added": 1795035960
+    "added": 1795037214,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/nickmercs/20261118_twitch_AbstruseIncredulousFennelSeemsGood-aRIbqcXBbvi5gRo7/source.mp4",
+    "peak": 42.85,
+    "cut": [
+      32.63,
+      47.83
+    ],
+    "dur": 60.0,
+    "tags": [
+      "wow"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.0,
+      "rage": 0.15,
+      "first-reaction": 0.2,
+      "wow": 0.45,
+      "_loud": 1.6,
+      "_motion": 16.8
+    },
+    "quote": "No, no way he just skipped the room",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.35
+    },
+    "primary": "wow",
+    "proven": [],
+    "evidence": {
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.33,
+    "signals": {
+      "siren": 0.0,
+      "impact": 8.7,
+      "loud": 1.4,
+      "motion": 15.0,
+      "sustained": 0.61,
+      "spike": 2.5,
+      "laugh": 0,
+      "static": 0.01,
+      "letterbox": 0.0,
+      "luma": 52.1,
+      "dark": 0.0
+    }
   },
   "twitch_EncouragingAntsyElephantTBTacoRight-rgxRdyetbHC8TzQ2": {
     "id": "twitch_EncouragingAntsyElephantTBTacoRight-rgxRdyetbHC8TzQ2",
@@ -3092,9 +3165,37 @@
     "channel": "lirik",
     "platform": "twitch",
     "title": "Lirik finds An Easter egg",
-    "views": 600,
+    "views": 991,
     "created": 1795034357,
     "category": "Grand Theft Auto VI",
-    "added": 1795036774
+    "added": 1795037214
+  },
+  "twitch_ColorfulProtectiveKittenCharlietheUnicorn-BTakUsG1USTpEf1E": {
+    "id": "twitch_ColorfulProtectiveKittenCharlietheUnicorn-BTakUsG1USTpEf1E",
+    "url": "https://www.twitch.tv/zoil/clip/ColorfulProtectiveKittenCharlietheUnicorn-BTakUsG1USTpEf1E",
+    "channel": "zoil",
+    "platform": "twitch",
+    "title": "theMaster",
+    "views": 589,
+    "created": 1795002008,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932212372",
+    "vod_offset": 3003,
+    "cluster": 1,
+    "added": 1795037214
+  },
+  "twitch_DarlingHealthyGrouseMVGame--9sw1QWYsqn-hG8N": {
+    "id": "twitch_DarlingHealthyGrouseMVGame--9sw1QWYsqn-hG8N",
+    "url": "https://www.twitch.tv/zlaner/clip/DarlingHealthyGrouseMVGame--9sw1QWYsqn-hG8N",
+    "channel": "zlaner",
+    "platform": "twitch",
+    "title": "Inception",
+    "views": 587,
+    "created": 1795009560,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932157318",
+    "vod_offset": 18777,
+    "cluster": 1,
+    "added": 1795037214
   }
 }
