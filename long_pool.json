@@ -3239,5 +3239,16 @@
     "vod_offset": 34694,
     "cluster": 2,
     "added": 1795038166
+  },
+  "twitch_PerfectCrypticChinchillaKappaClaus-nCPM8sJuQmLth2l4": {
+    "id": "twitch_PerfectCrypticChinchillaKappaClaus-nCPM8sJuQmLth2l4",
+    "url": "https://www.twitch.tv/jasontheween/clip/PerfectCrypticChinchillaKappaClaus-nCPM8sJuQmLth2l4",
+    "channel": "jasontheween",
+    "platform": "twitch",
+    "title": "Reset",
+    "views": 1626,
+    "created": 1795036925,
+    "category": "Grand Theft Auto VI",
+    "added": 1795038981
   }
 }
