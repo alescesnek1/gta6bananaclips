@@ -1521,7 +1521,8 @@ def music_cfg(seed, total, music=None):
 
 def audio_mix(clip_audio, total, card_idx=None, card_at=0.0, music_idx=None, music_vol=0.4, sfx_idx=None, sfx_at=0.0,
               replay=None, mute=(), riser_idx=None, hit_idx=None, peak=None,
-              clip_end=None, outro_idx=None, follow_idx=None, follow_at=0.0, extras=(), hook_gain=None):
+              clip_end=None, outro_idx=None, follow_idx=None, follow_at=0.0, extras=(), hook_gain=None,
+              voice_gain=0.0, music_env=None, voice_end=None, stems=False):
     """
     The short's sound: the clip's own audio + our music at one steady level (Aleš: always the
     same volume) + the score card's landing 'tups' + the hook flash whoosh (sfx, at sfx_at s).
@@ -1533,13 +1534,18 @@ def audio_mix(clip_audio, total, card_idx=None, card_at=0.0, music_idx=None, mus
     clip_end on). follow_idx = the Follow card's soft click at follow_at. Music runs to `total`.
     extras = [(input idx, at s, volume)]: more of our sounds (Heat whooshes).
     The limiter keeps the true peak under -1 dBTP (qa_short checks it).
+    Speech first (Aleš 18. 11.: the music was too loud over quiet streams): voice_gain (dB, from
+    mix_levels) brings the streamer's speech to SPEECH_DB before anything is added; music_env =
+    the music's volume expression (ducked under every sentence, a bit up in the gaps) and a
+    sidechain compressor keyed on the voice pushes it further down while anyone talks.
+    voice_end = the clip's own sound fades out there (the next sentence would be cut under the
+    card). stems = return the graph with [vo] (voice) and [mu] (music) unmixed (mix_check).
     """
     parts, f = [], ""
     fmt = "aformat=sample_rates=48000:channel_layouts=stereo"
+    fmt0 = fmt + (f",volume={voice_gain:.2f}dB" if voice_gain else "")
     if mute:
-        fmt0 = fmt + ",volume=0:enable='" + "+".join(f"between(t\\,{a:.2f}\\,{b:.2f})" for a, b in mute) + "'"
-    else:
-        fmt0 = fmt
+        fmt0 += ",volume=0:enable='" + "+".join(f"between(t\\,{a:.2f}\\,{b:.2f})" for a, b in mute) + "'"
     if hook_gain:                               # (hook end s, dB): the teaser no louder than HOOK_MAX_LU over the clip
         fmt0 += f",volume={hook_gain[1]:.1f}dB:enable='lt(t\\,{hook_gain[0]:.2f})'"
     if clip_audio and replay:
@@ -1550,8 +1556,14 @@ def audio_mix(clip_audio, total, card_idx=None, card_at=0.0, music_idx=None, mus
         parts.append("[a0]")
     elif clip_audio:
         end = f",atrim=0:{clip_end:.3f},afade=t=out:st={max(0.0, clip_end - 0.05):.3f}:d=0.05" if clip_end else ""
+        if voice_end is not None and (not clip_end or voice_end < clip_end):
+            end = f",atrim=0:{voice_end + 0.02:.3f},afade=t=out:st={max(0.0, voice_end - 0.1):.3f}:d=0.12"
         f += f";[0:a]{fmt0}{end},apad=whole_dur={total:.3f}[a0]"
         parts.append("[a0]")
+    key = None
+    if parts and parts[0] == "[a0]" and music_idx is not None:   # the voice also keys the music's compressor
+        f += ";[a0]asplit[a0v][a0k]"
+        parts[0], key = "[a0v]", "[a0k]"
     if outro_idx is not None and clip_end:
         f += f";[{outro_idx}:a]{fmt},adelay={int(clip_end * 1000)}:all=1,apad=whole_dur={total:.3f}[ou]"
         parts.append("[ou]")
@@ -1561,8 +1573,13 @@ def audio_mix(clip_audio, total, card_idx=None, card_at=0.0, music_idx=None, mus
     if music_idx is not None:                  # adeclick: the generated track has a little crackle
         duck = (f",volume='if(between(t\\,{peak:.2f}\\,{peak + 0.6:.2f})\\,0.2\\,1)':eval=frame"
                 if peak is not None and hit_idx is not None else "")
-        f += f";[{music_idx}:a]atrim=0:{total:.3f},adeclick,volume={music_vol}{duck},{fmt},apad=whole_dur={total:.3f}[mu]"
+        vol = f"volume='{music_env}':eval=frame" if music_env else f"volume={music_vol}"
+        f += f";[{music_idx}:a]atrim=0:{total:.3f},adeclick,{vol}{duck},{fmt},apad=whole_dur={total:.3f}"
+        f += (f"[mu0];[mu0]{key}sidechaincompress=threshold=0.03:ratio=4:attack=15:release=300:makeup=1[mu]"
+              if key else "[mu]")
         parts.append("[mu]")
+    if stems:                                   # mix_check: voice and music separately
+        return f + (f";{parts[0]}anull[vo]" if parts and parts[0] in ("[a0]", "[a0v]") else "")
     if card_idx is not None:
         f += f";[{card_idx}:a]{fmt},adelay={int(card_at * 1000)}:all=1,apad=whole_dur={total:.3f}[ar]"
         parts.append("[ar]")
@@ -1588,6 +1605,114 @@ def audio_mix(clip_audio, total, card_idx=None, card_at=0.0, music_idx=None, mus
         return None
     f += f";{''.join(parts)}amix=inputs={len(parts)}:duration=longest:normalize=0,atrim=0:{total:.3f},alimiter=limit=0.7:level=0:attack=2:release=40[aud]"
     return f
+
+# Speech-first mix (Aleš 18. 11.: "on some streams the music is too loud compared to the voice").
+SPEECH_DB = -20.0        # the streamer's speech (RMS over the words) is brought here before music is added
+MUSIC_TALK_LU = -23.0    # music under a sentence: this far below that sentence (rule: >= 20 below)
+MUSIC_GAP_LU = -12.0     # music between sentences: rises a bit, still well under the voice (brand 0.18 = this)
+VOICE_GAIN = (-12.0, 18.0)   # voice gain limits, dB
+MIX_MIN_DIFF = 15.0      # qa_short: speech must be at least this much over the music during words
+
+def pcm(path, ss=0.0, t=None, sr=8000):
+    """Mono float samples (-1..1) of a file's sound, `sr` Hz; empty when there is none."""
+    cmd = ["ffmpeg", "-nostdin", "-v", "error"] + (["-ss", f"{ss:.3f}"] if ss else []) + \
+          (["-t", f"{t:.3f}"] if t else []) + ["-i", str(path), "-vn", "-ac", "1", "-ar", str(sr), "-f", "s16le", "-"]
+    try:
+        raw = subprocess.run(cmd, capture_output=True, timeout=300).stdout
+    except subprocess.TimeoutExpired:
+        raw = b""
+    return np.frombuffer(raw, np.int16).astype(np.float64) / 32768
+
+def _db(x):
+    return 10 * math.log10(max(float((x * x).mean()), 1e-10)) if x.size else -100.0
+
+def talk_spans(words, until, pad=(0.1, 0.15), join=0.5):
+    """Where anyone talks: word spans padded and joined when the pause between them is < `join` s."""
+    out = []
+    for w0, w1, _ in sorted(words):
+        if w0 >= until:
+            break
+        s, e = max(0.0, w0 - pad[0]), min(until, w1 + pad[1])
+        if out and s - out[-1][1] < join:
+            out[-1] = (out[-1][0], max(out[-1][1], e))
+        else:
+            out.append((s, e))
+    return out
+
+def mix_levels(src, words, total, mpath=None, mstart=0.0, mvol=0.18, voice_end=None, hook_gain=None, sr=8000):
+    """
+    Speech-first levels for audio_mix. Measures the clip's speech (RMS where Whisper heard words)
+    and returns (voice gain dB, music volume expression or None, info):
+      - voice gain brings the speech to SPEECH_DB (quiet and loud streams sound the same);
+      - music under every talk span sits MUSIC_TALK_LU below THAT span's speech (measured on both
+        tracks, so a loud bar of the song never beats a quiet sentence); between sentences it
+        rises to MUSIC_GAP_LU (+ the brand's taste: music_volume relative to 0.18), 0.12 s ramps.
+    """
+    x = pcm(src, sr=sr)
+    until = min(total, voice_end if voice_end is not None else total, x.size / sr)
+    spans = talk_spans(words, until)
+    seg = lambda a, s, e: a[int(s * sr): int(e * sr)]
+    if spans:
+        speech = _db(np.concatenate([seg(x, s, e) for s, e in spans]))
+    else:                                      # nobody talks: the loud half of the clip stands in
+        fr = x[: x.size // sr * sr].reshape(-1, sr) if x.size >= sr else x.reshape(1, -1)
+        e_ = (fr ** 2).mean(axis=1)
+        speech = 10 * math.log10(max(float(np.median(e_[e_ >= np.median(e_)])) if e_.size else 1e-10, 1e-10))
+    gain = SPEECH_DB - speech
+    peak = float(np.percentile(np.abs(x), 99.9)) if x.size else 0.0
+    if peak > 0:                               # never more than ~6 dB into the limiter on the shouts
+        gain = min(gain, -20 * math.log10(peak) + 5.0)
+    gain = max(VOICE_GAIN[0], min(VOICE_GAIN[1], gain))
+    info = {"speech_db": round(speech, 1), "voice_gain": round(gain, 1), "spans": len(spans)}
+    if not mpath:
+        return gain, None, info
+    m = pcm(mpath, ss=mstart, t=total, sr=sr)
+    if m.size < sr:
+        return gain, None, info
+    taste = 20 * math.log10(max(mvol, 1e-3) / 0.18)
+    g_gap = 10 ** ((SPEECH_DB + MUSIC_GAP_LU + taste - _db(m)) / 20)
+    terms, R = [], 0.12
+    for s, e in spans:
+        hg = hook_gain[1] if hook_gain and s < hook_gain[0] else 0.0  # the teaser is turned down in audio_mix
+        sp = max(_db(seg(x, s, e)) + gain + hg, SPEECH_DB - 12)  # a near-silent 'word' does not mute the song
+        g = min(g_gap, 10 ** ((sp + MUSIC_TALK_LU - _db(seg(m, s, e))) / 20))
+        if g < g_gap:
+            terms.append(f"{g - g_gap:.5f}*clip(min((t-{s - R:.3f})/{R}\\,({e + R:.3f}-t)/{R})\\,0\\,1)")
+    env = f"{g_gap:.5f}" + "".join("+" + t_ for t_ in terms)
+    info.update(music_gap_db=round(20 * math.log10(g_gap), 1))
+    return gain, env, info
+
+def mix_check(src, words, total, mpath, mstart, gain, env, voice_end=None, d=None, hook_gain=None, sr=8000):
+    """
+    Measured speech vs music while anyone talks (the same audio_mix graph, voice and music kept
+    apart): {'mix_speech_db', 'mix_music_db', 'diff' (power means over the words), 'diff_min' (worst talk
+    span with real speech)}. None when there is no music.
+    """
+    if not mpath or not env:
+        return None
+    flt = audio_mix(True, total, music_idx=1, voice_gain=gain, music_env=env, voice_end=voice_end, stems=True,
+                    hook_gain=hook_gain)
+    tmp = Path(d or Path(src).parent)
+    vo, mu = tmp / "_mix_vo.raw", tmp / "_mix_mu.raw"
+    run(["ffmpeg", "-nostdin", "-y", "-v", "error", "-i", str(src), "-ss", f"{mstart:.2f}", "-i", str(mpath),
+         "-filter_complex", flt.lstrip(";"), "-map", "[vo]", "-ac", "1", "-ar", str(sr), "-f", "s16le", str(vo),
+         "-map", "[mu]", "-ac", "1", "-ar", str(sr), "-f", "s16le", str(mu)], timeout=300)
+    a = np.fromfile(vo, np.int16).astype(np.float64) / 32768
+    b = np.fromfile(mu, np.int16).astype(np.float64) / 32768
+    vo.unlink(missing_ok=True)
+    mu.unlink(missing_ok=True)
+    until = min(total, voice_end if voice_end is not None else total)
+    ws = [(max(0.0, w0), min(until, w1)) for w0, w1, _ in words if w0 < until and w1 - w0 > 0.05]
+    if not ws:
+        return None
+    seg = lambda x, s, e: x[int(s * sr): int(e * sr)]
+    sp, ms = np.concatenate([seg(a, s, e) for s, e in ws]), np.concatenate([seg(b, s, e) for s, e in ws])
+    worst = []
+    for s, e in talk_spans(words, until, pad=(0, 0), join=0.5):
+        if e - s >= 0.3 and _db(seg(a, s, e)) >= SPEECH_DB - 12:
+            worst.append(_db(seg(a, s, e)) - _db(seg(b, s, e)))
+    return {"mix_speech_db": round(_db(sp), 1), "mix_music_db": round(_db(ms), 1), "diff": round(_db(sp) - _db(ms), 1),
+            "diff_min": round(min(worst), 1) if worst else None}
 
 HOOK_MAX_LU = 4.0        # the hook teaser (the payoff's scream) may be this much louder than the clip, not more
 _hook_lvl = {}
@@ -2188,6 +2313,13 @@ def qa_short(path, plan):
         probs.append("score card missing")
     if plan.get("heat_on") and not plan.get("heat"):
         probs.append("heat missing")
+    # Aleš 18. 11.: no cut inside a sentence (edit_cut checked and re-snapped; what is left fails)
+    for p in (plan.get("cuts") or {}).get("problems") or []:
+        probs.append(f"cut: {p}")
+    # ... and the music clearly under the speech while anyone talks (measured on the mix's stems)
+    mx = plan.get("mix") or {}
+    if mx.get("diff_min") is not None and mx["diff_min"] < MIX_MIN_DIFF:
+        probs.append(f"music only {mx['diff_min']:.1f} dB under the speech (min {MIX_MIN_DIFF:.0f})")
     return probs
 
 def extras_ass(path, reactions, rating, dur, cam, seed):
@@ -2262,13 +2394,221 @@ def download(clip, dst):
 
 PAD = 8.0   # seconds downloaded around a YouTube window, room to move the cut
 
+# Sentence-safe cuts (Aleš 18. 11.: "it's forbidden to cut in the middle of a sentence"). Every cut of a
+# short and of a long-form moment lands between sentences, judged from Whisper's word times:
+#   - a sentence ENDS after a word with . ? ! (Whisper's punctuation) or a pause >= END_GAP after it
+#   - a sentence STARTS at the first word, after a sentence end, or after a pause >= START_GAP
+#   - a cut point is never inside a word
+# The hook teaser is the only intentional excerpt; its in/out points only have to sit between words.
+START_GAP = 0.35         # pause before a word that lets a clip start there
+END_GAP = 0.5            # pause after a word that ends the utterance (no punctuation needed)
+JUMP_GAP = 1.6           # a jump cut without . ? ! before it needs a pause at least this long
+SNAP_BACK = 4.0          # a start may move this much earlier to reach a sentence start
+SNAP_FWD = 8.0           # an end may move this much later to reach a sentence end
+WORD_TOL = 0.02
+
+def _punct_end(text):
+    """Whisper ended the word with . ? ! (an ellipsis '...' is trailing off, not an end)."""
+    t = text.rstrip("\"')]")
+    return t[-1:] in ".?!" and not t.endswith("..")
+
+def sent_end(words, i):
+    """Word i ends a sentence: . ? !, a pause >= END_GAP after it, or the last word."""
+    return (i == len(words) - 1 or _punct_end(words[i][2])
+            or words[i + 1][0] - words[i][1] >= END_GAP)
+
+def sent_start(words, i):
+    """Word i starts a sentence: the first word, after a sentence end or after a pause >= START_GAP."""
+    return i == 0 or words[i][0] - words[i - 1][1] >= START_GAP or sent_end(words, i - 1)
+
+def in_word(words, t, tol=WORD_TOL):
+    """The word t falls inside (None = t is between words)."""
+    return next((w for w in words if w[0] + tol < t < w[1] - tol), None)
+
+def ok_start(words, t):
+    """A clip may start at t: not inside a word and the next word starts a sentence."""
+    if in_word(words, t):
+        return False
+    i = next((k for k, w in enumerate(words) if w[0] >= t - WORD_TOL), None)
+    return i is None or sent_start(words, i)
+
+def ok_end(words, t):
+    """A clip may end at t: not inside a word and the last word before t ends a sentence."""
+    if in_word(words, t):
+        return False
+    i = next((k for k in range(len(words) - 1, -1, -1) if words[k][1] <= t + WORD_TOL), None)
+    return i is None or sent_end(words, i)
+
+def _end_point(words, i, limit):
+    """Cut point after sentence-end word i: 0.3 s of air, never into the next word."""
+    w1 = words[i][1]
+    nxt = words[i + 1][0] if i + 1 < len(words) else limit
+    return min(limit, max(w1, min(w1 + 0.3, nxt - 0.03)))
+
+def _gaps(words, lo, hi):
+    """Pauses between words (g0, g1) that touch [lo, hi], longest first."""
+    gs = [(w1[1], w2[0]) for w1, w2 in zip(words, words[1:]) if w2[0] > w1[1] and w2[0] >= lo and w1[1] <= hi]
+    return sorted(gs, key=lambda g: g[1] - g[0], reverse=True)
+
+def snap_start(words, t, back=SNAP_BACK, lo=0.0):
+    """
+    Start point at or before t that begins a sentence (the previous sentence start or a pause
+    >= START_GAP, up to `back` s earlier). Nothing that close: the longest pause around t, else the
+    start of the word t is in - never mid-word.
+    """
+    if not words or ok_start(words, t):
+        return t
+    for i in range(len(words) - 1, -1, -1):
+        w0 = words[i][0]
+        if w0 > t + WORD_TOL:
+            continue
+        if w0 < t - back:
+            break
+        if sent_start(words, i):
+            prev = words[i - 1][1] if i else lo
+            return max(lo, w0 - 0.15, (prev + w0) / 2 if w0 - prev < 0.3 else w0 - 0.15)
+    for g0, g1 in _gaps(words, t - back, t + 1.0):
+        return max(lo, g0, g1 - 0.15)
+    w = in_word(words, t)
+    return max(lo, w[0]) if w else t
+
+def snap_end(words, t, limit, fwd=SNAP_FWD, back=0.0):
+    """
+    End point at or after t where a sentence ends (up to `fwd` s later, never past `limit`). None
+    there: the last sentence end up to `back` s earlier, then the longest pause in the window, then
+    the end (or start) of the word t is in - never mid-word.
+    """
+    t = min(t, limit)
+    if not words or ok_end(words, t):
+        return t
+    for i, w in enumerate(words):
+        if w[1] < t - WORD_TOL:
+            continue
+        if w[1] > min(limit, t + fwd):
+            break
+        if sent_end(words, i):
+            return _end_point(words, i, limit)
+    for i in range(len(words) - 1, -1, -1):
+        w1 = words[i][1]
+        if w1 > t:
+            continue
+        if w1 < t - back:
+            break
+        if sent_end(words, i):
+            return _end_point(words, i, limit)
+    for g0, g1 in _gaps(words, t - max(back, 1.0), min(limit, t + fwd)):
+        if g0 <= limit:
+            return min(limit, g1 - 0.03, g0 + min(0.3, (g1 - g0) / 2))
+    w = in_word(words, t)
+    if w:
+        return w[1] if w[1] <= limit else w[0]
+    return t
+
+def word_edge(words, t, lo=0.0, hi=1e9):
+    """t moved out of a word to the nearer word edge inside [lo, hi] (hook teaser in/out points)."""
+    w = in_word(words, t)
+    if not w:
+        return t
+    before, after = w[0] - 0.02, w[1] + 0.02
+    opts = [x for x in (before, after) if lo <= x <= hi] or [before]
+    return min(opts, key=lambda x: abs(x - t))
+
+def voice_stop(words, b, e):
+    """
+    Under the score card the clip keeps running from b to e (live footage). Where must the clip's
+    own sound stop so no sentence is cut at e? None = it may run to e (e is between sentences).
+    Else the end of the last whole sentence in [b, e], or b (the clip's end, a sentence end).
+    """
+    if e - b < 0.05 or ok_end(words, e):
+        return None
+    best = None
+    for i, w in enumerate(words):
+        if b - WORD_TOL <= w[1] <= e and sent_end(words, i):
+            p = _end_point(words, i, e)
+            if p < e - 0.05:
+                best = p
+    if best is not None:
+        return best
+    return b if ok_end(words, b) else snap_end(words, b, e, fwd=e - b, back=2.0)
+
+def voice_new(words, b, card, end, dur):
+    """voice_stop for a short whose clip sound runs to `end` (new timeline; the source b..dur plays
+    continuously from `card` on). Returns the stop in the new timeline or None."""
+    vs = voice_stop(words, b, min(dur, b + max(0.0, end - card)))
+    return None if vs is None else card + (vs - b)
+
+def cut_problems(words, a, b, segs=(), hook=None):
+    """
+    The cut check (qa): every boundary of the clip between sentences, judged on the source's word
+    times. a/b = clip start/end, segs = kept pieces (jump cuts between them), hook = (in, out) of
+    the payoff teaser. Returns a list of problems (empty = clean).
+    """
+    probs = []
+    if not ok_start(words, a):
+        w = in_word(words, a)
+        probs.append(f"start {a:.2f} s " + (f"inside the word '{w[2]}'" if w else "inside a sentence"))
+    if not ok_end(words, b):
+        w = in_word(words, b)
+        probs.append(f"end {b:.2f} s " + (f"inside the word '{w[2]}'" if w else "inside a sentence"))
+    for (_, x), (y, _) in zip(segs, segs[1:]):
+        gone = [w for w in words if w[0] < y - WORD_TOL and w[1] > x + WORD_TOL]
+        if gone or not ok_end(words, x) or not ok_start(words, y):
+            probs.append(f"jump cut {x:.2f}-{y:.2f} s inside a sentence" + (f" (removes '{gone[0][2]}')" if gone else ""))
+    if hook:
+        for name, t in zip(("in", "out"), hook):
+            w = in_word(words, t)
+            if w:
+                probs.append(f"hook {name} {t:.2f} s inside the word '{w[2]}'")
+    return probs
+
+def fix_cuts(words, a, b, segs, hook, dur):
+    """
+    Repair what cut_problems finds by re-snapping: start/end to sentence borders, a jump cut inside
+    a sentence is dropped (its pieces joined), hook edges to word edges. Returns
+    (a, b, segs, hook, fixed, left): fixed = problems found and repaired, left = still there.
+    """
+    found = cut_problems(words, a, b, segs, hook)
+    if not found:
+        return a, b, segs, hook, [], []
+    if not ok_start(words, a):
+        a = snap_start(words, a)
+    if not ok_end(words, b):
+        b = snap_end(words, b, dur, back=4.0)
+    keep = []
+    for x, y in segs:
+        x, y = max(x, a), min(y, b)
+        if y - x <= 0.05:
+            continue
+        if keep:
+            px = keep[-1][1]
+            gone = [w for w in words if w[0] < x - WORD_TOL and w[1] > px + WORD_TOL]
+            if gone or not ok_end(words, px) or not ok_start(words, x):
+                keep[-1] = (keep[-1][0], y)            # jump inside a sentence: keep it continuous
+                continue
+        keep.append((x, y))
+    if not keep:
+        keep = [(a, b)]
+    keep[0] = (a, keep[0][1])
+    keep[-1] = (keep[-1][0], b)
+    if hook:
+        h0 = word_edge(words, hook[0], 0.0, hook[1] - 0.5)
+        hook = (h0, word_edge(words, hook[1], h0 + 0.5, min(dur, max(hook[1], h0 + 2.5))))
+    left = cut_problems(words, a, b, keep, hook)
+    return a, b, keep, hook, found, left
+
 def snap_cut(words, s, e, total, lo=15.0, hi=40.0):
     """
     Cut points in the padded download: start just before a sentence begins near s, end just
     after a sentence ends a few seconds past the peak (the window centre), 15-40 s long.
+    Both points are then snapped to sentence borders (snap_start / snap_end).
     """
     if not words:
         return s, min(total, e)
+    a, b = _snap_cut(words, s, e, total, lo, hi)
+    a = snap_start(words, a)
+    return a, snap_end(words, max(b, a + 1.0), total, back=4.0)
+
+def _snap_cut(words, s, e, total, lo, hi):
     gaps = [(0.0, words[0][0])] + [(w1[1], w2[0]) for w1, w2 in zip(words, words[1:]) if w2[0] - w1[1] >= 0.35]
     gaps.append((words[-1][1], total))
     starts = [max(0.0, g1 - 0.15) for _, g1 in gaps if g1 - 0.15 <= s + 6]
@@ -2364,7 +2704,11 @@ def trim_points(words, peak, dur, hi=35.0, lo=8.0):
         b = min(b, a + hi)
     if b - a < lo:
         return 0.0, dur
-    return a, b
+    # Aleš 18. 11.: never start or end inside a sentence - start on a sentence start (<= 4 s
+    # earlier), end on a sentence end (<= 8 s later), never before the payoff's reaction
+    a = snap_start(words, a)
+    floor = (peak + 1.5) if peak is not None else a + lo
+    return a, snap_end(words, b, dur, back=max(0.0, b - floor))
 
 def rms_curve(src):
     """Loudness every 0.1 s (0.5 s windows) -> (times, rms); empty if there is no audio."""
@@ -2385,6 +2729,8 @@ def dead_air(words, src, a, b, peak):
     Pieces of [a, b] to KEEP: pauses longer than 0.9 s between words that are also quiet (no
     shouting, no explosion) are jump-cut out, never near the payoff (Aleš: built for ADHD
     scrollers, no dead second). auto-editor idea, done with our own word times + loudness.
+    Only BETWEEN sentences (Aleš 18. 11.): the word before the pause ends with . ? ! or the pause
+    is >= JUMP_GAP; a hesitation inside a sentence stays.
     """
     ts, rms = rms_curve(src)
     if not words or rms.size == 0:
@@ -2396,6 +2742,8 @@ def dead_air(words, src, a, b, peak):
         g0, g1 = w1[1] + 0.2, w2[0] - 0.15
         if g1 - g0 < 0.6 or (peak is not None and g0 - 1.0 < peak < g1 + 1.0):
             continue
+        if not _punct_end(w1[2]) and w2[0] - w1[1] < JUMP_GAP:
+            continue                                   # a pause inside a sentence: never cut there
         m = (ts >= g0) & (ts <= g1)
         if m.any() and rms[m].mean() < 0.6 * med:
             keep.append((cur, g0))
@@ -2418,28 +2766,45 @@ def edit_cut(src, words, d, clip, hpc=None, v2=False, info=None):
     """
     dur = duration(src)
     peak = audio_peak(src)
+    info = info if info is not None else {}
     a, b = (0.0, dur) if clip.get("section") else trim_points(words, peak, dur)
-    if hpc is not None:                               # long-form keeps the cut on the 16:9 source
-        hpc.update(peak=peak, cut=[round(a, 2), round(b, 2)], dur=round(dur, 2))
-    e = b + min(RATING_DUR, dur - b)                  # live footage for under the card
     tease = peak is not None and peak - a >= 4 and b - peak >= 0.3
     segs = dead_air(words, src, a, b, peak)
-    segs[-1] = (segs[-1][0], e)                       # the tail under the card stays continuous
-    if not tease and a < 0.5 and b > dur - 0.5 and len(segs) == 1:
-        # untouched: the card covers the last seconds, but only if the payoff is safely before them
-        late = peak is not None and dur - peak >= RATING_DUR + 1.8
-        return src, words, peak, dur - RATING_DUR if late else dur, [], 0.0
-    if not has_audio(src):
-        return src, words, peak, dur, [], 0.0
-    out = d / "edit.mp4"
     # hook (Aleš: 1 s looked like a cut by mistake; the rewind he did not like): ~2.7 s of the
-    # payoff, then the transition (bananas: white FLASH + whoosh) and the clip from its start
+    # payoff, then the transition (bananas: white FLASH + whoosh) and the clip from its start.
+    # The teaser is the one intentional excerpt; its in/out points still sit between words.
     ps, pe = (max(0.0, peak - 1.8), min(dur, peak + 0.9)) if tease else (0, 0)
     if tease and v2:
         ps = loud_start(src, peak)
         pe = min(dur, ps + 2.3, b + RATING_DUR)
-        if info is not None:
-            info["hook_peak"] = round(peak - ps, 3)
+    if tease:
+        ps = word_edge(words, ps, 0.0, peak - 0.05)
+        pe = word_edge(words, pe, max(ps + 1.0, peak + 0.05), min(dur, ps + 2.5) if v2 else dur)
+    # cut check (Aleš 18. 11.): no boundary inside a word or a sentence; repaired by re-snapping
+    a, b, segs, hook, fixed, left = fix_cuts(words, a, b, segs, (ps, pe) if tease else None, dur)
+    if hook:
+        ps, pe = hook
+    if tease and v2:
+        info["hook_peak"] = round(peak - ps, 3)
+    sent = [w for w in words if a - WORD_TOL <= w[0] and w[1] <= b + WORD_TOL]
+    info["cuts"] = {"start": round(a, 2), "end": round(b, 2), "jumps": len(segs) - 1, "fixed": fixed, "problems": left,
+                    "first": " ".join(w[2] for w in sent[:6]), "last": " ".join(w[2] for w in sent[-6:])}
+    if fixed or left:
+        log(f"  cut check: {'; '.join(fixed)}" + (f" -> still: {'; '.join(left)}" if left else " -> repaired"))
+    log(f"  cut starts '{info['cuts']['first']}' ... ends '{info['cuts']['last']}'")
+    if hpc is not None:                               # long-form keeps the cut on the 16:9 source
+        hpc.update(peak=peak, cut=[round(a, 2), round(b, 2)], dur=round(dur, 2))
+    e = b + min(RATING_DUR, dur - b)                  # live footage for under the card
+    segs[-1] = (segs[-1][0], e)                       # the tail under the card stays continuous
+    if not tease and a < 0.5 and b > dur - 0.5 and len(segs) == 1:
+        # untouched: the card covers the last seconds, but only if the payoff is safely before them
+        late = peak is not None and dur - peak >= RATING_DUR + 1.8
+        card = dur - RATING_DUR if late else dur
+        info["voice_at"] = lambda end, card=card: voice_new(words, card, card, end, dur)
+        return src, words, peak, card, [], 0.0
+    if not has_audio(src):
+        return src, words, peak, dur, [], 0.0
+    out = d / "edit.mp4"
     T = pe - ps if tease else 0.0
     if tease:
         flt = (f"[0:v]trim={ps:.2f}:{pe:.2f},setpts=PTS-STARTPTS[v0];[0:a]atrim={ps:.2f}:{pe:.2f},asetpts=PTS-STARTPTS[a0];"
@@ -2466,6 +2831,7 @@ def edit_cut(src, words, d, clip, hpc=None, v2=False, info=None):
             new.append((m0, m1, t))
     pk = None if peak is None else remap(peak)
     card = remap(b) if remap(b) is not None else acc - (e - b)
+    info["voice_at"] = lambda end, b=b, card=card: voice_new(words, b, card, end, dur)
     jumps = [round(st, 2) for st in starts[1:]]       # jump cuts: the zoom switches there to hide them
     log(f"  cut {a:.1f}-{b:.1f} s of {dur:.0f} s (+{e - b:.1f} s under the card), {len(jumps)} jump cuts"
         + (f", hook {pe - ps:.1f} s from the payoff at {peak:.1f} s" if tease else ""))
@@ -2573,6 +2939,7 @@ def render(clip, src=None, clean=False):
             info = {}
             cuts[hv2_cut] = (edit_cut(orig, words0, d, clip, hpc, v2=hv2_cut, info=info), info)
         (src, words, peak, card_at, jumps, hook_t), info = cuts[hv2_cut]
+        words_cut = words                                  # all words of the cut (the mix ducks under them)
         dur = duration(src)
         card_at = min(card_at, dur)
         words = [w for w in words if w[0] < card_at]      # no captions / banana under the score card
@@ -2831,10 +3198,29 @@ def render(clip, src=None, clean=False):
                         inputs += ["-i", str(heat_wav)]
                         extra_audio.append((nxt, heat_plan[0], 0.8))
                         nxt += 1
+                    # the clip's own sound: never ends inside a sentence (fades before the next one), speech
+                    # normalised first, music ducked under every sentence (Aleš 18. 11.)
+                    a_end = clip_total if outro else total
+                    v_end = info["voice_at"](a_end) if info.get("voice_at") and not replay else None
+                    v_end = v_end if v_end is not None and v_end < a_end - 0.05 else None
+                    vgain, menv, mixinfo = (0.0, None, {})
+                    hgain = hook_level(src, hook_t, card_at) if hook_t else None
+                    if has_audio(src):
+                        try:
+                            vgain, menv, mixinfo = mix_levels(src, words_cut, a_end, mpath, mstart, mvol, v_end, hgain)
+                        except Exception as e:            # a broken probe: the old steady mix
+                            log(f"  mix levels failed ({str(e)[-120:]}), steady music")
                     mix = audio_mix(has_audio(src), total, card_idx, card_at, music_idx, mvol, sfx_idx, sfx_at, replay,
                                     mute, riser_idx, hit_idx, peak, clip_end=clip_total if outro else None,
                                     outro_idx=outro_idx, follow_idx=follow_idx, follow_at=total - FOLLOW_DUR,
-                                    extras=extra_audio, hook_gain=hook_level(src, hook_t, card_at) if hook_t else None)
+                                    extras=extra_audio, hook_gain=hgain, voice_gain=vgain, music_env=menv, voice_end=v_end)
+                    if menv:
+                        try:
+                            chk = mix_check(src, words_cut, a_end, mpath, mstart, vgain, menv, v_end, d, hgain)
+                            mixinfo.update(chk or {})
+                        except Exception as e:
+                            log(f"  mix check failed ({str(e)[-120:]})")
+                    log(f"  {b['key']}: mix {mixinfo}" + (f", clip voice stops at {v_end:.2f} s" if v_end else ""))
                     maps = inputs + ["-filter_complex", flt + (mix or ""), "-map", "[v]"] + (["-map", "[aud]"] if mix else [])
                     if not outro and not use_card and not replay and total < dur - 0.01:
                         maps += ["-t", f"{total:.3f}"]
@@ -2859,7 +3245,8 @@ def render(clip, src=None, clean=False):
                                  1040, cap_y + int(int((b.get("caption") or {}).get("size", CAP_SIZE)) * 0.65)),
                         look="launch" if v2 else "old", gold=use_gold, heat_n=heat_n if heat_plan else None, peak=peak,
                         hook_end=hook_t, bore=bore, bore_probs=bore_probs, game_crop=(f"{W}:{game_h}:0:{cam_h}" if cam else None),
-                        stickers=[Path(p).stem for _, p, _ in plan_stickers])
+                        stickers=[Path(p).stem for _, p, _ in plan_stickers], mix=mixinfo,
+                        cuts=info.get("cuts"))
                     log(f"  {b['key']}: captions {len(words)} words, {n_chunks} chunks; "
                         f"banana: {', '.join(f'{n} @{t:.1f}s' for t, n in rx) or 'none'}"
                         + (f"; replay {replay[1]:.1f}-{replay[2]:.1f} s" if replay else "")
@@ -2908,13 +3295,15 @@ def render(clip, src=None, clean=False):
                 shorts[b["key"]] = made[b["key"]]
                 qa_log[b["key"]] = {"ok": True, "look": look, "gold": plans[b["key"]]["gold"],
                                     "heat": plans[b["key"]]["heat_n"], "stickers": plans[b["key"]]["stickers"],
-                                    "peak": plans[b["key"]]["peak"]}
+                                    "peak": plans[b["key"]]["peak"], "cuts": plans[b["key"]].get("cuts"),
+                                    "mix": plans[b["key"]].get("mix")}
                 continue
             log(f"  QA {b['key']} ({look} look): {'; '.join(probs)}")
             if os.environ.get("KLIPY_DEBUG"):
                 shutil.copy(made[b["key"]], Path(os.environ["KLIPY_DEBUG"]) / f"qa_failed_{b['key']}_{look}_{int(time.time())}.mp4")
             Path(made[b["key"]]).unlink(missing_ok=True)
-            qa_log[b["key"]] = {"ok": False, "look": look, "problems": probs}
+            qa_log[b["key"]] = {"ok": False, "look": look, "problems": probs, "cuts": plans[b["key"]].get("cuts"),
+                                "mix": plans[b["key"]].get("mix")}
             if v2 and False in looks:
                 retry.append(b)
         todo = retry
