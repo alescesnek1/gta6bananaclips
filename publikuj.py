@@ -525,6 +525,8 @@ def candidates(znacka=None):
             continue                                 # the fast path only carries live chat clips
         if is_live(m) and not load_json(HERE / "sources.json", {}).get("live_publish", True):
             continue                                 # live clips paused (18. 11.: launch-day cutscenes / game dialogue)
+        if is_live(m) and (m.get("spike_z") or 0) < load_json(HERE / "sources.json", {}).get("live_spike_z", 0):
+            continue                                 # chat explosion below today's threshold (tuned in sources.json)
         if (m.get("platform") == "youtube" and (PLAN_DAY or pub_day()) >= date.fromisoformat(
                 (load_json(HERE / "sources.json", {}).get("youtube_prelaunch") or {}).get("until", "2026-11-19"))
                 and re.search(r"trailer|extended look|showcase", m.get("title") or "", re.I)):

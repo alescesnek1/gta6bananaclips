@@ -5393,7 +5393,8 @@ def cmd_live(a):
             if time.time() < cooldown.get(lg, 0):
                 continue
             try:
-                hit = meter.spike(lg, a.z, a.cool)
+                # threshold from sources.json live_spike_z (read live, so it can be tuned without a restart)
+                hit = meter.spike(lg, load_json(SOURCES, {}).get("live_spike_z", a.z), a.cool)
             except Exception as e:
                 log(f"live: spike check {lg} failed ({str(e)[-80:]})")
                 continue

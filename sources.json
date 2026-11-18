@@ -228,5 +228,7 @@
   "_publish_pause_napoveda": "Docasna pauza publikovani pri oprave chyby (18. 11.: banan v rozjezdu misto na pointe). Po oprave false.",
   "hot_bypass_z": 80,
   "live_gap_min": 45,
-  "_pace_napoveda_1811": "18. 11.: kazdy live klip ma z>=25 (prah hlidace), takze live_z 25 obchazel tempo dne -> 3 posty fanpage do 14:30. Vyjimka jen z>=80, odstup live 45 min."
+  "_pace_napoveda_1811": "18. 11.: kazdy live klip ma z>=25 (prah hlidace), takze live_z 25 obchazel tempo dne -> 3 posty fanpage do 14:30. Vyjimka jen z>=80, odstup live 45 min.",
+  "live_spike_z": 40,
+  "_live_spike_z_napoveda": "Prah vybuchu chatu (z). 18. 11.: 25 -> 40 (Ales). Cte se za behu hlidace i pri publikaci."
 }
