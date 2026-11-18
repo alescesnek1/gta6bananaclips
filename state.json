@@ -19,8 +19,8 @@
     "twitch_IntelligentAbstemiousBasenjiOMGScoots-6o4BuG8nzW3K8qWx": 3,
     "twitch_RelievedRichRhinocerosPeteZaroll-qOXHVQ3XVK3asCkK": 3,
     "twitch_TrustworthyCarefulJalapenoKAPOW--CPhZdDJiBW-X0-C": 1,
-    "twitch_ThirstyAcceptableRaccoonDxAbomb-NT930bCo04OgUQHD": 1,
-    "twitch_DifferentSullenReubenItsBoshyTime-K1Eo8-_fjY3ZqQan": 1,
+    "twitch_ThirstyAcceptableRaccoonDxAbomb-NT930bCo04OgUQHD": 2,
+    "twitch_DifferentSullenReubenItsBoshyTime-K1Eo8-_fjY3ZqQan": 2,
     "twitch_PiercingSlipperyTortoiseDuDudu-ShespqH5CNlosqhC": 1
   },
   "other_game": {
@@ -478,7 +478,9 @@
       1795009401,
       614,
       1795009809,
-      616
+      616,
+      1795010318,
+      621
     ],
     "twitch_NimbleFrozenBeanOSsloth-S2n7zCkGDTOWP_mP": [
       1795001014,
@@ -578,7 +580,9 @@
       1795009401,
       1151,
       1795009809,
-      1230
+      1230,
+      1795010318,
+      1270
     ],
     "kick_clip_01M7Q5876Z0GVGGNFWGHMRKKZR": [
       1795003185,
@@ -617,7 +621,9 @@
       1795009401,
       734,
       1795009809,
-      754
+      754,
+      1795010318,
+      767
     ],
     "twitch_AstuteArtsyEaglePeteZaroll-h-8smz8Kb6qltijo": [
       1795004599,
@@ -648,7 +654,9 @@
       1795009401,
       792,
       1795009809,
-      814
+      814,
+      1795010318,
+      842
     ],
     "twitch_RelievedRichRhinocerosPeteZaroll-qOXHVQ3XVK3asCkK": [
       1795004899,
@@ -689,7 +697,9 @@
       1795009401,
       704,
       1795009809,
-      733
+      733,
+      1795010318,
+      745
     ],
     "twitch_SlickStylishBeaverStrawBeary-ljpqadoCXEhYwJx5": [
       1795005798,
@@ -750,7 +760,9 @@
       1795009401,
       1191,
       1795009809,
-      1342
+      1342,
+      1795010318,
+      1433
     ],
     "twitch_ThirstyAcceptableRaccoonDxAbomb-NT930bCo04OgUQHD": [
       1795008508,
@@ -762,18 +774,32 @@
       1795009401,
       611,
       1795009809,
-      629
+      629,
+      1795010318,
+      653
     ],
     "twitch_PiercingSlipperyTortoiseDuDudu-ShespqH5CNlosqhC": [
       1795009105,
       503,
       1795009401,
       1795009809,
-      538
+      538,
+      1795010318,
+      549
     ],
     "twitch_TiredCrepuscularLettuceTebowing-_ckSEJKNEXXBWDj1": [
       1795009809,
-      533
+      533,
+      1795010318,
+      558
+    ],
+    "twitch_HonorableFastDiamondBleedPurple-h3LGbiiyGx6x0QLt": [
+      1795010318,
+      504
+    ],
+    "twitch_HumbleOpenPassionfruitPrimeMe-kw5lcvoycKcFD4j5": [
+      1795010318,
+      531
     ]
   },
   "rr": "bananas",
@@ -867,7 +893,7 @@
     "twitch_RelievedRichRhinocerosPeteZaroll-qOXHVQ3XVK3asCkK": "QA failed: {'fanpage': {'ok': False, 'look': 'old', 'problems': ['black frames at 0 s'], 'cuts': {'start': 11.97, 'end': 25.97, 'jumps': 1, 'fixed': [], 'problems': [], 'first': '20 seconds.', 'last': '6 officially comes out in 10,'}, 'mix': {'speech_db': -35.4, 'voice_gain': 15.4, 'spans': 2, 'musi",
     "twitch_TrustworthyCarefulJalapenoKAPOW--CPhZdDJiBW-X0-C": "quality check failed after repairs: face in the top band missing or cut (1/8 frames)",
     "twitch_ThirstyAcceptableRaccoonDxAbomb-NT930bCo04OgUQHD": "no facecam - every short needs the streamer's face on top",
-    "twitch_DifferentSullenReubenItsBoshyTime-K1Eo8-_fjY3ZqQan": "QA failed: {'fanpage': {'ok': False, 'look': 'old', 'problems': ['black frames at 2.2, 4.533333, 7.766667 s', 'loop seam: sound jumps 6.8 dB (max 6)'], 'cuts': {'start': 5.1, 'end': 17.27, 'jumps': 1, 'fixed': [], 'problems': [], 'first': 'Seven bucks for my name!', 'last': 'Seven bucks for my name,",
+    "twitch_DifferentSullenReubenItsBoshyTime-K1Eo8-_fjY3ZqQan": "QA failed: {'bananas': {'ok': False, 'look': 'old', 'problems': ['loop seam: sound jumps 7.2 dB (max 6)'], 'cuts': {'start': 5.1, 'end': 17.27, 'jumps': 1, 'fixed': [], 'problems': [], 'first': 'Seven bucks for my name!', 'last': 'Seven bucks for my name, bro!'}, 'mix': {'speech_db': -18.2, 'voice_g",
     "twitch_PiercingSlipperyTortoiseDuDudu-ShespqH5CNlosqhC": "QA failed: {'bananas': {'ok': False, 'look': 'old', 'problems': ['loop seam: sound jumps 9.4 dB (max 6)'], 'cuts': {'start': 29.47, 'end': 41.37, 'jumps': 1, 'fixed': [], 'problems': [], 'first': '', 'last': ''}, 'mix': {'speech_db': -27.2, 'voice_gain': 7.2, 'spans': 0, 'music_gap_db': -16.8}}}"
   },
   "moments": {
