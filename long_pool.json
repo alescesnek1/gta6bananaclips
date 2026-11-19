@@ -4007,13 +4007,93 @@
     "channel": "ohnepixel",
     "platform": "twitch",
     "title": "stick drift",
-    "views": 1118,
+    "views": 1720,
     "created": 1795017110,
     "category": "Grand Theft Auto VI",
     "video_id": "2932275268",
     "vod_offset": 13136,
     "cluster": 1,
-    "added": 1795048325
+    "added": 1795067967,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/ohnepixel/20261118_twitch_PeppySlickOwlAliens-6hpIHuZQymeRQ2y9/source.mp4",
+    "peak": 18.150000000000002,
+    "cut": [
+      2.73,
+      19.67
+    ],
+    "dur": 30.02,
+    "tags": [
+      "crash"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.3,
+      "rage": 0.0,
+      "first-reaction": 0.2,
+      "wow": 0.0,
+      "_loud": 5.3,
+      "_motion": 19.4
+    },
+    "quote": "",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.25,
+      "physics": 0.25,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.25,
+      "stunt": 0.6,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "primary": "stunt",
+    "proven": [],
+    "evidence": {
+      "fail": [
+        "impact"
+      ],
+      "physics": [
+        "impact"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "crash": [
+        "impact"
+      ],
+      "stunt": [
+        "impact",
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.39,
+    "signals": {
+      "siren": 0.0,
+      "impact": 88.4,
+      "loud": 2.1,
+      "motion": 18.2,
+      "sustained": 0.76,
+      "spike": 2.2,
+      "laugh": 0,
+      "static": 0.01,
+      "letterbox": 0.0,
+      "luma": 64.5,
+      "dark": 0.0
+    }
   },
   "twitch_SparklyEnchantingKimchiRuleFive-nFwdyisMgC_RJtiB": {
     "id": "twitch_SparklyEnchantingKimchiRuleFive-nFwdyisMgC_RJtiB",
