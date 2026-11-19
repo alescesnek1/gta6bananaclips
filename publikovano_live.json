@@ -52,5 +52,27 @@
     "spike_z": 11.0,
     "nocount": true,
     "nocount_why": "Ales 18. 11.: cutscena/titulky ze hry, zustava venku, nepocita se do kvoty"
+  },
+  "live_hasanabi_1795055848": {
+    "url": "https://6afe6239e3ce4945bc24c506--gta6bananaclips-media.netlify.app/20261118/live_hasanabi_1795055848.mp4",
+    "path": "20261118/live_hasanabi_1795055848.mp4",
+    "due": "2026-11-19T03:45:00+01:00",
+    "draft": false,
+    "posts": {
+      "6af7142262b70b94b01ac608": "6afe623df6b6aa0cd49715f6",
+      "6af7155e62b70b94b01ad06f": "6afe623d3802f5b9fc606a9c"
+    },
+    "mb": 6.1,
+    "channel": "hasanabi",
+    "platform": "twitch",
+    "score": 0,
+    "hot": true,
+    "rating": 9,
+    "views": 0,
+    "golden": false,
+    "title": "HasanAbi Did Not See This Coming In GTA 6! 😭",
+    "live": true,
+    "viewers": 38872,
+    "spike_z": 52.0
   }
 }
