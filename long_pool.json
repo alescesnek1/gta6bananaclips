@@ -5456,5 +5456,42 @@
     "video_id": "2932113307",
     "vod_offset": 83165,
     "added": 1795071486
+  },
+  "twitch_BumblingConsiderateMagpieAsianGlow-uwONm1vYSnm95Wzn": {
+    "id": "twitch_BumblingConsiderateMagpieAsianGlow-uwONm1vYSnm95Wzn",
+    "url": "https://www.twitch.tv/kaicenat/clip/BumblingConsiderateMagpieAsianGlow-uwONm1vYSnm95Wzn",
+    "channel": "kaicenat",
+    "platform": "twitch",
+    "title": "GYATT",
+    "views": 1361,
+    "created": 1795017207,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932305259",
+    "vod_offset": 10368,
+    "added": 1795072404
+  },
+  "twitch_DelightfulLachrymoseMelonVoteYea-JeFCNhZHEyTfoOMJ": {
+    "id": "twitch_DelightfulLachrymoseMelonVoteYea-JeFCNhZHEyTfoOMJ",
+    "url": "https://www.twitch.tv/xqc/clip/DelightfulLachrymoseMelonVoteYea-JeFCNhZHEyTfoOMJ",
+    "channel": "xqc",
+    "platform": "twitch",
+    "title": "Lost to cow and a pole mid chase xD",
+    "views": 811,
+    "created": 1795044655,
+    "category": "Grand Theft Auto VI",
+    "added": 1795072404
+  },
+  "twitch_DifficultTrustworthyCobblerRaccAttack-eZdV25Nhm-1NTlM2": {
+    "id": "twitch_DifficultTrustworthyCobblerRaccAttack-eZdV25Nhm-1NTlM2",
+    "url": "https://www.twitch.tv/kaicenat/clip/DifficultTrustworthyCobblerRaccAttack-eZdV25Nhm-1NTlM2",
+    "channel": "kaicenat",
+    "platform": "twitch",
+    "title": "gta",
+    "views": 1416,
+    "created": 1795007628,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932305259",
+    "vod_offset": 692,
+    "added": 1795072404
   }
 }
