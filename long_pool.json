@@ -6168,5 +6168,19 @@
     "vod_offset": 6950,
     "cluster": 1,
     "added": 1795095333
+  },
+  "twitch_RelentlessSavageTomatoDAESuppy-XwOHThFQTJaruvrb": {
+    "id": "twitch_RelentlessSavageTomatoDAESuppy-XwOHThFQTJaruvrb",
+    "url": "https://www.twitch.tv/jynxzi/clip/RelentlessSavageTomatoDAESuppy-XwOHThFQTJaruvrb",
+    "channel": "jynxzi",
+    "platform": "twitch",
+    "title": "hell no",
+    "views": 1011,
+    "created": 1795029216,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932568279",
+    "vod_offset": 2224,
+    "cluster": 1,
+    "added": 1795095506
   }
 }
