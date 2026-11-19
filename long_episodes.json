@@ -15,9 +15,11 @@
     "funny-day": 1
   },
   "_fail": {
-    "fanpage": "2026-11-19T14:08:14+01:00"
+    "fanpage": "2026-11-19T14:08:14+01:00",
+    "bananas": "2026-11-19T20:56:20+01:00"
   },
   "_cursor": {
-    "bananas": 8
+    "bananas": 11,
+    "fanpage": 4
   }
 }
