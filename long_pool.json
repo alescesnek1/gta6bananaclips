@@ -5493,5 +5493,124 @@
     "video_id": "2932305259",
     "vod_offset": 692,
     "added": 1795073230
+  },
+  "twitch_BetterBoxyPhoneKappaPride-dj6XJ97C0t6ZaTrX": {
+    "id": "twitch_BetterBoxyPhoneKappaPride-dj6XJ97C0t6ZaTrX",
+    "url": "https://www.twitch.tv/kaicenat/clip/BetterBoxyPhoneKappaPride-dj6XJ97C0t6ZaTrX",
+    "channel": "kaicenat",
+    "platform": "twitch",
+    "title": "pegging in gta 6 gone wild",
+    "views": 1314,
+    "created": 1795037792,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932305259",
+    "vod_offset": 30978,
+    "added": 1795073753,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/kaicenat/20261118_twitch_BetterBoxyPhoneKappaPride-dj6XJ97C0t6ZaTrX/source.mp4",
+    "peak": 24.0,
+    "cut": [
+      15.73,
+      29.93
+    ],
+    "dur": 35.9,
+    "tags": [
+      "rage",
+      "wow",
+      "first-reaction",
+      "funny"
+    ],
+    "tag_scores": {
+      "funny": 0.39,
+      "glitch": 0.0,
+      "chase": 0.2,
+      "crash": 0.0,
+      "rage": 1.0,
+      "first-reaction": 0.82,
+      "wow": 1.0,
+      "_loud": 1.6,
+      "_motion": 30.8
+    },
+    "quote": "What the F***?!",
+    "rendered": [
+      "fanpage"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.35,
+      "fail": 0.0,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.25,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.95,
+      "wow": 0.7
+    },
+    "primary": "first-reaction",
+    "proven": [
+      "first-reaction"
+    ],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion",
+        "motion-spike"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.51,
+    "signals": {
+      "siren": 0.0,
+      "impact": 9.9,
+      "loud": 1.8,
+      "motion": 24.1,
+      "sustained": 0.51,
+      "spike": 16.6,
+      "laugh": 0,
+      "static": 0.01,
+      "letterbox": 0.0,
+      "luma": 58.3,
+      "dark": 0.0
+    }
+  },
+  "twitch_HonestFancyLobsterRalpherZ-93UgISJRoL1Yxcn1": {
+    "id": "twitch_HonestFancyLobsterRalpherZ-93UgISJRoL1Yxcn1",
+    "url": "https://www.twitch.tv/stableronaldo/clip/HonestFancyLobsterRalpherZ-93UgISJRoL1Yxcn1",
+    "channel": "stableronaldo",
+    "platform": "twitch",
+    "title": "valid crashout",
+    "views": 1338,
+    "created": 1795020737,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932442046",
+    "vod_offset": 2558,
+    "cluster": 1,
+    "added": 1795073753
   }
 }
