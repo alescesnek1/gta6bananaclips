@@ -395,6 +395,53 @@ def chat_peaks(url, vid):
     # the 35 s window covers 30 s before the burst and 5 s after it
     return [(i * 10 + 5 - YT_CLIP * 0.36, float(z[i])) for i in range(n) if z[i] >= 4]
 
+AI_VIDEOS = int(os.environ.get("KLIPY_AI_VIDEOS", "2"))   # transcripts read by the text model per run
+AI_MAX_S = 5400                                           # longer videos: too much to download and transcribe
+AI_MIN_VIEWS = 30000
+
+def ai_signals(url, vid, info, label):
+    """19. 11. (owner approved, the virality prompt of SamurAIGPT/AI-Youtube-Shorts-Generator): no audience
+    signal yet -> download the audio, Whisper it, the Cloudflare text model names the shareable moments (score
+    >= 80). Only AI_VIDEOS big videos per run (download + Whisper cost); every moment still goes through all
+    the gates (gameplay, facecam, action, boredom, QA). [] when unavailable."""
+    global AI_VIDEOS
+    dur = float(info.get("duration") or 0)
+    if AI_VIDEOS <= 0 or not 120 <= dur <= AI_MAX_S or (info.get("view_count") or 0) < AI_MIN_VIEWS:
+        return []
+    if not (os.environ.get("CF_ACCOUNT_ID") and os.environ.get("CF_API_TOKEN")):
+        return []
+    AI_VIDEOS -= 1
+    tmp = OUT / "_ai_audio"
+    tmp.mkdir(parents=True, exist_ok=True)
+    audio = tmp / f"{vid}.m4a"
+    try:
+        run(["yt-dlp", "-q", "-f", "ba[ext=m4a]/ba", "-o", str(audio), url], timeout=900)
+        global _whisper
+        import whisper
+        if _whisper is None:
+            WHISPER_DIR.mkdir(parents=True, exist_ok=True)
+            _whisper = whisper.load_model(WHISPER_MODEL, download_root=str(WHISPER_DIR))
+        res = _whisper.transcribe(str(audio), condition_on_previous_text=False,
+                                  fp16=_whisper.device.type == "cuda", verbose=None)
+        lines, cur, t0 = [], [], None
+        for seg in res.get("segments", []):            # one line per ~20 s
+            t0 = seg["start"] if t0 is None else t0
+            cur.append(seg["text"].strip())
+            if seg["end"] - t0 >= 20:
+                lines.append(f"[{int(t0 // 60):02d}:{int(t0 % 60):02d}] " + " ".join(cur))
+                cur, t0 = [], None
+        if cur:
+            lines.append(f"[{int(t0 // 60):02d}:{int(t0 % 60):02d}] " + " ".join(cur))
+        import nahled_ai
+        cands = nahled_ai.stream_highlights(lines)
+        log(f"  {label}: {vid} AI read {len(lines)} transcript lines -> {len(cands)} moments")
+        return norm(cands)
+    except Exception as e:
+        log(f"  {label}: {vid} AI transcript failed ({str(e)[-100:]})")
+        return []
+    finally:
+        audio.unlink(missing_ok=True)
+
 def viewer_signals(url, vid, info):
     dur = float(info.get("duration") or 0)
     hm = info.get("heatmap") or []
@@ -447,6 +494,10 @@ def video_moments(url, info, per_video, label):
         log(f"  {label}: {vid} skipped (fake/leak/concept title)")
         return []                                         # fan-made, AI or leaked "GTA 6" would mislead viewers
     cands, how = viewer_signals(url, vid, info)
+    if not cands:
+        cands = ai_signals(url, vid, info, label)
+        if cands:
+            how = "ai-transcript"
     if not cands:
         log(f"  {label}: {vid} no audience signal yet ({how}), skipped")
         return []
@@ -1760,6 +1811,14 @@ def hook_text(clip, mtags, words, src, peak):
         tags = moment_tags(words, src, peak, clip.get("title"), clip.get("created") or 0)[0]
         mtags["tags"] = tags
     name = P.display_name(clip).upper()
+    try:                                             # 19. 11.: from what he really says (Cloudflare text model)
+        import nahled_ai
+        near = [w[2] for w in words if peak is None or peak - 12 <= w[0] <= peak + 4]
+        q = nahled_ai.hook_question(name, list(tags), " ".join(near))
+        if q:
+            return q
+    except Exception as e:
+        log(f"  hook question (AI) failed ({str(e)[-80:]}), template")
     pool = next((HOOK_Q[t] for t in tags if t in HOOK_Q), HOOK_ELSE)
     k = int(hashlib.md5(str(clip.get("id")).encode()).hexdigest(), 16)
     q = pool[k % len(pool)].format(n=name)

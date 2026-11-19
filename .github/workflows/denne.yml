@@ -53,6 +53,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 150
     env:
+      CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+      CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
       BUFFER_API_KEY_1: ${{ secrets.BUFFER_API_KEY_1 }}
       BUFFER_API_KEY_2: ${{ secrets.BUFFER_API_KEY_2 }}
       BUFFER_API_KEY_3: ${{ secrets.BUFFER_API_KEY_3 }}          # second account gta6fanpageclip

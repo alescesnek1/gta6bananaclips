@@ -432,3 +432,116 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
+
+
+# -----------------------------------------------------------------------------
+# Text model (19. 11., after SamurAIGPT/AI-Youtube-Shorts-Generator's virality prompt): the hook question of a
+# short from what the streamer really says, and highlight candidates of a YouTube video nobody marked yet.
+TEXT = os.environ.get("CF_TEXT_MODEL", "@cf/meta/llama-3.1-8b-instruct-fast")
+
+def text_left():
+    """Text calls left today (CF_MAX_TEXT, default 300; tiny prompts, a few neurons each)."""
+    day = datetime.now(timezone.utc).date().isoformat()
+    b = json.loads(BUDGET.read_text(encoding="utf-8")) if BUDGET.exists() else {}
+    return int(os.environ.get("CF_MAX_TEXT", "300")) - b.get(day, {}).get("text", 0)
+
+def text_spend(neurons=5):
+    day = datetime.now(timezone.utc).date().isoformat()
+    b = json.loads(BUDGET.read_text(encoding="utf-8")) if BUDGET.exists() else {}
+    e = b.setdefault(day, {"images": 0, "neurons": 0})
+    e["text"] = e.get("text", 0) + 1
+    e["neurons"] = e.get("neurons", 0) + neurons
+    BUDGET.write_text(json.dumps(b, indent=2), encoding="utf-8")
+
+def ask_text(system, prompt, max_tokens=120, temperature=0.4):
+    """One Workers AI text call -> the answer (str), or None (no keys / budget / error). Never raises."""
+    load_env()
+    if not (os.environ.get("CF_ACCOUNT_ID") and os.environ.get("CF_API_TOKEN")) or os.environ.get("CF_TEXT") == "0":
+        return None
+    if text_left() <= 0:
+        log("  text model: today's budget used up")
+        return None
+    url = f"https://api.cloudflare.com/client/v4/accounts/{os.environ['CF_ACCOUNT_ID']}/ai/run/{TEXT}"
+    body = json.dumps({"messages": [{"role": "system", "content": system}, {"role": "user", "content": prompt}],
+                       "max_tokens": max_tokens, "temperature": temperature}).encode()
+    req = urllib.request.Request(url, data=body, method="POST", headers={
+        "Authorization": f"Bearer {os.environ['CF_API_TOKEN']}", "Content-Type": "application/json"})
+    try:
+        with urllib.request.urlopen(req, timeout=60) as r:
+            res = json.load(r)
+    except urllib.error.HTTPError as e:
+        log(f"  text model {e.code}: {e.read().decode(errors='replace')[:160]}")
+        return None
+    except OSError as e:
+        log(f"  text model: {e}")
+        return None
+    text_spend(5 + len(prompt) // 800)
+    ans = (res.get("result") or {}).get("response")
+    return ans if isinstance(ans, str) else (json.dumps(ans) if ans is not None else None)
+
+HOOK_SYSTEM = ("You are an elite short-form video editor who has studied thousands of viral TikTok, Reels and Shorts "
+               "clips. You write the on-screen text of the first 2 seconds: one question that makes a viewer stop "
+               "scrolling and watch to the end.")
+
+def hook_question(name, tags, transcript):
+    """A 3-8 word question in capitals from the streamer's real words + the moment's tags, or None. Only facts from
+    the input; validated (length, letters, no swear/sexual word, no number the input does not have)."""
+    import re as _re
+    words = " ".join(transcript.split()[:80])
+    ans = ask_text(HOOK_SYSTEM,
+                   f"GTA 6 Twitch clip. Streamer: {name}. Detected moment type: {', '.join(tags) or 'reaction'}.\n"
+                   f"What the streamer says: \"{words}\"\n"
+                   "Write ONE question, 3 to 8 words, in capital letters, that teases this exact moment. Use only what "
+                   "the transcript and the moment type say - never invent events, people, places or numbers. You may "
+                   "use the streamer's name. No emoji, no hashtags, no quotes, no swear words. Reply with the question only.",
+                   max_tokens=30)
+    if not ans:
+        return None
+    q = ans.strip().splitlines()[0].strip().strip('"\'').upper()
+    if not _re.fullmatch(r"[A-Z0-9' ,.!?-]{8,60}\?", q) or not 3 <= len(q.split()) <= 8:
+        return None
+    nums = set(_re.findall(r"\d+", q))
+    if nums and not nums <= set(_re.findall(r"\d+", words + " 6")):
+        return None
+    from cenzura import cenzura
+    if cenzura(q) != q:
+        return None
+    return q
+
+HIGHLIGHT_SYSTEM = ("You are an elite short-form video editor who has studied thousands of viral clips. From a GTA 6 "
+                    "stream transcript you pick the moments a viewer would share: a loud reaction, a crash or chase, a "
+                    "funny line, a rage outburst, a shocked 'no way'. Calm talking, menus, reading chat or 'starting soon' "
+                    "are never highlights.")
+
+def stream_highlights(lines, max_n=3):
+    """lines = ['[mm:ss] text', ...] (one per ~20 s). -> [(seconds, score 0..1)] the model rates >= 80/100.
+    Long transcripts in chunks; never raises."""
+    import re as _re
+    out = []
+    for i in range(0, len(lines), 90):                  # ~30 min of transcript per call
+        chunk = "\n".join(lines[i:i + 90])
+        ans = ask_text(HIGHLIGHT_SYSTEM,
+                       "Transcript (timestamps mm:ss or h:mm:ss):\n" + chunk + "\n\nReturn JSON only: "
+                       '{"highlights":[{"t":"mm:ss of the peak","score":0-100,"why":"few words"}]} with at most '
+                       f"{max_n} highlights, score 80+ only for something truly shareable; none -> empty list.",
+                       max_tokens=220, temperature=0.2)
+        if not ans:
+            continue
+        m = _re.search(r"[\[{].*[\]}]", ans, _re.S)      # the model returns the object or just the list
+        try:
+            data = json.loads(m.group(0)) if m else []
+        except ValueError:
+            continue
+        items = data.get("highlights", []) if isinstance(data, dict) else data if isinstance(data, list) else []
+        for it in items:
+            if not isinstance(it, dict):
+                continue
+            try:
+                parts = [int(x) for x in str(it.get("t", "")).split(":")]
+                sec = sum(p * 60 ** k for k, p in enumerate(reversed(parts)))
+                sc = float(it.get("score", 0))
+            except (ValueError, TypeError):
+                continue
+            if sc >= 80:
+                out.append((float(sec), sc / 100))
+    return sorted(out, key=lambda x: -x[1])[:max_n]
