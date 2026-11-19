@@ -15135,12 +15135,165 @@
     "channel": "nickeh30",
     "platform": "twitch",
     "title": "WW FAMILY FRIENDLY NICKEH30",
-    "views": 536,
+    "views": 546,
     "created": 1795066312,
     "category": "Grand Theft Auto VI",
     "video_id": "2932380541",
     "vod_offset": 41590,
     "cluster": 1,
-    "added": 1795119343
+    "added": 1795120128
+  },
+  "twitch_BillowingDaintyAsteriskGOWSkull-NJlINjv8XWTMoGsT": {
+    "id": "twitch_BillowingDaintyAsteriskGOWSkull-NJlINjv8XWTMoGsT",
+    "url": "https://www.twitch.tv/stableronaldo/clip/BillowingDaintyAsteriskGOWSkull-NJlINjv8XWTMoGsT",
+    "channel": "stableronaldo",
+    "platform": "twitch",
+    "title": "rons reaction",
+    "views": 521,
+    "created": 1795052130,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932442046",
+    "vod_offset": 33939,
+    "cluster": 1,
+    "added": 1795120128
+  },
+  "twitch_BlatantExquisiteMonitorGrammarKing-KZJb61NKnli7x9PO": {
+    "id": "twitch_BlatantExquisiteMonitorGrammarKing-KZJb61NKnli7x9PO",
+    "url": "https://www.twitch.tv/asianjeff/clip/BlatantExquisiteMonitorGrammarKing-KZJb61NKnli7x9PO",
+    "channel": "asianjeff",
+    "platform": "twitch",
+    "title": "jeff gta6",
+    "views": 527,
+    "created": 1795066592,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933231152",
+    "vod_offset": 2771,
+    "cluster": 1,
+    "added": 1795120128
+  },
+  "twitch_EagerBovineVelociraptorTwitchRaid-j2H8aK-F-0bObWVL": {
+    "id": "twitch_EagerBovineVelociraptorTwitchRaid-j2H8aK-F-0bObWVL",
+    "url": "https://www.twitch.tv/marlon/clip/EagerBovineVelociraptorTwitchRaid-j2H8aK-F-0bObWVL",
+    "channel": "marlon",
+    "platform": "twitch",
+    "title": "marlon cant handle a little sushi night?",
+    "views": 564,
+    "created": 1795069774,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932567591",
+    "vod_offset": 42820,
+    "cluster": 1,
+    "added": 1795120128
+  },
+  "twitch_ObeseObliqueTildeHassanChop-V71KdClKP_JCqGtj": {
+    "id": "twitch_ObeseObliqueTildeHassanChop-V71KdClKP_JCqGtj",
+    "url": "https://www.twitch.tv/ishowspeed/clip/ObeseObliqueTildeHassanChop-V71KdClKP_JCqGtj",
+    "channel": "ishowspeed",
+    "platform": "twitch",
+    "title": "LMAO moment | ishowspeed",
+    "views": 532,
+    "created": 1795061094,
+    "category": "Grand Theft Auto VI",
+    "cluster": 1,
+    "added": 1795120128,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/ishowspeed/20261119_twitch_ObeseObliqueTildeHassanChop-V71KdClKP_JCqGtj/source.mp4",
+    "peak": 22.25,
+    "cut": [
+      7.33,
+      26.37
+    ],
+    "dur": 30.02,
+    "tags": [
+      "funny"
+    ],
+    "tag_scores": {
+      "funny": 0.63,
+      "glitch": 0.0,
+      "chase": 0.2,
+      "crash": 0.0,
+      "rage": 0.05,
+      "first-reaction": 0.2,
+      "wow": 0.04,
+      "_loud": 2.6,
+      "_motion": 23.7
+    },
+    "quote": "Yeah, okay, have a nice rest of yourself What do you mean?",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.7,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "primary": "funny",
+    "proven": [],
+    "evidence": {
+      "funny": [
+        "text"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.41,
+    "signals": {
+      "siren": 0.0,
+      "impact": 19.1,
+      "loud": 2.9,
+      "motion": 18.5,
+      "sustained": 0.76,
+      "spike": 4.5,
+      "laugh": 0,
+      "static": 0.02,
+      "letterbox": 0.0,
+      "luma": 39.1,
+      "dark": 0.0
+    }
+  },
+  "twitch_PreciousSaltyPotTheThing-sId0bCRIzpt3S_dX": {
+    "id": "twitch_PreciousSaltyPotTheThing-sId0bCRIzpt3S_dX",
+    "url": "https://www.twitch.tv/stableronaldo/clip/PreciousSaltyPotTheThing-sId0bCRIzpt3S_dX",
+    "channel": "stableronaldo",
+    "platform": "twitch",
+    "title": "why he do jdab like that😂😂😂",
+    "views": 607,
+    "created": 1795052225,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932442046",
+    "vod_offset": 34056,
+    "cluster": 1,
+    "added": 1795120128
+  },
+  "twitch_RockyGlutenFreeRadishDBstyle-YAtDvLyliysA3g7f": {
+    "id": "twitch_RockyGlutenFreeRadishDBstyle-YAtDvLyliysA3g7f",
+    "url": "https://www.twitch.tv/ishowspeed/clip/RockyGlutenFreeRadishDBstyle-YAtDvLyliysA3g7f",
+    "channel": "ishowspeed",
+    "platform": "twitch",
+    "title": "h",
+    "views": 543,
+    "created": 1795081508,
+    "category": "Grand Theft Auto VI",
+    "cluster": 1,
+    "added": 1795120128
   }
 }
