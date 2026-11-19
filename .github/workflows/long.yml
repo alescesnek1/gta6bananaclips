@@ -156,18 +156,40 @@ jobs:
             out/_long/*/*/nahled*.jpg
           retention-days: 7
 
+      # 19. 11.: the artifact link needs a GitHub sign-in (404 for Ales) -> the video also goes to a GitHub
+      # Release asset: a plain public download, no sign-in, up to 2 GB; releases older than 4 days are deleted
+      - name: public download link (release)
+        id: rel
+        if: always() && hashFiles('out/_long/*/*.mp4') != ''
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for z in bananas fanpage; do
+            f=$(ls out/_long/$z/*.mp4 2>/dev/null | head -1)
+            [ -n "$f" ] || continue
+            tag="long-$z-$(date -u +%Y%m%d-%H%M)"
+            name="$(basename "$f")"
+            gh release create "$tag" "$f" --title "$z $name" --notes "Long-form ke stazeni (smaze se po 4 dnech)" --prerelease               && echo "$z=https://github.com/${{ github.repository }}/releases/download/$tag/$name" >> "$GITHUB_OUTPUT"
+          done
+          # old download releases out (the video lives on YouTube by then)
+          gh release list --limit 100 --json tagName,createdAt -q '.[] | select(.tagName | startswith("long-")) | "\(.tagName) \(.createdAt)"' |
+            while read t c; do
+              [ $(( $(date +%s) - $(date -d "$c" +%s) )) -gt 345600 ] && gh release delete "$t" --yes --cleanup-tag || true
+            done
+
       # a video without its artifact link still gets its e-mail (the link line says it is missing)
       - name: e-mail bananas
         id: mail_b
         continue-on-error: true            # one failed e-mail must not swallow the next one
         if: always() && hashFiles('out/_long/bananas/*.meta.json') != ''
-        run: python posli_mail.py out/_long/bananas/*.meta.json --odkaz "${{ steps.art_b.outputs.artifact-url }}"
+        run: python posli_mail.py out/_long/bananas/*.meta.json --odkaz "${{ steps.rel.outputs.bananas || steps.art_b.outputs.artifact-url }}"
 
       - name: e-mail fanpage
         id: mail_f
         continue-on-error: true            # one failed e-mail must not swallow the next one
         if: always() && hashFiles('out/_long/fanpage/*.meta.json') != ''
-        run: python posli_mail.py out/_long/fanpage/*.meta.json --odkaz "${{ steps.art_f.outputs.artifact-url }}"
+        run: python posli_mail.py out/_long/fanpage/*.meta.json --odkaz "${{ steps.rel.outputs.fanpage || steps.art_f.outputs.artifact-url }}"
 
       # never silence (Aleš 18. 11.): a brand that left neither a video, nor a failed note, nor a skip mark
       # (crash, timeout, kill) gets a failed note now + the retry wait (_fail), so it does not mail every 2 h

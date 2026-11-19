@@ -105,7 +105,8 @@ def texts_for(m):
         f"ZVEŘEJNIT: {den} {when:%d.%m.%Y} v {when:%H:%M} (čas Praha) – nejbližší dobrý čas, aspoň 45 min od e-mailu",
         *([f"POZNÁMKA: {m['poznamka']}"] if m.get("poznamka") else []),
         f"Délka: {m.get('duration_s', 0) / 60:.1f} min",
-        f"Video ke stažení (platí 3 dny, potřeba přihlášení na GitHub): {m.get('_odkaz') or '(chybí odkaz na artefakt)'}",
+        (f"Video ke stažení (platí 4 dny, bez přihlášení): {m['_odkaz']}" if "/releases/download/" in (m.get("_odkaz") or "")
+         else f"Video ke stažení (platí 3 dny, potřeba přihlášení na GitHub): {m.get('_odkaz') or '(chybí odkaz)'}"),
         "",
         f"Ve Studiu: nahraj video, vlož název, popis a tagy, miniaturu z Gemini/ChatGPT, naplánuj na "
         f"{when:%d.%m. %H:%M} (Praha), playlist \"{m.get('playlist', m['serie'])}\", kategorie Hry, pro děti NE.",
