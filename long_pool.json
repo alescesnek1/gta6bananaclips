@@ -4558,13 +4558,13 @@
     "channel": "lacy",
     "platform": "twitch",
     "title": "Lacy gets excited and realises he has no more money!",
-    "views": 1833,
+    "views": 1837,
     "created": 1795006369,
     "category": "Grand Theft Auto VI",
     "video_id": "2932194507",
     "vod_offset": 9648,
     "cluster": 1,
-    "added": 1795068795,
+    "added": 1795069090,
     "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/lacy/20261118_twitch_CharmingCutePastaGivePLZ-YO40ueMBjtcjczNg/source.mp4",
     "peak": 23.150000000000002,
     "cut": [
@@ -5254,5 +5254,87 @@
     "vod_offset": 2090,
     "cluster": 1,
     "added": 1795067052
+  },
+  "twitch_AlluringBlatantMacaroniCclamChamp-EQlAbNoKjIy6FBFD": {
+    "id": "twitch_AlluringBlatantMacaroniCclamChamp-EQlAbNoKjIy6FBFD",
+    "url": "https://www.twitch.tv/stableronaldo/clip/AlluringBlatantMacaroniCclamChamp-EQlAbNoKjIy6FBFD",
+    "channel": "stableronaldo",
+    "platform": "twitch",
+    "title": "OOOO",
+    "views": 1089,
+    "created": 1795034505,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932442046",
+    "vod_offset": 16391,
+    "added": 1795069563,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/stableronaldo/20261118_twitch_AlluringBlatantMacaroniCclamChamp-EQlAbNoKjIy6FBFD/source.mp4",
+    "peak": 24.0,
+    "cut": [
+      14.9,
+      28.43
+    ],
+    "dur": 36.2,
+    "tags": [],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 0.2,
+      "wow": 0.0,
+      "_loud": 3.6,
+      "_motion": 5.6
+    },
+    "quote": "I can see you want to.",
+    "rendered": [
+      "fanpage"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "proven": [],
+    "evidence": {
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.0,
+    "signals": {
+      "siren": 0.0,
+      "impact": 12.5,
+      "loud": 3.4,
+      "motion": 4.1,
+      "sustained": 0.0,
+      "spike": 2.2,
+      "laugh": 0,
+      "static": 0.32,
+      "letterbox": 0.0,
+      "luma": 9.8,
+      "dark": 1.0
+    }
+  },
+  "twitch_BashfulDreamyDragonflyGingerPower-KVNXb4B9B7tJHtVt": {
+    "id": "twitch_BashfulDreamyDragonflyGingerPower-KVNXb4B9B7tJHtVt",
+    "url": "https://www.twitch.tv/stableronaldo/clip/BashfulDreamyDragonflyGingerPower-KVNXb4B9B7tJHtVt",
+    "channel": "stableronaldo",
+    "platform": "twitch",
+    "title": "StableRonaldo flashed🔞🔞",
+    "views": 1326,
+    "created": 1795035015,
+    "category": "Grand Theft Auto VI",
+    "added": 1795069563
   }
 }
