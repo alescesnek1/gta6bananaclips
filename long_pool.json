@@ -22076,5 +22076,19 @@
     "vod_offset": 8524,
     "cluster": 1,
     "added": 1795129228
+  },
+  "twitch_TiredCovertCougarHeyGirl-RI7i3wdJxWw6RTWv": {
+    "id": "twitch_TiredCovertCougarHeyGirl-RI7i3wdJxWw6RTWv",
+    "url": "https://www.twitch.tv/jasontheween/clip/TiredCovertCougarHeyGirl-RI7i3wdJxWw6RTWv",
+    "channel": "jasontheween",
+    "platform": "twitch",
+    "title": "We like that",
+    "views": 516,
+    "created": 1795100201,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933588799",
+    "vod_offset": 11766,
+    "cluster": 1,
+    "added": 1795129592
   }
 }
