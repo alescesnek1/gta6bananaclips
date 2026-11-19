@@ -32,3 +32,18 @@ def cascade(name):
     if c.empty():
         raise RuntimeError(f"OpenCV cascade {name} did not load from {path}")
     return c
+
+
+def ascii_path(p):
+    """p itself when its path is ASCII, else a copy (file or whole folder) in an ASCII folder. For paths ffmpeg
+    reads INSIDE a filter (subtitles fontsdir, drawtext fontfile): libass / fontconfig crashed on the 24/7 PC
+    (0xC0000005, 'Fontconfig error: Cannot load default config file') with the repo under a non-ASCII folder."""
+    p = Path(p)
+    if str(p).isascii() or not p.exists():
+        return p
+    dst = ascii_dir() / ("_".join(p.parts[-2:]) if p.is_dir() else p.name)
+    if p.is_dir():
+        shutil.copytree(p, dst, dirs_exist_ok=True)
+    elif not dst.exists() or dst.stat().st_size != p.stat().st_size:
+        shutil.copyfile(p, dst)
+    return dst

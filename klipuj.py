@@ -69,6 +69,7 @@ CAP_FONT = "Montserrat Black"                      # family name inside fonts/ca
 CAP_SIZE = 130                                     # big captions (Aleš 13.+14. 11.: "mnohem větší", "větší")
 CAP_CHARS = 11                                     # max letters on a line at that size (2 words max)
 WM_FONT_FILE = HERE / "fonts" / "montserrat-600.ttf"  # watermarks
+CAP_FONTS, WM_FONT_FILE = cv_safe.ascii_path(CAP_FONTS), cv_safe.ascii_path(WM_FONT_FILE)   # ffmpeg filters: ASCII paths
 
 W, H = 1080, 1920      # output size
 CAM_H = 640            # facecam band on top; gameplay gets the remaining 1280
