@@ -1956,13 +1956,87 @@
     "channel": "zoil",
     "platform": "twitch",
     "title": "strip",
-    "views": 568,
+    "views": 1920,
     "created": 1795001774,
     "category": "Grand Theft Auto VI",
     "video_id": "2932212372",
     "vod_offset": 2785,
     "cluster": 1,
-    "added": 1795021074
+    "added": 1795048325,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/zoil/20261118_twitch_GrossBlazingDillSquadGoals-XTGoFBoTeUWbVdno/source.mp4",
+    "peak": 20.85,
+    "cut": [
+      11.5,
+      23.87
+    ],
+    "dur": 30.02,
+    "tags": [
+      "wow",
+      "rage"
+    ],
+    "tag_scores": {
+      "funny": 0.08,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.0,
+      "rage": 0.3,
+      "first-reaction": 0.2,
+      "wow": 1.0,
+      "_loud": 2.5,
+      "_motion": 14.4
+    },
+    "quote": "Oh my God.",
+    "rendered": [
+      "fanpage"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.7
+    },
+    "primary": "wow",
+    "proven": [],
+    "evidence": {
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.38,
+    "signals": {
+      "siren": 0.0,
+      "impact": 14.7,
+      "loud": 1.4,
+      "motion": 13.6,
+      "sustained": 0.57,
+      "spike": 2.0,
+      "laugh": 0,
+      "static": 0.1,
+      "letterbox": 0.0,
+      "luma": 29.3,
+      "dark": 0.0
+    }
   },
   "youtube_J_GK53E9gZo_264": {
     "id": "youtube_J_GK53E9gZo_264",
@@ -3075,13 +3149,13 @@
     "channel": "sashagrey",
     "platform": "twitch",
     "title": "🌴 !DROPS COUNTDOWN TO GTA VI @SASHAGREY",
-    "views": 1524,
+    "views": 1588,
     "created": 1795001264,
     "category": "Grand Theft Auto VI",
     "video_id": "2932206166",
     "vod_offset": 3018,
     "cluster": 1,
-    "added": 1795046472,
+    "added": 1795047791,
     "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/sashagrey/20261118_twitch_PrettiestRockyFrogNerfBlueBlaster-kXM9Wrv-AmlrT3Jo/source.mp4",
     "peak": 28.25,
     "cut": [
@@ -3103,14 +3177,14 @@
       "_loud": 2.2,
       "_motion": 18.7
     },
-    "quote": "",
+    "quote": "Noooooo! Come on! Come on!",
     "rendered": [
       "bananas"
     ],
     "cats": {
       "funny": 0.0,
       "rage": 0.0,
-      "fail": 0.0,
+      "fail": 0.35,
       "physics": 0.0,
       "glitch": 0.0,
       "chase": 0.0,
@@ -3129,6 +3203,9 @@
     "evidence": {
       "first-reaction": [
         "launch-days",
+        "text"
+      ],
+      "fail": [
         "text"
       ]
     },
@@ -3501,13 +3578,13 @@
     "channel": "vanosscrew",
     "platform": "twitch",
     "title": "W GTA 6 STREAM",
-    "views": 836,
+    "views": 932,
     "created": 1795021460,
     "category": "Grand Theft Auto VI",
     "video_id": "2932487365",
     "vod_offset": 74,
     "cluster": 1,
-    "added": 1795046949
+    "added": 1795048325
   },
   "twitch_ModernClumsyBobaFloof-6H36OkNrTo9oo_Er": {
     "id": "twitch_ModernClumsyBobaFloof-6H36OkNrTo9oo_Er",
@@ -3515,12 +3592,12 @@
     "channel": "jasontheween",
     "platform": "twitch",
     "title": "moments before disaster",
-    "views": 1049,
+    "views": 1114,
     "created": 1795036962,
     "category": "Grand Theft Auto VI",
     "video_id": "2932190650",
     "vod_offset": 40580,
-    "added": 1795046949
+    "added": 1795048325
   },
   "twitch_PeppySlickOwlAliens-6hpIHuZQymeRQ2y9": {
     "id": "twitch_PeppySlickOwlAliens-6hpIHuZQymeRQ2y9",
@@ -3528,13 +3605,13 @@
     "channel": "ohnepixel",
     "platform": "twitch",
     "title": "stick drift",
-    "views": 1059,
+    "views": 1118,
     "created": 1795017110,
     "category": "Grand Theft Auto VI",
     "video_id": "2932275268",
     "vod_offset": 13136,
     "cluster": 1,
-    "added": 1795046949
+    "added": 1795048325
   },
   "twitch_SparklyEnchantingKimchiRuleFive-nFwdyisMgC_RJtiB": {
     "id": "twitch_SparklyEnchantingKimchiRuleFive-nFwdyisMgC_RJtiB",
@@ -3556,9 +3633,23 @@
     "channel": "caseoh_",
     "platform": "twitch",
     "title": "W PLAN 🤣🤣🤣👍",
-    "views": 572,
+    "views": 1265,
     "created": 1795039571,
     "category": "Grand Theft Auto VI",
-    "added": 1795046949
+    "added": 1795048325
+  },
+  "twitch_JazzySpineyCarrotJebaited-NGZc_OR4GLxdZYQg": {
+    "id": "twitch_JazzySpineyCarrotJebaited-NGZc_OR4GLxdZYQg",
+    "url": "https://www.twitch.tv/brycexd/clip/JazzySpineyCarrotJebaited-NGZc_OR4GLxdZYQg",
+    "channel": "brycexd",
+    "platform": "twitch",
+    "title": "dadsa",
+    "views": 607,
+    "created": 1795043347,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932205344",
+    "vod_offset": 45148,
+    "cluster": 1,
+    "added": 1795048325
   }
 }
