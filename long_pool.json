@@ -6870,13 +6870,13 @@
     "channel": "ohnepixel",
     "platform": "twitch",
     "title": "Move Mark",
-    "views": 1047,
+    "views": 1063,
     "created": 1795103578,
     "category": "Grand Theft Auto VI",
     "video_id": "2933599748",
     "vod_offset": 14046,
     "cluster": 1,
-    "added": 1795105081
+    "added": 1795105680
   },
   "twitch_EasyHeadstrongChamoisOSsloth-2nmCbtsI8T31vtPf": {
     "id": "twitch_EasyHeadstrongChamoisOSsloth-2nmCbtsI8T31vtPf",
@@ -6898,10 +6898,10 @@
     "channel": "kaicenat",
     "platform": "twitch",
     "title": "KAI CENAT GOT BANNED BECAUSE OF GTA 6 NUDITY",
-    "views": 632,
+    "views": 651,
     "created": 1795031879,
     "category": "Grand Theft Auto VI",
-    "added": 1795105081
+    "added": 1795105680
   },
   "twitch_HedonisticCloudyGrass4Head-7PMwqIK9TEv6tyLY": {
     "id": "twitch_HedonisticCloudyGrass4Head-7PMwqIK9TEv6tyLY",
@@ -6923,13 +6923,13 @@
     "channel": "nixstah",
     "platform": "twitch",
     "title": "no this is really happening oh my god",
-    "views": 739,
+    "views": 742,
     "created": 1795028051,
     "category": "Grand Theft Auto VI",
     "video_id": "2932204281",
     "vod_offset": 1576,
     "cluster": 1,
-    "added": 1795105081
+    "added": 1795105680
   },
   "twitch_NurturingVivaciousMageOhMyDog-biYegCogxzDh-GLQ": {
     "id": "twitch_NurturingVivaciousMageOhMyDog-biYegCogxzDh-GLQ",
@@ -6937,13 +6937,13 @@
     "channel": "mooda",
     "platform": "twitch",
     "title": "🟥 PLAYING GRAND THEFT AUTO 6 🟥 WAITED 13 YEARS FOR THIS 🟥 BACK FROM JAPAN 🟥 RANK 3 CHUD 🟥",
-    "views": 764,
+    "views": 767,
     "created": 1795019305,
     "category": "Grand Theft Auto VI",
     "video_id": "2932442195",
     "vod_offset": 1195,
     "cluster": 1,
-    "added": 1795105081
+    "added": 1795105680
   },
   "twitch_PlacidSmellyHerbsNotLikeThis-E5K3pydtu5Z2Jol1": {
     "id": "twitch_PlacidSmellyHerbsNotLikeThis-E5K3pydtu5Z2Jol1",
@@ -6951,13 +6951,13 @@
     "channel": "missmikkaa",
     "platform": "twitch",
     "title": "DROPS ✅ [PS5 PRO] GOTY? GTA 6 FINALLY!! | Best reviewed game of ALL TIME?? Insane | @MissMikkaa on Socials",
-    "views": 719,
+    "views": 728,
     "created": 1795021940,
     "category": "Grand Theft Auto VI",
     "video_id": "2932348658",
     "vod_offset": 11425,
     "cluster": 1,
-    "added": 1795105081
+    "added": 1795105680
   },
   "twitch_SteamyAntsyGerbilDoritosChip-RKspwLMpO9nYTDXI": {
     "id": "twitch_SteamyAntsyGerbilDoritosChip-RKspwLMpO9nYTDXI",
@@ -6965,12 +6965,66 @@
     "channel": "melomelosss",
     "platform": "twitch",
     "title": "DAMN THIS WAS CRAZY IN GTA 6",
-    "views": 912,
+    "views": 1018,
     "created": 1795061489,
     "category": "Grand Theft Auto VI",
     "video_id": "2932349487",
     "vod_offset": 3954,
     "cluster": 1,
-    "added": 1795105081
+    "added": 1795105680
+  },
+  "twitch_AssiduousTacitCurlewBigBrother-iONSnZn21uUITjLw": {
+    "id": "twitch_AssiduousTacitCurlewBigBrother-iONSnZn21uUITjLw",
+    "url": "https://www.twitch.tv/ishowspeed/clip/AssiduousTacitCurlewBigBrother-iONSnZn21uUITjLw",
+    "channel": "ishowspeed",
+    "platform": "twitch",
+    "title": "bro omega sus",
+    "views": 766,
+    "created": 1795062584,
+    "category": "Grand Theft Auto VI",
+    "cluster": 1,
+    "added": 1795105680
+  },
+  "twitch_DullCrowdedLatteLitty-X_YbhBwZAZzBLwq1": {
+    "id": "twitch_DullCrowdedLatteLitty-X_YbhBwZAZzBLwq1",
+    "url": "https://www.twitch.tv/luckychamu/clip/DullCrowdedLatteLitty-X_YbhBwZAZzBLwq1",
+    "channel": "luckychamu",
+    "platform": "twitch",
+    "title": "it's time it's time it's time it's time get hype it's time",
+    "views": 722,
+    "created": 1795034687,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932196093",
+    "vod_offset": 2508,
+    "cluster": 1,
+    "added": 1795105680
+  },
+  "twitch_SleepyMoistPigNotATK-q0pJ0zN3aSDmLNlx": {
+    "id": "twitch_SleepyMoistPigNotATK-q0pJ0zN3aSDmLNlx",
+    "url": "https://www.twitch.tv/valkyrae/clip/SleepyMoistPigNotATK-q0pJ0zN3aSDmLNlx",
+    "channel": "valkyrae",
+    "platform": "twitch",
+    "title": "Valkyrae – Hype-Moment",
+    "views": 755,
+    "created": 1795072943,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932982359",
+    "vod_offset": 23062,
+    "cluster": 1,
+    "added": 1795105680
+  },
+  "twitch_SmellyPrettiestDoveHumbleLife-SoxQ4NDPxPxJ6YLp": {
+    "id": "twitch_SmellyPrettiestDoveHumbleLife-SoxQ4NDPxPxJ6YLp",
+    "url": "https://www.twitch.tv/zackrawrr/clip/SmellyPrettiestDoveHumbleLife-SoxQ4NDPxPxJ6YLp",
+    "channel": "zackrawrr",
+    "platform": "twitch",
+    "title": "No comment",
+    "views": 780,
+    "created": 1795029891,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932469290",
+    "vod_offset": 8228,
+    "cluster": 1,
+    "added": 1795105680
   }
 }
