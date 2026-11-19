@@ -4622,10 +4622,86 @@
     "channel": "jynxzi",
     "platform": "twitch",
     "title": "Jynxy plays gta6 for the first time",
-    "views": 978,
+    "views": 1808,
     "created": 1795027910,
     "category": "Grand Theft Auto VI",
-    "added": 1795056745
+    "added": 1795067052,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/jynxzi/20261118_twitch_EvilKindChamoisFreakinStinkin-_Q6h9MGvEezIzSw0/source.mp4",
+    "peak": 7.65,
+    "cut": [
+      0.0,
+      10.67
+    ],
+    "dur": 14.72,
+    "tags": [
+      "first-reaction"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 1.0,
+      "wow": 0.0,
+      "_loud": 2.9,
+      "_motion": 9.2
+    },
+    "quote": "Listen, You idiot.",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 1.0,
+      "wow": 0.0
+    },
+    "primary": "first-reaction",
+    "proven": [
+      "first-reaction"
+    ],
+    "evidence": {
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion-spike"
+      ],
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ]
+    },
+    "fun": 0.26,
+    "signals": {
+      "siren": 0.0,
+      "impact": 13.5,
+      "loud": 2.9,
+      "motion": 5.6,
+      "sustained": 0.07,
+      "spike": 7.5,
+      "laugh": 0,
+      "static": 0.1,
+      "letterbox": 0.0,
+      "luma": 32.8,
+      "dark": 0.0
+    }
   },
   "twitch_UninterestedSoftLorisKlappa-60EV5Q5rHYYd9sc7": {
     "id": "twitch_UninterestedSoftLorisKlappa-60EV5Q5rHYYd9sc7",
@@ -5010,5 +5086,33 @@
     "vod_offset": 13450,
     "cluster": 1,
     "added": 1795065795
+  },
+  "twitch_ResoluteCourteousPistachioSuperVinlin-DzGhsfoP-l4gFmBB": {
+    "id": "twitch_ResoluteCourteousPistachioSuperVinlin-DzGhsfoP-l4gFmBB",
+    "url": "https://www.twitch.tv/kaicenat/clip/ResoluteCourteousPistachioSuperVinlin-DzGhsfoP-l4gFmBB",
+    "channel": "kaicenat",
+    "platform": "twitch",
+    "title": "Kai wants a side girl",
+    "views": 1438,
+    "created": 1795017293,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932305259",
+    "vod_offset": 10464,
+    "cluster": 1,
+    "added": 1795067052
+  },
+  "twitch_SeductivePlacidOysterOSsloth-n4IP8pGHH3fu5X8z": {
+    "id": "twitch_SeductivePlacidOysterOSsloth-n4IP8pGHH3fu5X8z",
+    "url": "https://www.twitch.tv/kaicenat/clip/SeductivePlacidOysterOSsloth-n4IP8pGHH3fu5X8z",
+    "channel": "kaicenat",
+    "platform": "twitch",
+    "title": "first baby in gta",
+    "views": 1535,
+    "created": 1795008899,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932305259",
+    "vod_offset": 2090,
+    "cluster": 1,
+    "added": 1795067052
   }
 }
