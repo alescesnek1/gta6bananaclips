@@ -21958,5 +21958,109 @@
     "vod_offset": 32230,
     "cluster": 1,
     "added": 1795127607
+  },
+  "twitch_RudeIntelligentBobaTebowing-JsiR00sUZt3PwYJ5": {
+    "id": "twitch_RudeIntelligentBobaTebowing-JsiR00sUZt3PwYJ5",
+    "url": "https://www.twitch.tv/thenicolet/clip/RudeIntelligentBobaTebowing-JsiR00sUZt3PwYJ5",
+    "channel": "thenicolet",
+    "platform": "twitch",
+    "title": "GTA 6 Launch!",
+    "views": 503,
+    "created": 1795067755,
+    "category": "Grand Theft Auto VI",
+    "cluster": 1,
+    "added": 1795128535
+  },
+  "youtube_DBI371PR9Us_23": {
+    "id": "youtube_DBI371PR9Us_23",
+    "url": "https://6aff7c143d3f1f7c95611c61--gta6bananaclips-media.netlify.app/yt/youtube_DBI371PR9Us_23_16x9.mp4",
+    "channel": "gtaseriesvideos",
+    "platform": "youtube",
+    "title": "GTA 6 Mission #11 - Coming Home (Chapter 1) [Full Walkthrough - PS5 4K]",
+    "views": 27194,
+    "created": 1795107433,
+    "category": "GTA 6 Mission #11 - Coming Home (Chapter 1) [Full Walkthrough - PS5 4K] gta 6 gta vi grand theft auto 6 grand theft auto vi gta 6 just a scratch just a scratch walkthrough gta 6 mission 4 gta 6 fourth mission gta 6 chapter 1 gta 6 just like paradise gta 6 walkthrough gta 6 walkthrough part 4 gta 6 part 4 gta 6 gameplay gta 6 mission walkthrough gta 6 no commentary gta 6 ps5 gta 6 ps5 pro gta 6 4k gta 6 walkthrough 4k gta vi walkthrough jason duval lucia caminos vice city gta vi mission 11 buck me",
+    "signal_score": 1.0,
+    "added": 1795128538,
+    "peak": 22.25,
+    "cut": [
+      0.0,
+      24.53
+    ],
+    "dur": 24.53,
+    "tags": [
+      "first-reaction",
+      "crash"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.3,
+      "rage": 0.15,
+      "first-reaction": 1.0,
+      "wow": 0.12,
+      "_loud": 4.2,
+      "_motion": 19.4
+    },
+    "quote": "Thank you, appreciate the business.",
+    "rendered": [
+      "fanpage"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.7,
+      "first-reaction": 0.95,
+      "wow": 0.0
+    },
+    "primary": "first-reaction",
+    "proven": [
+      "first-reaction"
+    ],
+    "evidence": {
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "mission": [
+        "text"
+      ],
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ]
+    },
+    "fun": 0.52,
+    "signals": {
+      "siren": 0.0,
+      "impact": 26.4,
+      "loud": 4.3,
+      "motion": 14.8,
+      "sustained": 0.48,
+      "spike": 5.0,
+      "laugh": 0,
+      "static": 0.0,
+      "letterbox": 0.0,
+      "luma": 60.0,
+      "dark": 0.0
+    },
+    "seg_from": 0.0,
+    "src_mb": 7.6,
+    "source": "https://6aff7c143d3f1f7c95611c61--gta6bananaclips-media.netlify.app/yt/youtube_DBI371PR9Us_23_16x9.mp4",
+    "yt_url": "https://www.youtube.com/watch?v=DBI371PR9Us"
   }
 }
