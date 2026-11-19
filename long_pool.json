@@ -6098,5 +6098,19 @@
     "vod_offset": 2764,
     "cluster": 1,
     "added": 1795093401
+  },
+  "twitch_CrunchySavageAubergineOpieOP-a-vHo8iMjbdDcY6G": {
+    "id": "twitch_CrunchySavageAubergineOpieOP-a-vHo8iMjbdDcY6G",
+    "url": "https://www.twitch.tv/stableronaldo/clip/CrunchySavageAubergineOpieOP-a-vHo8iMjbdDcY6G",
+    "channel": "stableronaldo",
+    "platform": "twitch",
+    "title": "LUCIA ROLEPLAY",
+    "views": 1150,
+    "created": 1795022992,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932442046",
+    "vod_offset": 4823,
+    "cluster": 1,
+    "added": 1795093698
   }
 }
