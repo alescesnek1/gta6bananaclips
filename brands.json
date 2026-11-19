@@ -86,7 +86,7 @@
       "_themes": "Ales 19. 11.: ~20 temat na kanal (ne 3): kazdy beh zkusi 4 dalsi na rade a postavi prvni s 8 min akce; kurzor jde dal (long_episodes.json _cursor). Bananas = vtipne/rozhodci/streamer, fanpage = akce/pribeh/noc streamera."
     },
     "long_min_gap_h": 8,
-    "long_target_min": 8,
+    "long_target_min": 7,
     "long_retry_h": 6,
     "long_flags": {
       "_napoveda": "Vypinace novych prvku long-formu (false = vypnuto).",
@@ -195,7 +195,7 @@
       "_themes": "Ales 19. 11.: ~20 temat na kanal (ne 3): kazdy beh zkusi 4 dalsi na rade a postavi prvni s 8 min akce; kurzor jde dal (long_episodes.json _cursor). Bananas = vtipne/rozhodci/streamer, fanpage = akce/pribeh/noc streamera."
     },
     "long_min_gap_h": 8,
-    "long_target_min": 8,
+    "long_target_min": 7,
     "long_retry_h": 6,
     "long_flags": {
       "_napoveda": "Vypinace novych prvku long-formu (false = vypnuto).",
