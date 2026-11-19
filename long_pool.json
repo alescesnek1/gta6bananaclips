@@ -6238,5 +6238,33 @@
     "vod_offset": 16298,
     "cluster": 1,
     "added": 1795095806
+  },
+  "twitch_ArborealAntediluvianGoshawkCoolStoryBro-qRbYpYXouYW-oo2B": {
+    "id": "twitch_ArborealAntediluvianGoshawkCoolStoryBro-qRbYpYXouYW-oo2B",
+    "url": "https://www.twitch.tv/mrsavage/clip/ArborealAntediluvianGoshawkCoolStoryBro-qRbYpYXouYW-oo2B",
+    "channel": "mrsavage",
+    "platform": "twitch",
+    "title": "mrsavage - Highlight 1dc354 Part 10",
+    "views": 936,
+    "created": 1795022767,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932376551",
+    "vod_offset": 9825,
+    "cluster": 1,
+    "added": 1795096406
+  },
+  "twitch_EncouragingSpinelessFriesPhilosoraptor-YJ4K5OWk5hS0GnfF": {
+    "id": "twitch_EncouragingSpinelessFriesPhilosoraptor-YJ4K5OWk5hS0GnfF",
+    "url": "https://www.twitch.tv/cdawg/clip/EncouragingSpinelessFriesPhilosoraptor-YJ4K5OWk5hS0GnfF",
+    "channel": "cdawg",
+    "platform": "twitch",
+    "title": "LOL",
+    "views": 940,
+    "created": 1795018546,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932279052",
+    "vod_offset": 13940,
+    "cluster": 1,
+    "added": 1795096406
   }
 }
