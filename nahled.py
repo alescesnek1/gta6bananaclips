@@ -26,6 +26,7 @@ import sys
 from pathlib import Path
 
 import cv2
+import cv_safe                                  # OpenCV + non-ASCII paths on Windows (24/7 PC)
 import numpy as np
 
 import klipuj as K
@@ -85,8 +86,8 @@ def face_box(img):
     """The biggest face (frontal, else profile both ways) in the facecam crop: (x, y, w, h) or None."""
     global _cascade, _profile
     if _cascade is None:
-        _cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
-        _profile = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_profileface.xml")
+        _cascade = cv_safe.cascade("haarcascade_frontalface_default.xml")
+        _profile = cv_safe.cascade("haarcascade_profileface.xml")
     g = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     ms = (max(24, g.shape[1] // 12),) * 2
     f = list(_cascade.detectMultiScale(g, 1.1, 5, minSize=ms))
@@ -132,7 +133,7 @@ def best_face(src, peak, cam):
         loud = float(rms[np.argmin(np.abs(ts - t))]) / loud_max if rms.size else 0.0
         global _eyes
         if _eyes is None:
-            _eyes = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_eye.xml")
+            _eyes = cv_safe.cascade("haarcascade_eye.xml")
         top = cv2.cvtColor(crop[fy: fy + int(fh * 0.6), fx: fx + fw], cv2.COLOR_BGR2GRAY)
         open_eyes = len(_eyes.detectMultiScale(top, 1.1, 4, minSize=(max(8, fw // 10),) * 2))   # eyes open, looking up
         cands.append({"t": round(float(t), 2), "face": face, "sharp": sharp(crop[fy: fy + fh, fx: fx + fw]),

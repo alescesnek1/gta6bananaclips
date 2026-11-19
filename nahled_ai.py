@@ -34,6 +34,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import cv2
+import cv_safe                                  # OpenCV + non-ASCII paths on Windows (24/7 PC)
 import numpy as np
 
 HERE = Path(__file__).resolve().parent
@@ -205,7 +206,7 @@ def score(path, tbox):
     rg, yb = r - gg, 0.5 * (r + gg) - b
     colorful = min((np.sqrt(rg.std() ** 2 + yb.std() ** 2) + 0.3 * np.sqrt(rg.mean() ** 2 + yb.mean() ** 2)) / 90, 1.0)
     if _cascade is None:
-        _cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+        _cascade = cv_safe.cascade("haarcascade_frontalface_default.xml")
     faces = _cascade.detectMultiScale(g, 1.1, 5, minSize=(80, 80))
     face = 0.0
     if len(faces):

@@ -551,7 +551,8 @@ def protected_boxes(img, reel=False):
     split = pane_split(img) if reel else None
     out = [(0.0, 0.0, float(W), float(split + SEAM_PAD))] if split else []     # the facecam pane + captions on the seam
     for name in ("haarcascade_frontalface_default.xml", "haarcascade_profileface.xml"):
-        cas = cv2.CascadeClassifier(cv2.data.haarcascades + name)
+        import cv_safe
+        cas = cv_safe.cascade(name)
         for (x, y, w, h) in cas.detectMultiScale(g, 1.1, 5, minSize=(90, 90)):
             x, y, w, h = float(x), float(y), float(w), float(h)
             face = (x - 0.25 * w, y - 0.35 * h, x + 1.25 * w, y + 1.15 * h)                    # face + hair

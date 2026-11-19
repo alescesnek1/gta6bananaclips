@@ -47,6 +47,7 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 
 import cv2
+import cv_safe                                  # OpenCV + non-ASCII paths on Windows (24/7 PC)
 import numpy as np
 
 BRAND = "gta6bananaclips"
@@ -614,7 +615,7 @@ def cam_samples(src, n=CAM_SAMPLES):
     if key in _cam_cache:
         return _cam_cache[key]
     if _cascade is None:
-        _cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+        _cascade = cv_safe.cascade("haarcascade_frontalface_default.xml")
     grays, faces = [], []
     for _, img in frames(src, n / max(duration(src), 1.0), SW, SH):
         g = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -845,7 +846,7 @@ def quality_check(short, cam, cam_h=CAM_H, until=None):
     """
     global _cascade
     if _cascade is None:
-        _cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+        _cascade = cv_safe.cascade("haarcascade_frontalface_default.xml")
     n = black = face_ok = 0
     for i, (_, img) in enumerate(frames_raw(short, 1, 540, 960)):    # 1 fps: frame i = second i
         if until is not None and i >= until:          # the score card covers the picture: not a facecam fault
@@ -954,7 +955,7 @@ def gameplay_check(path, a=None, b=None, crop=None, mask=None):
     """
     global _cascade
     if _cascade is None:
-        _cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+        _cascade = cv_safe.cascade("haarcascade_frontalface_default.xml")
     W_, H_ = 640, 360
     ss = ["-ss", f"{a:.3f}"] if a else []
     tt = ["-t", f"{b - (a or 0):.3f}"] if b else []
@@ -1540,7 +1541,7 @@ def mouth_track(src, cam=None):
     """
     global _cascade
     if _cascade is None:
-        _cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+        _cascade = cv_safe.cascade("haarcascade_frontalface_default.xml")
     if cam:
         x, y, w, h = [int(round(v / 100 * d)) for v, d in zip(cam, (SW, SH, SW, SH))]
         vf, W_, H_ = f"fps={MOUTH_FPS},{src_norm(src)},crop={w}:{h}:{x}:{y},scale=320:240,format=gray", 320, 240
