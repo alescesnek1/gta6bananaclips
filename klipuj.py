@@ -408,6 +408,8 @@ def ai_signals(url, vid, info, label):
     dur = float(info.get("duration") or 0)
     if AI_VIDEOS <= 0 or not 120 <= dur <= AI_MAX_S or (info.get("view_count") or 0) < AI_MIN_VIEWS:
         return []
+    import nahled_ai
+    nahled_ai.load_env()                                # the 24/7 PC keeps the Cloudflare keys in its .env
     if not (os.environ.get("CF_ACCOUNT_ID") and os.environ.get("CF_API_TOKEN")):
         return []
     AI_VIDEOS -= 1
