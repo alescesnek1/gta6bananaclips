@@ -5666,5 +5666,19 @@
     "vod_offset": 8702,
     "cluster": 2,
     "added": 1795080375
+  },
+  "twitch_InquisitiveJollyVanillaDxCat-vctI-tQHron3Wd5I": {
+    "id": "twitch_InquisitiveJollyVanillaDxCat-vctI-tQHron3Wd5I",
+    "url": "https://www.twitch.tv/xqc/clip/InquisitiveJollyVanillaDxCat-vctI-tQHron3Wd5I",
+    "channel": "xqc",
+    "platform": "twitch",
+    "title": "part 2 XQC framegen ON",
+    "views": 521,
+    "created": 1795071829,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932113307",
+    "vod_offset": 83445,
+    "cluster": 1,
+    "added": 1795081404
   }
 }
