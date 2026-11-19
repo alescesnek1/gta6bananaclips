@@ -93,6 +93,20 @@
         },
         "draft": false,
         "done": true
+      },
+      "twitch_CooperativeAthleticMarjoramPeoplesChamp-ED9p6JnfM5HqbI2l": {
+        "due": "2026-11-19T12:02:00+01:00",
+        "posts": {
+          "6af7142262b70b94b01ac608": "6afed66f528b203593edb3b0"
+        },
+        "url": "https://6afed668b2a1c07a3132aed4--gta6bananaclips-media.netlify.app/stories/20261119/bananas_twitch_CooperativeAthleticMarjoramPeoplesChamp-ED9p6JnfM5HqbI2l_story.mp4",
+        "draft": false,
+        "done": true
+      },
+      "top3_2026-11-18": {
+        "due": "2026-11-19T12:02:00+01:00",
+        "posts": {},
+        "skip": "69 s > 60 s"
       }
     },
     "days": {
@@ -111,10 +125,56 @@
           }
         },
         "built": "2026-11-18T14:38+01:00"
+      },
+      "2026-11-19": {
+        "items": {
+          "stories/20261119/bananas_0_fact_top.jpg": {
+            "kind": "fact_top",
+            "due": "2026-11-19T17:06:00+01:00",
+            "url": "https://6afed7adeb035fa984ec5334--gta6bananaclips-media.netlify.app/stories/20261119/bananas_0_fact_top.jpg",
+            "alt": "Yesterday's top streamer xQc Banana score 3.7/10 from 3 clips Agree? Reply yes or no",
+            "posts": {
+              "6af7142262b70b94b01ac608": "6afed7b6528b203593eea2d6"
+            },
+            "draft": false
+          },
+          "stories/20261119/bananas_1_pool.jpg": {
+            "kind": "pool",
+            "due": "2026-11-19T21:46:00+01:00",
+            "url": "https://6afed7adeb035fa984ec5334--gta6bananaclips-media.netlify.app/stories/20261119/bananas_1_pool.jpg",
+            "alt": "GTA 6 story",
+            "posts": {
+              "6af7142262b70b94b01ac608": "6afed7b6ec3834f15454b94b"
+            },
+            "draft": false
+          },
+          "stories/20261119/bananas_2_guess.jpg": {
+            "kind": "guess",
+            "due": "2026-11-20T04:40:00+01:00",
+            "url": "https://6afed7adeb035fa984ec5334--gta6bananaclips-media.netlify.app/stories/20261119/bananas_2_guess.jpg",
+            "alt": "Guess the banana score Lacy's clip from yesterday Reply with your guess, 1 to 10",
+            "posts": {
+              "6af7142262b70b94b01ac608": "6afed7b7342c15437fd6f7ab"
+            },
+            "draft": false
+          },
+          "stories/20261119/bananas_3_question.jpg": {
+            "kind": "question",
+            "due": "2026-11-20T09:29:00+01:00",
+            "url": "https://6afed7adeb035fa984ec5334--gta6bananaclips-media.netlify.app/stories/20261119/bananas_3_question.jpg",
+            "alt": "Who was funnier yesterday? xQc or Adin Ross Reply with a name",
+            "posts": {
+              "6af7142262b70b94b01ac608": "6afed7b77fc65314b9eb3e7e"
+            },
+            "draft": false
+          }
+        },
+        "built": "2026-11-19T12:04+01:00"
       }
     },
     "pool": {
-      "bananas_07.jpg": "2026-11-18"
+      "bananas_07.jpg": "2026-11-18",
+      "bananas_12.jpg": "2026-11-19"
     },
     "long": {
       "funny-day#1@202611181907": {
@@ -194,6 +254,24 @@
         },
         "draft": false,
         "done": true
+      },
+      "kick_clip_01M7QF79EME6M21QZ4PP9XQNGQ": {
+        "due": "2026-11-19T12:02:00+01:00",
+        "posts": {
+          "6afc42e6ece6dfde5ff66dca": "6afed67b7c25de751c345e45"
+        },
+        "url": "https://6afed67498545b7fd8c2ceba--gta6bananaclips-media.netlify.app/stories/20261119/fanpage_kick_clip_01M7QF79EME6M21QZ4PP9XQNGQ_story.mp4",
+        "draft": false,
+        "done": true
+      },
+      "twitch_BetterBoxyPhoneKappaPride-dj6XJ97C0t6ZaTrX": {
+        "due": "2026-11-19T12:03:00+01:00",
+        "posts": {
+          "6afc42e6ece6dfde5ff66dca": "6afed689342c15437fd6154d"
+        },
+        "url": "https://6afed682d8caeb7e04f5b552--gta6bananaclips-media.netlify.app/stories/20261119/fanpage_twitch_BetterBoxyPhoneKappaPride-dj6XJ97C0t6ZaTrX_story.mp4",
+        "draft": false,
+        "done": true
       }
     },
     "days": {
@@ -212,10 +290,36 @@
           }
         },
         "built": "2026-11-18T14:38+01:00"
+      },
+      "2026-11-19": {
+        "items": {
+          "stories/20261119/fanpage_0_question.jpg": {
+            "kind": "question",
+            "due": "2026-11-20T04:24:00+01:00",
+            "url": "https://6afed7adeb035fa984ec5334--gta6bananaclips-media.netlify.app/stories/20261119/fanpage_0_question.jpg",
+            "alt": "Who made you laugh more? Kai Cenat or Adin Ross Tell me in the replies",
+            "posts": {
+              "6afc42e6ece6dfde5ff66dca": "6afed7b87c25de751c355727"
+            },
+            "draft": false
+          },
+          "stories/20261119/fanpage_1_pool.jpg": {
+            "kind": "pool",
+            "due": "2026-11-20T09:01:00+01:00",
+            "url": "https://6afed7adeb035fa984ec5334--gta6bananaclips-media.netlify.app/stories/20261119/fanpage_1_pool.jpg",
+            "alt": "GTA 6 story",
+            "posts": {
+              "6afc42e6ece6dfde5ff66dca": "6afed7b8ec3834f15454b9cd"
+            },
+            "draft": false
+          }
+        },
+        "built": "2026-11-19T12:04+01:00"
       }
     },
     "pool": {
-      "fanpage_07.jpg": "2026-11-18"
+      "fanpage_07.jpg": "2026-11-18",
+      "fanpage_03.jpg": "2026-11-19"
     },
     "long": {}
   }
