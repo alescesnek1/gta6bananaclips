@@ -105,6 +105,15 @@ SERIES = {
     "top-week": {"cats": None, "w": None, "days": 7, "reuse": True,
                  "title": {"bananas": "GTA 6 Top {k} Funniest Moments of the Week #{n} ({who})",
                            "fanpage": "GTA 6 Moments That Broke the Internet #{n} ({who})"}},
+    # 19. 11. fanpage themes (owner: ~20 themes per channel) - built from the same tags as the others
+    "cops": {"cats": {"chase", "escape"}, "w": {"chase": 1.0, "escape": 1.0, "crash": 0.4}, "days": 7,
+             "title": "GTA 6: Streamers vs the Cops #{n} ({who})"},
+    "chaos": {"cats": {"crash", "stunt", "physics"}, "w": {"crash": 1.0, "stunt": 0.9, "physics": 0.7, "wow": 0.5},
+              "days": 7, "title": "GTA 6 Pure Chaos #{n} ({who})"},
+    "close-calls": {"cats": {"escape", "wow"}, "w": {"escape": 1.0, "wow": 0.8, "chase": 0.5}, "days": 7,
+                    "title": "GTA 6 Closest Calls #{n} ({who})"},
+    "big-wins": {"cats": {"mission", "wow"}, "w": {"mission": 1.0, "wow": 0.8}, "days": 7,
+                 "title": "GTA 6 Biggest Wins: Streamers Pull It Off #{n} ({who})"},
     "chases": {"cats": {"chase"}, "w": {"chase": 1.0, "crash": 0.5, "escape": 0.5}, "verify": "chase", "days": 7,
                "title": "GTA 6 Craziest Police Chases #{n} ({who})"},
     "crashes-stunts": {"cats": {"crash", "stunt"}, "w": {"crash": 1.0, "stunt": 1.0, "physics": 0.4},
@@ -127,7 +136,11 @@ SLOT_LEAD_MIN = 45                # the suggested publish time is at least this 
 MOMENT_MAX_EST = 20.0             # optimistic length of one moment (s): the cheap "is there enough?" pre-check
 
 def series_key(serie):
-    return "streamer" if serie.startswith("streamer:") else serie
+    if serie.startswith("streamer:"):
+        return "streamer"
+    if serie.startswith("streamer-night:"):
+        return "streamer-night"
+    return serie
 
 def brand_cfg(z, key, default):
     """A long-form setting of the brand in brands.json (brand key, else top-level key, else the default)."""
@@ -256,7 +269,7 @@ def candidates(a, serie, t0, t1, used):
             continue                                       # the other brand's / another series' / already used
         if other in (r.get("rendered") or []) and a.znacka not in (r.get("rendered") or []):
             continue                                       # the other brand's short: keep the accounts apart
-        if serie.startswith("streamer:") and r["channel"] != serie.split(":", 1)[1].lower():
+        if ":" in serie and serie.split(":", 1)[0] in ("streamer", "streamer-night")                 and r["channel"] != serie.split(":", 1)[1].lower():
             continue
         out.append(r)
     return out
@@ -530,8 +543,17 @@ def plan_run(a, z, now, used, eps, res, vis_cache=None, verify=True):
     run_day = now.date()
     target = target_len(z, a)
     plan = {"day": str(run_day), "serie": None, "planned": a.serie or special or rot_s, "note": "", "next": slot}
+    themes = list(cal.get("themes") or [])
     if a.serie:
         tries = [(a.serie, None)]
+    elif themes:
+        # 19. 11. (owner: "you keep betting on 3 themes - make ~20 per channel"): the next THEMES_PER_RUN themes
+        # of the channel's list (a cursor that walks the list), the first with a strong episode is built
+        n, per = len(themes), int(cal.get("themes_per_run", 4))
+        i0 = int(((eps.get("_cursor") or {}).get(z)) or 0) % n
+        tries = [(themes[(i0 + j) % n], (i0 + j) % n) for j in range(min(per, n))]
+        plan["cursor"] = (i0 + min(per, n)) % n
+        plan["planned"] = tries[0][0]
     else:
         if (slot == cal.get("same_mission_slot") and flag(z, "multi_pov")):
             try:                                           # multi-POV of one mission replaces the slot's theme
@@ -545,7 +567,7 @@ def plan_run(a, z, now, used, eps, res, vis_cache=None, verify=True):
             tries = [(special, None)]                      # its window is still filling: the first episode waits
         else:                                              # for it (no main-series fallback either)
             tries = ([(special, None)] if special else []) + [(rot_s, slot)]
-    if all(s != main_series(z) for s, _ in tries) and tries != [(special, None)]:
+    if not themes and all(s != main_series(z) for s, _ in tries) and tries != [(special, None)]:
         tries.append((main_series(z), None))
     tried = []
     for s, sl in tries:
@@ -565,6 +587,8 @@ def plan_run(a, z, now, used, eps, res, vis_cache=None, verify=True):
             plan.update(serie=s, od=str(od), do=str(do), picked=picked, rest=rest, episode=episode_next(z, s, eps),
                         lead=lead, length=round(length), slot=sl,
                         next=(sl + 1) % len(rot) if sl is not None else slot)
+            if themes and sl is not None:
+                plan["cursor"] = (sl + 1) % len(themes)        # the next run starts after the theme just built
             if s != tries[0][0]:
                 plan["note"] = (plan["note"] + " " if plan["note"] else "") + \
                     f"Série {tries[0][0]} ještě neměla na silný díl ({tried[0][1]} momentů) → vyšlo {s}."
@@ -732,6 +756,10 @@ INTRO = {
     "wild-day": "The wildest GTA 6 streamer moments of {day}, from small wrecks to full chaos, counted down.",
     "glitches": "GTA 6 glitches and bugs streamers ran into, from weird to completely broken.",
     "chases": "GTA 6 police chases and crashes from streamers, counted down to the craziest one.",
+    "cops": "Streamers against the GTA 6 police: chases, escapes and busts, counted down.",
+    "chaos": "Pure GTA 6 chaos from streamers: crashes, stunts and physics gone wrong, counted down.",
+    "close-calls": "The closest calls of GTA 6 streamers, escapes that should not have worked, counted down.",
+    "big-wins": "GTA 6 streamers pulling off missions and heists they had no business winning, counted down.",
     "top-week": "The best GTA 6 streamer moments of the week, counted down from #{n} to #1.",
     "streamer": "The best GTA 6 moments of {name}, counted down to number one.",
     "streamer-week": "The best GTA 6 moments of {name} this week, counted down to number one.",
@@ -800,6 +828,12 @@ SERIES_TAGS = {
     "after-dark": ["gta 6 night", "gta 6 vice city night"], "streamer-night": ["gta 6 stream highlights"],
     "banana-league": ["gta 6 tier list", "gta 6 funny moments"], "same-mission": ["gta 6 mission", "gta 6 missions"],
     "rage": ["gta 6 rage"], "fails": ["gta 6 fails"], "physics": ["gta 6 physics"], "streamer-week": ["gta 6 highlights"],
+    "cops": ["gta 6 police", "gta 6 cops", "gta 6 police chase"], "chaos": ["gta 6 chaos", "gta 6 crazy moments"],
+    "close-calls": ["gta 6 close calls", "gta 6 escape"], "big-wins": ["gta 6 missions", "gta 6 heist"],
+    "escapes": ["gta 6 police escape", "gta 6 escape"], "heists": ["gta 6 heist", "gta 6 missions"],
+    "crashes-stunts": ["gta 6 crashes", "gta 6 stunts"], "easter-eggs": ["gta 6 easter eggs", "gta 6 secrets"],
+    "missions": ["gta 6 mission fails", "gta 6 missions"], "try-not-to-laugh": ["gta 6 try not to laugh", "gta 6 funny"],
+    "streamer": ["gta 6 highlights"],
 }
 
 def yt_tags(z, serie, moments):
@@ -1999,6 +2033,11 @@ def make(a, now):
     plan = plan_run(a, z, now, used, eps, res, vis, not a.bez_overeni)
     if vis and not a.zkouska and not a.hra:
         vision_save(vis)
+    if plan.get("cursor") is not None and not a.zkouska and not a.hra:   # the theme list walks on every run
+        e2 = K.load_json(EPISODES, {})
+        e2.setdefault("_cursor", {})[z] = plan["cursor"]
+        K.save_json(EPISODES, e2)
+        eps.setdefault("_cursor", {})[z] = plan["cursor"]
     if not plan.get("serie"):
         if a.zkouska or auto:                              # not enough for a strong episode yet: wait, no e-mail
             if not a.zkouska:
