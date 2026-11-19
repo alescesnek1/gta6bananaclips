@@ -409,5 +409,36 @@
     ],
     "quote": "Oh, have a good day.",
     "slot": "2026-11-19T21:30:00+01:00"
+  },
+  "twitch_ObeseObliqueTildeHassanChop-V71KdClKP_JCqGtj": {
+    "url": "https://6aff5c0558914a7000f47361--gta6bananaclips-media.netlify.app/20261119/twitch_ObeseObliqueTildeHassanChop-V71KdClKP_JCqGtj.mp4",
+    "path": "20261119/twitch_ObeseObliqueTildeHassanChop-V71KdClKP_JCqGtj.mp4",
+    "due": "2026-11-19T22:37:00+01:00",
+    "draft": false,
+    "posts": {
+      "6af7142262b70b94b01ac608": "6aff5c0d086d6498425719e1",
+      "6af713b962b70b94b01ac27e": "6aff5c0d086d649842571a1a",
+      "6af7155e62b70b94b01ad06f": "6aff5c0eeda1c6ed23779bb0",
+      "6af714d062b70b94b01acbbc": "6aff5c0f24447cafbd4fd19b"
+    },
+    "mb": 10.2,
+    "channel": "ishowspeed",
+    "platform": "twitch",
+    "score": 255.1,
+    "hot": false,
+    "rating": 3,
+    "views": 532,
+    "golden": false,
+    "title": "IShowSpeed LOSES IT Laughing In GTA 6! 😭",
+    "video_id": null,
+    "vod_offset": null,
+    "created": 1795061094,
+    "payoff": "https://6aff5c0558914a7000f47361--gta6bananaclips-media.netlify.app/20261119/twitch_ObeseObliqueTildeHassanChop-V71KdClKP_JCqGtj_payoff.mp4",
+    "funny": 0.63,
+    "tags": [
+      "funny"
+    ],
+    "quote": "Yeah, okay, have a nice rest of yourself What do you mean?",
+    "slot": "2026-11-19T23:00:00+01:00"
   }
 }
