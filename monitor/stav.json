@@ -1,96 +1,126 @@
 {
-  "cas": "2026-11-19T03:28:06+01:00",
+  "cas": "2026-11-19T12:25:35+01:00",
   "chyby": [],
   "zdravi": {
     "workflows": {
       "denne-klipy": {
-        "success": 9,
+        "success": 37,
         "failure": 0,
-        "cancelled": 26,
-        "bezi": 1,
+        "cancelled": 0,
+        "bezi": 0,
         "jine": 0
       },
       "live-klipy": {
         "success": 0,
         "failure": 0,
-        "cancelled": 12,
+        "cancelled": 17,
         "bezi": 1,
         "jine": 0
       },
       "long-form": {
-        "success": 1,
+        "success": 0,
         "failure": 0,
         "cancelled": 0,
-        "bezi": 0,
+        "bezi": 1,
         "jine": 0
       }
     },
     "posledni_chyba": null,
-    "denne_posledni_uspech": "2026-11-19T02:27:23+00:00",
-    "denne_uspech_pred_min": 1,
+    "denne_posledni_uspech": "2026-11-19T11:23:32+00:00",
+    "denne_uspech_pred_min": 2,
     "live_bezi": true,
-    "live_konec_pred_min": 42
+    "live_konec_pred_min": 4
   },
   "publikace": {
-    "okno": "18.11. 12:00 – 19.11. 12:00",
-    "den": "2026-11-18",
+    "okno": "19.11. 12:00 – 20.11. 12:00",
+    "den": "2026-11-19",
     "znacky": {
       "bananas": {
-        "postu": 7,
+        "postu": 0,
         "navic": 0,
         "minimum": 8,
         "maximum": 10,
-        "hot": 6,
-        "star": 4,
-        "live": 2,
+        "hot": 0,
+        "star": 0,
+        "live": 0,
         "drafty": 0,
-        "posledni": "2026-11-18T19:42:00+01:00",
-        "dalsi": "2026-11-19T03:34:00+01:00"
+        "posledni": "2026-11-19T10:51:00+01:00",
+        "dalsi": null
       },
       "fanpage": {
-        "postu": 7,
+        "postu": 0,
         "navic": 0,
         "minimum": 8,
         "maximum": 10,
-        "hot": 6,
-        "star": 4,
-        "live": 6,
+        "hot": 0,
+        "star": 0,
+        "live": 0,
         "drafty": 0,
-        "posledni": "2026-11-19T03:10:00+01:00",
+        "posledni": "2026-11-19T10:13:00+01:00",
         "dalsi": null
       }
     }
   },
   "vykon": {
-    "zmereno": 42,
+    "zmereno": 55,
     "top5": [
       {
         "znacka": "bananas",
-        "klip": "live_lacy_1795000007",
-        "streamer": "lacy",
-        "sit": "instagram",
+        "klip": "twitch_WealthyNimbleHamsterDansGame-yrU7UShZomelh1Ke",
+        "streamer": "xqc",
+        "sit": "facebook",
         "hot": true,
-        "live": true,
-        "due": "2026-11-18T12:12:00+01:00",
-        "stari_h": 15.3,
-        "views": 173,
+        "live": false,
+        "due": "2026-11-18T13:09:00+01:00",
+        "stari_h": 23.3,
+        "views": 1209,
         "likes": 1,
-        "comments": 1,
+        "comments": 0,
         "shares": 0,
         "saves": 0
       },
       {
         "znacka": "bananas",
-        "klip": "live_clix_1795000387",
-        "streamer": "clix",
-        "sit": "instagram",
+        "klip": "twitch_DifferentPreciousWaffleHotPokket-wMDh_pqLv3Ve6ZOc",
+        "streamer": "xqc",
+        "sit": "facebook",
         "hot": true,
-        "live": true,
-        "due": "2026-11-18T12:33:00+01:00",
-        "stari_h": 14.9,
-        "views": 173,
-        "likes": 4,
-        "comments": 1,
+        "live": false,
+        "due": "2026-11-18T14:09:00+01:00",
+        "stari_h": 22.3,
+        "views": 262,
+        "likes": 0,
+        "comments": 0,
+        "shares": 0,
+        "saves": 0
+      },
+      {
+        "znacka": "bananas",
+        "klip": "kick_clip_01M7QB1PQ1JTDEBN7AFG5XVDKX",
+        "streamer": "adinross",
+        "sit": "facebook",
+        "hot": true,
+        "live": false,
+        "due": "2026-11-18T16:46:00+01:00",
+        "stari_h": 19.7,
+        "views": 260,
+        "likes": 0,
+        "comments": 0,
+        "shares": 0,
+        "saves": 0
+      },
+      {
+        "znacka": "bananas",
+        "klip": "twitch_AdventurousHonestTapirKeyboardCat-9Eii4tkWb1VjxGqf",
+        "streamer": "oozie",
+        "sit": "facebook",
+        "hot": false,
+        "live": false,
+        "due": "2026-11-19T03:34:00+01:00",
+        "stari_h": 8.9,
+        "views": 259,
+        "likes": 1,
+        "comments": 0,
         "shares": 0,
         "saves": 0
       },
@@ -102,54 +132,24 @@
         "hot": true,
         "live": false,
         "due": "2026-11-18T13:09:00+01:00",
-        "stari_h": 14.3,
-        "views": 135,
-        "likes": 2,
+        "stari_h": 23.3,
+        "views": 237,
+        "likes": 4,
         "comments": 2,
-        "shares": 0,
-        "saves": 1
-      },
-      {
-        "znacka": "bananas",
-        "klip": "live_lacy_1795000007",
-        "streamer": "lacy",
-        "sit": "twitter",
-        "hot": true,
-        "live": true,
-        "due": "2026-11-18T12:12:00+01:00",
-        "stari_h": 15.3,
-        "views": 0,
-        "likes": 0,
-        "comments": 0,
-        "shares": 0,
-        "saves": 0
-      },
-      {
-        "znacka": "bananas",
-        "klip": "live_lacy_1795000007",
-        "streamer": "lacy",
-        "sit": "youtube",
-        "hot": true,
-        "live": true,
-        "due": "2026-11-18T12:12:00+01:00",
-        "stari_h": 15.3,
-        "views": 0,
-        "likes": 0,
-        "comments": 0,
-        "shares": 0,
+        "shares": 5,
         "saves": 0
       }
     ],
     "prumer": {
       "bananas": {
         "instagram": {
-          "n": 6,
-          "views": 80,
+          "n": 11,
+          "views": 124,
           "likes": 1
         },
         "twitter": {
           "n": 3,
-          "views": 0,
+          "views": 1,
           "likes": 0
         },
         "youtube": {
@@ -158,8 +158,8 @@
           "likes": 0
         },
         "facebook": {
-          "n": 6,
-          "views": 0,
+          "n": 11,
+          "views": 204,
           "likes": 0
         },
         "tiktok": {
@@ -169,7 +169,7 @@
         },
         "threads": {
           "n": 3,
-          "views": 0,
+          "views": 3,
           "likes": 0
         }
       },
@@ -185,79 +185,263 @@
           "likes": 0
         },
         "instagram": {
-          "n": 7,
-          "views": 0,
-          "likes": 0
+          "n": 10,
+          "views": 145,
+          "likes": 3
         }
       }
     },
     "nejnovejsi": [
       {
+        "znacka": "bananas",
+        "klip": "top3_2026-11-18",
+        "streamer": "top3",
+        "stari_h": 1.6,
+        "views": 0,
+        "views_za_h": 0
+      },
+      {
         "znacka": "fanpage",
-        "klip": "twitch_TenuousFunWaspBigBrother-pWNf2GWhFy6gEUad",
+        "klip": "twitch_BetterBoxyPhoneKappaPride-dj6XJ97C0t6ZaTrX",
         "streamer": "kaicenat",
-        "stari_h": 0.3,
+        "stari_h": 2.2,
+        "views": 180,
+        "views_za_h": 82
+      },
+      {
+        "znacka": "bananas",
+        "klip": "twitch_CooperativeAthleticMarjoramPeoplesChamp-ED9p6JnfM5HqbI2l",
+        "streamer": "xqc",
+        "stari_h": 2.8,
         "views": 0,
         "views_za_h": 0
       },
       {
-        "znacka": "bananas",
-        "klip": "twitch_PeacefulGlutenFreeVultureShazBotstix-KgHnVnwwgZOeO6Xs",
-        "streamer": "ohnepixel",
-        "stari_h": 7.8,
-        "views": 0,
-        "views_za_h": 0
-      },
-      {
-        "znacka": "bananas",
-        "klip": "kick_clip_01M7QB1PQ1JTDEBN7AFG5XVDKX",
+        "znacka": "fanpage",
+        "klip": "kick_clip_01M7QF79EME6M21QZ4PP9XQNGQ",
         "streamer": "adinross",
-        "stari_h": 10.7,
-        "views": 0,
-        "views_za_h": 0
+        "stari_h": 4.8,
+        "views": 153,
+        "views_za_h": 32
       },
       {
-        "znacka": "fanpage",
-        "klip": "live_ohnepixel_1795013613",
-        "streamer": "ohnepixel",
-        "stari_h": 11.4,
-        "views": 0,
-        "views_za_h": 0
-      },
-      {
-        "znacka": "fanpage",
-        "klip": "live_kaicenat_1795008073",
-        "streamer": "kaicenat",
-        "stari_h": 13.0,
-        "views": 0,
-        "views_za_h": 0
+        "znacka": "bananas",
+        "klip": "twitch_BeautifulModernTermiteYouWHY-nEB5VffTKnvTR2UD",
+        "streamer": "caseoh_",
+        "stari_h": 7.1,
+        "views": 142,
+        "views_za_h": 20
       }
     ],
     "chybi_klice": 0,
     "chyby": [],
-    "postu_celkem": 58,
+    "postu_celkem": 74,
     "nenalezeno": 1
   },
   "netlify": {
-    "gb_mesic": 2.2,
+    "gb_mesic": 2.6,
     "gb_soft": 85,
     "gb_hard": 100,
     "gb_rozpocet": 100,
-    "deploye_24h": 38
+    "deploye_24h": 44
   },
-  "sit_data": null,
-  "alerty": [
-    {
-      "klic": "ticho:bananas",
-      "text": "bananas: nic nepublikováno 4+ h (poslední post 18.11. 19:42)"
+  "sit_data": {
+    "at": "2026-11-19T10:42:26+00:00",
+    "youtube": {
+      "bananas": [
+        {
+          "id": "MWznIFN2k2A",
+          "title": "xQc Tries To Get Away In GTA 6!  #shorts",
+          "views": 0,
+          "at": 1795007544
+        },
+        {
+          "id": "z03jA7zfIN0",
+          "title": "xQc Sees Vice City In GTA 6!  #shorts",
+          "views": 0,
+          "at": 1795003825
+        },
+        {
+          "id": "Po15iMQvfO8",
+          "title": "Clix Can't Believe How GTA 6 Looks!  #shorts",
+          "views": 0,
+          "at": 1795001785
+        },
+        {
+          "id": "MYkPBVZ-vQ0",
+          "title": "Lacy Sees Vice City In GTA 6!  #shorts",
+          "views": 0,
+          "at": 1795000406
+        },
+        {
+          "id": "BwbXmYTKUm0",
+          "title": "xQc Reacts to Grand Theft Auto VI Trailer | xqcow GTA 6 #shorts",
+          "views": 1,
+          "at": 1794758478
+        },
+        {
+          "id": "wP6SioleBoY",
+          "title": "GTA 6 EXTENDED LOOK IS HERE! | xqcow GTA 6 #shorts",
+          "views": 0,
+          "at": 1794747710
+        },
+        {
+          "id": "pBjygXZaKWg",
+          "title": "GTA 6 EXTENDED LOOK IS HERE! | xqcow GTA 6 #shorts",
+          "views": 9,
+          "at": 1794688246
+        },
+        {
+          "id": "PcuyrD54LMg",
+          "title": "REACTING TO THE NEW GTA 6 TRAILER! LIVE | ishowspeed GTA 6 #shorts",
+          "views": 48,
+          "at": 1794682879
+        },
+        {
+          "id": "WTmhOPW4zHg",
+          "title": "REACTING TO THE NEW GTA 6 TRAILER! LIVE | ishowspeed GTA 6 #shorts",
+          "views": 550,
+          "at": 1794677468
+        }
+      ],
+      "fanpage": [
+        {
+          "id": "eXwIokEcxH8",
+          "title": "Ohnepixel Reacts To GTA 6 Graphics! #shorts",
+          "views": 0,
+          "at": 1795014518
+        },
+        {
+          "id": "2bNnF9BHLO0",
+          "title": "Kai Cenat Sees Vice City In GTA 6!  #shorts",
+          "views": 0,
+          "at": 1795008501
+        },
+        {
+          "id": "JbeyFqagz_o",
+          "title": "Lacy Can't Believe How GTA 6 Looks!  #shorts",
+          "views": 0,
+          "at": 1795007785
+        },
+        {
+          "id": "DKY7kwy8aOo",
+          "title": "xQc Reacts To GTA 6 Graphics!  #shorts",
+          "views": 0,
+          "at": 1795007022
+        },
+        {
+          "id": "-D_slCrL7mo",
+          "title": "Tyrone Gets Into A Wild Chase In GTA 6!  #shorts",
+          "views": 0,
+          "at": 1795002441
+        },
+        {
+          "id": "Ywxan3acKNk",
+          "title": "Clix Gets So Mad In GTA 6!  #shorts",
+          "views": 0,
+          "at": 1795001253
+        }
+      ]
+    },
+    "tiktok": {
+      "bananas": [
+        {
+          "id": "7709498190352960801",
+          "title": "xQc Tries To Get Away In GTA 6!  Rate this 1-10 before the bananas d...",
+          "views": 0,
+          "at": 1795007411
+        },
+        {
+          "id": "7709482033512287520",
+          "title": "xQc Sees Vice City In GTA 6!  �What the hell?� S tier or D tier?  ...",
+          "views": 0,
+          "at": 1795003656
+        },
+        {
+          "id": "7709473389496241440",
+          "title": "Clix Can't Believe How GTA 6 Looks!  �You could be eligible for the ...",
+          "views": 0,
+          "at": 1795001642
+        },
+        {
+          "id": "7709467329704365345",
+          "title": "Lacy Sees Vice City In GTA 6!  �I've been to that island!� What scor...",
+          "views": 0,
+          "at": 1795000233
+        },
+        {
+          "id": "7708428912912534817",
+          "title": "�I'm just fixing some leaks seriously dude you got some�  youtube.co...",
+          "views": 0,
+          "at": 1794758450
+        },
+        {
+          "id": "7708382811497057569",
+          "title": "�She looks fun!�  youtube.com/@xqcow #gta6 #gta6bananaclips #gta6cli...",
+          "views": 0,
+          "at": 1794747718
+        },
+        {
+          "id": "7708127235542093089",
+          "title": "�You are welcome Yeah.�  youtube.com/@xqcow #gta6 #gta6bananaclips #...",
+          "views": 0,
+          "at": 1794688209
+        },
+        {
+          "id": "7708104239548992800",
+          "title": "�What's this song though?�  youtube.com/@ishowspeed #gta6 #gta6banan...",
+          "views": 0,
+          "at": 1794682853
+        },
+        {
+          "id": "7708080919483092256",
+          "title": "�Here they are, at the bar.�  youtube.com/@ishowspeed #gta6 #gta6ban...",
+          "views": 0,
+          "at": 1794677429
+        }
+      ],
+      "fanpage": [
+        {
+          "id": "7709527342795853089",
+          "title": "Ohnepixel Reacts To GTA 6 Graphics!  \"Is that a Tesla or a Lexus?\" D...",
+          "views": 0,
+          "at": 1795014203
+        },
+        {
+          "id": "7709503866017959200",
+          "title": "Kai Cenat Sees Vice City In GTA 6!  \"There's no way I actually have ...",
+          "views": 1,
+          "at": 1795008735
+        },
+        {
+          "id": "7709499692345838880",
+          "title": "Lacy Can't Believe How GTA 6 Looks!  \"a vehicle! Like, I\" Guess the ...",
+          "views": 0,
+          "at": 1795007765
+        },
+        {
+          "id": "7709497643650665760",
+          "title": "xQc Reacts To GTA 6 Graphics!  \"No, no, there's no shut up, Loki.\" O...",
+          "views": 0,
+          "at": 1795007289
+        },
+        {
+          "id": "7709475975276285216",
+          "title": "Tyrone Gets Into A Wild Chase In GTA 6!  \"Okay, I think it's him I t...",
+          "views": 0,
+          "at": 1795002242
+        },
+        {
+          "id": "7709470808913005856",
+          "title": "Clix Gets So Mad In GTA 6!  \"Oh my god, do we go to the strip club?\"...",
+          "views": 1,
+          "at": 1795001042
+        }
+      ]
     }
-  ],
+  },
+  "alerty": [],
   "denni_odeslano": null,
-  "alerty_stav": {
-    "ticho:bananas": {
-      "od": "2026-11-19T03:28:06.706596+01:00",
-      "poslano": "2026-11-19T03:28:06+01:00"
-    }
-  },
-  "podpis": "ticho:bananas"
+  "alerty_stav": {},
+  "podpis": ""
 }
