@@ -83,8 +83,16 @@ class Reposts(Base):
 
     def run_once(self, recs, bs, now=None, draft=False):
         P.NOW = now or self.NOW
-        with mock.patch.object(P, "records", return_value=recs):
+        with mock.patch.object(P, "records", return_value=recs),                 mock.patch.object(S, "texted_reel", side_effect=lambda rec, z, cid, day: rec["url"]):
             return S.do_reposts("bananas", bs, P.NOW, draft, dry=False)
+
+    def test_repost_without_text_is_not_posted(self):
+        recs = {"c0": rec(self.NOW)}
+        bs = S.bstate({}, "bananas")
+        P.NOW = self.NOW
+        with mock.patch.object(P, "records", return_value=recs),                 mock.patch.object(S, "texted_reel", side_effect=RuntimeError("ffmpeg")):
+            S.do_reposts("bananas", bs, P.NOW, False, dry=False)
+        self.assertEqual((self.posted, bs["reposts"]), ([], {}))
 
     def test_timing_20_60_off_grid(self):
         recs = {f"c{i}": rec(self.NOW - timedelta(minutes=i)) for i in range(0, 15, 5)}
@@ -590,7 +598,7 @@ class StaleState(Base):
             self.assertEqual(S.do_reposts("bananas", bs, self.NOW, False, False), [])
         self.assertEqual(self.posted, [])
         bs["reposts"]["c"]["posts"].pop("fb_b")                             # only the missing channel is posted
-        with mock.patch.object(P, "records", return_value={"c": rec(self.NOW)}):
+        with mock.patch.object(P, "records", return_value={"c": rec(self.NOW)}),                 mock.patch.object(S, "texted_reel", side_effect=lambda rec, z, cid, day: rec["url"]):
             S.do_reposts("bananas", bs, self.NOW, False, False)
         self.assertEqual([i["channelId"] for i, _ in self.posted], ["fb_b"])
 

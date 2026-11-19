@@ -247,6 +247,51 @@ def repost_candidates(znacka, bs, now, chans=None):
     return sorted(out, key=lambda x: x[0])
 
 
+# the reply line burned into a reel repost (SlopMonster lint 5/5); low in the picture, inside Instagram's safe
+# zone (above the reply bar), under the game action, never over the facecam at the top
+REPOST_TEXT = {
+    "bananas": ["RATE THIS 1-10 IN THE REPLIES", "WOULD YOU DO THIS? YES OR NO", "WHO WINS THIS ONE? REPLY",
+                "FUNNIER THAN YESTERDAY? REPLY"],
+    "fanpage": ["TELL ME YOUR FAVORITE PART", "WOULD YOU WATCH THIS AT 3 AM?", "WHO DID IT BETTER? REPLY",
+                "SEND THIS TO SOMEONE"],
+}
+STORY_TEXT_Y = 1470
+
+
+def texted_reel(rec, znacka, cid, day):
+    """The reel with its reply line burned in -> its Netlify URL (raises when anything fails)."""
+    import urllib.request
+    text = random.Random(f"{cid}:{znacka}:storytext").choice(REPOST_TEXT[znacka])
+    outdir = HERE / "out" / f"_stories_{day:%Y%m%d}"
+    outdir.mkdir(parents=True, exist_ok=True)
+    src, dst = outdir / f"{znacka}_{P.safe_name(cid)}_src.mp4", outdir / f"{znacka}_{P.safe_name(cid)}_story.mp4"
+    src.write_bytes(urllib.request.urlopen(rec["url"], timeout=120).read())
+    box = "00E1FF" if znacka == "bananas" else "D84FFF"           # ASS colours are BGR: banana yellow / fanpage pink
+    ink = "000000" if znacka == "bananas" else "FFFFFF"
+    ass = outdir / f"{znacka}_{P.safe_name(cid)}.ass"
+    ass.write_text(
+        "[Script Info]\nScriptType: v4.00+\nPlayResX: 1080\nPlayResY: 1920\nWrapStyle: 2\n\n[V4+ Styles]\n"
+        "Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, "
+        "Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, "
+        "MarginR, MarginV, Encoding\n"
+        f"Style: T,Anton,88,&H00{ink},&H00{ink},&H00{box},&H00{box},0,0,0,0,100,100,1,0,3,18,0,5,60,60,0,1\n\n"
+        "[Events]\nFormat: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\n"
+        f"Dialogue: 0,0:00:00.00,0:01:00.00,T,,0,0,0,,{{\\pos(540,{STORY_TEXT_Y})}}{text}\n", encoding="utf-8")
+    fonts = (HERE / "fonts" / "cap").as_posix().replace(":", "\\:")
+    sub = ass.as_posix().replace(":", "\\:")
+    r = subprocess.run(["ffmpeg", "-nostdin", "-y", "-loglevel", "error", "-i", str(src),
+                        "-vf", f"subtitles='{sub}':fontsdir='{fonts}'", "-c:v", "libx264", "-preset", "veryfast",
+                        "-crf", "21", "-c:a", "copy", "-movflags", "+faststart", str(dst)],
+                       capture_output=True, text=True, timeout=300)
+    if r.returncode or not dst.exists():
+        raise RuntimeError(f"ffmpeg: {r.stderr[-200:]}")
+    src.unlink(missing_ok=True)
+    rel = f"stories/{day:%Y%m%d}/{dst.name}"
+    base = P.inbox_deploy({rel: dst}, b"[]", title=P.MEDIA_TITLE)
+    log(f"{znacka}: repost {cid}: text '{text}'")
+    return f"{base.rstrip('/')}/{rel}"
+
+
 def do_reposts(znacka, bs, now, draft, dry):
     chans = story_channels(znacka)
     if not chans:
@@ -268,7 +313,17 @@ def do_reposts(znacka, bs, now, draft, dry):
             made.append((cid, due))
             continue
         r["due"] = due.isoformat()
-        fails = post_all(chans, {"video": rec["url"]}, due, draft, r["posts"], f"{P.display_name(rec)} GTA 6 clip")
+        # 19. 11. (owner: "the stories are only pictures/videos without any text"): the reel goes to the story
+        # WITH a reply line burned in; no text -> no repost this run (tried again in the next one)
+        try:
+            vurl = texted_reel(rec, znacka, cid, day)
+        except Exception as e:
+            log(f"{znacka}: repost {cid}: text overlay failed ({str(e)[-120:]}), next run")
+            if not r.get("posts"):
+                bs["reposts"].pop(cid, None)
+            continue
+        r["url"] = vurl
+        fails = post_all(chans, {"video": vurl}, due, draft, r["posts"], f"{P.display_name(rec)} GTA 6 clip")
         r["draft"] = draft
         if fails:
             r["fails"] = r.get("fails", 0) + 1
