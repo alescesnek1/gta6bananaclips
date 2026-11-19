@@ -15100,5 +15100,19 @@
     "vod_offset": 31711,
     "cluster": 1,
     "added": 1795118002
+  },
+  "twitch_NaiveBumblingPoxOSsloth-IMMSOJiSfbzeRQ9d": {
+    "id": "twitch_NaiveBumblingPoxOSsloth-IMMSOJiSfbzeRQ9d",
+    "url": "https://www.twitch.tv/marlon/clip/NaiveBumblingPoxOSsloth-IMMSOJiSfbzeRQ9d",
+    "channel": "marlon",
+    "platform": "twitch",
+    "title": "Marlon yo bro what u doing",
+    "views": 617,
+    "created": 1795031654,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932567591",
+    "vod_offset": 4755,
+    "cluster": 1,
+    "added": 1795118310
   }
 }
