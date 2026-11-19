@@ -14630,5 +14630,61 @@
     "vod_offset": 13940,
     "cluster": 1,
     "added": 1795112714
+  },
+  "twitch_BoringMoldyClipzStoneLightning-FZ7Ow0YtleieU2ol": {
+    "id": "twitch_BoringMoldyClipzStoneLightning-FZ7Ow0YtleieU2ol",
+    "url": "https://www.twitch.tv/stableronaldo/clip/BoringMoldyClipzStoneLightning-FZ7Ow0YtleieU2ol",
+    "channel": "stableronaldo",
+    "platform": "twitch",
+    "title": "zoo wee mama!!",
+    "views": 808,
+    "created": 1795030595,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932442046",
+    "vod_offset": 7401,
+    "cluster": 1,
+    "added": 1795113503
+  },
+  "twitch_ColdbloodedDaintyPhoneYee-LYnBnD2zum9pIXNP": {
+    "id": "twitch_ColdbloodedDaintyPhoneYee-LYnBnD2zum9pIXNP",
+    "url": "https://www.twitch.tv/stableronaldo/clip/ColdbloodedDaintyPhoneYee-LYnBnD2zum9pIXNP",
+    "channel": "stableronaldo",
+    "platform": "twitch",
+    "title": "Mandy's Addy 👀",
+    "views": 1196,
+    "created": 1795042227,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932442046",
+    "vod_offset": 7110,
+    "cluster": 1,
+    "added": 1795113503
+  },
+  "twitch_SourGrotesqueHamsterANELE-ARR_YQ8vacihozRB": {
+    "id": "twitch_SourGrotesqueHamsterANELE-ARR_YQ8vacihozRB",
+    "url": "https://www.twitch.tv/hasanabi/clip/SourGrotesqueHamsterANELE-ARR_YQ8vacihozRB",
+    "channel": "hasanabi",
+    "platform": "twitch",
+    "title": "was that a finger?",
+    "views": 658,
+    "created": 1795048491,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932641914",
+    "vod_offset": 16900,
+    "cluster": 1,
+    "added": 1795113503
+  },
+  "twitch_SteamyAthleticSquirrelTheThing-IKdi5FGsptQhvqyI": {
+    "id": "twitch_SteamyAthleticSquirrelTheThing-IKdi5FGsptQhvqyI",
+    "url": "https://www.twitch.tv/hasanabi/clip/SteamyAthleticSquirrelTheThing-IKdi5FGsptQhvqyI",
+    "channel": "hasanabi",
+    "platform": "twitch",
+    "title": "Mold Removal Tutorial",
+    "views": 733,
+    "created": 1795042754,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932641914",
+    "vod_offset": 10881,
+    "cluster": 1,
+    "added": 1795113503
   }
 }
