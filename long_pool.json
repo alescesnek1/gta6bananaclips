@@ -9542,7 +9542,7 @@
     "category": "Grand Theft Auto VI",
     "cluster": 1,
     "added": 1795098336,
-    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/ishowspeed/20261118_twitch_HumbleGeniusStrawberryBleedPurple-CYhEi_LZY9mbAQxo/source.mp4",
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_HumbleGeniusStrawberryBleedPurple-CYhEi_LZY9mbAQxo\\source.mp4",
     "peak": 23.85,
     "cut": [
       16.53,
@@ -9567,7 +9567,7 @@
       "_loud": 2.9,
       "_motion": 30.2
     },
-    "quote": "the hell is going on F*** out where Jason at?",
+    "quote": "Oh Hell no, hey, oh no No, skip this skip",
     "rendered": [
       "bananas"
     ],
@@ -11599,7 +11599,7 @@
     "category": "Grand Theft Auto VI",
     "cluster": 1,
     "added": 1795102337,
-    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/ishowspeed/20261118_twitch_SavoryEagerLlamaLeeroyJenkins-fzfiphCY-mKdwJvr/source.mp4",
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_SavoryEagerLlamaLeeroyJenkins-fzfiphCY-mKdwJvr\\source.mp4",
     "peak": 18.150000000000002,
     "cut": [
       3.5,
@@ -13804,5 +13804,224 @@
       "luma": 97.2,
       "dark": 0.0
     }
+  },
+  "twitch_AlertAgitatedGoldfishBloodTrail-V2T09kIeATajwSUC": {
+    "id": "twitch_AlertAgitatedGoldfishBloodTrail-V2T09kIeATajwSUC",
+    "url": "https://www.twitch.tv/adapt/clip/AlertAgitatedGoldfishBloodTrail-V2T09kIeATajwSUC",
+    "channel": "adapt",
+    "platform": "twitch",
+    "title": "clocked",
+    "views": 715,
+    "created": 1795031877,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932618654",
+    "vod_offset": 1842,
+    "cluster": 1,
+    "added": 1795107729
+  },
+  "twitch_PeppyFunGaurPunchTrees-edM6JKBegYQ6zSk-": {
+    "id": "twitch_PeppyFunGaurPunchTrees-edM6JKBegYQ6zSk-",
+    "url": "https://www.twitch.tv/kaicenat/clip/PeppyFunGaurPunchTrees-edM6JKBegYQ6zSk-",
+    "channel": "kaicenat",
+    "platform": "twitch",
+    "title": "❄️❄️❄️",
+    "views": 611,
+    "created": 1795037387,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932305259",
+    "vod_offset": 30377,
+    "added": 1795107729,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/kaicenat/20261118_twitch_PeppyFunGaurPunchTrees-edM6JKBegYQ6zSk-/source.mp4",
+    "peak": 24.0,
+    "cut": [
+      14.03,
+      29.93
+    ],
+    "dur": 40.22,
+    "tags": [
+      "wow",
+      "rage",
+      "chase"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.45,
+      "crash": 0.0,
+      "rage": 0.6,
+      "first-reaction": 0.2,
+      "wow": 1.0,
+      "_loud": 1.1,
+      "_motion": 31.2
+    },
+    "quote": "I want to slow down for you, Rutia.",
+    "rendered": [
+      "fanpage"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.35,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 1.0
+    },
+    "primary": "wow",
+    "proven": [],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.51,
+    "signals": {
+      "siren": 0.0,
+      "impact": 8.9,
+      "loud": 1.1,
+      "motion": 27.3,
+      "sustained": 0.94,
+      "spike": 3.0,
+      "laugh": 0,
+      "static": 0.02,
+      "letterbox": 0.0,
+      "luma": 56.2,
+      "dark": 0.0
+    }
+  },
+  "twitch_PrettyProudAlmondCoolStoryBob-RlujLmotC5b4HU78": {
+    "id": "twitch_PrettyProudAlmondCoolStoryBob-RlujLmotC5b4HU78",
+    "url": "https://www.twitch.tv/ishowspeed/clip/PrettyProudAlmondCoolStoryBob-RlujLmotC5b4HU78",
+    "channel": "ishowspeed",
+    "platform": "twitch",
+    "title": "speed looking for Jasen😭",
+    "views": 716,
+    "created": 1795038890,
+    "category": "Grand Theft Auto VI",
+    "cluster": 1,
+    "added": 1795107512,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/ishowspeed/20261118_twitch_PrettyProudAlmondCoolStoryBob-RlujLmotC5b4HU78/source.mp4",
+    "peak": 49.550000000000004,
+    "cut": [
+      40.0,
+      54.43
+    ],
+    "dur": 60.01,
+    "tags": [
+      "rage",
+      "wow",
+      "chase"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.42,
+      "crash": 0.0,
+      "rage": 1.0,
+      "first-reaction": 0.2,
+      "wow": 1.0,
+      "_loud": 3.0,
+      "_motion": 30.1
+    },
+    "quote": "no What the F***?",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.35,
+      "fail": 0.0,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.25,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.35
+    },
+    "primary": "rage",
+    "proven": [],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion",
+        "motion-spike"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.47,
+    "signals": {
+      "siren": 0.0,
+      "impact": 8.9,
+      "loud": 2.1,
+      "motion": 25.5,
+      "sustained": 0.84,
+      "spike": 8.2,
+      "laugh": 0,
+      "static": 0.02,
+      "letterbox": 0.0,
+      "luma": 57.4,
+      "dark": 0.0
+    }
+  },
+  "twitch_SuaveTubularPeafowlRuleFive--zaInupg8WNYZPlj": {
+    "id": "twitch_SuaveTubularPeafowlRuleFive--zaInupg8WNYZPlj",
+    "url": "https://www.twitch.tv/hasanabi/clip/SuaveTubularPeafowlRuleFive--zaInupg8WNYZPlj",
+    "channel": "hasanabi",
+    "platform": "twitch",
+    "title": "MOMMY CLAP CLAP CLAP",
+    "views": 1175,
+    "created": 1795042247,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932641914",
+    "vod_offset": 10568,
+    "cluster": 1,
+    "added": 1795107729
   }
 }
