@@ -340,5 +340,39 @@
     ],
     "quote": "",
     "slot": "2026-11-19T18:30:00+01:00"
+  },
+  "twitch_PrettyProudAlmondCoolStoryBob-RlujLmotC5b4HU78": {
+    "url": "https://6aff2c4f0baeb418f431d897--gta6bananaclips-media.netlify.app/20261119/twitch_PrettyProudAlmondCoolStoryBob-RlujLmotC5b4HU78.mp4",
+    "path": "20261119/twitch_PrettyProudAlmondCoolStoryBob-RlujLmotC5b4HU78.mp4",
+    "due": "2026-11-19T20:08:00+01:00",
+    "draft": false,
+    "posts": {
+      "6af7142262b70b94b01ac608": "6aff2c5741532436f6cac01a",
+      "6af713b962b70b94b01ac27e": "6aff2c582ebf6787842964f9",
+      "6af7155e62b70b94b01ad06f": "6aff2c5941532436f6cac0e0",
+      "6af714e862b70b94b01acc7f": "6aff2c5a7218d2f8fc1be068",
+      "6af714d062b70b94b01acbbc": "6aff2c5b2ebf678784296912"
+    },
+    "mb": 7.8,
+    "channel": "ishowspeed",
+    "platform": "twitch",
+    "score": 318.8,
+    "hot": false,
+    "rating": 4,
+    "views": 716,
+    "golden": false,
+    "title": "IShowSpeed Wasn't Ready For This In GTA 6! 😭",
+    "video_id": null,
+    "vod_offset": null,
+    "created": 1795038890,
+    "payoff": "https://6aff2c4f0baeb418f431d897--gta6bananaclips-media.netlify.app/20261119/twitch_PrettyProudAlmondCoolStoryBob-RlujLmotC5b4HU78_payoff.mp4",
+    "funny": 0.0,
+    "tags": [
+      "rage",
+      "wow",
+      "chase"
+    ],
+    "quote": "no What the F***?",
+    "slot": "2026-11-19T20:00:00+01:00"
   }
 }
