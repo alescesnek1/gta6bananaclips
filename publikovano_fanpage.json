@@ -195,5 +195,38 @@
     ],
     "quote": "I want to slow down for you, Rutia.",
     "slot": "2026-11-19T20:00:00+01:00"
+  },
+  "twitch_RenownedNeighborlyWaffleTwitchRaid-t74SktFrD6SZ0Iu6": {
+    "url": "https://6aff6299056397c39279667b--gta6bananaclips-media.netlify.app/20261119/twitch_RenownedNeighborlyWaffleTwitchRaid-t74SktFrD6SZ0Iu6.mp4",
+    "path": "20261119/twitch_RenownedNeighborlyWaffleTwitchRaid-t74SktFrD6SZ0Iu6.mp4",
+    "due": "2026-11-19T23:01:00+01:00",
+    "draft": false,
+    "posts": {
+      "6afc433aece6dfde5ff6749b": "6aff62a06e3094bf7108b999",
+      "6afc42e6ece6dfde5ff66dca": "6aff62a18ba5b0cdc4ac0f4c",
+      "6afc4429ece6dfde5ff683db": "6aff62a16eb3b39241691f0d",
+      "6afc4413ece6dfde5ff68286": "6aff62a26eb3b39241691f37",
+      "6afc43ffece6dfde5ff68162": "6aff62a26eb3b39241691fa3"
+    },
+    "mb": 6.1,
+    "channel": "dansgaming",
+    "platform": "twitch",
+    "score": 1627.4,
+    "hot": false,
+    "rating": 4,
+    "views": 788,
+    "golden": false,
+    "title": "Dansgaming Gets SO MAD In GTA 6! 💀",
+    "video_id": "2933947716",
+    "vod_offset": 6754,
+    "created": 1795118180,
+    "payoff": "https://6aff6299056397c39279667b--gta6bananaclips-media.netlify.app/20261119/twitch_RenownedNeighborlyWaffleTwitchRaid-t74SktFrD6SZ0Iu6_payoff.mp4",
+    "funny": 0.0,
+    "tags": [
+      "rage",
+      "wow"
+    ],
+    "quote": "What am I like to?",
+    "slot": "2026-11-19T23:00:00+01:00"
   }
 }
