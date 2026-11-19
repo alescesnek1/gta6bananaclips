@@ -14366,13 +14366,13 @@
     "channel": "ohnepixel",
     "platform": "twitch",
     "title": "Dad of the year",
-    "views": 875,
+    "views": 888,
     "created": 1795090034,
     "category": "Grand Theft Auto VI",
     "video_id": "2933599748",
     "vod_offset": 584,
     "cluster": 1,
-    "added": 1795111303
+    "added": 1795111780
   },
   "twitch_FurryLittleBunnyCoolStoryBob-_J3RtuezOHW-UCWQ": {
     "id": "twitch_FurryLittleBunnyCoolStoryBob-_J3RtuezOHW-UCWQ",
@@ -14380,13 +14380,13 @@
     "channel": "xqc",
     "platform": "twitch",
     "title": "gta6 review so far",
-    "views": 518,
+    "views": 713,
     "created": 1795106876,
     "category": "Grand Theft Auto VI",
     "video_id": "2932113307",
     "vod_offset": 83062,
     "cluster": 1,
-    "added": 1795110965,
+    "added": 1795111666,
     "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/xqc/20261119_twitch_FurryLittleBunnyCoolStoryBob-_J3RtuezOHW-UCWQ/source.mp4",
     "peak": 20.516667000000602,
     "cut": [
@@ -14410,7 +14410,8 @@
     },
     "quote": "Rockstar for this that much, right?",
     "rendered": [
-      "bananas"
+      "bananas",
+      "fanpage"
     ],
     "cats": {
       "funny": 0.0,
@@ -14458,13 +14459,13 @@
     "channel": "maximilian_dood",
     "platform": "twitch",
     "title": "Don't Text and Ride!",
-    "views": 665,
+    "views": 675,
     "created": 1795071087,
     "category": "Grand Theft Auto VI",
     "video_id": "2933224962",
     "vod_offset": 7544,
     "cluster": 1,
-    "added": 1795111303
+    "added": 1795111780
   },
   "twitch_SaltyTameWrenBatChest-yMa6Bgoi-Pc3cTIZ": {
     "id": "twitch_SaltyTameWrenBatChest-yMa6Bgoi-Pc3cTIZ",
@@ -14472,12 +14473,26 @@
     "channel": "kreekcraft",
     "platform": "twitch",
     "title": "Yep He's Banned",
-    "views": 670,
+    "views": 684,
     "created": 1795033729,
     "category": "Grand Theft Auto VI",
     "video_id": "2932147800",
     "vod_offset": 44678,
     "cluster": 1,
-    "added": 1795111303
+    "added": 1795111780
+  },
+  "twitch_GentleBrainyTortoiseKappa-SqJmUKvZs2E33xOH": {
+    "id": "twitch_GentleBrainyTortoiseKappa-SqJmUKvZs2E33xOH",
+    "url": "https://www.twitch.tv/lacy/clip/GentleBrainyTortoiseKappa-SqJmUKvZs2E33xOH",
+    "channel": "lacy",
+    "platform": "twitch",
+    "title": "LACYY FIGHTING WITH AN ALIGATOR!!!!",
+    "views": 644,
+    "created": 1795027561,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932194507",
+    "vod_offset": 30840,
+    "cluster": 1,
+    "added": 1795111780
   }
 }
