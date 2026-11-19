@@ -5706,5 +5706,19 @@
     "vod_offset": 9678,
     "cluster": 1,
     "added": 1795083809
+  },
+  "twitch_BoringSavorySproutNomNom-Tg3HdUU0NAhGmGJw": {
+    "id": "twitch_BoringSavorySproutNomNom-Tg3HdUU0NAhGmGJw",
+    "url": "https://www.twitch.tv/lirik/clip/BoringSavorySproutNomNom-Tg3HdUU0NAhGmGJw",
+    "channel": "lirik",
+    "platform": "twitch",
+    "title": "GTA Start",
+    "views": 1466,
+    "created": 1795018748,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932444934",
+    "vod_offset": 420,
+    "cluster": 1,
+    "added": 1795084110
   }
 }
