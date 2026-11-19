@@ -5463,12 +5463,12 @@
     "channel": "kaicenat",
     "platform": "twitch",
     "title": "GYATT",
-    "views": 1361,
+    "views": 1384,
     "created": 1795017207,
     "category": "Grand Theft Auto VI",
     "video_id": "2932305259",
     "vod_offset": 10368,
-    "added": 1795072404
+    "added": 1795073230
   },
   "twitch_DelightfulLachrymoseMelonVoteYea-JeFCNhZHEyTfoOMJ": {
     "id": "twitch_DelightfulLachrymoseMelonVoteYea-JeFCNhZHEyTfoOMJ",
@@ -5487,11 +5487,11 @@
     "channel": "kaicenat",
     "platform": "twitch",
     "title": "gta",
-    "views": 1416,
+    "views": 1428,
     "created": 1795007628,
     "category": "Grand Theft Auto VI",
     "video_id": "2932305259",
     "vod_offset": 692,
-    "added": 1795072404
+    "added": 1795073230
   }
 }
