@@ -22172,5 +22172,93 @@
     "vod_offset": 5195,
     "cluster": 1,
     "added": 1795130926
+  },
+  "twitch_LuckyBenevolentDotterelOMGScoots-lFgr2IvDbbFYqy0L": {
+    "id": "twitch_LuckyBenevolentDotterelOMGScoots-lFgr2IvDbbFYqy0L",
+    "url": "https://www.twitch.tv/caseoh_/clip/LuckyBenevolentDotterelOMGScoots-lFgr2IvDbbFYqy0L",
+    "channel": "caseoh_",
+    "platform": "twitch",
+    "title": "Lets not crash this time...",
+    "views": 641,
+    "created": 1795130163,
+    "category": "Grand Theft Auto VI",
+    "added": 1795131532,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/caseoh_/20261119_twitch_LuckyBenevolentDotterelOMGScoots-lFgr2IvDbbFYqy0L/source.mp4",
+    "peak": 37.550000000000004,
+    "cut": [
+      29.57,
+      44.13
+    ],
+    "dur": 51.78,
+    "tags": [
+      "crash",
+      "wow"
+    ],
+    "tag_scores": {
+      "funny": 0.16,
+      "glitch": 0.0,
+      "chase": 0.2,
+      "crash": 0.92,
+      "rage": 0.0,
+      "first-reaction": 0.2,
+      "wow": 0.69,
+      "_loud": 2.9,
+      "_motion": 24.2
+    },
+    "quote": "you good Jason get in okay I'm not gonna do that again let's go",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.7,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.35
+    },
+    "primary": "crash",
+    "proven": [],
+    "evidence": {
+      "chase": [
+        "motion"
+      ],
+      "crash": [
+        "text"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.43,
+    "signals": {
+      "siren": 0.0,
+      "impact": 7.9,
+      "loud": 2.4,
+      "motion": 21.8,
+      "sustained": 0.78,
+      "spike": 1.7,
+      "laugh": 0,
+      "static": 0.02,
+      "letterbox": 0.0,
+      "luma": 62.2,
+      "dark": 0.0
+    }
   }
 }
