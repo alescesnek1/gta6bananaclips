@@ -2876,11 +2876,11 @@
     "channel": "oozie",
     "platform": "twitch",
     "title": "absolute maniac",
-    "views": 2013,
+    "views": 2098,
     "created": 1795002438,
     "category": "Grand Theft Auto VI",
     "cluster": 1,
-    "added": 1795051490,
+    "added": 1795052646,
     "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/oozie/20261118_twitch_AdventurousHonestTapirKeyboardCat-9Eii4tkWb1VjxGqf/source.mp4",
     "peak": 31.450000000000003,
     "cut": [
@@ -3196,33 +3196,35 @@
     "channel": "ishowspeed",
     "platform": "twitch",
     "title": "WOAH Jason stepbro",
-    "views": 2040,
+    "views": 2117,
     "created": 1795015524,
     "category": "Grand Theft Auto VI",
     "cluster": 1,
-    "added": 1795051055,
+    "added": 1795052302,
     "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/ishowspeed/20261118_twitch_ProductiveBraveNikudonDeIlluminati-qNMmyjkr7j_nq38Z/source.mp4",
     "peak": 46.550000000000004,
     "cut": [
       35.27,
-      49.93
+      49.93,
+      34.77
     ],
     "dur": 56.04,
     "tags": [
-      "wow"
+      "wow",
+      "rage"
     ],
     "tag_scores": {
       "funny": 0.0,
       "glitch": 0.0,
       "chase": 0.0,
       "crash": 0.0,
-      "rage": 0.1,
+      "rage": 0.35,
       "first-reaction": 0.2,
-      "wow": 0.68,
+      "wow": 1.0,
       "_loud": 5.9,
       "_motion": 8.1
     },
-    "quote": "Go ta - I don't know about Lucy anymore.",
+    "quote": "I don't know about Lucy anymore.",
     "rendered": [
       "bananas"
     ],
@@ -3283,9 +3285,9 @@
       "loud": 7.7,
       "motion": 5.7,
       "sustained": 0.17,
-      "spike": 7.6,
+      "spike": 7.7,
       "laugh": 0,
-      "static": 0.04,
+      "static": 0.07,
       "letterbox": 0.0,
       "luma": 45.3,
       "dark": 0.0
@@ -3420,7 +3422,7 @@
       "_loud": 2.2,
       "_motion": 18.7
     },
-    "quote": "Noooooo! Come on! Come on!",
+    "quote": "",
     "rendered": [
       "bananas"
     ],
@@ -4174,7 +4176,7 @@
       "_loud": 6.2,
       "_motion": 12.7
     },
-    "quote": "No!",
+    "quote": "",
     "rendered": [
       "bananas",
       "fanpage"
@@ -4242,5 +4244,74 @@
     "vod_offset": 15922,
     "cluster": 1,
     "added": 1795051889
+  },
+  "twitch_ViscousCallousMuleRuleFive-HpdKHtraw_2ro91m": {
+    "id": "twitch_ViscousCallousMuleRuleFive-HpdKHtraw_2ro91m",
+    "url": "https://www.twitch.tv/kaicenat/clip/ViscousCallousMuleRuleFive-HpdKHtraw_2ro91m",
+    "channel": "kaicenat",
+    "platform": "twitch",
+    "title": "gyaaat",
+    "views": 1553,
+    "created": 1795017129,
+    "category": "Grand Theft Auto VI",
+    "added": 1795052706,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/kaicenat/20261118_twitch_ViscousCallousMuleRuleFive-HpdKHtraw_2ro91m/source.mp4",
+    "peak": 22.05,
+    "cut": [
+      15.67,
+      25.07
+    ],
+    "dur": 30.02,
+    "tags": [],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 0.2,
+      "wow": 0.0,
+      "_loud": 2.5,
+      "_motion": 4.4
+    },
+    "quote": "",
+    "rendered": [
+      "fanpage"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "proven": [],
+    "evidence": {
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.0,
+    "signals": {
+      "siren": 0.0,
+      "impact": 25.9,
+      "loud": 2.8,
+      "motion": 1.5,
+      "sustained": 0.0,
+      "spike": 1.9,
+      "laugh": 0,
+      "static": 0.84,
+      "letterbox": 0.0,
+      "luma": 36.6,
+      "dark": 0.0
+    }
   }
 }
