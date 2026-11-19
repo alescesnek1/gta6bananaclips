@@ -5612,5 +5612,19 @@
     "vod_offset": 2558,
     "cluster": 1,
     "added": 1795073753
+  },
+  "twitch_PlumpShortCocoaUncleNox-JFdOfd1oKnTda-or": {
+    "id": "twitch_PlumpShortCocoaUncleNox-JFdOfd1oKnTda-or",
+    "url": "https://www.twitch.tv/realkatieb/clip/PlumpShortCocoaUncleNox-JFdOfd1oKnTda-or",
+    "channel": "realkatieb",
+    "platform": "twitch",
+    "title": "right",
+    "views": 1317,
+    "created": 1795039675,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932534214",
+    "vod_offset": 14990,
+    "cluster": 1,
+    "added": 1795076313
   }
 }
