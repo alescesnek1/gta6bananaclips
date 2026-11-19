@@ -9542,7 +9542,7 @@
     "category": "Grand Theft Auto VI",
     "cluster": 1,
     "added": 1795098336,
-    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/ishowspeed/20261118_twitch_HumbleGeniusStrawberryBleedPurple-CYhEi_LZY9mbAQxo/source.mp4",
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_HumbleGeniusStrawberryBleedPurple-CYhEi_LZY9mbAQxo\\source.mp4",
     "peak": 23.85,
     "cut": [
       16.53,
@@ -9567,7 +9567,7 @@
       "_loud": 2.9,
       "_motion": 30.2
     },
-    "quote": "the hell is going on F*** out where Jason at?",
+    "quote": "Oh Hell no, hey, oh no No, skip this skip",
     "rendered": [
       "bananas"
     ],
@@ -11599,7 +11599,7 @@
     "category": "Grand Theft Auto VI",
     "cluster": 1,
     "added": 1795102337,
-    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/ishowspeed/20261118_twitch_SavoryEagerLlamaLeeroyJenkins-fzfiphCY-mKdwJvr/source.mp4",
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_SavoryEagerLlamaLeeroyJenkins-fzfiphCY-mKdwJvr\\source.mp4",
     "peak": 18.150000000000002,
     "cut": [
       3.5,
@@ -14072,11 +14072,11 @@
     "channel": "ishowspeed",
     "platform": "twitch",
     "title": "..",
-    "views": 674,
+    "views": 689,
     "created": 1795061131,
     "category": "Grand Theft Auto VI",
     "cluster": 1,
-    "added": 1795109589
+    "added": 1795109773
   },
   "twitch_ThankfulPiliablePrariedogPrimeMe-Ub5zpoHpUObxhbVz": {
     "id": "twitch_ThankfulPiliablePrariedogPrimeMe-Ub5zpoHpUObxhbVz",
@@ -14084,12 +14084,12 @@
     "channel": "kingwoolz",
     "platform": "twitch",
     "title": "OVERSIMULATED",
-    "views": 686,
+    "views": 692,
     "created": 1795055761,
     "category": "Grand Theft Auto VI",
     "video_id": "2933071028",
     "vod_offset": 760,
     "cluster": 1,
-    "added": 1795109589
+    "added": 1795109773
   }
 }
