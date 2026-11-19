@@ -6070,5 +6070,19 @@
     "vod_offset": 21110,
     "cluster": 1,
     "added": 1795092828
+  },
+  "twitch_MoldySmoggyDonkeyThisIsSparta-mXBDQ8JcdmTZV7p5": {
+    "id": "twitch_MoldySmoggyDonkeyThisIsSparta-mXBDQ8JcdmTZV7p5",
+    "url": "https://www.twitch.tv/jynxzi/clip/MoldySmoggyDonkeyThisIsSparta-mXBDQ8JcdmTZV7p5",
+    "channel": "jynxzi",
+    "platform": "twitch",
+    "title": "GYATT",
+    "views": 1247,
+    "created": 1795031095,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932568279",
+    "vod_offset": 4228,
+    "cluster": 1,
+    "added": 1795093120
   }
 }
