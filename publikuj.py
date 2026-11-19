@@ -1931,23 +1931,31 @@ def top4_strength(r, src):
         return None
     return 0.5 * funny + 0.3 * min(1.0, score / max(1, src.get("hot_score", 2000))) + (0.2 if star else 0)
 
+TOP4_NUDE_Q = "A frame from a video game. Is there nudity (bare breasts, nipples, buttocks, genitals)? Answer yes or no."
+
 def top4_nudity(mp4):
-    """True = bare breasts / genitals in the payoff (19. 11.: a strip club short with nudity was published) ->
-    never in a Top 4. None (no vision) counts as not checked = not allowed either. Two full-width frames of the
-    game band side by side: a tiny 3-frame grid with the facecam missed the nudity in a test."""
+    """True = nudity stays on screen in the payoff (both of 2 game-band frames, = klipuj.nudity_explicit; owner
+    19. 11.: GTA 6 has nudity, not too strict - a glimpse or a silhouette passes) -> never in a Top 4. None (no
+    vision) counts as not checked = not allowed either."""
     import nahled_ai
-    grid = Path(mp4).with_suffix(".nude.jpg")
-    r = subprocess.run(["ffmpeg", "-nostdin", "-y", "-v", "error", "-i", str(mp4), "-vf",
-                        "crop=1080:1280:0:640,fps=2/5,scale=540:-1,tile=2x1", "-frames:v", "1", str(grid)],
-                       capture_output=True, text=True, timeout=120)
-    if r.returncode or not grid.exists():
+    try:
+        dur = float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0",
+                                    str(mp4)], capture_output=True, text=True, timeout=60).stdout.strip())
+    except ValueError:
         return None
-    ans = nahled_ai.vision(grid, "Two frames from a video game. Is there nudity in either (bare breasts, nipples, "
-                                 "buttocks, genitals)? Answer yes or no.", max_tokens=5)
-    grid.unlink(missing_ok=True)
-    if ans is None:
-        return None
-    return str(ans).strip().lower().startswith("yes")
+    yes = []
+    for i, t in enumerate((dur / 3, dur * 2 / 3)):
+        f = Path(mp4).with_suffix(f".nude{i}.jpg")
+        subprocess.run(["ffmpeg", "-nostdin", "-y", "-v", "error", "-ss", f"{t:.2f}", "-i", str(mp4), "-frames:v", "1",
+                        "-vf", "crop=1080:1280:0:640,scale=640:-2", str(f)], capture_output=True, timeout=60)
+        if not f.exists():
+            return None
+        ans = nahled_ai.vision(f, TOP4_NUDE_Q, max_tokens=4)
+        f.unlink(missing_ok=True)
+        if ans is None:
+            return None
+        yes.append(str(ans).strip().lower().startswith("yes"))
+    return all(yes)
 
 def top4_ass_time(s):
     return f"{int(s // 3600)}:{int(s % 3600 // 60):02d}:{s % 60:05.2f}"

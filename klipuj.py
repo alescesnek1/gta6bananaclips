@@ -38,6 +38,7 @@ import random
 import re
 import shutil
 import subprocess
+import tempfile
 import sys
 import time
 import urllib.parse
@@ -2827,6 +2828,38 @@ def payoff_clip(ff, args, ass_clean, src, hook_t, mute, out, grade="", wm=None, 
     loudness_fix(out)
     return out
 
+NUDE_Q = "A frame from a video game. Is there nudity (bare breasts, nipples, buttocks, genitals)? Answer yes or no."
+
+def nudity_frames(src, times, crop=None):
+    """One vision answer per frame (NUDE_Q) -> [True/False], or None when the vision model is unavailable."""
+    import nahled_ai
+    out = []
+    for i, t in enumerate(times):
+        f = Path(tempfile.gettempdir()) / f"nude_{os.getpid()}_{int(time.time() * 1000)}_{i}.jpg"
+        vf = (f"{crop}," if crop else "") + "scale=640:-2"
+        subprocess.run(["ffmpeg", "-nostdin", "-y", "-v", "error", "-ss", f"{max(0.0, t):.2f}", "-i", str(src),
+                        "-frames:v", "1", "-vf", vf, str(f)], capture_output=True, timeout=60)
+        if not f.exists():
+            return None
+        ans = nahled_ai.vision(f, NUDE_Q, max_tokens=4)
+        f.unlink(missing_ok=True)
+        if ans is None:
+            return None
+        out.append(str(ans).strip().lower().startswith("yes"))
+    return out
+
+def nudity_explicit(src, times):
+    """Lenient nudity check (owner 19. 11.: GTA 6 has nudity, never too strict, a viral clip must go out): True only
+    when BOTH frames show nudity (it stays on screen, not a passing glimpse or a silhouette); False otherwise; None
+    when the vision model is unavailable (= no block). The sensitive yes/no question is the reliable one: a 'close-up
+    only' wording made the model answer no even to a topless close-up (tested 19. 11.)."""
+    try:
+        ans = nudity_frames(src, times[:2])
+        return None if ans is None else all(ans)
+    except Exception as e:
+        log(f"  nudity check failed ({str(e)[-80:]}) - not blocked")
+        return None
+
 TOP4_LEAD = 3.5              # Top 4 entry: about this much before the punchline (owner: 'chvilku pred pointou')
 
 def top4_entry(orig, loop, peak, words0, cam, crop_w, game_h, crop_h, top, xlim, b, fan, cam_h, cap_y, d, sfx,
@@ -4392,6 +4425,16 @@ def render(clip, src=None, clean=False):
             log(f"  boredom: {bore}" + (f" -> {'; '.join(bore_probs)}" if bore_probs else " ok"))
             if bore_probs:
                 raise RenderFailed(f"boring: {'; '.join(bore_probs)}")
+            # nudity (19. 11.: a strip club short showed it in close-up; owner: GTA 6 has nudity, not too strict,
+            # a viral clip must go out): only EXPLICIT nudity as the main subject stops a clip that is not viral
+            nude = nudity_explicit(src, [peak or dur / 2, (hook_t + dur) / 2 if loop else dur * 0.75])
+            if nude:
+                if viral or virality(clip) >= cfg.get("hot_score", 2000):
+                    log("  nudity: explicit, but the clip is viral -> it goes out")
+                else:
+                    raise RenderFailed("explicit nudity and not viral")
+            elif nude is not None:
+                log("  nudity: none explicit")
         # swears anywhere in the clip's sound - also under the score card / fanpage tail, where the clip
         # keeps playing - are bleeped; captions (F***) stay before the card only
         # loop: the speech is captioned everywhere (owner 18. 11.: fully and continuously)
