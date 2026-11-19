@@ -260,5 +260,17 @@
     "golden": false,
     "title": "xQc Gets Caught Off Guard In GTA 6! 😭",
     "slot": "2026-11-19T10:00:00+01:00"
+  },
+  "top3_2026-11-18": {
+    "url": "https://6afea4ee545ab9cfc43dcb90--gta6bananaclips-media.netlify.app/20261118/top3.mp4",
+    "path": "20261118/top3.mp4",
+    "due": "2026-11-19T10:51:00+01:00",
+    "draft": false,
+    "posts": {
+      "6af7142262b70b94b01ac608": "6afea4f5b16549e9b832d105",
+      "6af7155e62b70b94b01ad06f": "6afea4f559eff0b616ec25c7"
+    },
+    "channel": "top3",
+    "platform": "top3"
   }
 }
