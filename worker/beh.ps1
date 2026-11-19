@@ -77,7 +77,7 @@ if (Due "long" 115) {
 }
 
 # --- 1a) hardware once (owner 19. 11.: GPU + VRAM, CPU, RAM of this PC, read from the report): one line per part
-$hw = Join-Path $dir "out\hw_reported_v1.txt"
+$hw = Join-Path $dir "out\hw_reported_v2.txt"
 if (-not (Test-Path $hw)) {
     try {
         $cpu = Get-CimInstance Win32_Processor | Select-Object -First 1
