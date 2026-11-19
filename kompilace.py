@@ -341,6 +341,10 @@ def series_score(r, w):
     match = sum(w.get(c, 0) * v for c, v in cats.items())
     return math.log10((r.get("views") or 0) + 10) * (0.5 + min(match, 1.5)) * (0.5 + (r.get("fun") or 0))
 
+MIN_MATCH = 0.3          # the series' weighted category score a moment needs (off-theme below)
+MIN_ACTION = 0.25        # the strongest action category a moment needs (calm below)
+ACTION_CATS = ("crash", "chase", "stunt", "rage", "funny", "glitch", "physics", "fail", "escape", "mission")
+
 def qualifies(r, serie, z, verify=True, vis_cache=None):
     """
     Precision over quantity: gameplay (cheap static-UI pre-filter, then vision), entertainment floor,
@@ -371,6 +375,17 @@ def qualifies(r, serie, z, verify=True, vis_cache=None):
             return False, "no 2-signal evidence"
         if cfg.get("min_conf") and max((r.get("cats") or {}).get(c, 0) for c in need) < cfg["min_conf"]:
             return False, "low confidence"
+    # 19. 11. (owner: "in Wildest Moments there must be no calm drive through the city"): every series gets
+    # only moments that match its topic - the series' own category weights must score MIN_MATCH - and never
+    # a calm moment (no action category at all). Same-mission is about the mission, not the action.
+    cats = r.get("cats") or {}
+    w = cfg.get("w") or {}
+    if w and not cfg.get("same_mission"):
+        match = max((cats.get(c, 0) * wt for c, wt in w.items()), default=0.0)
+        if match < cfg.get("min_match", MIN_MATCH):
+            return False, "off-theme"
+    if max((cats.get(c, 0) for c in ACTION_CATS), default=0.0) < MIN_ACTION:
+        return False, "calm (no action)"
     if verify:
         q = cfg.get("verify") if need else None
         key = (r["id"], q)

@@ -525,7 +525,7 @@ class Vision(unittest.TestCase):                           # 4
         try:
             r = {"id": "twitch_x", "source": "x.mp4", "peak": 10, "seg": [0, 12], "fun": 0.8,
                  "signals": {"static": 0.05, "dark": 0.0, "luma": 100}, "proven": ["first-reaction"],
-                 "cats": {"first-reaction": 1.0}}
+                 "cats": {"first-reaction": 1.0, "funny": 0.6}}
             ok, why = C.qualifies(dict(r), "first-reactions", "bananas", True, {})
             self.assertFalse(ok)
             self.assertIn("vision unavailable", why)
