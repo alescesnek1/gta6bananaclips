@@ -5633,11 +5633,11 @@
     "channel": "ishowspeed",
     "platform": "twitch",
     "title": "bahaha",
-    "views": 3347,
+    "views": 3386,
     "created": 1795038747,
     "category": "Grand Theft Auto VI",
     "cluster": 1,
-    "added": 1795098086,
+    "added": 1795098336,
     "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/ishowspeed/20261118_twitch_HumbleGeniusStrawberryBleedPurple-CYhEi_LZY9mbAQxo/source.mp4",
     "peak": 23.85,
     "cut": [
@@ -6440,5 +6440,31 @@
     "vod_offset": 1627,
     "cluster": 1,
     "added": 1795096994
+  },
+  "twitch_BeautifulAbrasiveQuailJebaited-eC5ahIUB6cDkFrTL": {
+    "id": "twitch_BeautifulAbrasiveQuailJebaited-eC5ahIUB6cDkFrTL",
+    "url": "https://www.twitch.tv/xqc/clip/BeautifulAbrasiveQuailJebaited-eC5ahIUB6cDkFrTL",
+    "channel": "xqc",
+    "platform": "twitch",
+    "title": "You call yourself a gamer?",
+    "views": 783,
+    "created": 1795075453,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932113307",
+    "vod_offset": 71495,
+    "added": 1795099128
+  },
+  "twitch_ColdbloodedTsunderePanTBTacoLeft-NhrF630w-AelL0rG": {
+    "id": "twitch_ColdbloodedTsunderePanTBTacoLeft-NhrF630w-AelL0rG",
+    "url": "https://www.twitch.tv/xqc/clip/ColdbloodedTsunderePanTBTacoLeft-NhrF630w-AelL0rG",
+    "channel": "xqc",
+    "platform": "twitch",
+    "title": "holy forsenCoomer",
+    "views": 816,
+    "created": 1795020552,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932113307",
+    "vod_offset": 37203,
+    "added": 1795099128
   }
 }
