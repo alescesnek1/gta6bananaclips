@@ -3177,7 +3177,7 @@
       "_loud": 2.2,
       "_motion": 18.7
     },
-    "quote": "",
+    "quote": "Noooooo! Come on! Come on!",
     "rendered": [
       "bananas"
     ],
@@ -3619,13 +3619,13 @@
     "channel": "zerkaa",
     "platform": "twitch",
     "title": "Lock in Jason",
-    "views": 877,
+    "views": 914,
     "created": 1795035515,
     "category": "Grand Theft Auto VI",
     "video_id": "2932227427",
     "vod_offset": 5836,
     "cluster": 1,
-    "added": 1795048956,
+    "added": 1795049671,
     "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/zerkaa/20261118_twitch_SparklyEnchantingKimchiRuleFive-nFwdyisMgC_RJtiB/source.mp4",
     "peak": 20.75,
     "cut": [
@@ -3759,10 +3759,10 @@
     "channel": "marlon",
     "platform": "twitch",
     "title": "gyattttttt",
-    "views": 828,
+    "views": 896,
     "created": 1795033893,
     "category": "Grand Theft Auto VI",
-    "added": 1795049062,
+    "added": 1795049762,
     "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/marlon/20261118_twitch_TiredConfidentPhoneCopyThis-bndkrew-Sq62qYKf/source.mp4",
     "peak": 15.65,
     "cut": [
@@ -3868,5 +3868,33 @@
     "vod_offset": 32658,
     "cluster": 1,
     "added": 1795049062
+  },
+  "twitch_SlickCreativeDonkeyJKanStyle-VHXWX3b9QwEu-UIT": {
+    "id": "twitch_SlickCreativeDonkeyJKanStyle-VHXWX3b9QwEu-UIT",
+    "url": "https://www.twitch.tv/zerkaa/clip/SlickCreativeDonkeyJKanStyle-VHXWX3b9QwEu-UIT",
+    "channel": "zerkaa",
+    "platform": "twitch",
+    "title": "We don't touch that light switch",
+    "views": 545,
+    "created": 1795035538,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932227427",
+    "vod_offset": 17705,
+    "cluster": 1,
+    "added": 1795049762
+  },
+  "twitch_StormyDifferentPoxDatBoi-0neb1W_xYNBgSzag": {
+    "id": "twitch_StormyDifferentPoxDatBoi-0neb1W_xYNBgSzag",
+    "url": "https://www.twitch.tv/sashagrey/clip/StormyDifferentPoxDatBoi-0neb1W_xYNBgSzag",
+    "channel": "sashagrey",
+    "platform": "twitch",
+    "title": "🌴 !DROPS COUNTDOWN TO GTA VI @SASHAGREY",
+    "views": 548,
+    "created": 1795005533,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932206166",
+    "vod_offset": 7287,
+    "cluster": 1,
+    "added": 1795049762
   }
 }
