@@ -6042,5 +6042,33 @@
     "category": "Grand Theft Auto VI",
     "cluster": 1,
     "added": 1795092210
+  },
+  "twitch_OddHedonisticDonkeySwiftRage-6Fns0uGwe32Hh0Of": {
+    "id": "twitch_OddHedonisticDonkeySwiftRage-6Fns0uGwe32Hh0Of",
+    "url": "https://www.twitch.tv/vanosscrew/clip/OddHedonisticDonkeySwiftRage-6Fns0uGwe32Hh0Of",
+    "channel": "vanosscrew",
+    "platform": "twitch",
+    "title": "GTA 6 / NO OUTFIT !!",
+    "views": 1069,
+    "created": 1795023777,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932487365",
+    "vod_offset": 2287,
+    "cluster": 1,
+    "added": 1795092828
+  },
+  "twitch_VivaciousProudSnakeVoteNay-esg1MRa3NKLyIaDC": {
+    "id": "twitch_VivaciousProudSnakeVoteNay-esg1MRa3NKLyIaDC",
+    "url": "https://www.twitch.tv/ohnepixel/clip/VivaciousProudSnakeVoteNay-esg1MRa3NKLyIaDC",
+    "channel": "ohnepixel",
+    "platform": "twitch",
+    "title": "He is Him!!",
+    "views": 1060,
+    "created": 1795025139,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932275268",
+    "vod_offset": 21110,
+    "cluster": 1,
+    "added": 1795092828
   }
 }
