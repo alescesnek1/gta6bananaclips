@@ -5746,5 +5746,19 @@
     "vod_offset": 11274,
     "cluster": 1,
     "added": 1795085015
+  },
+  "twitch_HealthyEagerNarwhalPastaThat-n30yHBQEfYrm3t1S": {
+    "id": "twitch_HealthyEagerNarwhalPastaThat-n30yHBQEfYrm3t1S",
+    "url": "https://www.twitch.tv/mrsavage/clip/HealthyEagerNarwhalPastaThat-n30yHBQEfYrm3t1S",
+    "channel": "mrsavage",
+    "platform": "twitch",
+    "title": "18+🤣",
+    "views": 1410,
+    "created": 1795019067,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932376551",
+    "vod_offset": 6049,
+    "cluster": 1,
+    "added": 1795086809
   }
 }
