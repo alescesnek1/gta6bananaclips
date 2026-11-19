@@ -22104,5 +22104,19 @@
     "vod_offset": 17164,
     "cluster": 1,
     "added": 1795129994
+  },
+  "twitch_RacyTawdryDadShadyLulu-PAP7IktJR8AUmy8B": {
+    "id": "twitch_RacyTawdryDadShadyLulu-PAP7IktJR8AUmy8B",
+    "url": "https://www.twitch.tv/ohnepixel/clip/RacyTawdryDadShadyLulu-PAP7IktJR8AUmy8B",
+    "channel": "ohnepixel",
+    "platform": "twitch",
+    "title": "AYOOOOO",
+    "views": 500,
+    "created": 1795092842,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933599748",
+    "vod_offset": 3285,
+    "cluster": 1,
+    "added": 1795130254
   }
 }
