@@ -47,5 +47,25 @@
     "live": true,
     "viewers": 61604,
     "spike_z": 41.0
+  },
+  "twitch_TenuousFunWaspBigBrother-pWNf2GWhFy6gEUad": {
+    "url": "https://6afe4c20c572131f93a5ed2c--gta6bananaclips-media.netlify.app/20261118/twitch_TenuousFunWaspBigBrother-pWNf2GWhFy6gEUad.mp4",
+    "path": "20261118/twitch_TenuousFunWaspBigBrother-pWNf2GWhFy6gEUad.mp4",
+    "due": "2026-11-19T03:10:00+01:00",
+    "draft": false,
+    "posts": {
+      "6afc42e6ece6dfde5ff66dca": "6afe4c28a588bd6687ad9f1b",
+      "6afc43ffece6dfde5ff68162": "6afe4c294cace847b3887827"
+    },
+    "mb": 6.6,
+    "channel": "kaicenat",
+    "platform": "twitch",
+    "score": 949.2,
+    "hot": false,
+    "rating": 4,
+    "views": 1687,
+    "golden": false,
+    "title": "Kai Cenat Hits BREAKING POINT In GTA 6! 😭",
+    "slot": "2026-11-19T03:30:00+01:00"
   }
 }
