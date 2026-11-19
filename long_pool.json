@@ -15606,5 +15606,33 @@
     "vod_offset": 4520,
     "cluster": 1,
     "added": 1795122796
+  },
+  "twitch_CrowdedLitigiousCoffeeTBTacoLeft-jfCEIc3KqATItJ5q": {
+    "id": "twitch_CrowdedLitigiousCoffeeTBTacoLeft-jfCEIc3KqATItJ5q",
+    "url": "https://www.twitch.tv/jasontheween/clip/CrowdedLitigiousCoffeeTBTacoLeft-jfCEIc3KqATItJ5q",
+    "channel": "jasontheween",
+    "platform": "twitch",
+    "title": "gg",
+    "views": 524,
+    "created": 1795037105,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932190650",
+    "vod_offset": 40975,
+    "cluster": 1,
+    "added": 1795123101
+  },
+  "twitch_ObliviousCloudyBorkNerfRedBlaster-YIUntU3N09sC5nzs": {
+    "id": "twitch_ObliviousCloudyBorkNerfRedBlaster-YIUntU3N09sC5nzs",
+    "url": "https://www.twitch.tv/joe_bartolozzi/clip/ObliviousCloudyBorkNerfRedBlaster-YIUntU3N09sC5nzs",
+    "channel": "joe_bartolozzi",
+    "platform": "twitch",
+    "title": "Straight Cheeks",
+    "views": 503,
+    "created": 1795112159,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933806710",
+    "vod_offset": 8227,
+    "cluster": 2,
+    "added": 1795123101
   }
 }
