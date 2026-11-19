@@ -5336,5 +5336,125 @@
     "created": 1795035015,
     "category": "Grand Theft Auto VI",
     "added": 1795069563
+  },
+  "twitch_CooperativeAthleticMarjoramPeoplesChamp-ED9p6JnfM5HqbI2l": {
+    "id": "twitch_CooperativeAthleticMarjoramPeoplesChamp-ED9p6JnfM5HqbI2l",
+    "url": "https://www.twitch.tv/xqc/clip/CooperativeAthleticMarjoramPeoplesChamp-ED9p6JnfM5HqbI2l",
+    "channel": "xqc",
+    "platform": "twitch",
+    "title": "...",
+    "views": 1148,
+    "created": 1795030208,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932113307",
+    "vod_offset": 46910,
+    "added": 1795070277,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/xqc/20261118_twitch_CooperativeAthleticMarjoramPeoplesChamp-ED9p6JnfM5HqbI2l/source.mp4",
+    "peak": 15.850000000000001,
+    "cut": [
+      7.87,
+      22.13
+    ],
+    "dur": 26.08,
+    "tags": [
+      "rage",
+      "wow"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.0,
+      "rage": 0.73,
+      "first-reaction": 0.2,
+      "wow": 0.42,
+      "_loud": 1.9,
+      "_motion": 21.9
+    },
+    "quote": "No, I just gotta be a member of my family.",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.35,
+      "fail": 0.0,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.35
+    },
+    "primary": "rage",
+    "proven": [],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion-spike"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.43,
+    "signals": {
+      "siren": 0.0,
+      "impact": 10.3,
+      "loud": 1.6,
+      "motion": 16.6,
+      "sustained": 0.37,
+      "spike": 11.3,
+      "laugh": 0,
+      "static": 0.03,
+      "letterbox": 0.0,
+      "luma": 59.7,
+      "dark": 0.0
+    }
+  },
+  "twitch_VenomousEasyKathyNerfBlueBlaster-xC8I-5tMYpWzdNaS": {
+    "id": "twitch_VenomousEasyKathyNerfBlueBlaster-xC8I-5tMYpWzdNaS",
+    "url": "https://www.twitch.tv/lacy/clip/VenomousEasyKathyNerfBlueBlaster-xC8I-5tMYpWzdNaS",
+    "channel": "lacy",
+    "platform": "twitch",
+    "title": "i cant 🤣",
+    "views": 1329,
+    "created": 1795004115,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932194507",
+    "vod_offset": 7399,
+    "cluster": 1,
+    "added": 1795070499
+  },
+  "twitch_VivaciousCallousYogurtDxCat-tcAghtrsbnP82HX2": {
+    "id": "twitch_VivaciousCallousYogurtDxCat-tcAghtrsbnP82HX2",
+    "url": "https://www.twitch.tv/xqc/clip/VivaciousCallousYogurtDxCat-tcAghtrsbnP82HX2",
+    "channel": "xqc",
+    "platform": "twitch",
+    "title": "xQc shares his thoughts on GTA VI after a 24hr stream",
+    "views": 968,
+    "created": 1795067063,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932113307",
+    "vod_offset": 83165,
+    "added": 1795070499
   }
 }
