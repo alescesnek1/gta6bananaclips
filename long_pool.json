@@ -3381,7 +3381,7 @@
       "_loud": 5.9,
       "_motion": 8.1
     },
-    "quote": "Go ta - I don't know about Lucy anymore.",
+    "quote": "I don't know about Lucy anymore.",
     "rendered": [
       "bananas"
     ],
@@ -3579,7 +3579,7 @@
       "_loud": 2.2,
       "_motion": 18.7
     },
-    "quote": "Noooooo! Come on! Come on!",
+    "quote": "",
     "rendered": [
       "bananas"
     ],
@@ -4333,7 +4333,7 @@
       "_loud": 6.2,
       "_motion": 12.7
     },
-    "quote": "No!",
+    "quote": "",
     "rendered": [
       "bananas",
       "fanpage"
@@ -4754,12 +4754,37 @@
     "channel": "theburntpeanut",
     "platform": "twitch",
     "title": "kakenak",
-    "views": 1072,
+    "views": 1093,
     "created": 1795005927,
     "category": "Grand Theft Auto VI",
     "video_id": "2932226282",
     "vod_offset": 6080,
     "cluster": 1,
-    "added": 1795058349
+    "added": 1795058769
+  },
+  "twitch_BrightWanderingLemurAMPTropPunch-1Ygg3jlwmtQYBO13": {
+    "id": "twitch_BrightWanderingLemurAMPTropPunch-1Ygg3jlwmtQYBO13",
+    "url": "https://www.twitch.tv/timthetatman/clip/BrightWanderingLemurAMPTropPunch-1Ygg3jlwmtQYBO13",
+    "channel": "timthetatman",
+    "platform": "twitch",
+    "title": "LMAO",
+    "views": 611,
+    "created": 1795048246,
+    "category": "Grand Theft Auto VI",
+    "added": 1795058769
+  },
+  "twitch_HeadstrongEnthusiasticDragonflyOSsloth-gCmDYEr1mzJEH3tW": {
+    "id": "twitch_HeadstrongEnthusiasticDragonflyOSsloth-gCmDYEr1mzJEH3tW",
+    "url": "https://www.twitch.tv/squeex/clip/HeadstrongEnthusiasticDragonflyOSsloth-gCmDYEr1mzJEH3tW",
+    "channel": "squeex",
+    "platform": "twitch",
+    "title": "classic",
+    "views": 990,
+    "created": 1795035731,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932676275",
+    "vod_offset": 1957,
+    "cluster": 1,
+    "added": 1795058769
   }
 }
