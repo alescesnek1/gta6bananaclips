@@ -237,7 +237,7 @@ def publishing(now):
         P.set_brand(b)
         recs = P.records()
         today = {k: r for k, r in recs.items() if P.in_day(r, day)}
-        quota = {k: r for k, r in today.items() if not k.startswith(("top3_", "exp_"))}
+        quota = {k: r for k, r in today.items() if not k.startswith(("top3_", "top4_", "exp_"))}
         dues = [(ts(r.get("due")), r) for r in recs.values() if not r.get("draft") and not r.get("deleted")]
         past = [t for t, _ in dues if t and t <= now]
         future = [t for t, _ in dues if t and t > now]

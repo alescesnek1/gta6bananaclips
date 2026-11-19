@@ -2810,6 +2810,77 @@ def _loudnorm_pass(path, out, tp, limit):
          str(out)], timeout=600)
     return js
 
+def payoff_clip(ff, args, ass_clean, src, hook_t, mute, out, grade="", wm=None, cam_h=CAM_H):
+    """19. 11. (owner: the daily Top 4 'funniest' video): the short's opening payoff - a moment before the punchline,
+    the punchline, a bit after - in the same layout with the streamer's captions, WITHOUT the hook question, banana
+    or cards; swears bleeped; -14 LUFS. -> out."""
+    flt = build_filter(*args, ass_file=ff_path(ass_clean), nf=src_norm(src), grade=grade or GRADE, wm_text=wm, cam_h=cam_h)
+    spans = [(max(0.0, a), min(hook_t, b)) for a, b in (mute or []) if a < hook_t]
+    if spans and has_audio(src):
+        e = "+".join(f"between(t,{a:.3f},{b:.3f})" for a, b in spans)
+        flt += (f";[0:a]volume=0:enable='{e}'[pm];sine=frequency=1000:sample_rate=48000:duration={hook_t:.3f},"
+                f"volume=0.22,volume=0:enable='not({e})'[pb];[pm][pb]amix=inputs=2:duration=first:normalize=0[pa]")
+        amap = ["-map", "[pa]"]
+    else:
+        amap = ["-map", "0:a?"]
+    encode(ff + ["-filter_complex", flt, "-map", "[v]"] + amap + ["-t", f"{hook_t:.3f}"], out)
+    loudness_fix(out)
+    return out
+
+TOP4_LEAD = 3.5              # Top 4 entry: about this much before the punchline (owner: 'chvilku pred pointou')
+
+def top4_entry(orig, loop, peak, words0, cam, crop_w, game_h, crop_h, top, xlim, b, fan, cam_h, cap_y, d, sfx,
+               grade="", wm=None):
+    """
+    The daily Top 4 entry (owner 19. 11.: 'tato struktura je bez hooku'): ONE continuous piece of the source -
+    a moment before the punchline (a phrase start ~TOP4_LEAD s before the peak), the punchline and the reaction
+    to the loop's end E - no hook, no loop order, no jump cuts, no zooms, flash or banana; the same layout,
+    player-tracking crop and the streamer's captions; swears bleeped; -14 LUFS. -> out mp4.
+    loop = info['loop'] (source times p0, e); peak = the punchline in the edit's timeline (p0 + peak in source).
+    """
+    p0, e = loop["p0"], loop["e"]
+    pk = p0 + peak
+    want = pk - TOP4_LEAD
+    starts = [w0 for i, (w0, w1, _) in enumerate(words0)
+              if pk - 5.0 <= w0 <= pk - 2.0 and (i == 0 or w0 - words0[i - 1][1] >= 0.3)]       # phrase starts
+    starts = starts or [w0 for w0, _, _ in words0 if pk - 5.0 <= w0 <= pk - 2.0]
+    a = min(starts, key=lambda t: abs(t - want)) if starts else want
+    for w0, w1, _ in words0:                             # never inside a word
+        if w0 < a < w1:
+            a = w0
+    a = max(0.0, min(a, p0))
+    a = round(a * FPS) / FPS
+    if e - a > 12.0:
+        raise RuntimeError(f"{e - a:.1f} s is too long for a Top 4 entry")
+    cut = d / f"top4src{sfx}.mp4"
+    encode(["ffmpeg", "-nostdin", "-y", "-hide_banner", "-loglevel", "error", "-i", str(orig), "-filter_complex",
+            f"[0:v]trim={a:.4f}:{e:.4f},setpts=PTS-STARTPTS[v];[0:a]atrim={a:.4f}:{e:.4f},asetpts=PTS-STARTPTS[a]",
+            "-map", "[v]", "-map", "[a]"], cut)
+    dur = duration(cut)
+    xs, lo, hi, _ = track_path(cut, cam, crop_w, dur, xlim)
+    shift = float(b.get("crop_shift") or 0.0)
+    if shift:                                            # the second account's frame sits elsewhere
+        xs = shift_path(xs, shift * crop_w, lo, hi)
+    cmds = d / f"top4track{sfx}.cmd"
+    cmds.write_text("".join(f"{i / FPS:.4f} crop@g x {x};\n" for i, x in enumerate(xs)), encoding="utf-8")
+    ws = Words([(w0 - a, w1 - a, t) for w0, w1, t in words0 if w0 >= a - WORD_TOL and w1 <= e + WORD_TOL],
+               bleep=[(w0 - a, w1 - a) for w0, w1 in getattr(words0, "bleep", []) if w1 > a and w0 < e])
+    caps = mouth_words(ws, mouth_track(cut, cam))[0] if cam else []      # the streamer's own voice only
+    caps = swear_plan(Words(caps), 1e9)[0]
+    mute = swear_plan(ws, 1e9)[1]
+    ass = d / f"top4caps{sfx}.ass"
+    if fan:
+        captions_ass(caps, ass, y=cap_y, cap={**(b.get("caption") or {}), "outline": 3, "shadow": 0}, per=2, anim="pop")
+    else:
+        captions_ass(caps, ass, y=cap_y, cap=b.get("caption"))
+    args = (cam, ff_path(cmds), int(xs[0]), crop_w, game_h, crop_h, top)
+    ff = ["ffmpeg", "-nostdin", "-y", "-hide_banner", "-loglevel", "error", "-i", str(cut)]
+    out = payoff_clip(ff, args, ass, cut, dur, mute, d / f"payoff{sfx}.mp4", grade=grade, wm=wm, cam_h=cam_h)
+    log(f"  top4 entry: {a:.2f}-{e:.2f} s (punchline {pk:.1f}), {dur:.1f} s continuous, {len(caps)} caption words")
+    for f in (cut, cmds, ass):
+        f.unlink(missing_ok=True)
+    return out
+
 def loudness_fix(path):
     """
     Two-pass loudnorm of a finished short to LUFS_TARGET integrated, true peak <= TP_TARGET, then the
@@ -4285,6 +4356,7 @@ def render(clip, src=None, clean=False):
     looks = [True, False] if any(b.get(k) for b in blist for k in LAUNCH_FLAGS) else [False]
     cuts, bore, mtags = {}, None, {}
     mouth_cache, mouth_log = {}, []                    # facecam mouth activity per cut (who speaks)
+    payoffs = {}                                       # brand -> clean payoff mp4 (the daily Top 4)
     for v2 in looks:
         if not todo:
             break
@@ -4433,6 +4505,8 @@ def render(clip, src=None, clean=False):
                     else:
                         cap_y = CAM_H if cam else 600
                         n_chunks = captions_ass(caps, ass, y=cap_y, cap=b.get("caption"))   # face/game seam
+                    ass_clean = d / f"captions_clean{sfx}.ass"   # the captions without the hook question (Top 4)
+                    shutil.copy(ass, ass_clean)
                     if loop and b.get("hook_text", True):      # owner 19. 11.: a question over the first 2 s
                         try:
                             ht = hook_text(clip, mtags, words0, orig, hpc.get("peak"))
@@ -4692,6 +4766,15 @@ def render(clip, src=None, clean=False):
                         except Exception as e:
                             log(f"  {b['key']}: loop seam failed ({str(e)[-120:]})")
                     made[b["key"]] = str(out)
+                    if loop and hook_t:                           # the clean payoff for the daily Top 4 (19. 11.)
+                        try:
+                            pf = top4_entry(orig, loop, peak, words0, cam, crop_w, game_h, crop_h, top, xlim, b, fan,
+                                            cam_h, cap_y, d, sfx,
+                                            grade=",".join(x for x in (b.get("grade"), FAN_LOOK if fan else "") if x),
+                                            wm=b.get("watermark") or BRAND)
+                            payoffs[b["key"]] = str(pf)
+                        except Exception as e:
+                            log(f"  {b['key']}: payoff clip failed ({str(e)[-120:]})")
                     plans[b["key"]] = dict(
                         total=total, main_end=total if loop and not outro else card_at if use_card else clip_total, card_at=card_at,
                         card=str(card) if use_card else None, heat_on=use_heat, heat=bool(heat_plan),
@@ -4794,6 +4877,7 @@ def render(clip, src=None, clean=False):
         "encoder": enc,
         "short": str(out),                   # bananas (or fanpage when the clip is only theirs)
         "shorts": shorts,                    # brand -> its own version (publikuj.py den --znacka)
+        "payoffs": {k: v for k, v in payoffs.items() if k in shorts},   # brand -> clean payoff (Top 4)
         "brands": list(shorts),
         "style": "fanpage" if "fanpage" in shorts else "bananas",
         "base": str(base) if clean else None,

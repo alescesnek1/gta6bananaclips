@@ -453,7 +453,9 @@ def text_spend(neurons=5):
     e["neurons"] = e.get("neurons", 0) + neurons
     BUDGET.write_text(json.dumps(b, indent=2), encoding="utf-8")
 
-def ask_text(system, prompt, max_tokens=120, temperature=0.4):
+TEXT_BIG = os.environ.get("CF_TEXT_BIG", "@cf/meta/llama-3.3-70b-instruct-fp8-fast")   # the funny labels (Top 4)
+
+def ask_text(system, prompt, max_tokens=120, temperature=0.4, model=None):
     """One Workers AI text call -> the answer (str), or None (no keys / budget / error). Never raises."""
     load_env()
     if not (os.environ.get("CF_ACCOUNT_ID") and os.environ.get("CF_API_TOKEN")) or os.environ.get("CF_TEXT") == "0":
@@ -461,7 +463,7 @@ def ask_text(system, prompt, max_tokens=120, temperature=0.4):
     if text_left() <= 0:
         log("  text model: today's budget used up")
         return None
-    url = f"https://api.cloudflare.com/client/v4/accounts/{os.environ['CF_ACCOUNT_ID']}/ai/run/{TEXT}"
+    url = f"https://api.cloudflare.com/client/v4/accounts/{os.environ['CF_ACCOUNT_ID']}/ai/run/{model or TEXT}"
     body = json.dumps({"messages": [{"role": "system", "content": system}, {"role": "user", "content": prompt}],
                        "max_tokens": max_tokens, "temperature": temperature}).encode()
     req = urllib.request.Request(url, data=body, method="POST", headers={
@@ -475,7 +477,7 @@ def ask_text(system, prompt, max_tokens=120, temperature=0.4):
     except OSError as e:
         log(f"  text model: {e}")
         return None
-    text_spend(5 + len(prompt) // 800)
+    text_spend((5 + len(prompt) // 800) * (8 if model else 1))
     ans = (res.get("result") or {}).get("response")
     return ans if isinstance(ans, str) else (json.dumps(ans) if ans is not None else None)
 
@@ -545,3 +547,15 @@ def stream_highlights(lines, max_n=3):
             if sc >= 80:
                 out.append((float(sec), sc / 100))
     return sorted(out, key=lambda x: -x[1])[:max_n]
+
+def clip_scene(grid_jpg):
+    """What happens in a short (a grid of its frames: the streamer's facecam on top, the game below), one plain
+    sentence for the Top 4 label (owner 19. 11.: the label must belong to the clip). None if unavailable."""
+    ans = vision(grid_jpg, "These are 3 frames in time order (left to right) from a GTA 6 stream clip: the streamer's "
+                           "webcam on top, the game below. In one short plain sentence say what happens in the game "
+                           "and how the streamer reacts. Only what you can see, no guessing. Ignore chat and "
+                           "interface text.", max_tokens=60)
+    if not ans:
+        return None
+    txt = (json.dumps(ans) if isinstance(ans, dict) else str(ans)).strip().strip('"')
+    return txt[:240] if len(txt) > 15 else None

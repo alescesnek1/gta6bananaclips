@@ -66,7 +66,7 @@ def moments():
         if "long" in f.name:
             continue
         for cid, rec in _load(f).items():
-            if cid.startswith(("top3_", "exp_")) or rec.get("platform") in ("top3", "exp"):
+            if cid.startswith(("top3_", "top4_", "exp_")) or rec.get("platform") in ("top3", "top4", "exp"):
                 continue                          # our own formats, not a streamer's moment
             if _live(cid, rec):
                 continue                          # live chat clip: no clip views, not comparable

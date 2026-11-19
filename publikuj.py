@@ -784,7 +784,7 @@ _league = {}
 
 def league_line(m):
     """'#2 in the Banana League this week' for a top 10 streamer (data line, bananas only)."""
-    if ZNACKA != "bananas" or not BRAND.get("league") or m.get("platform") == "top3":
+    if ZNACKA != "bananas" or not BRAND.get("league") or m.get("platform") in ("top3", "top4"):
         return ""
     try:
         if "rows" not in _league:
@@ -979,6 +979,13 @@ def caption(m, service):
 def _caption(m, service):
     if m.get("platform") == "exp":
         return caption_exp(m, service)
+    if m.get("platform") == "top4":                  # owner 19. 11.: the daily Top 4 funniest, credit all four
+        lines = [f"#{i} {' '.join(w.capitalize() for w in x.get('label', '').split())} - {home(x)}" for i, x in enumerate(m["items"], 1)]
+        brand_tag = "#gta6bananaclips" if ZNACKA == "bananas" else "#gta6fanpageclip"
+        if service in ("twitter", "threads"):
+            return "Top 4 funniest GTA 6 moments today\n\n" + "\n".join(lines) + "\n\n#GTA6"
+        return ("Top 4 funniest GTA 6 moments today. Which one got you? 😭\n\n" + "\n".join(lines)
+                + f"\n\n#gta6 {brand_tag} #gaming #gta6clips #funnymoments")
     if ZNACKA == "fanpage" and m.get("platform") != "top3":
         return caption_fanpage(m, service)
     if m.get("platform") == "top3":                  # daily Top 3: credit every streamer
@@ -1017,6 +1024,11 @@ def youtube_title(m):
     """
     if m.get("platform") == "top3":
         return "Top 3 GTA 6 Moments Today 🍌 #shorts"
+    if m.get("platform") == "top4":
+        who = ", ".join(dict.fromkeys(display_name(x) for x in reversed(m.get("items") or []) if x.get("channel")))
+        t = f"Top 4 Funniest GTA 6 Moments Today | {who}"
+        from cenzura import cenzura
+        return cenzura(t)[: 100 - len(" #shorts")] + " #shorts"
     if m.get("platform") == "exp":
         items = m.get("items") or [{"channel": "streamers"}]
         t = EXP_TITLES.get(m.get("concept"), "GTA 6 moments").format(s=items[0]["channel"], k=len(items))
@@ -1049,7 +1061,8 @@ def daily_quota(day):
     for d, k in sorted(ramp.items()):
         if date.fromisoformat(d) <= day:
             n = k
-    return n if n is not None else (min(ramp.values()) if ramp else 10)
+    n = n if n is not None else (min(ramp.values()) if ramp else 10)
+    return max(1, n - top4_reserve())                # owner 19. 11.: fewer normal shorts for the 2 daily Top 4
 
 def month_gb():
     """
@@ -1093,7 +1106,7 @@ def used_today(day, recs=None):
     """Posts of the quota today, both writers (the Top 3 and experiments are extras, never counted)."""
     recs = records() if recs is None else recs
     return sum(in_day(rec, day) for k, rec in recs.items()
-               if not k.startswith(("top3_", "exp_")) and not rec.get("nocount"))   # nocount: Aleš excluded it
+               if not k.startswith(("top3_", "top4_", "exp_")) and not rec.get("nocount"))   # nocount: Aleš excluded it
 
 def extra_score(day, src_cfg):
     """Score a clip needs to go out OVER the obligatory quota: the brand's extra_ramp (launch week
@@ -1110,7 +1123,7 @@ def remaining(day, recs=None):
 
 def max_per_day(day):
     top = BRAND.get("max_per_day") or load_json(HERE / "sources.json", {}).get("max_per_day", 10)
-    return max(daily_quota(day), top)
+    return max(daily_quota(day), top - top4_reserve())
 
 def remaining_max(day, recs=None):
     """Up to max_per_day (10) when the extra clips are strong enough (Aleš: 8 is a must, 10 if worth it)."""
@@ -1157,7 +1170,7 @@ def quota_dues(day, recs):
     """Due times of the day's quota posts (Top 3 and experiments are extras, not counted)."""
     out = []
     for k, rec in recs.items():
-        if not k.startswith(("top3_", "exp_")) and not rec.get("nocount") and in_day(rec, day):
+        if not k.startswith(("top3_", "top4_", "exp_")) and not rec.get("nocount") and in_day(rec, day):
             out.append(datetime.fromisoformat(rec["due"]))
     return out
 
@@ -1180,7 +1193,7 @@ def upgrade_note(blocked, recs, now, src):
             due = datetime.fromisoformat(rec.get("due") or "")
         except ValueError:
             continue
-        if not k.startswith(("top3_", "exp_")) and not rec.get("hot") and due > now and rec.get("score"):
+        if not k.startswith(("top3_", "top4_", "exp_")) and not rec.get("hot") and due > now and rec.get("score"):
             waiting.append((rec["score"], due, k))
     notes = []
     for m in sorted(blocked, key=lambda m: -(m.get("score") or 0))[:3]:
@@ -1217,7 +1230,7 @@ ACTION_MIN = 0.5
 
 def action_gate(m, src):
     """'' = may go out, else the reason it may not."""
-    if m.get("platform") in ("top3", "exp") or m.get("layout") == "person":
+    if m.get("platform") in ("top3", "top4", "exp") or m.get("layout") == "person":
         return ""
     if exceptional(m, src) or (m.get("cluster") or 1) >= max(10, (m.get("viewers") or 0) / 5000) or outburst(m, src):
         return ""
@@ -1277,7 +1290,7 @@ def strong_clip(m, src):
     """TikTok / YouTube (0 views on every post, 18. 11.): only a top streamer's clip or a clip over hot_score."""
     top = {x.lower() for x in src.get("star_tier1", [])}
     return (str(m.get("channel") or "").lower() in top or (m.get("score") or 0) >= src.get("hot_score", 2000) or exceptional(m, src)
-            or m.get("platform") == "top3")
+            or m.get("platform") in ("top3", "top4"))
 
 def exceptional(m, src):
     """A clip big enough to break the pace and the evening reserve (never max_per_day): score >= 4 x
@@ -1553,6 +1566,9 @@ def cmd_den(a):
         if not FAST and load_json(CHANNELS, []):
             top3_only(a, day, now, final=p["later"] == 0)   # the day's last stretch: the Top 3 may be due
             exp_post(a, day, now)                    # experiment: own slot, outside the quota
+        if load_json(CHANNELS, []):
+            top4_pool_collect(a, day, now)           # unposted good clips feed the Top 4 too
+            top4_post(a, day, now)                   # the daily Top 4 funniest (owner 19. 11.), at its own times
         return
     load_env()
     need("NETLIFY_AUTH_TOKEN", "NETLIFY_SITE_ID", "MEDIA_BASE_URL")
@@ -1583,6 +1599,12 @@ def cmd_den(a):
             add_fail(m["id"])
             continue
         files[rel] = src
+        if m.get("remote") and m.get(f"payoff_{ZNACKA}"):      # YouTube / live inbox: already uploaded by the PC
+            m["_payoff_url"] = f"{m['base']}/{m[f'payoff_{ZNACKA}']}"
+        po = (m.get("payoffs") or {}).get(ZNACKA)           # the clean payoff for the daily Top 4 (19. 11.)
+        if po and not m.get("remote") and Path(po).exists():
+            m["_payoff_rel"] = f"{day:%Y%m%d}/{safe_name(m['id'])}_payoff.mp4"
+            files[m["_payoff_rel"]] = Path(po)
         plan.append((m, due, rel))
     # the daily Top 3 (our own curated format): in the day's last stretch, once the minimum is met
     try:
@@ -1663,7 +1685,10 @@ def cmd_den(a):
                "channel": m.get("channel"), "platform": m.get("platform"), "score": round(m.get("score") or 0, 1),
                "hot": bool(m.get("hot")), "rating": m.get("rating"), "views": m.get("views"),   # Banana League (liga.py)
                "golden": bool(m.get("golden")), "title": title_line(m),
-               "video_id": m.get("video_id"), "vod_offset": m.get("vod_offset"), "created": m.get("created")}
+               "video_id": m.get("video_id"), "vod_offset": m.get("vod_offset"), "created": m.get("created"),
+               "payoff": f"{base}/{m['_payoff_rel']}" if m.get("_payoff_rel") else m.get("_payoff_url"),
+               "funny": (m.get("tag_scores") or {}).get("funny"), "tags": m.get("tags"),
+               "quote": (m.get("quote") or "")[:160]}
         if is_live(m):                                     # live: the stream's audience is not clip views
             rec.update(live=True, viewers=m.get("viewers"), spike_z=m.get("spike_z"))
         if slot_of.get(m["id"]):
@@ -1677,6 +1702,8 @@ def cmd_den(a):
         push_records(target)                               # on origin before the next clip (under the lock)
     if not FAST:
         exp_post(a, day, now)                        # experiment: own slot, outside the quota, after the classics
+    top4_pool_collect(a, day, now)                   # unposted good clips feed the Top 4 too
+    top4_post(a, day, now)                           # the daily Top 4 funniest (owner 19. 11.), at its own times
     # make failures visible: a red run = an e-mail from GitHub
     if failed:
         print(f"::warning::Buffer: {failed} postu se nepovedlo, {ok} ok")
@@ -1769,6 +1796,360 @@ def exp_post(a, day, now):
     except Exception as e:                            # an experiment never costs a classic post
         print(f"::warning::exp: {str(e)[-200:]}")
 
+# -----------------------------------------------------------------------------
+# Top 4 funniest (owner 19. 11.): twice a day per channel, from the channel's OWN posted shorts (the two
+# accounts never share a clip). #4 -> #1, least funny first; each entry is the short's clean payoff
+# (klipuj.payoff_clip: a moment before the punchline, the punchline, a bit after), hard cut to the next.
+# A ranking list fills in on the game band: "4. <a few funny words>" appears the moment its clip starts and
+# stays, then 3, 2, 1. No banana score card, no outro: only the brand's Follow card at the end.
+
+TOP4_N = 4
+TOP4_COL = {1: "00D7FF", 2: "E0C8B4", 3: "3F8FD9", 4: "FFFFFF"}   # owner 19. 11.: medal colours, ASS &HBBGGRR
+                                                                  # (gold #FFD700, silver #B4C8E0, bronze #D98F3F, white)
+TOP4_FALLBACK = {"funny": ["CAN'T STOP LAUGHING", "HE LOST IT", "CHAT IS CRYING"],
+                 "chase": ["COPS ON HIM", "COPS CAMPING", "FULL SEND ESCAPE"],
+                 "crash": ["TOTAL WRECK", "WORST DRIVER EVER", "THAT CRASH THOUGH"],
+                 "rage": ["RAGE MODE", "PURE RAGE", "CONTROLLER IN DANGER"],
+                 "glitch": ["GTA BROKE", "PHYSICS LEFT", "WHAT WAS THAT"],
+                 "": ["NO WAY", "DIABOLICAL", "PURE CHAOS", "ABSOLUTE CINEMA", "NOT AGAIN"]}
+TOP4_SYSTEM = ("You are the funniest editor of a GTA 6 streamer clip page. You write the label of one entry in a "
+               "'funniest moments' ranking on a vertical video: 2 to 4 words in capitals that name what happens in "
+               "THIS clip with a joke or a twist, the way a friend would sum it up. Good: 'PARKING LIKE A PRO' "
+               "(crashed while parking), 'COPS SAID NOT TODAY', 'THAT CAR HAD FAMILY', 'GRAVITY SAID NO'. Bad: generic "
+               "words that fit any clip ('FUNNY MOMENT', 'NO WAY', 'CHAOS'), anything you cannot see or hear in the "
+               "clip.")
+TOP4_STOP = {"THE", "AND", "THAT", "THIS", "WITH", "FROM", "INTO", "WHAT", "HAVE", "JUST", "LIKE", "WHEN", "THEY",
+             "YOUR", "GTA", "MOMENT", "FUNNY", "CLIP", "STREAMER", "GAME"}
+
+def top4_reserve():
+    """Normal shorts give way to the Top 4 (owner 19. 11.): one fewer per Top 4 slot of the day."""
+    return len(BRAND.get("rank_times") or []) if BRAND.get("rank4") else 0
+
+def top4_slots(day):
+    """The brand's Top 4 times of the publishing day (brands.json rank_times, Prague), never on :00 / :30."""
+    out = []
+    for hhmm in BRAND.get("rank_times") or []:
+        t = datetime.strptime(hhmm, "%H:%M").time()
+        out.append(off_grid(datetime.combine(day + timedelta(days=1 if t.hour < 12 else 0), t, TZ)))
+    return out
+
+def top4_grid(mp4):
+    """3 frames of the payoff (start, middle, end) side by side for the vision model -> jpg path or None."""
+    out = Path(mp4).with_suffix(".grid.jpg")
+    r = subprocess.run(["ffmpeg", "-nostdin", "-y", "-v", "error", "-i", str(mp4), "-vf",
+                        "fps=3/5,scale=360:-1,tile=3x1", "-frames:v", "1", "-q:v", "3", str(out)],
+                       capture_output=True, text=True, timeout=120)
+    return out if not r.returncode and out.exists() else None
+
+def top4_grounded(lab, facts):
+    """Does the label belong to the clip? A content word of it (or its first 4 letters) is in the facts."""
+    words = [w for w in re.findall(r"[A-Z]+", lab) if len(w) >= 3 and w not in TOP4_STOP]
+    f = facts.upper()
+    return any(w in f or (len(w) >= 5 and w[:4] in f) for w in words)
+
+def top4_label(rec, mp4=None, taken=()):
+    """2-4 funny words for the list (owner 19. 11.: 'vtipnych par slov', 'musi davat smysl, byt vtipny a souviset
+    s klipem'): the facts of THIS clip (what the vision model sees in its frames, the streamer's own words, the
+    clip title) -> the bigger text model writes the label -> kept only when it is short, clean, not repeated in
+    this video and grounded in those facts (a content word of it is in them); else a template from its tags."""
+    from cenzura import cenzura
+    facts = []
+    try:
+        import nahled_ai
+        nahled_ai.load_env()
+        grid = top4_grid(mp4) if mp4 else None
+        scene = nahled_ai.clip_scene(grid) if grid else None
+        if grid:
+            grid.unlink(missing_ok=True)
+        if scene:
+            facts.append(f"What you see: {scene}")
+        if quote_of(rec):
+            facts.append(f"What the streamer says: \"{quote_of(rec)[:160]}\"")
+        if rec.get("title"):
+            facts.append(f"Clip title: {rec['title']}")
+        if rec.get("tags"):
+            facts.append(f"Moment type: {', '.join(rec['tags'])}")
+        if not (scene or quote_of(rec)):
+            log("top4: nothing known about the clip, template label")
+        else:
+            ask = ("\n".join(facts) + "\n\nWrite the label: 2 to 4 words, capitals, funny, about exactly this clip. "
+                   "No emoji, no quotes, no swear words, no streamer name."
+                   + (f" Must differ from: {', '.join(taken)}." if taken else "") + " Reply with the label only.")
+            for temp in (0.7, 0.4):
+                ans = nahled_ai.ask_text(TOP4_SYSTEM, ask, max_tokens=16, temperature=temp, model=nahled_ai.TEXT_BIG)
+                lab = re.sub(r"\s+", " ", ans.strip().splitlines()[0] if ans and ans.strip() else "").strip(" \"'.!").upper()
+                ok = (re.fullmatch(r"[A-Z0-9' ?!-]{3,24}", lab) and 2 <= len(lab.split()) <= 4 and cenzura(lab) == lab
+                      and display_name(rec).upper() not in lab and lab not in taken)
+                if ok and top4_grounded(lab, " ".join(facts)):
+                    return lab
+                log(f"top4: label '{lab}' rejected ({'not about the clip' if ok else 'form'})")
+    except Exception as e:
+        log(f"top4: label (AI) failed ({str(e)[-80:]})")
+    pool = [x for t in (rec.get("tags") or []) if t in TOP4_FALLBACK for x in TOP4_FALLBACK[t]] + TOP4_FALLBACK[""]
+    return next((x for x in pool if x not in taken), "NO WAY")      # never the same label twice in one video
+
+def top4_owner(key, brands):
+    """A clip published on BOTH accounts goes into the Top 4 of one of them only (owner 19. 11.: the channels
+    never take each other's clips): a fixed draw from the clip id."""
+    return sorted(brands)[int(hashlib.md5(key.encode()).hexdigest(), 16) % len(brands)]
+
+def top4_pick(recs, now, others=None):
+    """The brand's best clips (top4_strength) of the last TOP4_WINDOW_H h with a clean payoff, none in an earlier
+    Top 4 of either account and none that belongs to the other account's Top 4 (top4_owner), best first: [(key, rec)] (top4_post takes
+    the first 4 that pass the nudity check). others = {brand: its records} of the other accounts."""
+    others = others or {}
+    used = {i for rr in [recs, *others.values()] for k, r in rr.items() if k.startswith("top4_")
+            for i in (r.get("items") or [])}
+    shared = {k: [ZNACKA] + [z for z, rr in others.items() if k in rr] for k in recs}
+    used |= {k for k, zs in shared.items() if len(zs) > 1 and top4_owner(k, zs) != ZNACKA}
+    src = load_json(HERE / "sources.json", {})
+    cand = []
+    for k, r in recs.items():
+        if k.startswith(("top3_", "top4_", "exp_")) or k in used or r.get("deleted") or not r.get("payoff"):
+            continue
+        try:
+            t = datetime.fromisoformat(r.get("due") or "")
+        except ValueError:
+            continue
+        if not now - timedelta(hours=TOP4_WINDOW_H) <= t <= now:   # already out: the Top 4 never spoils a short
+            continue
+        strength = top4_strength(r, src)
+        if strength is not None:
+            cand.append((strength, k, r))
+    cand.sort(key=lambda x: -x[0])
+    return [(k, r) for _, k, r in cand]
+
+TOP4_WINDOW_H = 36                                    # recycling is fine (owner 19. 11.), but only the best
+
+def top4_strength(r, src):
+    """Owner 19. 11.: 'klidne at je recykluje ale jen ty nejlepsi': only a star's clip (star_tier1, e.g.
+    IShowSpeed), a viral one (score >= good_score) or a clearly funny one (funny >= 0.6) gets in; ranked by
+    funny 50 %, virality 30 % (score / hot_score, capped) and a star bonus 20 %. None = not good enough."""
+    star = str(r.get("channel") or "").lower() in {x.lower() for x in src.get("star_tier1", [])}
+    funny, score = r.get("funny") or 0, r.get("score") or 0
+    if not (star or score >= src.get("good_score", 1000) or funny >= 0.6):
+        return None
+    return 0.5 * funny + 0.3 * min(1.0, score / max(1, src.get("hot_score", 2000))) + (0.2 if star else 0)
+
+def top4_nudity(mp4):
+    """True = bare breasts / genitals in the payoff (19. 11.: a strip club short with nudity was published) ->
+    never in a Top 4. None (no vision) counts as not checked = not allowed either. Two full-width frames of the
+    game band side by side: a tiny 3-frame grid with the facecam missed the nudity in a test."""
+    import nahled_ai
+    grid = Path(mp4).with_suffix(".nude.jpg")
+    r = subprocess.run(["ffmpeg", "-nostdin", "-y", "-v", "error", "-i", str(mp4), "-vf",
+                        "crop=1080:1280:0:640,fps=2/5,scale=540:-1,tile=2x1", "-frames:v", "1", str(grid)],
+                       capture_output=True, text=True, timeout=120)
+    if r.returncode or not grid.exists():
+        return None
+    ans = nahled_ai.vision(grid, "Two frames from a video game. Is there nudity in either (bare breasts, nipples, "
+                                 "buttocks, genitals)? Answer yes or no.", max_tokens=5)
+    grid.unlink(missing_ok=True)
+    if ans is None:
+        return None
+    return str(ans).strip().lower().startswith("yes")
+
+def top4_ass_time(s):
+    return f"{int(s // 3600)}:{int(s % 3600 // 60):02d}:{s % 60:05.2f}"
+
+def make_top4(items, out, znacka=None):
+    """items = [(rank, label, local payoff mp4)] in play order (#4 first) -> out mp4, or raises."""
+    durs = []
+    for _, _, f in items:
+        probe = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration:stream=codec_type",
+                                "-of", "json", str(f)], capture_output=True, text=True, timeout=60)
+        info = json.loads(probe.stdout or "{}")
+        if "audio" not in [x.get("codec_type") for x in info.get("streams", [])]:
+            raise RuntimeError(f"{Path(f).name} has no audio")
+        durs.append(float(info.get("format", {}).get("duration") or 0))
+    starts = [sum(durs[:i]) for i in range(len(durs))]
+    total = sum(durs)
+    if not 8 <= total <= 60:
+        raise RuntimeError(f"{total:.1f} s is outside 8-60 s")
+    y0, lh = 110, 104                                 # owner 19. 11.: up in the facecam band (where the head is),
+                                                      # above the seam captions; 1 on top, 4 at the bottom
+    ass = out.with_suffix(".ass")
+    head = ("[Script Info]\nScriptType: v4.00+\nPlayResX: 1080\nPlayResY: 1920\nWrapStyle: 2\n\n[V4+ Styles]\n"
+            "Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, "
+            "Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, "
+            "MarginL, MarginR, MarginV, Encoding\n"
+            f"Style: R,Anton,84,&H00FFFFFF,&H00FFFFFF,&H00000000,&H90000000,0,0,0,0,100,100,1,0,1,6,2,4,0,0,0,1\n\n"
+            "[Events]\nFormat: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\n")
+    ev = []
+    for (rank, label, _), t0 in zip(items, starts):  # owner 19. 11.: the numbers 1-4 are there from the start,
+        y = y0 + (rank - 1) * lh                         # only the label appears when its clip starts
+        ev.append(f"Dialogue: 0,{top4_ass_time(0)},{top4_ass_time(total + 1)},R,,0,0,0,,"
+                  f"{{\\pos(44,{y})\\c&H{TOP4_COL[rank]}&}}{rank}.")
+        ev.append(f"Dialogue: 0,{top4_ass_time(t0)},{top4_ass_time(total + 1)},R,,0,0,0,,"
+                  f"{{\\pos(112,{y})\\fad(90,0)\\fscx60\\fscy60\\t(0,140,\\fscx100\\fscy100)}}"
+                  f"{{\\c&H{TOP4_COL[rank]}&}}{label}")
+    ass.write_text(head + "\n".join(ev) + "\n", encoding="utf-8")
+    follow = HERE / "assets" / "follow" / f"follow_{znacka or ZNACKA}.webm"
+    cmd = ["ffmpeg", "-nostdin", "-y", "-v", "error"]
+    for _, _, f in items:
+        cmd += ["-i", str(f)]
+    n = len(items)
+    flt = "".join(f"[{i}:v]fps=30,scale=1080:1920,setsar=1,format=yuv420p[v{i}];" for i in range(n))
+    flt += "".join(f"[v{i}][{i}:a]" for i in range(n)) + f"concat=n={n}:v=1:a=1[cv][a];"
+    esc = lambda p: str(p).replace("\\", "/").replace(":", "\\:")
+    flt += f"[cv]subtitles='{esc(ass)}':fontsdir='{esc(HERE / 'fonts' / 'cap')}'"
+    if follow.exists():                               # the Follow card over the last ~2.2 s (alpha webm)
+        cmd += ["-c:v", "libvpx-vp9", "-itsoffset", f"{max(0.0, total - 2.25):.3f}", "-i", str(follow)]
+        flt += f"[sv];[sv][{n}:v]overlay=0:0:eof_action=pass[v]"
+    else:
+        flt += "[v]"
+    cmd += ["-filter_complex", flt, "-map", "[v]", "-map", "[a]", "-t", f"{total:.3f}", "-c:v", "libx264",
+            "-preset", "veryfast", "-crf", "21", "-maxrate", "4M", "-bufsize", "8M", "-c:a", "aac", "-b:a", "160k",
+            "-movflags", "+faststart", str(out)]
+    r = subprocess.run(cmd, capture_output=True, text=True, timeout=900)
+    ass.unlink(missing_ok=True)
+    if r.returncode or not out.exists():
+        raise RuntimeError(f"ffmpeg failed {r.stderr[-300:]}")
+    return out, starts[-1] + 1.0                     # cover: #1 has just started, the whole list is on screen
+
+TOP4_POOL = HERE / "top4_pool.json"           # "<brand>:<clip id>" -> a rendered clip that did NOT go out as a short
+
+def top4_pool_collect(a, day, now):
+    """Owner 19. 11.: the Top 4 is not only a rerun of the channel's own shorts - every good rendered clip of
+    this run that was not posted (over the quota, not picked) keeps its clean payoff for the Top 4: uploaded
+    and listed in top4_pool.json (the runner's out/ is gone after the run). Only clips that pass the action
+    gate (never a boring one), only the brand's own payoff (render gave each clip its brand). Never raises."""
+    if FAST or not (BRAND.get("rank4") and BRAND.get("rank_times")):
+        return
+    try:
+        pool = load_json(TOP4_POOL, {})
+        src = load_json(HERE / "sources.json", {})
+        files, add = {}, {}
+        for m in candidates()[:30]:
+            key = f"{ZNACKA}:{m.get('id')}"
+            if key in pool or action_gate(m, src):
+                continue
+            if m.get("remote"):                       # inbox (YouTube PC / live): the payoff is online already
+                if not m.get(f"payoff_{ZNACKA}"):
+                    continue
+                rel = f"{m['base']}/{m[f'payoff_{ZNACKA}']}"
+            else:
+                po = (m.get("payoffs") or {}).get(ZNACKA)
+                if not po or not Path(po).exists():
+                    continue
+                rel = f"{day:%Y%m%d}/top4pool_{safe_name(m['id'])}_{ZNACKA}.mp4"
+                files[rel] = Path(po)
+            add[key] = {"id": m["id"], "due": now.isoformat(), "payoff": rel, "channel": m.get("channel"),
+                        "platform": m.get("platform"), "score": round(m.get("score") or 0, 1),
+                        "funny": (m.get("tag_scores") or {}).get("funny"), "tags": m.get("tags"),
+                        "quote": (m.get("quote") or "")[:160], "title": title_line(m), "pool": True}
+        if not add:
+            return
+        log(f"top4 pool: +{len(add)} unposted clip(s) of {ZNACKA}")
+        if a.zkouska:
+            return
+        if files:
+            load_env()
+            base = inbox_deploy(files, b"[]", MEDIA_TITLE)
+            for v in add.values():
+                if not v["payoff"].startswith("http"):
+                    v["payoff"] = f"{base}/{v['payoff']}"
+        pool = load_json(TOP4_POOL, {})
+        old = (now - timedelta(days=3)).isoformat()
+        pool = {k: v for k, v in pool.items() if (v.get("due") or "") >= old}
+        pool.update(add)
+        save_json(TOP4_POOL, pool)
+        push_records(TOP4_POOL)
+    except Exception as e:
+        print(f"::warning::Top 4 pool: {str(e)[-200:]}")
+
+def top4_sources(znacka, recs):
+    """What a brand's Top 4 may draw from: its own published shorts (+ its Top 4 records) and its pool clips."""
+    pool = {v["id"]: v for k, v in load_json(TOP4_POOL, {}).items() if k.startswith(f"{znacka}:") and v.get("id")}
+    return {**pool, **recs}
+
+def top4_post(a, day, now):
+    """Post the due Top 4 of the publishing day (at most one per run). Never raises: a Top 4 never costs the
+    classics."""
+    try:
+        if not (BRAND.get("rank4") and BRAND.get("rank_times")) or budget_level() >= 2:
+            return
+        recs = records()
+        due_slot = None
+        for i, slot in enumerate(top4_slots(day)):
+            key = f"top4_{day}_{i}"
+            if key not in recs and slot - timedelta(minutes=45) <= now <= slot + timedelta(hours=3):
+                due_slot = (key, slot)
+                break
+        if not due_slot:
+            return
+        key, slot = due_slot
+        stage = OUT / "_media"
+        stage.mkdir(parents=True, exist_ok=True)
+        chosen, files = [], {}                       # funniest first; nudity (or no check possible) = skipped
+        others = {z: top4_sources(z, records(z)) for z, v in brands_cfg().items() if isinstance(v, dict) and z != ZNACKA}
+        for k, r in top4_pick(top4_sources(ZNACKA, recs), now, others):
+            if len(chosen) == TOP4_N:
+                break
+            local = stage / f"{key}_{len(chosen)}.mp4"
+            try:
+                local.write_bytes(http(r["payoff"], timeout=300)[1])
+            except Exception as e:
+                log(f"top4: {k} payoff unavailable ({str(e)[-80:]})")
+                continue
+            nude = top4_nudity(local)
+            if nude is not False:
+                log(f"top4: {k} skipped ({'nudity' if nude else 'nudity not checked'})")
+                continue
+            chosen.append((k, r))
+            files[k] = local
+        if len(chosen) < TOP4_N:
+            log(f"top4 {key}: only {len(chosen)} good clean unused clips with a payoff, not yet")
+            return
+        chosen.reverse()                             # play order: #4 (least funny of the four) first, #1 last
+        items = []
+        for i, (k, r) in enumerate(chosen):
+            items.append((TOP4_N - i, top4_label(r, files[k], [x[1] for x in items]), files[k]))
+        out, cover = make_top4(items, stage / f"{key}.mp4")
+        due = off_grid(max(slot, (now_tz() + timedelta(minutes=20)).replace(second=0, microsecond=0)))
+        m = {"id": key, "platform": "top4", "channel": "top4", "category": "Grand Theft Auto VI", "peak": cover,
+             "items": [{"channel": r.get("channel"), "platform": r.get("platform"), "label": lab}
+                       for (k, r), (_, lab, _) in zip(reversed(chosen), reversed(items))]}
+        names = " | ".join(f"{rk}. {lab} ({r.get('channel')})" for (rk, lab, _), (k, r) in zip(items, chosen))
+        log(f"top4 {key}: {names} -> {due:%d.%m %H:%M}")
+        if a.zkouska:
+            log(f"top4: test only, video {out}")
+            return out
+        load_env()
+        rel = f"{day:%Y%m%d}/{key}.mp4"
+        base = inbox_deploy({rel: out}, b"[]", MEDIA_TITLE)
+        url = f"{base}/{rel}"
+        if not is_public(url):
+            print("::warning::Top 4: not reachable after deploy")
+            return
+        chans = load_json(CHANNELS, [])
+        caps = load_json(HERE / "sources.json", {}).get("caps") or {}
+        used = day_service_counts(recs, chans, day)
+        posts = {}
+        for ch in chans:
+            service = ch["service"].lower()
+            if used.get(service, 0) >= caps.get(service, 99):
+                log(f"  top4 {service}: daily cap reached, skipped")
+                continue
+            try:
+                posts[ch["id"]] = create_post(post_input(ch, m, url, fresh_due(net_due(due, day, service)), not a.ostre),
+                                              ch.get("key", "BUFFER_API_KEY"))
+                log(f"  top4 {service}: ok")
+            except Exception as e:
+                log(f"  top4 {service}: FAILED {e}")
+        if not posts:
+            print("::warning::Top 4: no Buffer post succeeded")
+            return
+        own = load_json(PUBLISHED, {})
+        own[key] = {"url": url, "path": rel, "due": due.isoformat(), "draft": not a.ostre, "posts": posts,
+                    "channel": "top4", "platform": "top4", "items": [k for k, _ in chosen],
+                    "labels": [x[1] for x in items], "mb": round(out.stat().st_size / 1e6, 1)}
+        save_json(PUBLISHED, own)
+        push_records(PUBLISHED)
+        return out
+    except Exception as e:
+        print(f"::warning::Top 4: {str(e)[-200:]}")
+
 TOP3_FONT = HERE / "fonts" / "cap" / "montserrat-900.ttf"
 
 def top3_only(a, day, now, final=True):
@@ -1829,7 +2210,7 @@ def make_top3(day, done, plan, stage, final=True):
         return None
     items = []                                       # (score, meta-ish, local file or url, due)
     for k, rec in done.items():
-        if (not k.startswith(("top3_", "exp_")) and in_day(rec, day) and rec.get("url") and rec.get("channel")
+        if (not k.startswith(("top3_", "top4_", "exp_")) and in_day(rec, day) and rec.get("url") and rec.get("channel")
                 and rec.get("platform") != "youtube"):
             items.append((rec.get("score") or 0, {"channel": rec.get("channel") or "?", "platform": rec.get("platform")},
                           rec["url"], datetime.fromisoformat(rec["due"])))
@@ -1969,6 +2350,11 @@ def cmd_schranka(a):
             rel = f"yt/{safe_name(m['id'])}.mp4" if z == "bananas" else f"yt/{safe_name(m['id'])}_{z}.mp4"
             files[rel] = Path(short)
             item["file" if z == "bananas" else f"file_{z}"] = rel
+            po = (m.get("payoffs") or {}).get(z)          # the clean payoff for the daily Top 4 (19. 11.:
+            if po and Path(po).exists():                  # IShowSpeed & co. come from here, never in a Top 4 before)
+                prel = f"yt/{safe_name(m['id'])}_payoff{'' if z == 'bananas' else '_' + z}.mp4"
+                files[prel] = Path(po)
+                item[f"payoff_{z}"] = prel
         if any(k == "file" or k.startswith("file_") for k in item):
             # long-form: the 16:9 720p cut of the moment + its pool row (GitHub can't fetch YouTube)
             try:

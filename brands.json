@@ -47,7 +47,10 @@
       "2026-11-26": 5000
     },
     "max_per_day": 10,
-    "top3": true,
+    "top3": false,
+    "_rank4": "Top 4 funniest (majitel 19. 11.): 2x denne z vlastnich shortu kanalu, #4 -> #1, barvy medaili, seznam v pasu facecamu, na konci jen Follow; kazdy Top 4 ubere 1 normalni short z kvoty.",
+    "rank4": true,
+    "rank_times": ["19:40", "23:20"],
     "long_calendar": {
       "_napoveda": "Ales 18. 11.: long-form se dela HNED, jak je zasoba klipu (zadny den v tydnu, zadny den predem). Beh kazde 2 h vezme dalsi serii z rotace; ma-li pool na silny dil (long_target_min po strizich, nikdy pod 5 min), postavi ho a hned posle e-mail, jinak tise preskoci. Prvni dil kanalu = first (kdyz ma material). Nejvys 1 dil za long_min_gap_h hodin, po chybe dalsi pokus za long_retry_h.",
       "rotation": [
@@ -154,6 +157,8 @@
     },
     "max_per_day": 10,
     "top3": false,
+    "rank4": true,
+    "rank_times": ["20:15", "23:45"],
     "music_volume": 0.11,
     "long_calendar": {
       "_napoveda": "Ales 18. 11.: long-form se dela HNED, jak je zasoba klipu (zadny den v tydnu, zadny den predem). Beh kazde 2 h vezme dalsi serii z rotace; ma-li pool na silny dil (long_target_min po strizich, nikdy pod 5 min), postavi ho a hned posle e-mail, jinak tise preskoci. Prvni dil kanalu = first (kdyz ma material). Nejvys 1 dil za long_min_gap_h hodin, po chybe dalsi pokus za long_retry_h. Fanpage = THE STORY (bez poradi): noc jednoho streamera, pak same-mission kdyz je multi-POV (pozice same_mission_slot v rotaci) jinak After Dark, pak After Dark.",

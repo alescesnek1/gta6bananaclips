@@ -306,7 +306,7 @@ class JustInTimeDay(unittest.TestCase):
         for brand, mx, mn in ((z, B[z]["max_per_day"], QUOTA(z)) for z in ("bananas", "fanpage")):
             P.set_brand(brand)
             recs = sim.records(brand)
-            main, live = (json.loads(f.read_text()) if f.exists() else {} for f in P.rec_files())
+            main, live = (json.loads(f.read_text(encoding="utf-8")) if f.exists() else {} for f in P.rec_files())
             self.assertFalse(set(main) & set(live), f"{brand}: a clip in both record files")
             used = P.used_today(d, recs)
             self.assertLessEqual(used, mx, f"{brand}: max_per_day exceeded")
@@ -718,6 +718,77 @@ class GitLock(unittest.TestCase):
                 self.assertFalse(P.git_cas(build("run-b"), "b", cwd=self.b))
             real("fetch", "-q", "origin", "main", cwd=self.a)
             self.assertEqual(json.loads(real("show", f"origin/main:{P.LOCK_FILE}", cwd=self.a)[1])["kdo"], "run-a")
+
+
+class Top4(unittest.TestCase):
+    """The daily Top 4 funniest (19. 11.): own shorts with a payoff, funniest first, never a clip twice,
+    labels that belong to the clip, and it costs one normal short per slot."""
+    def rec(self, due, funny, payoff=True):
+        return {"due": due.isoformat(), "funny": funny, "score": 1, "channel": "xqc",
+                "payoff": "https://x/p.mp4" if payoff else None}
+
+    def test_pick_order_and_no_repeat(self):
+        now = datetime(2026, 11, 19, 20, 0, tzinfo=P.TZ)
+        recs = {f"c{i}": self.rec(now - timedelta(hours=i + 1), i / 10) for i in range(6)}
+        recs["old"] = self.rec(now - timedelta(hours=40), 0.99)           # outside the window
+        recs["future"] = self.rec(now + timedelta(hours=1), 0.98)         # not out yet: never spoiled
+        recs["nopay"] = self.rec(now - timedelta(hours=1), 0.97, payoff=False)
+        recs["top4_x"] = {"due": now.isoformat(), "items": ["c5"]}        # already in a Top 4
+        self.assertEqual([k for k, _ in P.top4_pick(recs, now)], ["c4", "c3", "c2", "c1", "c0"])
+
+    def test_only_the_best(self):
+        now = datetime(2026, 11, 19, 20, 0, tzinfo=P.TZ)
+        recs = {"meh": {**self.rec(now - timedelta(hours=1), 0.3), "channel": "nobody123"},
+                "funny": {**self.rec(now - timedelta(hours=1), 0.8), "channel": "nobody123"},
+                "viral": {**self.rec(now - timedelta(hours=1), 0.1), "channel": "nobody123", "score": 5000},
+                "speed": {**self.rec(now - timedelta(hours=1), 0.3), "channel": "ishowspeed"}}
+        self.assertEqual({k for k, _ in P.top4_pick(recs, now)}, {"funny", "viral", "speed"})
+
+    def test_accounts_never_share_a_clip(self):
+        now = datetime(2026, 11, 19, 20, 0, tzinfo=P.TZ)
+        mine = {f"s{i}": self.rec(now - timedelta(hours=1), 0.5) for i in range(20)}     # all on both accounts
+        mine["solo"] = self.rec(now - timedelta(hours=1), 0.1)
+        other = {k: dict(v) for k, v in mine.items() if k != "solo"}
+        other["top4_y"] = {"due": now.isoformat(), "items": ["solo"]}                  # the other used it: never
+        with mock.patch.object(P, "ZNACKA", "bananas"):
+            a = {k for k, _ in P.top4_pick(mine, now, {"fanpage": other})}
+        with mock.patch.object(P, "ZNACKA", "fanpage"):
+            b = {k for k, _ in P.top4_pick(other, now, {"bananas": mine})}
+        self.assertFalse(a & b)
+        self.assertEqual(a | b, set(other) - {"top4_y"})
+        self.assertNotIn("solo", a)
+
+    def test_pool_feeds_only_its_brand(self):
+        now = datetime(2026, 11, 19, 20, 0, tzinfo=P.TZ)
+        with tempfile.TemporaryDirectory() as t:
+            pool = Path(t) / "top4_pool.json"
+            pool.write_text(json.dumps({"bananas:p1": {**self.rec(now - timedelta(hours=2), 0.9), "id": "p1"},
+                                        "fanpage:p2": {**self.rec(now - timedelta(hours=2), 0.9), "id": "p2"}}))
+            with mock.patch.object(P, "TOP4_POOL", pool):
+                src = P.top4_sources("bananas", {"own": self.rec(now - timedelta(hours=1), 0.2)})
+        self.assertEqual(set(src), {"p1", "own"})
+
+    def test_label_grounded(self):
+        facts = "What you see: a car crashes into a police car. Clip title: xQc CRASHES In GTA 6"
+        self.assertTrue(P.top4_grounded("COPS CAR HAD FAMILY", facts))
+        self.assertTrue(P.top4_grounded("CRASH TEST DUMMY", facts))
+        self.assertFalse(P.top4_grounded("PRIVATE DANCE SHOCKER", facts))
+        self.assertFalse(P.top4_grounded("FUNNY MOMENT", facts))
+
+    def test_template_never_repeats(self):
+        with mock.patch.dict(os.environ, {"CF_TEXT": "0", "CF_VISION": "0"}):
+            labs = []
+            for _ in range(4):
+                labs.append(P.top4_label({"channel": "xqc", "tags": ["funny"]}, None, labs))
+        self.assertEqual(len(set(labs)), 4)
+
+    def test_reserve_cuts_the_quota(self):
+        day = date(2026, 11, 20)
+        with mock.patch.object(P, "BRAND", {"ramp": {"2026-11-19": 8}}):
+            plain = P.daily_quota(day)
+        with mock.patch.object(P, "BRAND", {"ramp": {"2026-11-19": 8}, "rank4": True, "rank_times": ["19:40", "23:20"]}):
+            self.assertEqual(P.daily_quota(day), plain - 2)
+            self.assertEqual([t.strftime("%d %H:%M") for t in P.top4_slots(day)], ["20 19:40", "20 23:20"])
 
 
 if __name__ == "__main__":
