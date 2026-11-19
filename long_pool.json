@@ -15128,5 +15128,19 @@
     "vod_offset": 32502,
     "cluster": 1,
     "added": 1795118617
+  },
+  "twitch_EncouragingJazzyPuffinFloof-pMJ4ADijTr9wyrJ8": {
+    "id": "twitch_EncouragingJazzyPuffinFloof-pMJ4ADijTr9wyrJ8",
+    "url": "https://www.twitch.tv/nickeh30/clip/EncouragingJazzyPuffinFloof-pMJ4ADijTr9wyrJ8",
+    "channel": "nickeh30",
+    "platform": "twitch",
+    "title": "WW FAMILY FRIENDLY NICKEH30",
+    "views": 536,
+    "created": 1795066312,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932380541",
+    "vod_offset": 41590,
+    "cluster": 1,
+    "added": 1795119343
   }
 }
