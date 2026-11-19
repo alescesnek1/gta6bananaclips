@@ -14507,7 +14507,7 @@
     "video_id": "2932744639",
     "vod_offset": 33994,
     "cluster": 1,
-    "added": 1795112207
+    "added": 1795112502
   },
   "twitch_RudeSilkyKittenArgieB8-SUHTbC8SFJt3MMtq": {
     "id": "twitch_RudeSilkyKittenArgieB8-SUHTbC8SFJt3MMtq",
@@ -14515,13 +14515,13 @@
     "channel": "syndicate",
     "platform": "twitch",
     "title": "ggs",
-    "views": 642,
+    "views": 645,
     "created": 1795031249,
     "category": "Grand Theft Auto VI",
     "video_id": "2932230379",
     "vod_offset": 31215,
     "cluster": 1,
-    "added": 1795112207
+    "added": 1795112502
   },
   "youtube_xMXp80Cntxw_603": {
     "id": "youtube_xMXp80Cntxw_603",
@@ -14533,7 +14533,7 @@
     "created": 1795037101,
     "category": "GTA 6 LAUNCH STREAM! Playing GTA 6 for the First Time gta 5 gta online gta 6 grand theft auto making money gta get rich gta",
     "signal_score": 1.0,
-    "added": 1795112211,
+    "added": 1795112505,
     "peak": 19.95,
     "cut": [
       0.0,
@@ -14616,5 +14616,19 @@
     "src_mb": 8.7,
     "source": "https://6aff3cbc74eea07ba08f7878--gta6bananaclips-media.netlify.app/yt/youtube_xMXp80Cntxw_603_16x9.mp4",
     "yt_url": "https://www.youtube.com/watch?v=xMXp80Cntxw"
+  },
+  "twitch_FrozenShakingPotatoNononoCat-acbGrgNKBSUS3Yp8": {
+    "id": "twitch_FrozenShakingPotatoNononoCat-acbGrgNKBSUS3Yp8",
+    "url": "https://www.twitch.tv/maximilian_dood/clip/FrozenShakingPotatoNononoCat-acbGrgNKBSUS3Yp8",
+    "channel": "maximilian_dood",
+    "platform": "twitch",
+    "title": "GATOR CROSSING",
+    "views": 648,
+    "created": 1795077438,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933224962",
+    "vod_offset": 13940,
+    "cluster": 1,
+    "added": 1795112502
   }
 }
