@@ -1200,6 +1200,10 @@ def transcribe(src):
         if len(key) >= 8:
             seen[key] = seen.get(key, 0) + 1
     words, busy, dropped = [], [], 0
+    # a line heard twice is a chorus only when it also sounds sung or the game says it too (19. 11.: CaseOh
+    # repeating "Don't question it, just accept it" lost every caption of his short)
+    chorus = lambda seg, key, ws: seen.get(key, 0) >= 2 and (
+        singing(audio[int(seg["start"] * 16000): int(seg["end"] * 16000)]) > 0.4 or game_share(ws, game) >= 0.2)
     for seg in res["segments"]:
         # captions = what the STREAMER says (Aleš: they were lyrics of the in-game radio; 18. 11. the
         # GTA 6 intro song "starting from zero" on lacy's live short): drop segments Whisper itself
@@ -1213,10 +1217,10 @@ def transcribe(src):
         # by game_share + the chorus check, and every caption must pass the mouth-motion check afterwards
         nsp, lp = seg.get("no_speech_prob", 0), seg.get("avg_logprob", 0)
         if ((nsp > 0.6 and lp < -1.0) or lp < -1.2
-                or seg.get("compression_ratio", 1) > 2.4 or sung > 0.6 or seen.get(key, 0) >= 2
+                or seg.get("compression_ratio", 1) > 2.4 or sung > 0.6 or chorus(seg, key, ws)
                 or game_share(ws, game) >= 0.5):
             dropped += 1
-            if seen.get(key, 0) >= 2 or game_share(ws, game) >= 0.5:
+            if chorus(seg, key, ws) or game_share(ws, game) >= 0.5:
                 continue                              # the game's own audio (song, chorus): never blocks a cut
             # no caption, but it may still be the streamer talking: keep it as occupied time for the cuts
             busy += [(s, e, BUSY) for s, e, _ in ws] or [(seg["start"], seg["end"], BUSY)]
@@ -1728,6 +1732,43 @@ def captions_ass(words, path, y, cap=None, per=2, anim="pop"):
             lines.append(f"Dialogue: 0,{ass_time(s)},{ass_time(max(end, s + 0.05))},Cap,,0,0,0,,{{\\blur1.5{fs}\\pos(540,{y})}}{text}")
     path.write_text(head + "\n".join(lines) + "\n", encoding="utf-8")
     return len(chunks)
+
+# Hook text (owner 19. 11., after YouTube Studio's advice "a text intro in the first 2 seconds - a question"):
+# a short question over the opening payoff, built only from the moment's real tags and the streamer's name -
+# it claims nothing the clip does not show. Big capitals, the brand's highlight colour, under the captions.
+HOOK_Q = {"crash": ["DID {n} JUST WRECK EVERYTHING?", "HOW DID {n} CRASH THAT HARD?"],
+          "chase": ["CAN {n} GET AWAY?", "WILL {n} ESCAPE THIS?"],
+          "funny": ["WHY IS {n} CRYING LAUGHING?", "WHAT MADE {n} LOSE IT?"],
+          "glitch": ["WHAT IS THIS GTA 6 GLITCH?", "DID GTA 6 JUST BREAK?"],
+          "rage": ["WHY IS {n} SO MAD?", "WHAT MADE {n} RAGE?"]}
+HOOK_ELSE = ["DID {n} REALLY DO THAT?", "WAIT FOR {n}'S REACTION"]
+HOOK_DUR = 2.0
+
+def hook_text(clip, mtags, words, src, peak):
+    """The question for the first HOOK_DUR s: the moment's strongest action tag + the streamer's name."""
+    import publikuj as P
+    tags = mtags.get("tags")
+    if tags is None:
+        tags = moment_tags(words, src, peak, clip.get("title"), clip.get("created") or 0)[0]
+        mtags["tags"] = tags
+    name = P.display_name(clip).upper()
+    pool = next((HOOK_Q[t] for t in tags if t in HOOK_Q), HOOK_ELSE)
+    k = int(hashlib.md5(str(clip.get("id")).encode()).hexdigest(), 16)
+    q = pool[k % len(pool)].format(n=name)
+    from cenzura import cenzura
+    return cenzura(q)
+
+def add_hook_text(ass, text, y, hcol):
+    """Append the hook question to the captions file: 0 - HOOK_DUR s, two lines at most, pops in, fades out."""
+    words = text.split()
+    half = (len(words) + 1) // 2 if len(" ".join(words)) > 18 else len(words)
+    lines = [" ".join(words[:half])] + ([" ".join(words[half:])] if words[half:] else [])
+    body = "\\N".join(lines).replace("{", "(").replace("}", ")")
+    ev = (f"Dialogue: 2,{ass_time(0.0)},{ass_time(HOOK_DUR)},Cap,,0,0,0,,"
+          f"{{\\an5\\pos(540,{y})\\fs96\\bord7\\shad3\\3c&H000000&\\c&H{hcol}&"
+          f"\\fscx60\\fscy60\\t(0,140,\\fscx100\\fscy100)\\fad(0,220)}}{body}")
+    with open(ass, "a", encoding="utf-8") as f:
+        f.write(ev + "\n")
 
 # -----------------------------------------------------------------------------
 # 5) render one clip to 9:16
@@ -4316,6 +4357,14 @@ def render(clip, src=None, clean=False):
                     else:
                         cap_y = CAM_H if cam else 600
                         n_chunks = captions_ass(caps, ass, y=cap_y, cap=b.get("caption"))   # face/game seam
+                    if loop and b.get("hook_text", True):      # owner 19. 11.: a question over the first 2 s
+                        try:
+                            ht = hook_text(clip, mtags, words0, orig, hpc.get("peak"))
+                            hcol = ass_col((b.get("caption") or {}).get("highlight", "FF4FD8" if fan else "FFE135"))
+                            add_hook_text(ass, ht, cap_y + 330, hcol)
+                            log(f"  hook text: {ht}")
+                        except Exception as e:               # never at the cost of the short
+                            log(f"  hook text skipped ({str(e)[-80:]})")
                     card = RATING / (GOLD_CARD if use_gold and (RATING / GOLD_CARD).exists() else f"score_{rating}.webm")
                     use_card = bool(b.get("score_card")) and card.exists()
                     if b.get("score_card"):

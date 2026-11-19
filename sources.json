@@ -245,5 +245,12 @@
   "youtube_primary_x": 8,
   "min_viral": 600,
   "action_min": 0.6,
-  "_min_viral": "Ales 19. 11.: shorty nejsou dost viralni ani akcni -> kazdy short (i dohaneni minima) min. skore 600 (krome Kai/Speed/xQc), akcni stitek >= 0,6."
+  "_min_viral": "Ales 19. 11.: shorty nejsou dost viralni ani akcni -> kazdy short (i dohaneni minima) min. skore 600 (krome Kai/Speed/xQc), akcni stitek >= 0,6.",
+  "net_hours": {
+    "youtube": [
+      17,
+      24
+    ]
+  },
+  "_net_hours": "Ales 19. 11.: frekvence beze zmeny (YouTube max 3 denne, jen nejsilnejsi), ale cas uploadu ano: YouTube jen 17-24 h Praha (den v USA)."
 }

@@ -569,7 +569,7 @@ def candidates(znacka=None):
             m["score"] *= 2.0
         elif ch_c in {x.lower() for x in src_c.get("star_streamers", [])}:
             m["score"] *= 1.5
-        why = action_gate(m, src_c)
+        why = action_gate(m, src_c) or repeat_moment(m, done)
         if why:
             log(f"  not published ({why}): {m.get('id')}")
             continue
@@ -1232,6 +1232,32 @@ def action_gate(m, src):
         return f"mostly a first look at GTA 6 (first-reaction {sc.get('first-reaction'):.2f} > action {act:.2f})"
     return ""
 
+def repeat_moment(m, recs, days=3):
+    """19. 11. (YouTube Studio: "do not upload the same clips again"): a moment either account already posted in
+    the last `days` - another viewer's clip of it (same VOD < 30 s apart, or same channel created < 30 s apart)
+    or another window of the same YouTube video (< 90 s apart). '' = new."""
+    def yt(i):
+        mm = re.match(r"youtube_(.+)_(\d+)$", str(i))
+        return (mm.group(1), int(mm.group(2))) if mm else None
+    cut = time.time() - days * 86400
+    me_yt = yt(m.get("id"))
+    for k, r in recs.items():
+        if not isinstance(r, dict) or k == m.get("id"):
+            continue
+        try:
+            if datetime.fromisoformat(r.get("due") or "").timestamp() < cut:
+                continue
+        except ValueError:
+            continue
+        if m.get("video_id") and r.get("video_id") == m.get("video_id") and m.get("vod_offset") is not None                 and r.get("vod_offset") is not None and abs(r["vod_offset"] - m["vod_offset"]) < 30:
+            return f"same moment as {k} (another viewer's clip)"
+        if m.get("created") and r.get("created") and r.get("channel") == m.get("channel")                 and abs(r["created"] - m["created"]) < 30:
+            return f"same moment as {k}"
+        other = yt(k)
+        if me_yt and other and me_yt[0] == other[0] and abs(me_yt[1] - other[1]) < 90:
+            return f"same YouTube moment as {k}"
+    return ""
+
 def strong_clip(m, src):
     """TikTok / YouTube (0 views on every post, 18. 11.): only a top streamer's clip or a clip over hot_score."""
     top = {x.lower() for x in src.get("star_tier1", [])}
@@ -1587,6 +1613,9 @@ def cmd_den(a):
                     continue
                 if service in ("tiktok", "youtube") and not strong_clip(m, src_cfg):
                     continue                               # 18. 11.: 0 views there - only the strongest 3/day
+                win = (src_cfg.get("net_hours") or {}).get(service)
+                if win and not (win[0] <= due.hour < win[1]):
+                    continue                               # 19. 11. (YouTube Studio advice): 1 short a day when viewers are on
                 if m.get("hot"):                           # hot: NOW, the networks 0-4 min apart
                     m["now"], ch_due = hot_stagger(m["id"], service, now_tz())
                 else:                                      # Aleš 17. 11.: each network a few minutes apart
@@ -1615,7 +1644,8 @@ def cmd_den(a):
         rec = {"url": url, "path": rel, "due": due.isoformat(), "draft": not a.ostre, "posts": posts, "mb": mb,
                "channel": m.get("channel"), "platform": m.get("platform"), "score": round(m.get("score") or 0, 1),
                "hot": bool(m.get("hot")), "rating": m.get("rating"), "views": m.get("views"),   # Banana League (liga.py)
-               "golden": bool(m.get("golden")), "title": title_line(m)}
+               "golden": bool(m.get("golden")), "title": title_line(m),
+               "video_id": m.get("video_id"), "vod_offset": m.get("vod_offset"), "created": m.get("created")}
         if is_live(m):                                     # live: the stream's audience is not clip views
             rec.update(live=True, viewers=m.get("viewers"), spike_z=m.get("spike_z"))
         if slot_of.get(m["id"]):
