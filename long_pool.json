@@ -22111,12 +22111,26 @@
     "channel": "ohnepixel",
     "platform": "twitch",
     "title": "AYOOOOO",
-    "views": 500,
+    "views": 509,
     "created": 1795092842,
     "category": "Grand Theft Auto VI",
     "video_id": "2933599748",
     "vod_offset": 3285,
     "cluster": 1,
-    "added": 1795130254
+    "added": 1795130519
+  },
+  "twitch_FrozenGiftedDonkeyTebowing-bAQJw83wSdvNdvVE": {
+    "id": "twitch_FrozenGiftedDonkeyTebowing-bAQJw83wSdvNdvVE",
+    "url": "https://www.twitch.tv/extraemily/clip/FrozenGiftedDonkeyTebowing-bAQJw83wSdvNdvVE",
+    "channel": "extraemily",
+    "platform": "twitch",
+    "title": "Emily gets a private dance at the GTA strip club",
+    "views": 527,
+    "created": 1795048766,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932651985",
+    "vod_offset": 16627,
+    "cluster": 1,
+    "added": 1795130519
   }
 }
