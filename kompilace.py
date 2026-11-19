@@ -49,7 +49,7 @@ import numpy as np
 import klipuj as K
 
 HERE = Path(__file__).resolve().parent
-OUT = HERE / "out" / "_long"
+OUT = Path(os.environ.get("KLIPY_OUT") or HERE / "out") / "_long"   # KLIPY_OUT: ASCII folder on the 24/7 PC
 USED = Path(os.environ.get("LONG_USED") or HERE / "long_used.json")
 TZ = ZoneInfo("Europe/Prague")
 W, H, FPS = 1920, 1080, 30
@@ -58,6 +58,8 @@ GAME_OUT = date(2026, 11, 18)                  # first day with real GTA 6 gamep
 GAME_OUT_TS = datetime(2026, 11, 18, 12, 0, tzinfo=TZ).timestamp()   # the unlock itself: 18. 11. 12:00 Prague
 FONT_B = HERE / "fonts" / "cap" / "montserrat-900.ttf"
 FONT_M = HERE / "fonts" / "montserrat-600.ttf"
+import cv_safe                                  # ffmpeg filters need ASCII paths (24/7 PC: repo under a diacritic)
+FONT_B, FONT_M = cv_safe.ascii_path(FONT_B), cv_safe.ascii_path(FONT_M)
 COL = {"bananas": "FFE135", "fanpage": "FF4FD8"}
 DARK = {"bananas": "111111", "fanpage": "0B0B12"}
 SWEEP = 0.7                       # fanpage transition (s)

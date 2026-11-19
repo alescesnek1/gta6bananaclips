@@ -1,0 +1,98 @@
+# Long-form built on the 24/7 PC (worker/long.ps1, owner 19. 11.: "ať tam klidně staví nonstop, ale ať se to tam
+# nikde neukládá"): the PC uploads the video (90 MB parts), its texts, thumbnail inputs and the long-form state to
+# a Netlify draft deploy and starts this run with its URL. Here: video back together -> public download link
+# (GitHub Release, deleted after 4 days) -> e-mail to Aleš -> the PC's state merged into the repo key by key.
+# The PC token can start workflows only (no push, no releases), hence this hand-off.
+
+name: long-form z PC
+
+on:
+  workflow_dispatch:
+    inputs:
+      base:
+        description: "Netlify draft deploy URL (long-inbox) from tools/long_pc.py pack"
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: long-pc
+  cancel-in-progress: false
+
+jobs:
+  deliver:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      MAIL_FROM: ${{ secrets.MAIL_FROM }}
+      MAIL_APP_PASSWORD: ${{ secrets.MAIL_APP_PASSWORD }}
+      MAIL_TO: ${{ secrets.MAIL_TO }}
+      NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+      NETLIFY_SITE_ID: 8e0be5b7-a90e-42a1-a58e-8a0baf8dc0da
+      MEDIA_BASE_URL: https://gta6bananaclips-media.netlify.app
+      PYTHONUTF8: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: python deps (only what the e-mail and the story image need)
+        run: pip install numpy==2.5.5 opencv-python-headless==4.14.0.94 Pillow==13.0.0 tzdata==2026.6
+
+      - name: unpack from the PC
+        run: |
+          case "${{ inputs.base }}" in https://*--gta6bananaclips-media.netlify.app*) ;; *) echo "::error::unexpected URL"; exit 1;; esac
+          python tools/long_pc.py unpack "${{ inputs.base }}"
+          ls -la out/_long/*/ state_pc/ 2>/dev/null || true
+
+      - name: public download link (release)
+        id: rel
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for z in bananas fanpage; do
+            f=$(ls out/_long/$z/*.mp4 2>/dev/null | head -1)
+            [ -n "$f" ] || continue
+            tag="long-$z-$(date -u +%Y%m%d-%H%M)"
+            name="$(basename "$f")"
+            gh release create "$tag" "$f" --title "$z $name" --notes "Long-form ke stazeni (smaze se po 4 dnech)" --prerelease \
+              && echo "$z=https://github.com/${{ github.repository }}/releases/download/$tag/$name" >> "$GITHUB_OUTPUT"
+          done
+          gh release list --limit 100 --json tagName,createdAt -q '.[] | select(.tagName | startswith("long-")) | "\(.tagName) \(.createdAt)"' |
+            while read t c; do
+              [ $(( $(date +%s) - $(date -d "$c" +%s) )) -gt 345600 ] && gh release delete "$t" --yes --cleanup-tag || true
+            done
+
+      - name: e-mail bananas
+        continue-on-error: true
+        if: hashFiles('out/_long/bananas/*.meta.json') != ''
+        run: python posli_mail.py out/_long/bananas/*.meta.json --odkaz "${{ steps.rel.outputs.bananas }}"
+
+      - name: e-mail fanpage
+        continue-on-error: true
+        if: hashFiles('out/_long/fanpage/*.meta.json') != ''
+        run: python posli_mail.py out/_long/fanpage/*.meta.json --odkaz "${{ steps.rel.outputs.fanpage }}"
+
+      - name: e-mail about a failed episode
+        continue-on-error: true
+        if: hashFiles('out/_long/*/*.failed.json') != ''
+        run: python posli_mail.py out/_long/*/*.failed.json
+
+      - name: save the PC's long-form state (merged key by key into origin's)
+        if: always() && hashFiles('state_pc/*.json') != ''
+        run: |
+          git config user.name "gta6bananaclips-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          FILES=$(cd state_pc && ls *.json)
+          for i in 1 2 3 4 5 6; do
+            git fetch -q origin main && git reset -q --hard origin/main
+            python tools/merge_state.py state_pc $FILES
+            git add $FILES
+            git diff --cached --quiet && exit 0
+            git commit -q -m "stav: long-form z PC $(date -u +%F)"
+            git push -q && exit 0
+            sleep $((i * 5 + RANDOM % 7))
+          done
+          echo "::error::stav long-formu z PC se nepodarilo pushnout"; exit 1

@@ -43,6 +43,7 @@ BUDGET = Path(os.environ.get("NAHLED_AI_BUDGET") or HERE / "nahled_ai_budget.jso
 NEURONS = {"@cf/black-forest-labs/flux-2-klein-9b": 1460, "@cf/black-forest-labs/flux-2-klein-4b": 140}
 TW, TH = 1280, 720
 FONTS = {"bananas": HERE / "fonts" / "cap" / "montserrat-900.ttf", "fanpage": HERE / "fonts" / "cap" / "anton.ttf"}
+FONTS = {k: cv_safe.ascii_path(v) for k, v in FONTS.items()}   # drawtext fontfile: ASCII path (24/7 PC)
 CHAR_W = {"bananas": 0.80, "fanpage": 0.47}          # average upper-case advance per font size unit
 TEXT2 = {"bananas": "FFE135", "fanpage": "FF4FD8"}   # second line in the brand colour, first white
 STYLE = {

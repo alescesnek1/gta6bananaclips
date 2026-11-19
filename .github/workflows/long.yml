@@ -19,8 +19,7 @@
 name: long-form
 
 on:
-  schedule:
-    - cron: "25 */2 * * *"         # every 2 h (fallback; the PC dispatches every 2 h too)
+  # 19. 11.: the long-form is built on the 24/7 PC now (worker/long.ps1 -> long-pc.yml); this workflow is manual only
   workflow_dispatch:
     inputs:
       znacka:

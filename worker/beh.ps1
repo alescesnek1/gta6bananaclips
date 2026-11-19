@@ -55,16 +55,24 @@ if ($token -and (Due "github" $(if ($launch) { 4 } else { 25 }))) {
     }
 }
 
-# --- 1b) long-form every 2 h (Ales 18. 11.: upload as soon as there is a stock of clips; GitHub's cron
-# for long.yml ran 5 h late). The run itself decides: cap 1 per brand per 20 h, enough material or skip.
-if ($token -and (Due "long" 115)) {
-    try {
-        Invoke-RestMethod -Method Post -Uri "https://api.github.com/repos/aleshrani/gta6bananaclips/actions/workflows/long.yml/dispatches" `
-            -Headers @{ Authorization = "Bearer $token"; Accept = "application/vnd.github+json"; "User-Agent" = "gta6-pc" } `
-            -Body '{"ref":"main"}' -ContentType "application/json" | Out-Null
-        "$(Get-Date -Format s) long-form run started" | Out-File $log -Append -Encoding utf8
-    } catch {
-        "$(Get-Date -Format s) long-form run FAILED: $($_.Exception.Message)" | Out-File $log -Append -Encoding utf8
+# --- 1b) long-form every 2 h, BUILT ON THIS PC (owner 19. 11.: GitHub took 2-4 h per episode; "at tam klidne
+# stavi nonstop, ale at se to tam nikde neuklada"): worker\long.ps1 in its own process, one at a time (PID lock).
+# It delivers through GitHub (tools/long_pc.py -> long-pc.yml: release link, e-mail, state) and deletes what it built.
+if (Due "long" 115) {
+    $llock = Join-Path $dir "out\long.lock"
+    $busy = $false
+    if (Test-Path $llock) {
+        $old = (Get-Content $llock -Raw -ErrorAction SilentlyContinue)
+        $age = ($now - (Get-Item $llock).LastWriteTime).TotalHours
+        $busy = $old -and $age -lt 5 -and (Get-Process -Id ([int]$old.Trim()) -ErrorAction SilentlyContinue)
+    }
+    if ($busy) {
+        "$(Get-Date -Format s) long-form still building (pid $($old.Trim())), skipped" | Out-File $log -Append -Encoding utf8
+    } else {
+        $lp = Start-Process -FilePath "powershell.exe" -WindowStyle Hidden -PassThru `
+            -ArgumentList @("-NoProfile", "-ExecutionPolicy", "Bypass", "-File", (Join-Path $PSScriptRoot "long.ps1"))
+        $lp.Id | Set-Content $llock -Encoding ascii
+        "$(Get-Date -Format s) long-form build started on the PC (pid $($lp.Id))" | Out-File $log -Append -Encoding utf8
     }
 }
 
