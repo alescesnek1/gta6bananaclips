@@ -6560,12 +6560,12 @@
     "channel": "kaicenat",
     "platform": "twitch",
     "title": "LISTEN!!!!!!!",
-    "views": 737,
+    "views": 783,
     "created": 1795017380,
     "category": "Grand Theft Auto VI",
     "video_id": "2932305259",
     "vod_offset": 10480,
-    "added": 1795101537
+    "added": 1795102514
   },
   "twitch_FancySuavePidgeonDoubleRainbow-UYqXuvtDRvteCShl": {
     "id": "twitch_FancySuavePidgeonDoubleRainbow-UYqXuvtDRvteCShl",
@@ -6573,10 +6573,157 @@
     "channel": "dinah",
     "platform": "twitch",
     "title": "[PS5 GIVEAWAY + 3 COPIES OF GTA 6 - !gta6]🔴6 DAYS STRAIGHT OF GTA 6 [24/7]🔴[EN/中文/粤语]🔴WORLD FIRST 100% RUN🔴PS5 PRO 60FPS🔴!tier3 !gta6",
-    "views": 832,
+    "views": 856,
     "created": 1795016448,
     "category": "Grand Theft Auto VI",
     "cluster": 1,
-    "added": 1795101537
+    "added": 1795102514
+  },
+  "twitch_AggressiveTardyDragonHotPokket--9_zAHpPX48qQTS-": {
+    "id": "twitch_AggressiveTardyDragonHotPokket--9_zAHpPX48qQTS-",
+    "url": "https://www.twitch.tv/ohnepixel/clip/AggressiveTardyDragonHotPokket--9_zAHpPX48qQTS-",
+    "channel": "ohnepixel",
+    "platform": "twitch",
+    "title": "Bro Want the ban So bad!! Hahahha",
+    "views": 506,
+    "created": 1795092624,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933599748",
+    "vod_offset": 3142,
+    "cluster": 1,
+    "added": 1795102514
+  },
+  "twitch_RespectfulDeadScorpionFreakinStinkin-e2RNV9ax1M-ndSod": {
+    "id": "twitch_RespectfulDeadScorpionFreakinStinkin-e2RNV9ax1M-ndSod",
+    "url": "https://www.twitch.tv/dinah/clip/RespectfulDeadScorpionFreakinStinkin-e2RNV9ax1M-ndSod",
+    "channel": "dinah",
+    "platform": "twitch",
+    "title": "dinah - Highlight dc59b9 Part 09",
+    "views": 802,
+    "created": 1795024547,
+    "category": "Grand Theft Auto VI",
+    "cluster": 1,
+    "added": 1795102514
+  },
+  "twitch_SavoryEagerLlamaLeeroyJenkins-fzfiphCY-mKdwJvr": {
+    "id": "twitch_SavoryEagerLlamaLeeroyJenkins-fzfiphCY-mKdwJvr",
+    "url": "https://www.twitch.tv/ishowspeed/clip/SavoryEagerLlamaLeeroyJenkins-fzfiphCY-mKdwJvr",
+    "channel": "ishowspeed",
+    "platform": "twitch",
+    "title": "speed acting sus",
+    "views": 1100,
+    "created": 1795015240,
+    "category": "Grand Theft Auto VI",
+    "cluster": 1,
+    "added": 1795102337,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/ishowspeed/20261118_twitch_SavoryEagerLlamaLeeroyJenkins-fzfiphCY-mKdwJvr/source.mp4",
+    "peak": 18.150000000000002,
+    "cut": [
+      3.5,
+      21.17
+    ],
+    "dur": 30.02,
+    "tags": [
+      "wow",
+      "rage",
+      "crash"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.2,
+      "crash": 0.3,
+      "rage": 0.35,
+      "first-reaction": 0.2,
+      "wow": 0.73,
+      "_loud": 25.7,
+      "_motion": 27.4
+    },
+    "quote": "What the hell she think I am fixin' Felix?",
+    "rendered": [
+      "fanpage"
+    ],
+    "cats": {
+      "funny": 0.25,
+      "rage": 0.25,
+      "fail": 0.25,
+      "physics": 0.25,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.25,
+      "stunt": 0.6,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.95
+    },
+    "primary": "wow",
+    "proven": [
+      "wow"
+    ],
+    "evidence": {
+      "funny": [
+        "loud"
+      ],
+      "rage": [
+        "loud"
+      ],
+      "fail": [
+        "impact",
+        "loud"
+      ],
+      "physics": [
+        "impact"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "crash": [
+        "impact"
+      ],
+      "stunt": [
+        "impact",
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "loud",
+        "text"
+      ]
+    },
+    "fun": 0.82,
+    "signals": {
+      "siren": 0.0,
+      "impact": 174.0,
+      "loud": 20.2,
+      "motion": 19.0,
+      "sustained": 0.76,
+      "spike": 3.0,
+      "laugh": 0,
+      "static": 0.03,
+      "letterbox": 0.0,
+      "luma": 75.6,
+      "dark": 0.0
+    }
+  },
+  "twitch_ShortDistinctAlmondANELE-r2EGGu_5hzOMYGW1": {
+    "id": "twitch_ShortDistinctAlmondANELE-r2EGGu_5hzOMYGW1",
+    "url": "https://www.twitch.tv/extraemily/clip/ShortDistinctAlmondANELE-r2EGGu_5hzOMYGW1",
+    "channel": "extraemily",
+    "platform": "twitch",
+    "title": "Emily watches Jason take a shower in game",
+    "views": 813,
+    "created": 1795037843,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932651985",
+    "vod_offset": 5702,
+    "cluster": 1,
+    "added": 1795102514
   }
 }
