@@ -137,9 +137,9 @@
         "after-dark",
         "after-dark"
       ],
-      "first": "streamer-night",
+      "first": "after-dark",
       "same_mission_slot": 1,
-      "_first": "Ales 18. 11. vecer: fanpage jiny koncept a jine momenty nez bananas -> noc jednoho streamera (bananas bere max 4 momenty na streamera)"
+      "_first": "Ales 19. 11.: streamer-night nasla jen 3-5 momentu jednoho streamera -> After Dark (akce, jine momenty nez bananas dil, pouzite se neopakuji)"
     },
     "long_min_gap_h": 20,
     "long_target_min": 8,
