@@ -468,5 +468,35 @@
       "CAN'T STOP LAUGHING"
     ],
     "mb": 16.0
+  },
+  "twitch_LuckyBenevolentDotterelOMGScoots-lFgr2IvDbbFYqy0L": {
+    "url": "https://6aff8891ea8883af021bf436--gta6bananaclips-media.netlify.app/20261119/twitch_LuckyBenevolentDotterelOMGScoots-lFgr2IvDbbFYqy0L.mp4",
+    "path": "20261119/twitch_LuckyBenevolentDotterelOMGScoots-lFgr2IvDbbFYqy0L.mp4",
+    "due": "2026-11-20T00:40:00+01:00",
+    "draft": false,
+    "posts": {
+      "6af7142262b70b94b01ac608": "6aff88990f5eda1a57a63ea9",
+      "6af7155e62b70b94b01ad06f": "6aff889a738ce4635f6e5fba",
+      "6af714e862b70b94b01acc7f": "6aff889ad5f8acdd0d564699"
+    },
+    "mb": 7.9,
+    "channel": "caseoh_",
+    "platform": "twitch",
+    "score": 818.1,
+    "hot": true,
+    "rating": 3,
+    "views": 641,
+    "golden": false,
+    "title": "CaseOh WRECKS Everything In GTA 6! 😭",
+    "video_id": null,
+    "vod_offset": null,
+    "created": 1795130163,
+    "payoff": "https://6aff8891ea8883af021bf436--gta6bananaclips-media.netlify.app/20261119/twitch_LuckyBenevolentDotterelOMGScoots-lFgr2IvDbbFYqy0L_payoff.mp4",
+    "funny": 0.16,
+    "tags": [
+      "crash",
+      "wow"
+    ],
+    "quote": "you good Jason get in okay I'm not gonna do that again let's go"
   }
 }
