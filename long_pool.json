@@ -15303,13 +15303,13 @@
     "channel": "dansgaming",
     "platform": "twitch",
     "title": "ExtraDansGaming",
-    "views": 788,
+    "views": 962,
     "created": 1795118180,
     "category": "Grand Theft Auto VI",
     "video_id": "2933947716",
     "vod_offset": 6754,
     "cluster": 1,
-    "added": 1795121587,
+    "added": 1795122118,
     "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/dansgaming/20261119_twitch_RenownedNeighborlyWaffleTwitchRaid-t74SktFrD6SZ0Iu6/source.mp4",
     "peak": 13.65,
     "cut": [
@@ -15370,7 +15370,7 @@
         "launch-days"
       ]
     },
-    "fun": 0.39,
+    "fun": 0.4,
     "signals": {
       "siren": 0.0,
       "impact": 11.7,
@@ -15431,13 +15431,13 @@
     "channel": "joe_bartolozzi",
     "platform": "twitch",
     "title": "JOE MEETS MANDY",
-    "views": 509,
+    "views": 520,
     "created": 1795112125,
     "category": "Grand Theft Auto VI",
     "video_id": "2933806710",
     "vod_offset": 8158,
     "cluster": 1,
-    "added": 1795121809
+    "added": 1795122326
   },
   "twitch_SpunkySteamyVulturePupper-rbdHniFgA8lriL1N": {
     "id": "twitch_SpunkySteamyVulturePupper-rbdHniFgA8lriL1N",
@@ -15445,13 +15445,13 @@
     "channel": "39daph",
     "platform": "twitch",
     "title": "this game sucks",
-    "views": 528,
+    "views": 544,
     "created": 1795074599,
     "category": "Grand Theft Auto VI",
     "video_id": "2933313229",
     "vod_offset": 9204,
     "cluster": 1,
-    "added": 1795121809
+    "added": 1795122326
   },
   "twitch_StrangeSplendidCaribouJebaited-sGJYU2ZBQdN2RbMT": {
     "id": "twitch_StrangeSplendidCaribouJebaited-sGJYU2ZBQdN2RbMT",
@@ -15459,12 +15459,12 @@
     "channel": "snapscube",
     "platform": "twitch",
     "title": "don't text and drive kids",
-    "views": 529,
+    "views": 538,
     "created": 1795068899,
     "category": "Grand Theft Auto VI",
     "video_id": "2933236610",
     "vod_offset": 4813,
     "cluster": 1,
-    "added": 1795121809
+    "added": 1795122326
   }
 }
