@@ -22182,7 +22182,7 @@
     "views": 641,
     "created": 1795130163,
     "category": "Grand Theft Auto VI",
-    "added": 1795131532,
+    "added": 1795132144,
     "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/caseoh_/20261119_twitch_LuckyBenevolentDotterelOMGScoots-lFgr2IvDbbFYqy0L/source.mp4",
     "peak": 37.550000000000004,
     "cut": [
@@ -22260,5 +22260,19 @@
       "luma": 62.2,
       "dark": 0.0
     }
+  },
+  "twitch_SquareFreezingGoatSquadGoals-YS7yIvgiEEzqcvHt": {
+    "id": "twitch_SquareFreezingGoatSquadGoals-YS7yIvgiEEzqcvHt",
+    "url": "https://www.twitch.tv/madi2hottyy/clip/SquareFreezingGoatSquadGoals-YS7yIvgiEEzqcvHt",
+    "channel": "madi2hottyy",
+    "platform": "twitch",
+    "title": "/",
+    "views": 500,
+    "created": 1795049014,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932890659",
+    "vod_offset": 2847,
+    "cluster": 1,
+    "added": 1795132144
   }
 }
