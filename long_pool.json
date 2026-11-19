@@ -5652,5 +5652,19 @@
     "vod_offset": 3851,
     "cluster": 1,
     "added": 1795077494
+  },
+  "twitch_NeighborlyScrumptiousBeanEleGiggle-vCkxTlQrhDPjBG4l": {
+    "id": "twitch_NeighborlyScrumptiousBeanEleGiggle-vCkxTlQrhDPjBG4l",
+    "url": "https://www.twitch.tv/jerma985/clip/NeighborlyScrumptiousBeanEleGiggle-vCkxTlQrhDPjBG4l",
+    "channel": "jerma985",
+    "platform": "twitch",
+    "title": "Jerma in a sticky situation",
+    "views": 521,
+    "created": 1795072442,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933227596",
+    "vod_offset": 8702,
+    "cluster": 2,
+    "added": 1795080375
   }
 }
