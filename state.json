@@ -53,7 +53,8 @@
     "twitch_CooperativeAthleticMarjoramPeoplesChamp-ED9p6JnfM5HqbI2l": 1795071255,
     "twitch_BetterBoxyPhoneKappaPride-dj6XJ97C0t6ZaTrX": 1795073753,
     "twitch_ViscousStormySquirrelDancingBanana-2gkXgAHz-CwpC3GO": 1795090823,
-    "twitch_HumbleGeniusStrawberryBleedPurple-CYhEi_LZY9mbAQxo": 1795098336
+    "twitch_HumbleGeniusStrawberryBleedPurple-CYhEi_LZY9mbAQxo": 1795098336,
+    "twitch_DelightfulLachrymoseMelonVoteYea-JeFCNhZHEyTfoOMJ": 1795099968
   },
   "failed": {
     "twitch_IntelligentAbstemiousBasenjiOMGScoots-6o4BuG8nzW3K8qWx": 3,
@@ -313,9 +314,10 @@
     "kick_clip_01M7QZ864DK0K76T3Q16X01S9B": "Just Chatting",
     "kick_clip_01M7QCH08H7RV14B81NH6SBEDF": "Just Chatting",
     "kick_clip_01M7Q5Y0AM65WB7NDSEBFCBNQS": "Just Chatting",
-    "twitch_GoldenSincereHamburgerHeyGuys-Zo31y1z1tLdwRScS": "not gameplay: streamer's face fills the frame; not viral enough without gameplay (score 640)",
+    "twitch_GoldenSincereHamburgerHeyGuys-Zo31y1z1tLdwRScS": "not gameplay: streamer's face fills the frame; not viral enough without gameplay (score 648)",
     "kick_clip_01M7R292QPYJZ6C633VN8ZSAGQ": "Just Chatting",
-    "kick_clip_01M7R2X6P96FF5PAVNEXARXQS5": "Just Chatting"
+    "kick_clip_01M7R2X6P96FF5PAVNEXARXQS5": "Just Chatting",
+    "twitch_CourteousCooperativePhoneOSfrog-SctmqK_3L09YKRX7": "not gameplay: streamer's face fills the frame; not viral enough without gameplay (score 212)"
   },
   "views": {
     "twitch_TenderResoluteMartenRickroll-MMEYpSBXgiOpCFd8": [
@@ -4682,7 +4684,9 @@
       1795097927,
       1616,
       1795098232,
-      1618
+      1618,
+      1795099280,
+      1624
     ],
     "twitch_WealthyObliqueCiderNononoCat-4AWlrWlfOilJh5Vi": [
       1795016904,
@@ -9252,7 +9256,9 @@
       1795097927,
       1152,
       1795098232,
-      1158
+      1158,
+      1795099280,
+      1163
     ],
     "twitch_FlirtyFancyMangetoutKeepo-zrWg06dtnCooZ6IW": [
       1795030991,
@@ -9466,7 +9472,9 @@
       1795097927,
       1021,
       1795098232,
-      1022
+      1022,
+      1795099280,
+      1024
     ],
     "twitch_ProductiveBraveNikudonDeIlluminati-qNMmyjkr7j_nq38Z": [
       1795032655,
@@ -11204,7 +11212,9 @@
       1795097927,
       1207,
       1795098232,
-      1212
+      1212,
+      1795099280,
+      1228
     ],
     "twitch_PerfectCrypticChinchillaKappaClaus-nCPM8sJuQmLth2l4": [
       1795038317,
@@ -11892,7 +11902,9 @@
       1795097927,
       1678,
       1795098232,
-      1683
+      1683,
+      1795099280,
+      1699
     ],
     "twitch_CrackyTriumphantCocoaHumbleLife-Zgm3yzMnv77KylUG": [
       1795045634,
@@ -12328,7 +12340,9 @@
       1795097927,
       1188,
       1795098232,
-      1193
+      1193,
+      1795099280,
+      1203
     ],
     "twitch_CharmingCutePastaGivePLZ-YO40ueMBjtcjczNg": [
       1795048464,
@@ -12709,7 +12723,9 @@
       1795097927,
       1662,
       1795098232,
-      1666
+      1666,
+      1795099280,
+      1696
     ],
     "kick_clip_01M7QF79EME6M21QZ4PP9XQNGQ": [
       1795049906,
@@ -13059,7 +13075,9 @@
       1795097927,
       1942,
       1795098232,
-      1949
+      1949,
+      1795099280,
+      1962
     ],
     "twitch_MuddySmellyAlfalfaBrokeBack-2CcHHR8GSpna-nkj": [
       1795052858,
@@ -13616,7 +13634,9 @@
       1795097927,
       1973,
       1795098232,
-      1988
+      1988,
+      1795099280,
+      2017
     ],
     "twitch_RelentlessSavageTomatoDAESuppy-XwOHThFQTJaruvrb": [
       1795055387,
@@ -13825,7 +13845,9 @@
       1795097927,
       1029,
       1795098232,
-      1032
+      1032,
+      1795099280,
+      1044
     ],
     "twitch_MoldySmoggyDonkeyThisIsSparta-mXBDQ8JcdmTZV7p5": [
       1795055387,
@@ -14045,7 +14067,9 @@
       1795097927,
       1351,
       1795098232,
-      1358
+      1358,
+      1795099280,
+      1374
     ],
     "twitch_SmallEnjoyableTaroOSfrog-_Zzas-tX_kGF_p0r": [
       1795055387,
@@ -14545,7 +14569,9 @@
       2732,
       1795097927,
       1795098232,
-      2793
+      2793,
+      1795099280,
+      2866
     ],
     "twitch_CuriousBadEchidnaCoolStoryBro-g66TfyHbfF_r5vxZ": [
       1795056910,
@@ -14760,7 +14786,9 @@
       1795097927,
       1504,
       1795098232,
-      1511
+      1511,
+      1795099280,
+      1528
     ],
     "kick_clip_01M7RP0WZYS0W8VVWWZ4CR5M7B": [
       1795056910,
@@ -15202,7 +15230,9 @@
       1795097927,
       1823,
       1795098232,
-      1834
+      1834,
+      1795099280,
+      1870
     ],
     "twitch_SweetObeseMeatloafPeanutButterJellyTime-h-W9n-DpZ47Sqvvv": [
       1795057949,
@@ -15674,7 +15704,9 @@
       1795097927,
       1509,
       1795098232,
-      1517
+      1517,
+      1795099280,
+      1543
     ],
     "kick_clip_01M7Q5Y0AM65WB7NDSEBFCBNQS": [
       1795059722,
@@ -15924,7 +15956,9 @@
       1795097927,
       1194,
       1795098232,
-      1205
+      1205,
+      1795099280,
+      1217
     ],
     "twitch_BoringSavorySproutNomNom-Tg3HdUU0NAhGmGJw": [
       1795062210,
@@ -16134,7 +16168,9 @@
       1795097927,
       1946,
       1795098232,
-      1959
+      1959,
+      1795099280,
+      2004
     ],
     "twitch_ResoluteCourteousPistachioSuperVinlin-DzGhsfoP-l4gFmBB": [
       1795063713,
@@ -16649,7 +16685,9 @@
       1795097927,
       779,
       1795098232,
-      781
+      781,
+      1795099280,
+      796
     ],
     "twitch_RacyFreezingWebDuDudu-L5DqegYwxBAaJyMT": [
       1795067671,
@@ -16815,7 +16853,9 @@
       1795097927,
       969,
       1795098232,
-      973
+      973,
+      1795099280,
+      992
     ],
     "twitch_CooperativeAthleticMarjoramPeoplesChamp-ED9p6JnfM5HqbI2l": [
       1795067671,
@@ -16970,7 +17010,9 @@
       1795097927,
       1063,
       1795098232,
-      1066
+      1066,
+      1795099280,
+      1081
     ],
     "twitch_VivaciousCallousYogurtDxCat-tcAghtrsbnP82HX2": [
       1795069713,
@@ -17257,7 +17299,9 @@
       1795097927,
       1905,
       1795098232,
-      1944
+      1944,
+      1795099280,
+      1972
     ],
     "twitch_RenownedFurryLobsterBCouch-1C3NayC9uaEwX0eh": [
       1795071632,
@@ -17557,7 +17601,9 @@
       1795097927,
       793,
       1795098232,
-      795
+      795,
+      1795099280,
+      814
     ],
     "twitch_BlightedRelatedKathyKeepo-HKuu-b-IkUwSQ39d": [
       1795074212,
@@ -17880,7 +17926,9 @@
       706,
       1795097927,
       712,
-      1795098232
+      1795098232,
+      1795099280,
+      722
     ],
     "twitch_HelpfulAcceptableDogFutureMan-KdAfe7muh4TaBmDk": [
       1795074793,
@@ -18023,7 +18071,9 @@
       1795097927,
       916,
       1795098232,
-      921
+      921,
+      1795099280,
+      944
     ],
     "twitch_SuaveTubularPeafowlRuleFive--zaInupg8WNYZPlj": [
       1795075082,
@@ -18165,7 +18215,9 @@
       1795097927,
       985,
       1795098232,
-      992
+      992,
+      1795099280,
+      1010
     ],
     "twitch_PhilanthropicRelatedJalapenoCoolStoryBro-J8iDeg1psqgOc5Wi": [
       1795075082,
@@ -18403,7 +18455,9 @@
       1795097927,
       1995,
       1795098232,
-      2013
+      2013,
+      1795099280,
+      2068
     ],
     "twitch_HumbleGeniusStrawberryBleedPurple-CYhEi_LZY9mbAQxo": [
       1795077204,
@@ -18691,7 +18745,9 @@
       1795097927,
       2528,
       1795098232,
-      2551
+      2551,
+      1795099280,
+      2606
     ],
     "twitch_FilthyBelovedChipmunkEagleEye-FB4IOpbQMhvhtvgk": [
       1795078118,
@@ -18811,7 +18867,9 @@
       1795097927,
       720,
       1795098232,
-      729
+      729,
+      1795099280,
+      739
     ],
     "twitch_NeighborlyScrumptiousBeanEleGiggle-vCkxTlQrhDPjBG4l": [
       1795080232,
@@ -18929,7 +18987,9 @@
       1795097927,
       1401,
       1795098232,
-      1429
+      1429,
+      1795099280,
+      1506
     ],
     "kick_clip_01M7R2X6P96FF5PAVNEXARXQS5": [
       1795080232,
@@ -19054,7 +19114,9 @@
       1795097927,
       805,
       1795098232,
-      811
+      811,
+      1795099280,
+      818
     ],
     "twitch_TriangularShakingChoughCopyThis-qO8EkBPqr3CIqfPB": [
       1795080798,
@@ -19165,7 +19227,9 @@
       1795097319,
       669,
       1795097629,
-      675
+      675,
+      1795099280,
+      699
     ],
     "twitch_ViscousStormySquirrelDancingBanana-2gkXgAHz-CwpC3GO": [
       1795082625,
@@ -19341,7 +19405,9 @@
       1795097927,
       1814,
       1795098232,
-      1836
+      1836,
+      1795099280,
+      1865
     ],
     "twitch_BlueRoughPistachioUWot-irHbCK3AZ0089Bqh": [
       1795084415,
@@ -19424,7 +19490,9 @@
       1143,
       1795097927,
       1795098232,
-      1163
+      1163,
+      1795099280,
+      1222
     ],
     "twitch_DifferentBlindingMartenKappaPride-0r0DTjKY8R7hrnkX": [
       1795084415,
@@ -19600,7 +19668,9 @@
       1795097927,
       856,
       1795098232,
-      860
+      860,
+      1795099280,
+      887
     ],
     "twitch_EasyHeadstrongChamoisOSsloth-2nmCbtsI8T31vtPf": [
       1795086238,
@@ -19681,7 +19751,9 @@
       1795097927,
       925,
       1795098232,
-      935
+      935,
+      1795099280,
+      1018
     ],
     "twitch_HealthyEagerNarwhalPastaThat-n30yHBQEfYrm3t1S": [
       1795086809,
@@ -19755,7 +19827,9 @@
       1795097927,
       1590,
       1795098232,
-      1597
+      1597,
+      1795099280,
+      1610
     ],
     "twitch_BadFragileChickenDoggo-c2HixHpDBMCqjU6b": [
       1795087098,
@@ -19895,7 +19969,9 @@
       1795097927,
       1273,
       1795098232,
-      1274
+      1274,
+      1795099280,
+      1282
     ],
     "twitch_CourageousJazzyCheddarDancingBanana--b8iXZo78E09gIT1": [
       1795088302,
@@ -19970,7 +20046,9 @@
       1795097927,
       534,
       1795098232,
-      537
+      537,
+      1795099280,
+      538
     ],
     "twitch_BlithePowerfulMooseOneHand-N3QteSWl9GS2nMc3": [
       1795088593,
@@ -20098,7 +20176,9 @@
       1795097927,
       813,
       1795098232,
-      816
+      816,
+      1795099280,
+      820
     ],
     "twitch_CoyGeniusCaterpillarOneHand-XSf9ZPw4j1vToTSO": [
       1795089204,
@@ -20159,7 +20239,9 @@
       1795097927,
       1394,
       1795098232,
-      1396
+      1396,
+      1795099280,
+      1424
     ],
     "twitch_BloodyQuaintTigerRaccAttack-J8Y2TNViWGE54NHw": [
       1795089801,
@@ -20216,7 +20298,9 @@
       1795097927,
       1389,
       1795098232,
-      1398
+      1398,
+      1795099280,
+      1420
     ],
     "twitch_TenaciousEvilPeanutAllenHuhu-0JMYZ4aWZNEDgO7r": [
       1795090128,
@@ -20320,7 +20404,9 @@
       1795097927,
       1366,
       1795098232,
-      1372
+      1372,
+      1795099280,
+      1384
     ],
     "twitch_FrigidSecretiveEggJonCarnage-AgReCvvEi2X1bab1": [
       1795090720,
@@ -20362,7 +20448,9 @@
       1795097927,
       1067,
       1795098232,
-      1070
+      1070,
+      1795099280,
+      1078
     ],
     "twitch_FlirtyConsiderateFrogRaccAttack-o6IMzeUccthunaYg": [
       1795090992,
@@ -20498,7 +20586,9 @@
       1795097927,
       1265,
       1795098232,
-      1271
+      1271,
+      1795099280,
+      1285
     ],
     "twitch_BrainyQuaintDelicataNerfBlueBlaster-eBy9iL6u4j0tYtDd": [
       1795090992,
@@ -20551,7 +20641,9 @@
       1795097927,
       1249,
       1795098232,
-      1258
+      1258,
+      1795099280,
+      1285
     ],
     "twitch_EntertainingAbstruseClamKappaPride-UEeHEp_c0PYYoY_O": [
       1795091298,
@@ -20649,7 +20741,9 @@
       1795097927,
       645,
       1795098232,
-      650
+      650,
+      1795099280,
+      707
     ],
     "twitch_SullenMushyToadRiPepperonis-X3cHCFmq9kIrTsxn": [
       1795092210,
@@ -20667,7 +20761,9 @@
       1795097927,
       1307,
       1795098232,
-      1311
+      1311,
+      1795099280,
+      1338
     ],
     "twitch_SlickPatientToadDoritosChip-LV7_h3WaUULTckLh": [
       1795092210,
@@ -20712,7 +20808,9 @@
       1795097927,
       1189,
       1795098232,
-      1192
+      1192,
+      1795099280,
+      1204
     ],
     "twitch_OddHedonisticDonkeySwiftRage-6Fns0uGwe32Hh0Of": [
       1795092828,
@@ -20752,7 +20850,9 @@
       1795097927,
       1136,
       1795098232,
-      1141
+      1141,
+      1795099280,
+      1153
     ],
     "twitch_VivaciousProudSnakeVoteNay-esg1MRa3NKLyIaDC": [
       1795092828,
@@ -20791,7 +20891,9 @@
       1795097927,
       1126,
       1795098232,
-      1127
+      1127,
+      1795099280,
+      1140
     ],
     "twitch_DistinctSmilingBunnyMikeHogu-iQEZp7M7vDPOWUo-": [
       1795093401,
@@ -20828,7 +20930,9 @@
       1795097927,
       1218,
       1795098232,
-      1232
+      1232,
+      1795099280,
+      1279
     ],
     "twitch_SteamyAthleticSquirrelTheThing-IKdi5FGsptQhvqyI": [
       1795094000,
@@ -20860,7 +20964,9 @@
       1795097927,
       540,
       1795098232,
-      542
+      542,
+      1795099280,
+      557
     ],
     "twitch_ExuberantBoldPickles4Head-Wwed_Pva3ZyvdUoA": [
       1795094000,
@@ -20906,7 +21012,9 @@
       1795097927,
       883,
       1795098232,
-      890
+      890,
+      1795099280,
+      907
     ],
     "twitch_MuddyTardyClipzFeelsBadMan-Qb1_guoZe76pMLRY": [
       1795095172,
@@ -20931,7 +21039,9 @@
       1795097927,
       1084,
       1795098232,
-      1091
+      1091,
+      1795099280,
+      1106
     ],
     "twitch_FrailSwissHummingbirdHassaanChop-KSHCmGWFjVkoQxaj": [
       1795095172,
@@ -20954,7 +21064,9 @@
       1025,
       1795097927,
       1031,
-      1795098232
+      1795098232,
+      1795099280,
+      1046
     ],
     "twitch_TenderAssiduousTrayMikeHogu-kBARE4wnaV1W1zIE": [
       1795095806,
@@ -20971,7 +21083,9 @@
       794,
       1795097927,
       1795098232,
-      804
+      804,
+      1795099280,
+      828
     ],
     "twitch_ViscousDeterminedNostrilJonCarnage-H77tevq--3zrxEui": [
       1795095806,
@@ -20991,7 +21105,9 @@
       1795097927,
       985,
       1795098232,
-      987
+      987,
+      1795099280,
+      999
     ],
     "twitch_VivaciousHotWoodcockPunchTrees-wJEr0bNSwLg63l3P": [
       1795095806,
@@ -21011,7 +21127,9 @@
       1795097927,
       1000,
       1795098232,
-      1003
+      1003,
+      1795099280,
+      1017
     ],
     "twitch_AlertDarlingHerringSpicyBoy-6ffOB7cTah1KLr20": [
       1795095806,
@@ -21030,7 +21148,9 @@
       1795097927,
       972,
       1795098232,
-      973
+      973,
+      1795099280,
+      989
     ],
     "twitch_SleepyMoistPigNotATK-q0pJ0zN3aSDmLNlx": [
       1795096129,
@@ -21057,7 +21177,9 @@
       772,
       1795097927,
       773,
-      1795098232
+      1795098232,
+      1795099280,
+      791
     ],
     "twitch_ChillyFriendlyBobaTBTacoRight-Nfkh31vM6MnXXcnU": [
       1795096406,
@@ -21070,7 +21192,9 @@
       1795097629,
       935,
       1795097927,
-      1795098232
+      1795098232,
+      1795099280,
+      941
     ],
     "twitch_EncouragingSpinelessFriesPhilosoraptor-YJ4K5OWk5hS0GnfF": [
       1795096406,
@@ -21084,7 +21208,9 @@
       948,
       1795097927,
       951,
-      1795098232
+      1795098232,
+      1795099280,
+      956
     ],
     "twitch_ArborealAntediluvianGoshawkCoolStoryBro-qRbYpYXouYW-oo2B": [
       1795096406,
@@ -21099,7 +21225,9 @@
       1795097927,
       965,
       1795098232,
-      966
+      966,
+      1795099280,
+      975
     ],
     "twitch_HilariousTiredManateeFrankerZ-d3IrR90WPncoIVyg": [
       1795096994,
@@ -21111,7 +21239,9 @@
       1795097927,
       1294,
       1795098232,
-      1309
+      1309,
+      1795099280,
+      1348
     ],
     "twitch_PoisedFlaccidGooseYouDontSay-JIcFShXyT-deyXRF": [
       1795096994,
@@ -21123,7 +21253,9 @@
       1795097927,
       945,
       1795098232,
-      951
+      951,
+      1795099280,
+      979
     ],
     "twitch_BeautifulInexpensiveSwordHassaanChop-EECLEUAyzXQta1Oj": [
       1795096994,
@@ -21133,7 +21265,9 @@
       1795097629,
       912,
       1795097927,
-      1795098232
+      1795098232,
+      1795099280,
+      917
     ],
     "twitch_HeadstrongTsundereCurryYee-2lfzl_LCIeRorlWf": [
       1795096994,
@@ -21145,7 +21279,9 @@
       1795097927,
       908,
       1795098232,
-      910
+      910,
+      1795099280,
+      926
     ],
     "twitch_HonestUnsightlyRingPJSugar-thab6msCCtg7e7d-": [
       1795096994,
@@ -21157,19 +21293,33 @@
       1795097927,
       905,
       1795098232,
-      910
+      910,
+      1795099280,
+      927
     ],
     "twitch_SourGrotesqueHamsterANELE-ARR_YQ8vacihozRB": [
       1795097629,
       504,
       1795097927,
       1795098232,
-      508
+      508,
+      1795099280,
+      517
     ],
     "twitch_BeautifulAbrasiveQuailJebaited-eC5ahIUB6cDkFrTL": [
       1795097927,
       783,
-      1795098232
+      1795098232,
+      1795099280,
+      818
+    ],
+    "twitch_CourteousCooperativePhoneOSfrog-SctmqK_3L09YKRX7": [
+      1795099280,
+      1048
+    ],
+    "twitch_ClearDifferentGarlicNomNom-Fs_0YNyTuWAtVMSk": [
+      1795099280,
+      827
     ]
   },
   "rr": "bananas",
@@ -21226,7 +21376,8 @@
     1165,
     2561,
     3347,
-    3386
+    3386,
+    1081
   ],
   "moments_ch": {
     "xqc": [
@@ -21304,6 +21455,11 @@
         1795071255,
         1795030208,
         "twitch_CooperativeAthleticMarjoramPeoplesChamp-ED9p6JnfM5HqbI2l"
+      ],
+      [
+        1795099968,
+        1795044655,
+        "twitch_DelightfulLachrymoseMelonVoteYea-JeFCNhZHEyTfoOMJ"
       ]
     ],
     "adinross": [

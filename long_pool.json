@@ -5476,10 +5476,83 @@
     "channel": "xqc",
     "platform": "twitch",
     "title": "Lost to cow and a pole mid chase xD",
-    "views": 811,
+    "views": 1081,
     "created": 1795044655,
     "category": "Grand Theft Auto VI",
-    "added": 1795072404
+    "added": 1795099968,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/xqc/20261118_twitch_DelightfulLachrymoseMelonVoteYea-JeFCNhZHEyTfoOMJ/source.mp4",
+    "peak": 16.85,
+    "cut": [
+      0.0,
+      19.87
+    ],
+    "dur": 44.27,
+    "tags": [
+      "chase"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 1.0,
+      "crash": 0.0,
+      "rage": 0.15,
+      "first-reaction": 0.2,
+      "wow": 0.12,
+      "_loud": 1.8,
+      "_motion": 31.1
+    },
+    "quote": "",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.95,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "primary": "chase",
+    "proven": [
+      "chase"
+    ],
+    "evidence": {
+      "chase": [
+        "motion",
+        "text"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.39,
+    "signals": {
+      "siren": 0.0,
+      "impact": 9.4,
+      "loud": 2.2,
+      "motion": 22.3,
+      "sustained": 0.87,
+      "spike": 2.5,
+      "laugh": 0,
+      "static": 0.01,
+      "letterbox": 0.0,
+      "luma": 89.5,
+      "dark": 0.0
+    }
   },
   "twitch_DifficultTrustworthyCobblerRaccAttack-eZdV25Nhm-1NTlM2": {
     "id": "twitch_DifficultTrustworthyCobblerRaccAttack-eZdV25Nhm-1NTlM2",
@@ -6447,12 +6520,12 @@
     "channel": "xqc",
     "platform": "twitch",
     "title": "You call yourself a gamer?",
-    "views": 783,
+    "views": 818,
     "created": 1795075453,
     "category": "Grand Theft Auto VI",
     "video_id": "2932113307",
     "vod_offset": 71495,
-    "added": 1795099128
+    "added": 1795100070
   },
   "twitch_ColdbloodedTsunderePanTBTacoLeft-NhrF630w-AelL0rG": {
     "id": "twitch_ColdbloodedTsunderePanTBTacoLeft-NhrF630w-AelL0rG",
@@ -6460,11 +6533,25 @@
     "channel": "xqc",
     "platform": "twitch",
     "title": "holy forsenCoomer",
-    "views": 816,
+    "views": 820,
     "created": 1795020552,
     "category": "Grand Theft Auto VI",
     "video_id": "2932113307",
     "vod_offset": 37203,
-    "added": 1795099128
+    "added": 1795100070
+  },
+  "twitch_ClearDifferentGarlicNomNom-Fs_0YNyTuWAtVMSk": {
+    "id": "twitch_ClearDifferentGarlicNomNom-Fs_0YNyTuWAtVMSk",
+    "url": "https://www.twitch.tv/2xrakai/clip/ClearDifferentGarlicNomNom-Fs_0YNyTuWAtVMSk",
+    "channel": "2xrakai",
+    "platform": "twitch",
+    "title": "the gators, the gators, the gators",
+    "views": 827,
+    "created": 1795066614,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932781377",
+    "vod_offset": 4316,
+    "cluster": 1,
+    "added": 1795100070
   }
 }
