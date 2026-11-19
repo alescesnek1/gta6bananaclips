@@ -10,7 +10,7 @@
   "caps": {
     "twitter": 3,
     "threads": 3,
-    "tiktok": 3,
+    "tiktok": 6,
     "youtube": 3
   },
   "blocklist": [],
@@ -252,5 +252,12 @@
       24
     ]
   },
-  "_net_hours": "Ales 19. 11.: frekvence beze zmeny (YouTube max 3 denne, jen nejsilnejsi), ale cas uploadu ano: YouTube jen 17-24 h Praha (den v USA)."
+  "_net_hours": "Ales 19. 11.: frekvence beze zmeny (YouTube max 3 denne, jen nejsilnejsi), ale cas uploadu ano: YouTube jen 17-24 h Praha (den v USA).",
+  "strong_only": [
+    "youtube"
+  ],
+  "net_gap_min": {
+    "tiktok": 120
+  },
+  "_tiktok": "Ales 19. 11.: na TikToku 10 h nic (limit 3 + jen nejsilnejsi se vycerpal) -> TikTok kazdy klip, max 6 denne, odstup aspon 2 h; YouTube dal jen nejsilnejsi."
 }

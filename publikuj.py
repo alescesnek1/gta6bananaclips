@@ -1259,6 +1259,20 @@ def repeat_moment(m, recs, days=3):
             return f"same YouTube moment as {k}"
     return ""
 
+def service_recent(recs, chans, service, due, gap_min):
+    """Did this brand post to `service` less than gap_min minutes before `due` (any record, any path)?"""
+    ids = {c["id"] for c in chans if c.get("service", "").lower() == service}
+    for r in recs.values():
+        if not isinstance(r, dict) or r.get("deleted") or not ids & set(r.get("posts") or {}):
+            continue
+        try:
+            t = datetime.fromisoformat(r.get("due") or "")
+        except ValueError:
+            continue
+        if abs((due - t).total_seconds()) < gap_min * 60:
+            return True
+    return False
+
 def strong_clip(m, src):
     """TikTok / YouTube (0 views on every post, 18. 11.): only a top streamer's clip or a clip over hot_score."""
     top = {x.lower() for x in src.get("star_tier1", [])}
@@ -1612,8 +1626,11 @@ def cmd_den(a):
                 service = ch["service"].lower()
                 if used.get(service, 0) >= caps.get(service, 99):
                     continue
-                if service in ("tiktok", "youtube") and not strong_clip(m, src_cfg):
-                    continue                               # 18. 11.: 0 views there - only the strongest 3/day
+                if service in (src_cfg.get("strong_only") or ["youtube"]) and not strong_clip(m, src_cfg):
+                    continue                               # 18. 11.: 0 views on YouTube - only the strongest there
+                gap = (src_cfg.get("net_gap_min") or {}).get(service)
+                if gap and service_recent(recs, chans, service, due, gap):
+                    continue                               # 19. 11.: TikTok every clip, but spaced (no spam look)
                 win = (src_cfg.get("net_hours") or {}).get(service)
                 if win and not (win[0] <= due.hour < win[1]):
                     continue                               # 19. 11. (YouTube Studio advice): 1 short a day when viewers are on
