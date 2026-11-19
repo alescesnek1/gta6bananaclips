@@ -5720,5 +5720,17 @@
     "vod_offset": 420,
     "cluster": 1,
     "added": 1795084110
+  },
+  "twitch_DifferentBlindingMartenKappaPride-0r0DTjKY8R7hrnkX": {
+    "id": "twitch_DifferentBlindingMartenKappaPride-0r0DTjKY8R7hrnkX",
+    "url": "https://www.twitch.tv/ishowspeed/clip/DifferentBlindingMartenKappaPride-0r0DTjKY8R7hrnkX",
+    "channel": "ishowspeed",
+    "platform": "twitch",
+    "title": "SPEED PLAYING GTA 6",
+    "views": 1397,
+    "created": 1795009480,
+    "category": "Grand Theft Auto VI",
+    "cluster": 1,
+    "added": 1795084415
   }
 }
