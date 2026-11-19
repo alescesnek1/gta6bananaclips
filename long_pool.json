@@ -15303,13 +15303,13 @@
     "channel": "dansgaming",
     "platform": "twitch",
     "title": "ExtraDansGaming",
-    "views": 571,
+    "views": 667,
     "created": 1795118180,
     "category": "Grand Theft Auto VI",
     "video_id": "2933947716",
     "vod_offset": 6754,
     "cluster": 1,
-    "added": 1795120946
+    "added": 1795121331
   },
   "twitch_SweetModernRedpandaPRChase-IMIxOFtAbAksBE-a": {
     "id": "twitch_SweetModernRedpandaPRChase-IMIxOFtAbAksBE-a",
@@ -15324,5 +15324,31 @@
     "vod_offset": 655,
     "cluster": 1,
     "added": 1795120946
+  },
+  "twitch_SpeedySpineyOxJebaited-pVQs3zdgWVwVeNYD": {
+    "id": "twitch_SpeedySpineyOxJebaited-pVQs3zdgWVwVeNYD",
+    "url": "https://www.twitch.tv/behzinga/clip/SpeedySpineyOxJebaited-pVQs3zdgWVwVeNYD",
+    "channel": "behzinga",
+    "platform": "twitch",
+    "title": "the jiggle",
+    "views": 529,
+    "created": 1795092367,
+    "category": "Grand Theft Auto VI",
+    "cluster": 1,
+    "added": 1795121332
+  },
+  "twitch_TemperedObeseEggnogANELE-f4kvDqJQxhl0N5x5": {
+    "id": "twitch_TemperedObeseEggnogANELE-f4kvDqJQxhl0N5x5",
+    "url": "https://www.twitch.tv/sypherpk/clip/TemperedObeseEggnogANELE-f4kvDqJQxhl0N5x5",
+    "channel": "sypherpk",
+    "platform": "twitch",
+    "title": "PK flying in GTA 6",
+    "views": 541,
+    "created": 1795066721,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933221067",
+    "vod_offset": 3490,
+    "cluster": 1,
+    "added": 1795121332
   }
 }
