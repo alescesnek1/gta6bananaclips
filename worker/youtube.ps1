@@ -14,6 +14,10 @@ $ylock = Join-Path $dir "out\youtube.lock"
 $PID | Set-Content $ylock -Encoding ascii
 $env:KLIPY_STATE = Join-Path $dir "worker_state.json"   # own memory: the checkout is reset below
 $env:PYTHONUTF8 = "1"
+# ffmpeg failed on the non-ASCII home folder: render (and temp files) into an ASCII folder
+$env:KLIPY_OUT = "C:\Users\Public\gta6-out"
+$env:TEMP = "C:\Users\Public\gta6-out\tmp"; $env:TMP = $env:TEMP
+New-Item -ItemType Directory -Force $env:TEMP | Out-Null
 $py = Join-Path $dir ".venv\Scripts\python.exe"
 $now = Get-Date
 try {

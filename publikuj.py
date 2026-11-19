@@ -50,7 +50,8 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 HERE = Path(__file__).resolve().parent
-OUT = HERE / "out"
+# KLIPY_OUT: the 24/7 PC renders into an ASCII path (19. 11.: its home folder with a diacritic broke ffmpeg)
+OUT = Path(os.environ.get("KLIPY_OUT") or HERE / "out")
 PUBLISHED = HERE / "publikovano.json"   # clip id -> url, path, time, Buffer post ids
 CHANNELS = HERE / "buffer.json"         # Buffer channels we post to (from `kanaly`)
 API = "https://api.buffer.com"

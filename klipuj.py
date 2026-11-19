@@ -50,7 +50,8 @@ import numpy as np
 
 BRAND = "gta6bananaclips"
 HERE = Path(__file__).resolve().parent
-OUT = HERE / "out"
+# KLIPY_OUT: the 24/7 PC renders into an ASCII path (19. 11.: its home folder with a diacritic broke ffmpeg)
+OUT = Path(os.environ.get("KLIPY_OUT") or HERE / "out")
 TMP = OUT / "_tmp"                   # audio for peak detection, deleted after use
 # rendered / failed clip ids; the YouTube worker PC keeps its own file (KLIPY_STATE), because it
 # resets its checkout to GitHub before every run (worker/beh.ps1)
