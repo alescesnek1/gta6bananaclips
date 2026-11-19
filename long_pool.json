@@ -14133,5 +14133,230 @@
     "vod_offset": 4223,
     "cluster": 1,
     "added": 1795109958
+  },
+  "twitch_BumblingSmoothWombatTBCheesePull-HDOt756Pax3tFunp": {
+    "id": "twitch_BumblingSmoothWombatTBCheesePull-HDOt756Pax3tFunp",
+    "url": "https://www.twitch.tv/swagg/clip/BumblingSmoothWombatTBCheesePull-HDOt756Pax3tFunp",
+    "channel": "swagg",
+    "platform": "twitch",
+    "title": "wrecked",
+    "views": 678,
+    "created": 1795028113,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932231823",
+    "vod_offset": 28048,
+    "cluster": 1,
+    "added": 1795110625
+  },
+  "twitch_FrozenPluckyPistachioBleedPurple-D6ZTqqv8nSMcLUy2": {
+    "id": "twitch_FrozenPluckyPistachioBleedPurple-D6ZTqqv8nSMcLUy2",
+    "url": "https://www.twitch.tv/jerma985/clip/FrozenPluckyPistachioBleedPurple-D6ZTqqv8nSMcLUy2",
+    "channel": "jerma985",
+    "platform": "twitch",
+    "title": "We have to go to the top",
+    "views": 1037,
+    "created": 1795086767,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933227596",
+    "vod_offset": 23119,
+    "added": 1795110624
+  },
+  "twitch_MushyAuspiciousThymeCeilingCat-Eirf0WCGpbMk4eIh": {
+    "id": "twitch_MushyAuspiciousThymeCeilingCat-Eirf0WCGpbMk4eIh",
+    "url": "https://www.twitch.tv/ishowspeed/clip/MushyAuspiciousThymeCeilingCat-Eirf0WCGpbMk4eIh",
+    "channel": "ishowspeed",
+    "platform": "twitch",
+    "title": "Aysho Speed 😂😂😂😂",
+    "views": 678,
+    "created": 1795030531,
+    "category": "Grand Theft Auto VI",
+    "cluster": 1,
+    "added": 1795110624,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/ishowspeed/20261118_twitch_MushyAuspiciousThymeCeilingCat-Eirf0WCGpbMk4eIh/source.mp4",
+    "peak": 41.550000000000004,
+    "cut": [
+      28.37,
+      48.43
+    ],
+    "dur": 58.75,
+    "tags": [
+      "funny",
+      "rage",
+      "wow",
+      "crash"
+    ],
+    "tag_scores": {
+      "funny": 1.0,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.3,
+      "rage": 0.65,
+      "first-reaction": 0.2,
+      "wow": 0.61,
+      "_loud": 5.7,
+      "_motion": 20.1
+    },
+    "quote": "Oh, have a good day.",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 1.0,
+      "rage": 0.25,
+      "fail": 0.25,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.25
+    },
+    "primary": "funny",
+    "proven": [
+      "funny"
+    ],
+    "evidence": {
+      "funny": [
+        "loud",
+        "text"
+      ],
+      "rage": [
+        "loud"
+      ],
+      "fail": [
+        "loud"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "loud"
+      ]
+    },
+    "fun": 0.67,
+    "signals": {
+      "siren": 0.0,
+      "impact": 50.0,
+      "loud": 8.0,
+      "motion": 14.9,
+      "sustained": 0.6,
+      "spike": 4.6,
+      "laugh": 0,
+      "static": 0.11,
+      "letterbox": 0.0,
+      "luma": 66.9,
+      "dark": 0.0
+    }
+  },
+  "youtube_ZyG3we-fi0Q_6574": {
+    "id": "youtube_ZyG3we-fi0Q_6574",
+    "url": "https://6aff35c2bd2c5ec9212ed084--gta6bananaclips-media.netlify.app/yt/youtube_ZyG3we-fi0Q_6574_16x9.mp4",
+    "channel": "kwebbelkop",
+    "platform": "youtube",
+    "title": "Playing GTA 6 Until I Get Arrested",
+    "views": 26173,
+    "created": 1795102782,
+    "category": "Playing GTA 6 Until I Get Arrested kwebbelkop gta 6 gta vi grand theft auto 6 grand theft auto vi gta 6 gameplay gta 6 first time gta 6 live gta 6 livestream gta 6 walkthrough gta 6 part 1 vice city",
+    "signal_score": 1.0,
+    "added": 1795110628,
+    "peak": 24.25,
+    "cut": [
+      0.0,
+      26.02
+    ],
+    "dur": 26.02,
+    "tags": [
+      "first-reaction",
+      "rage",
+      "glitch"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.52,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.62,
+      "first-reaction": 0.72,
+      "wow": 0.08,
+      "_loud": 1.7,
+      "_motion": 11.0
+    },
+    "quote": "Let's put something away, put everything away.",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.63,
+      "fail": 0.0,
+      "physics": 0.25,
+      "glitch": 0.88,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.88,
+      "wow": 0.0
+    },
+    "primary": "glitch",
+    "proven": [
+      "glitch",
+      "first-reaction"
+    ],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike",
+        "text"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion-spike"
+      ],
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ]
+    },
+    "fun": 0.37,
+    "signals": {
+      "siren": 0.0,
+      "impact": 53.2,
+      "loud": 1.7,
+      "motion": 8.0,
+      "sustained": 0.19,
+      "spike": 29.3,
+      "laugh": 0,
+      "static": 0.02,
+      "letterbox": 0.0,
+      "luma": 29.5,
+      "dark": 0.0
+    },
+    "seg_from": 0.0,
+    "src_mb": 7.9,
+    "source": "https://6aff35c2bd2c5ec9212ed084--gta6bananaclips-media.netlify.app/yt/youtube_ZyG3we-fi0Q_6574_16x9.mp4",
+    "yt_url": "https://www.youtube.com/watch?v=ZyG3we-fi0Q"
   }
 }
