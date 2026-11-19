@@ -404,7 +404,9 @@ class LongPromo(Base):
         self.deploys = []
         self.more = [mock.patch.object(S, "LONG_EPISODES", self.eps), mock.patch.object(S, "LONG_USED", self.used),
                      mock.patch.object(P, "records", side_effect=lambda z=None: self.recs),
-                     mock.patch.object(S, "POOL_DIR", self.tmp / "pool"), mock.patch.object(S, "HERE", self.tmp)]
+                     mock.patch.object(S, "POOL_DIR", self.tmp / "pool"), mock.patch.object(S, "HERE", self.tmp),
+                     mock.patch.object(S, "yt_published", side_effect=lambda z, title, since: self.seen)]
+        self.seen = LONG_AT + timedelta(minutes=20)       # when the video showed up on the brand's YouTube channel
         for p in self.more:
             p.start()
 
@@ -435,8 +437,8 @@ class LongPromo(Base):
         self.assertEqual(info["publish"], publish)
         bs = S.bstate({}, "bananas")
         due = self.run_once(bs, LONG_AT + timedelta(hours=1))
-        self.assertGreaterEqual(due - publish, timedelta(minutes=S.PROMO_AFTER_MIN))
-        self.assertLessEqual(due - publish, timedelta(minutes=S.PROMO_AFTER_MIN + S.PROMO_JITTER[1] + 2))
+        self.assertGreaterEqual(due - self.seen, timedelta(hours=2))          # 2 h after the REAL upload
+        self.assertLessEqual(due - self.seen, timedelta(hours=2, minutes=30))
         self.assertNotIn(due.minute, (0, 30))
         self.assertEqual(len(self.deploys), 1)
         inp = self.posted[0][0]
@@ -447,6 +449,7 @@ class LongPromo(Base):
         self.assertIsNone(self.run_once(bs, LONG_AT + timedelta(hours=1, minutes=30)))     # not twice
         self.assertEqual((len(self.posted), len(self.deploys)), (n, 1))
         self.write("funny-day", 4, LONG_AT + timedelta(days=2))                             # the next long-form
+        self.seen = LONG_AT + timedelta(days=2, minutes=20)
         self.assertIsNotNone(self.run_once(bs, LONG_AT + timedelta(days=2, hours=1)))
         self.assertEqual(len(bs["long"]), 2)
         self.assertNotIn(SECRET, json.dumps(bs))
@@ -471,8 +474,17 @@ class LongPromo(Base):
         self.assertEqual((bs["long"], self.posted, self.deploys), ({}, [], []))
         self.assertTrue(list((self.tmp / "out" / "_stories").glob("bananas_long_*.jpg")))
         self.assertIsNone(self.run_once(bs, LONG_AT + timedelta(days=1)))
-        self.assertEqual(list(bs["long"].values())[0]["skip"], "too late")
+        self.assertEqual(list(bs["long"].values())[0]["skip"], "too late after the upload")
         self.assertEqual(self.posted, [])
+
+    def test_waits_until_the_video_is_on_youtube(self):
+        bs = S.bstate({}, "bananas")
+        self.seen = None                                  # e-mailed, not uploaded yet: no story, nothing stored
+        self.assertIsNone(self.run_once(bs, LONG_AT + timedelta(hours=3)))
+        self.assertEqual((bs["long"], self.posted), ({}, []))
+        self.seen = LONG_AT + timedelta(hours=10)         # Ales uploads later: the story follows that
+        due = self.run_once(bs, LONG_AT + timedelta(hours=10, minutes=5))
+        self.assertGreaterEqual(due - self.seen, timedelta(hours=2))
 
     def test_no_long_form_no_promo(self):
         self.eps.write_text("{}", encoding="utf-8")

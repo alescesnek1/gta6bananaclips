@@ -755,6 +755,32 @@ def promo_frame(rows, znacka, bg, reel, seed, reserve=0):
     return None, None
 
 
+YT_CHANNEL = {"bananas": "UCn88EWhjs33Ns_n1nawhFXw", "fanpage": "UCRhoHHaFBc4ziJsQpR7G9qQ"}
+
+
+def yt_published(znacka, title, since):
+    """When the brand's own YouTube channel published a video whose title starts like the episode title
+    (series + number, e.g. "GTA 6 Funniest Moments #1"), from the public RSS feed; None = not up yet."""
+    import urllib.request
+    import xml.etree.ElementTree as ET
+    cid = YT_CHANNEL.get(znacka)
+    if not cid or not title:
+        return None
+    try:
+        raw = urllib.request.urlopen(f"https://www.youtube.com/feeds/videos.xml?channel_id={cid}", timeout=20).read()
+        ns = {"a": "http://www.w3.org/2005/Atom"}
+        head = re.match(r"(.*?#\d+)", title)                # "GTA 6 Funniest Moments #1" (names after it may change)
+        key = re.sub(r"[^a-z0-9#]", "", (head.group(1) if head else title).lower())
+        for e in ET.fromstring(raw).findall("a:entry", ns):
+            t = e.findtext("a:title", "", ns)
+            pub = datetime.fromisoformat(e.findtext("a:published", "", ns))
+            if re.sub(r"[^a-z0-9#]", "", t.lower()).startswith(key) and pub >= since - timedelta(hours=1):
+                return pub.astimezone(P.TZ)
+    except Exception as e:
+        log(f"{znacka}: YouTube RSS failed ({str(e)[-80:]})")
+    return None
+
+
 def do_long_promo(znacka, bs, now, draft, dry, deploy=None, grab=None):
     """Schedule the automatic promo story of the brand's latest long-form (once per long-form). Returns
     its due time or None."""
@@ -764,12 +790,22 @@ def do_long_promo(znacka, bs, now, draft, dry, deploy=None, grab=None):
     chans = story_channels(znacka)
     if not chans:
         return None
-    if now > info["publish"] + timedelta(hours=PROMO_MAX_LATE_H):
+    if now > info["at"] + timedelta(days=3):          # never uploaded within the download window: give up
         if not dry:
-            bs["long"][info["key"]] = {"skip": "too late", "title": info["title"]}
+            bs["long"][info["key"]] = {"skip": "not on YouTube within 3 days", "title": info["title"]}
         return None
-    due = promo_due(info, znacka)
-    due = due if due > now + timedelta(minutes=2) else P.fresh_due(due)
+    # 19. 11.: the story went out at the e-mail's planned time while the video was not up yet (Ales uploads by
+    # hand, later) -> only once the brand's OWN YouTube channel really shows the episode (public RSS), ~2 h after
+    seen = yt_published(znacka, info["title"], info["at"])
+    if seen is None:
+        log(f"{znacka}: long-form promo {info['key']}: video not on YouTube yet, waiting")
+        return None
+    if now > seen + timedelta(hours=PROMO_MAX_LATE_H):
+        if not dry:
+            bs["long"][info["key"]] = {"skip": "too late after the upload", "title": info["title"]}
+        return None
+    due = max(seen + timedelta(hours=2), now + timedelta(minutes=3))
+    due = P.fresh_due(due)
     best = max(info["moments"], key=lambda r: (r.get("rating") or 0, r.get("views") or 0), default=None)
     bg = (grab or grab_frame)(best["url"]) if best and best.get("url") else None
     img, _ = promo_frame([(f"NEW: {info['title']}", "main"), (PROMO_LINE, "sub")], znacka, bg, True, info["key"])

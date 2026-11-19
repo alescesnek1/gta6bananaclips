@@ -689,12 +689,21 @@ def reach(moments):
     return max(moments, key=lambda m: m["reach"])["channel"] if moments else None
 
 def names(moments, n=3):
+    """The streamers for the title: 19. 11. (owner) the top stars first (sources.json star_tier1: Kai Cenat,
+    IShowSpeed, xQc), then the other star streamers, then the most viral one, then by rank - written the way
+    people search them (publikuj.NAMES: "Kai Cenat", not "KaiCenat")."""
+    import publikuj as P
+    src = K.load_json(K.SOURCES, {})
+    tier1 = [x.lower() for x in src.get("star_tier1", [])]
+    stars = {x.lower() for x in src.get("star_streamers", [])}
+    nice = lambda m: P.NAMES.get(str(m["channel"]).lower()) or m.get("name") or m["channel"]
+    def key(m):
+        ch = str(m["channel"]).lower()
+        return (tier1.index(ch) if ch in tier1 else len(tier1) if ch in stars else len(tier1) + 1,
+                -(m.get("reach") or 0), m["rank"])
     seen = []
-    lead = max(moments, key=lambda m: m.get("reach") or 0) if moments else None
-    if lead and lead.get("reach"):                          # the most viral streamer first
-        seen.append(lead.get("name") or lead["channel"])
-    for m in sorted(moments, key=lambda m: m["rank"]):
-        nm = m.get("name") or m["channel"]
+    for m in sorted(moments, key=key):
+        nm = nice(m)
         if nm not in seen:
             seen.append(nm)
     return seen[:n]

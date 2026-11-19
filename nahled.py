@@ -424,7 +424,15 @@ def prepare_long(meta_path):
     # the most viral streamer of the video first (followers / views), within him the moment with the
     # strongest emotion (loudest payoff), then the next streamers
     loud = lambda x: (x.get("tag_scores") or {}).get("_loud") or 0
-    by_reach = sorted(m["moments"], key=lambda x: (-(x.get("reach") or 0), -loud(x), x["rank"]))
+    # 19. 11. (owner: "IShowSpeed is in the video, why is he not on the thumbnail?"): the top stars of
+    # sources.json first in their order (Kai Cenat, IShowSpeed, xQc), then the other star streamers, then reach
+    src = K.load_json(K.SOURCES, {})
+    tier1 = [x.lower() for x in src.get("star_tier1", [])]
+    stars = {x.lower() for x in src.get("star_streamers", [])}
+    def star_rank(x):
+        ch = str(x.get("channel") or "").lower()
+        return tier1.index(ch) if ch in tier1 else (len(tier1) if ch in stars else len(tier1) + 1)
+    by_reach = sorted(m["moments"], key=lambda x: (star_rank(x), -(x.get("reach") or 0), -loud(x), x["rank"]))
     top, seen = [], set()
     for mo in by_reach:
         if mo["channel"] not in seen:
