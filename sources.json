@@ -3,15 +3,15 @@
   "game": "Grand Theft Auto VI\\b|\\bGTA ?(VI|6)\\b",
   "ramp": {
     "2026-11-18": 8,
-    "2026-11-19": 8,
-    "2026-11-26": 8,
-    "2026-12-03": 10
+    "2026-11-19": 12,
+    "2026-11-26": 12,
+    "2026-12-03": 12
   },
   "caps": {
-    "twitter": 3,
-    "threads": 3,
-    "tiktok": 6,
-    "youtube": 3
+    "twitter": 6,
+    "threads": 6,
+    "tiktok": 10,
+    "youtube": 6
   },
   "blocklist": [],
   "twitch_game": "Grand Theft Auto VI",
@@ -138,7 +138,7 @@
   "hot_max_age_h": 3,
   "hot_room": 2,
   "live_from": "2026-11-17T23:00:00Z",
-  "max_per_day": 10,
+  "max_per_day": 14,
   "good_score": 1000,
   "extra_score": 5000,
   "netlify_gb_month": 100,
@@ -248,7 +248,7 @@
   "_min_viral": "Ales 19. 11.: shorty nejsou dost viralni ani akcni -> kazdy short (i dohaneni minima) min. skore 600 (krome Kai/Speed/xQc), akcni stitek >= 0,6.",
   "net_hours": {
     "youtube": [
-      17,
+      15,
       24
     ]
   },
@@ -257,7 +257,8 @@
     "youtube"
   ],
   "net_gap_min": {
-    "tiktok": 120
+    "tiktok": 75
   },
+  "_volume": "Ales 19. 11. odpoledne: obsahu musi byt hafo -> 10 normalnich + 2x Top 4 denne na kanal (ramp 12), TikTok 10 s odstupem 75 min, YouTube 6 (jen silne, 15-24 h), X a Threads 6.",
   "_tiktok": "Ales 19. 11.: na TikToku 10 h nic (limit 3 + jen nejsilnejsi se vycerpal) -> TikTok kazdy klip, max 6 denne, odstup aspon 2 h; YouTube dal jen nejsilnejsi."
 }

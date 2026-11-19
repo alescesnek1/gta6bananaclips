@@ -37,16 +37,16 @@
     "ramp": {
       "2026-11-17": 0,
       "2026-11-18": 8,
-      "2026-11-19": 8,
-      "2026-11-26": 8,
-      "2026-12-03": 10
+      "2026-11-19": 12,
+      "2026-11-26": 12,
+      "2026-12-03": 12
     },
     "extra_ramp": {
       "2026-11-18": 1000,
       "2026-11-19": 1000,
       "2026-11-26": 5000
     },
-    "max_per_day": 10,
+    "max_per_day": 14,
     "top3": false,
     "_rank4": "Top 4 funniest (majitel 19. 11.): 2x denne z vlastnich shortu kanalu, #4 -> #1, barvy medaili, seznam v pasu facecamu, na konci jen Follow; kazdy Top 4 ubere 1 normalni short z kvoty.",
     "rank4": true,
@@ -147,15 +147,15 @@
     "ramp": {
       "2026-11-17": 0,
       "2026-11-18": 8,
-      "2026-11-19": 8,
-      "2026-11-26": 8
+      "2026-11-19": 12,
+      "2026-11-26": 12
     },
     "extra_ramp": {
       "2026-11-18": 1000,
       "2026-11-19": 1000,
       "2026-11-26": 5000
     },
-    "max_per_day": 10,
+    "max_per_day": 14,
     "top3": false,
     "rank4": true,
     "rank_times": ["20:15", "23:45"],
