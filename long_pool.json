@@ -9542,7 +9542,7 @@
     "category": "Grand Theft Auto VI",
     "cluster": 1,
     "added": 1795098336,
-    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_HumbleGeniusStrawberryBleedPurple-CYhEi_LZY9mbAQxo\\source.mp4",
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/ishowspeed/20261118_twitch_HumbleGeniusStrawberryBleedPurple-CYhEi_LZY9mbAQxo/source.mp4",
     "peak": 23.85,
     "cut": [
       16.53,
@@ -9567,7 +9567,7 @@
       "_loud": 2.9,
       "_motion": 30.2
     },
-    "quote": "Oh Hell no, hey, oh no No, skip this skip",
+    "quote": "the hell is going on F*** out where Jason at?",
     "rendered": [
       "bananas"
     ],
@@ -11599,7 +11599,7 @@
     "category": "Grand Theft Auto VI",
     "cluster": 1,
     "added": 1795102337,
-    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_SavoryEagerLlamaLeeroyJenkins-fzfiphCY-mKdwJvr\\source.mp4",
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/ishowspeed/20261118_twitch_SavoryEagerLlamaLeeroyJenkins-fzfiphCY-mKdwJvr/source.mp4",
     "peak": 18.150000000000002,
     "cut": [
       3.5,
@@ -14091,5 +14091,47 @@
     "vod_offset": 760,
     "cluster": 1,
     "added": 1795109773
+  },
+  "twitch_DelightfulUgliestKuduDBstyle-6BB6epD4XeLuCUlS": {
+    "id": "twitch_DelightfulUgliestKuduDBstyle-6BB6epD4XeLuCUlS",
+    "url": "https://www.twitch.tv/iitztimmy/clip/DelightfulUgliestKuduDBstyle-6BB6epD4XeLuCUlS",
+    "channel": "iitztimmy",
+    "platform": "twitch",
+    "title": "driving ragebait",
+    "views": 685,
+    "created": 1795058118,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933038983",
+    "vod_offset": 4936,
+    "cluster": 1,
+    "added": 1795109958
+  },
+  "twitch_RenownedFurryLobsterBCouch-1C3NayC9uaEwX0eh": {
+    "id": "twitch_RenownedFurryLobsterBCouch-1C3NayC9uaEwX0eh",
+    "url": "https://www.twitch.tv/caseoh_/clip/RenownedFurryLobsterBCouch-1C3NayC9uaEwX0eh",
+    "channel": "caseoh_",
+    "platform": "twitch",
+    "title": "DOLORES IN GTA 6",
+    "views": 888,
+    "created": 1795034748,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932628190",
+    "vod_offset": 4068,
+    "cluster": 1,
+    "added": 1795109958
+  },
+  "twitch_TenderAssiduousTrayMikeHogu-kBARE4wnaV1W1zIE": {
+    "id": "twitch_TenderAssiduousTrayMikeHogu-kBARE4wnaV1W1zIE",
+    "url": "https://www.twitch.tv/caseoh_/clip/TenderAssiduousTrayMikeHogu-kBARE4wnaV1W1zIE",
+    "channel": "caseoh_",
+    "platform": "twitch",
+    "title": "not the arse",
+    "views": 955,
+    "created": 1795034884,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932628190",
+    "vod_offset": 4223,
+    "cluster": 1,
+    "added": 1795109958
   }
 }
