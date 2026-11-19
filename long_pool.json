@@ -14494,5 +14494,127 @@
     "vod_offset": 30840,
     "cluster": 1,
     "added": 1795111780
+  },
+  "twitch_PrettiestSpookyIguanaWOOP-jACKcmsXPCLidZHW": {
+    "id": "twitch_PrettiestSpookyIguanaWOOP-jACKcmsXPCLidZHW",
+    "url": "https://www.twitch.tv/zwebackhd/clip/PrettiestSpookyIguanaWOOP-jACKcmsXPCLidZHW",
+    "channel": "zwebackhd",
+    "platform": "twitch",
+    "title": "FREAKY YACHT PARTY",
+    "views": 653,
+    "created": 1795072132,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932744639",
+    "vod_offset": 33994,
+    "cluster": 1,
+    "added": 1795112207
+  },
+  "twitch_RudeSilkyKittenArgieB8-SUHTbC8SFJt3MMtq": {
+    "id": "twitch_RudeSilkyKittenArgieB8-SUHTbC8SFJt3MMtq",
+    "url": "https://www.twitch.tv/syndicate/clip/RudeSilkyKittenArgieB8-SUHTbC8SFJt3MMtq",
+    "channel": "syndicate",
+    "platform": "twitch",
+    "title": "ggs",
+    "views": 642,
+    "created": 1795031249,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932230379",
+    "vod_offset": 31215,
+    "cluster": 1,
+    "added": 1795112207
+  },
+  "youtube_xMXp80Cntxw_603": {
+    "id": "youtube_xMXp80Cntxw_603",
+    "url": "https://6aff3cbc74eea07ba08f7878--gta6bananaclips-media.netlify.app/yt/youtube_xMXp80Cntxw_603_16x9.mp4",
+    "channel": "tgg_",
+    "platform": "youtube",
+    "title": "GTA 6 LAUNCH STREAM! Playing GTA 6 for the First Time",
+    "views": 9210596,
+    "created": 1795037101,
+    "category": "GTA 6 LAUNCH STREAM! Playing GTA 6 for the First Time gta 5 gta online gta 6 grand theft auto making money gta get rich gta",
+    "signal_score": 1.0,
+    "added": 1795112211,
+    "peak": 19.95,
+    "cut": [
+      0.0,
+      27.55
+    ],
+    "dur": 27.55,
+    "tags": [
+      "first-reaction",
+      "funny"
+    ],
+    "tag_scores": {
+      "funny": 0.33,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.1,
+      "first-reaction": 1.0,
+      "wow": 0.08,
+      "_loud": 4.9,
+      "_motion": 10.4
+    },
+    "quote": "Like what this is the day This is the end of sentence.",
+    "rendered": [
+      "fanpage"
+    ],
+    "cats": {
+      "funny": 0.6,
+      "rage": 0.25,
+      "fail": 0.25,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 1.0,
+      "wow": 0.25
+    },
+    "primary": "first-reaction",
+    "proven": [
+      "funny",
+      "first-reaction"
+    ],
+    "evidence": {
+      "funny": [
+        "loud",
+        "text"
+      ],
+      "rage": [
+        "loud"
+      ],
+      "fail": [
+        "loud"
+      ],
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ],
+      "wow": [
+        "loud"
+      ]
+    },
+    "fun": 0.48,
+    "signals": {
+      "siren": 0.0,
+      "impact": 40.1,
+      "loud": 5.1,
+      "motion": 7.1,
+      "sustained": 0.07,
+      "spike": 5.5,
+      "laugh": 0,
+      "static": 0.1,
+      "letterbox": 0.0,
+      "luma": 62.9,
+      "dark": 0.0
+    },
+    "seg_from": 0.0,
+    "src_mb": 8.7,
+    "source": "https://6aff3cbc74eea07ba08f7878--gta6bananaclips-media.netlify.app/yt/youtube_xMXp80Cntxw_603_16x9.mp4",
+    "yt_url": "https://www.youtube.com/watch?v=xMXp80Cntxw"
   }
 }
