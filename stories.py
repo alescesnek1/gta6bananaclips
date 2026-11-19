@@ -714,13 +714,32 @@ def pool_line(znacka, path_name, seed):
     return random.Random(f"{path_name}:{seed}").choice(POOL_TEXT.get(znacka) or POOL_TEXT["bananas"])
 
 
+POOL_BAND = 760                      # text band at the top of a pool story (under Instagram's top UI)
+
+
 def pool_frame(path, znacka="bananas", seed=""):
-    """A pool image with one short line, placed where it covers no face and no chest."""
+    """A pool image with one short line. 19. 11. (owner: the text covered the banana's face - the face
+    detector does not see a cartoon): the line sits in its OWN band at the top, the picture is fitted whole
+    under it, so the text can never cover a face or a chest, whatever the picture."""
     from PIL import Image
-    img = cover(Image.open(path).convert("RGB"))
-    if not place_text(img, [(pool_line(znacka, path.name, seed), "main")], znacka):
-        log(f"pool {path.name}: no text area free of face/chest, posted without text")
-    return img
+    pic = Image.open(path).convert("RGB")
+    look = BRAND_LOOK.get(znacka) or BRAND_LOOK["bananas"]
+    img = Image.new("RGB", (W, H), (16, 16, 20))
+    area_h = H - POOL_BAND
+    # the full width; only the bottom of a tall picture is cut (heads sit high: a small margin is kept on top)
+    s = max(W / pic.width, area_h / pic.height)
+    fit = pic.resize((round(pic.width * s), round(pic.height * s)), Image.LANCZOS)
+    top = min(round(fit.height * 0.04), fit.height - area_h)
+    left = (fit.width - W) // 2
+    img.paste(fit.crop((left, top, left + W, top + area_h)), (0, POOL_BAND))
+    rows = [(pool_line(znacka, path.name, seed), "main")]
+    for scale in TEXT_SCALES:
+        laid, hb = layout(rows, look, scale)
+        if hb <= POOL_BAND - SAFE_TOP - 20:
+            draw_rows(img, laid, SAFE_TOP + (POOL_BAND - SAFE_TOP - hb) // 2)
+            return img
+    log(f"pool {path.name}: line too long for the band, left out")
+    return None
 
 
 # -----------------------------------------------------------------------------
@@ -954,6 +973,8 @@ def build_and_post(day, brands, st, now, draft, dry, deploy=None, grab=grab_fram
                 continue                                   # built late: that window has passed
             if it["kind"] == "pool":
                 img, alt = pool_frame(it["pool"], z, day.isoformat()), "GTA 6 story"
+                if img is None:
+                    continue
             else:
                 clip = it.get("clip") or {}
                 bg = grab(clip["url"]) if clip.get("url") else None
