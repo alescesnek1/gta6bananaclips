@@ -1332,7 +1332,13 @@ def day_plan(day, now, recs=None, n_hot=0):
     horizon = now + timedelta(hours=src.get("plan_horizon_h", 3))
     near = [t for t in free if jittered(t, day) <= horizon]
     later = len(free) - len(near)
-    owed = max(0, max(0, must - used) - max(0, later - src.get("plan_spare_slots", 1)))
+    # 19. 11. (0 posts 12:00-15:15 while 70 clips waited): the morning slots (08-11 h) are spare room for
+    # extras, not capacity for the minimum - counted as 'later' they kept the catch-up at 0 all afternoon
+    # and only clips >= good_score were rendered. The minimum is owed against the quota's own slots.
+    quota_slots = {t.isoformat() for t in slot_times(day, max(1, must))}
+    later_q = len([t for t in free if t not in near and t.isoformat() in quota_slots])
+    owed = max(0, max(0, must - used) - max(0, later_q - src.get("plan_spare_slots", 1)))
+    owed = min(owed, len(near) + 1)                  # a late day catches up over the next runs, never 4 at once
     owed = min(owed, len(free), slot_cap)
     # pacing: a near slot only when its post stays under the normal curve (no burst) and the evening
     # reserve; this run's hot posts (n_hot, due ~now) count first. Catch-up for the minimum beats the

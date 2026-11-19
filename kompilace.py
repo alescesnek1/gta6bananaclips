@@ -263,6 +263,8 @@ def candidates(a, serie, t0, t1, used):
             continue
         if not re.search(game_rx, r.get("category") or "", re.I):
             continue
+        if getattr(a, "jen_pool", False) and r.get("cats") is None:
+            continue                                       # --jen-pool: only moments already classified (no Whisper)
         u = used.get(r["id"])
         if u and not (u["znacka"] == a.znacka and (u.get("reserve") and u["serie"] == series_key(serie)
                                                    or SERIES[series_key(serie)].get("reuse") and not u.get("reserve"))):
@@ -1985,6 +1987,8 @@ def main():
     p.add_argument("--pages", type=int, default=6, help="Twitch API pages of 100 clips (18. 11.: 3 pages were not enough for 8 min)")
     p.add_argument("--whisper", default="small.en")
     p.add_argument("--zkouska", action="store_true", help="plan only, nothing rendered or saved")
+    p.add_argument("--jen-pool", action="store_true",
+                   help="build only from moments already classified in long_pool.json (with --pages 0: fast, no new clips)")
     p.add_argument("--kalendar", type=int, default=0, help="simulate the next N episodes (rotation), nothing saved")
     p.add_argument("--bez-overeni", action="store_true", help="skip the vision check (test)")
     p.add_argument("--bez-nahledu", action="store_true")
