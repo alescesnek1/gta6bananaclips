@@ -43,7 +43,7 @@ try {
             & $py kompilace.py --znacka $z
         }
         & $py tools\long_pc.py pack --since $since
-    } *>> $log
+    } *>&1 | Out-File $log -Append -Encoding utf8   # PS 5.1 "*>>" wrote UTF-16 and the report read "????"
 } finally {
     # nothing stays on the PC (the video is on Netlify / GitHub by now, or it failed and the next run builds again)
     foreach ($p in (Join-Path $work "_long"), (Join-Path $work "_pool"), $env:TEMP, $st) {

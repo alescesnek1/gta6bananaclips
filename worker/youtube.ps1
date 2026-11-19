@@ -30,7 +30,7 @@ try {
         $days = if ($now -lt [datetime]"2026-11-19") { 7 } else { 1 }
         & $py klipuj.py --whisper small.en batch --jen-yt --yt 3 --max 3 --days $days
         & $py publikuj.py schranka --uklid
-    } *>> $log
+    } *>&1 | Out-File $log -Append -Encoding utf8   # PS 5.1 "*>>" wrote UTF-16 and the report read "????"
 } finally {
     Remove-Item $ylock -Force -ErrorAction SilentlyContinue
 }

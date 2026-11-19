@@ -106,7 +106,8 @@ if (-not (Test-Path $hw)) {
 if ($token -and (Test-Path $log) -and (Due "hlaseni" 28)) {
     try {
         $tail = (Get-Content $log -Tail 80 -ErrorAction Stop) -join "`n"
-        $tail = $tail -replace '[A-Za-z0-9_\-]{32,}', '***' -replace '[^\x09\x0A\x20-\x7E]', '?'
+        # NUL bytes out first: lines written as UTF-16 (PS 5.1 "*>>") read back as text again (19. 11.: "????")
+        $tail = $tail -replace "`0", '' -replace '[A-Za-z0-9_\-]{32,}', '***' -replace '[^\x09\x0A\x20-\x7E]', '?'
         if ($tail.Length -gt 15000) { $tail = $tail.Substring($tail.Length - 15000) }
         $body = @{ ref = "main"; inputs = @{ log = "$(Get-Date -Format s) $env:COMPUTERNAME`n$tail" } } | ConvertTo-Json -Compress
         Invoke-RestMethod -Method Post -Uri "https://api.github.com/repos/aleshrani/gta6bananaclips/actions/workflows/pc-hlaseni.yml/dispatches" `
