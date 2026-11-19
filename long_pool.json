@@ -6002,5 +6002,45 @@
     "vod_offset": 2390,
     "cluster": 1,
     "added": 1795090992
+  },
+  "twitch_FaintSuccessfulVanillaPogChamp-A7H6WdBfYUsegUEj": {
+    "id": "twitch_FaintSuccessfulVanillaPogChamp-A7H6WdBfYUsegUEj",
+    "url": "https://www.twitch.tv/jasontheween/clip/FaintSuccessfulVanillaPogChamp-A7H6WdBfYUsegUEj",
+    "channel": "jasontheween",
+    "platform": "twitch",
+    "title": "Jason SUS",
+    "views": 1118,
+    "created": 1795009941,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932190650",
+    "vod_offset": 13653,
+    "cluster": 1,
+    "added": 1795092210
+  },
+  "twitch_SlickPatientToadDoritosChip-LV7_h3WaUULTckLh": {
+    "id": "twitch_SlickPatientToadDoritosChip-LV7_h3WaUULTckLh",
+    "url": "https://www.twitch.tv/laurenhamdenn/clip/SlickPatientToadDoritosChip-LV7_h3WaUULTckLh",
+    "channel": "laurenhamdenn",
+    "platform": "twitch",
+    "title": "Lauren stealing a car in gta vi",
+    "views": 1083,
+    "created": 1795033125,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932652958",
+    "vod_offset": 905,
+    "cluster": 1,
+    "added": 1795092210
+  },
+  "twitch_SullenMushyToadRiPepperonis-X3cHCFmq9kIrTsxn": {
+    "id": "twitch_SullenMushyToadRiPepperonis-X3cHCFmq9kIrTsxn",
+    "url": "https://www.twitch.tv/ishowspeed/clip/SullenMushyToadRiPepperonis-X3cHCFmq9kIrTsxn",
+    "channel": "ishowspeed",
+    "platform": "twitch",
+    "title": "divertido",
+    "views": 1155,
+    "created": 1795015583,
+    "category": "Grand Theft Auto VI",
+    "cluster": 1,
+    "added": 1795092210
   }
 }
