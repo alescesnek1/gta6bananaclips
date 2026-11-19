@@ -15296,5 +15296,33 @@
     "category": "Grand Theft Auto VI",
     "cluster": 1,
     "added": 1795120598
+  },
+  "twitch_RenownedNeighborlyWaffleTwitchRaid-t74SktFrD6SZ0Iu6": {
+    "id": "twitch_RenownedNeighborlyWaffleTwitchRaid-t74SktFrD6SZ0Iu6",
+    "url": "https://www.twitch.tv/dansgaming/clip/RenownedNeighborlyWaffleTwitchRaid-t74SktFrD6SZ0Iu6",
+    "channel": "dansgaming",
+    "platform": "twitch",
+    "title": "ExtraDansGaming",
+    "views": 571,
+    "created": 1795118180,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933947716",
+    "vod_offset": 6754,
+    "cluster": 1,
+    "added": 1795120946
+  },
+  "twitch_SweetModernRedpandaPRChase-IMIxOFtAbAksBE-a": {
+    "id": "twitch_SweetModernRedpandaPRChase-IMIxOFtAbAksBE-a",
+    "url": "https://www.twitch.tv/fanum/clip/SweetModernRedpandaPRChase-IMIxOFtAbAksBE-a",
+    "channel": "fanum",
+    "platform": "twitch",
+    "title": "fanim loads GTA 6 for the first time",
+    "views": 596,
+    "created": 1795034297,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932675314",
+    "vod_offset": 655,
+    "cluster": 1,
+    "added": 1795120946
   }
 }
