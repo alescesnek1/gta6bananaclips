@@ -5687,11 +5687,103 @@
     "channel": "ishowspeed",
     "platform": "twitch",
     "title": "GYATT OMG THAT CRAZY",
-    "views": 1456,
+    "views": 2561,
     "created": 1795052989,
     "category": "Grand Theft Auto VI",
     "cluster": 1,
-    "added": 1795082625
+    "added": 1795090823,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/ishowspeed/20261119_twitch_ViscousStormySquirrelDancingBanana-2gkXgAHz-CwpC3GO/source.mp4",
+    "peak": 22.35,
+    "cut": [
+      13.33,
+      25.33
+    ],
+    "dur": 30.02,
+    "tags": [
+      "wow"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 0.2,
+      "wow": 1.0,
+      "_loud": 3.6,
+      "_motion": 8.8
+    },
+    "quote": "look bro ahhhh I got a bro second",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.25,
+      "rage": 0.25,
+      "fail": 0.25,
+      "physics": 0.6,
+      "glitch": 0.25,
+      "chase": 0.0,
+      "crash": 0.6,
+      "stunt": 0.6,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 1.0
+    },
+    "primary": "wow",
+    "proven": [
+      "wow"
+    ],
+    "evidence": {
+      "funny": [
+        "loud"
+      ],
+      "rage": [
+        "loud"
+      ],
+      "fail": [
+        "impact",
+        "loud"
+      ],
+      "physics": [
+        "impact",
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "crash": [
+        "impact",
+        "motion-spike"
+      ],
+      "stunt": [
+        "impact",
+        "motion-spike"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "loud",
+        "text"
+      ]
+    },
+    "fun": 0.75,
+    "signals": {
+      "siren": 0.0,
+      "impact": 117.4,
+      "loud": 15.6,
+      "motion": 4.6,
+      "sustained": 0.04,
+      "spike": 6.2,
+      "laugh": 0,
+      "static": 0.04,
+      "letterbox": 0.0,
+      "luma": 59.2,
+      "dark": 0.0
+    }
   },
   "twitch_BlightedWimpyLasagnaMrDestructoid-t0hnhiHoozGdkLGu": {
     "id": "twitch_BlightedWimpyLasagnaMrDestructoid-t0hnhiHoozGdkLGu",
