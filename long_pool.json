@@ -5962,5 +5962,45 @@
     "vod_offset": 10055,
     "cluster": 1,
     "added": 1795090404
+  },
+  "twitch_AssiduousSpookyKoupreyDogFace-3EeIjer0tUnWSNB_": {
+    "id": "twitch_AssiduousSpookyKoupreyDogFace-3EeIjer0tUnWSNB_",
+    "url": "https://www.twitch.tv/ishowspeed/clip/AssiduousSpookyKoupreyDogFace-3EeIjer0tUnWSNB_",
+    "channel": "ishowspeed",
+    "platform": "twitch",
+    "title": "HHAHAHHAHAHA",
+    "views": 1305,
+    "created": 1795010260,
+    "category": "Grand Theft Auto VI",
+    "cluster": 1,
+    "added": 1795090992
+  },
+  "twitch_BrainyQuaintDelicataNerfBlueBlaster-eBy9iL6u4j0tYtDd": {
+    "id": "twitch_BrainyQuaintDelicataNerfBlueBlaster-eBy9iL6u4j0tYtDd",
+    "url": "https://www.twitch.tv/zerkaa/clip/BrainyQuaintDelicataNerfBlueBlaster-eBy9iL6u4j0tYtDd",
+    "channel": "zerkaa",
+    "platform": "twitch",
+    "title": "title",
+    "views": 1168,
+    "created": 1795029592,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932227427",
+    "vod_offset": 18501,
+    "cluster": 1,
+    "added": 1795090992
+  },
+  "twitch_GorgeousDoubtfulPrariedogChocolateRain-vPGVY1Hq255bfzVp": {
+    "id": "twitch_GorgeousDoubtfulPrariedogChocolateRain-vPGVY1Hq255bfzVp",
+    "url": "https://www.twitch.tv/vanosscrew/clip/GorgeousDoubtfulPrariedogChocolateRain-vPGVY1Hq255bfzVp",
+    "channel": "vanosscrew",
+    "platform": "twitch",
+    "title": "WILDCAT cameo",
+    "views": 1202,
+    "created": 1795023809,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932487365",
+    "vod_offset": 2390,
+    "cluster": 1,
+    "added": 1795090992
   }
 }
