@@ -3381,7 +3381,7 @@
       "_loud": 5.9,
       "_motion": 8.1
     },
-    "quote": "Go ta - I don't know about Lucy anymore.",
+    "quote": "I don't know about Lucy anymore.",
     "rendered": [
       "bananas"
     ],
@@ -3579,7 +3579,7 @@
       "_loud": 2.2,
       "_motion": 18.7
     },
-    "quote": "Noooooo! Come on! Come on!",
+    "quote": "",
     "rendered": [
       "bananas"
     ],
@@ -4333,7 +4333,7 @@
       "_loud": 6.2,
       "_motion": 12.7
     },
-    "quote": "No!",
+    "quote": "",
     "rendered": [
       "bananas",
       "fanpage"
@@ -4640,5 +4640,112 @@
     "vod_offset": 21518,
     "cluster": 1,
     "added": 1795056745
+  },
+  "kick_clip_01M7RP0WZYS0W8VVWWZ4CR5M7B": {
+    "id": "kick_clip_01M7RP0WZYS0W8VVWWZ4CR5M7B",
+    "url": "https://kick.com/adinross/clips/clip_01M7RP0WZYS0W8VVWWZ4CR5M7B",
+    "channel": "adinross",
+    "platform": "kick",
+    "title": "etaztjgzyhrfxsj",
+    "views": 1112,
+    "created": 1795051044,
+    "category": "Grand Theft Auto VI (GTA)",
+    "added": 1795057791
+  },
+  "twitch_CuriousBadEchidnaCoolStoryBro-g66TfyHbfF_r5vxZ": {
+    "id": "twitch_CuriousBadEchidnaCoolStoryBro-g66TfyHbfF_r5vxZ",
+    "url": "https://www.twitch.tv/caseoh_/clip/CuriousBadEchidnaCoolStoryBro-g66TfyHbfF_r5vxZ",
+    "channel": "caseoh_",
+    "platform": "twitch",
+    "title": "How did they survive???",
+    "views": 771,
+    "created": 1795055834,
+    "category": "Grand Theft Auto VI",
+    "added": 1795057642,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/caseoh_/20261119_twitch_CuriousBadEchidnaCoolStoryBro-g66TfyHbfF_r5vxZ/source.mp4",
+    "peak": 32.45,
+    "cut": [
+      24.47,
+      35.47
+    ],
+    "dur": 35.63,
+    "tags": [
+      "glitch"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.99,
+      "chase": 0.1,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 0.2,
+      "wow": 0.0,
+      "_loud": 3.1,
+      "_motion": 17.0
+    },
+    "quote": "",
+    "rendered": [
+      "fanpage"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "proven": [],
+    "evidence": {
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.34,
+    "signals": {
+      "siren": 0.0,
+      "impact": 22.2,
+      "loud": 3.9,
+      "motion": 8.3,
+      "sustained": 0.02,
+      "spike": 1.5,
+      "laugh": 0,
+      "static": 0.05,
+      "letterbox": 0.0,
+      "luma": 81.9,
+      "dark": 0.0
+    }
+  },
+  "twitch_InnocentArtsyHyenaOhMyDog--9COXVqc1TGfCb5X": {
+    "id": "twitch_InnocentArtsyHyenaOhMyDog--9COXVqc1TGfCb5X",
+    "url": "https://www.twitch.tv/ohnepixel/clip/InnocentArtsyHyenaOhMyDog--9COXVqc1TGfCb5X",
+    "channel": "ohnepixel",
+    "platform": "twitch",
+    "title": "gta-6-text-bug",
+    "views": 1162,
+    "created": 1795005042,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932275268",
+    "vod_offset": 1079,
+    "cluster": 1,
+    "added": 1795057791
+  },
+  "twitch_PunchyGlutenFreeCheesecakeNinjaGrumpy-FgCJzHC4BNv_XGNH": {
+    "id": "twitch_PunchyGlutenFreeCheesecakeNinjaGrumpy-FgCJzHC4BNv_XGNH",
+    "url": "https://www.twitch.tv/summit1g/clip/PunchyGlutenFreeCheesecakeNinjaGrumpy-FgCJzHC4BNv_XGNH",
+    "channel": "summit1g",
+    "platform": "twitch",
+    "title": "???????",
+    "views": 796,
+    "created": 1795047355,
+    "category": "Grand Theft Auto VI",
+    "added": 1795057791
   }
 }
