@@ -5856,5 +5856,19 @@
     "vod_offset": 27940,
     "cluster": 1,
     "added": 1795089801
+  },
+  "twitch_EnjoyableProductiveMetalBuddhaBar-jO0go0XHeDTtKuKl": {
+    "id": "twitch_EnjoyableProductiveMetalBuddhaBar-jO0go0XHeDTtKuKl",
+    "url": "https://www.twitch.tv/mrsavage/clip/EnjoyableProductiveMetalBuddhaBar-jO0go0XHeDTtKuKl",
+    "channel": "mrsavage",
+    "platform": "twitch",
+    "title": "mrsavage - Highlight 1dc354 Part 15",
+    "views": 1226,
+    "created": 1795022997,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932376551",
+    "vod_offset": 10055,
+    "cluster": 1,
+    "added": 1795090404
   }
 }
