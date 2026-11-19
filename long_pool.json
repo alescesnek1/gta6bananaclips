@@ -5732,5 +5732,19 @@
     "category": "Grand Theft Auto VI",
     "cluster": 1,
     "added": 1795084415
+  },
+  "twitch_ReliableSpikyKathyDBstyle-OHuzTGWjb3U-qyIu": {
+    "id": "twitch_ReliableSpikyKathyDBstyle-OHuzTGWjb3U-qyIu",
+    "url": "https://www.twitch.tv/zackrawrr/clip/ReliableSpikyKathyDBstyle-OHuzTGWjb3U-qyIu",
+    "channel": "zackrawrr",
+    "platform": "twitch",
+    "title": "speechless",
+    "views": 1424,
+    "created": 1795031498,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932469290",
+    "vod_offset": 11274,
+    "cluster": 1,
+    "added": 1795085015
   }
 }
