@@ -1,29 +1,35 @@
-# Monitor GTA6 klipy – 19.11. 03:28 (Praha)
+# Monitor GTA6 klipy – 19.11. 12:25 (Praha)
 
 ## Problémy
-- bananas: nic nepublikováno 4+ h (poslední post 18.11. 19:42)
+- žádné
 
 ## Běhy (3 h)
-- denne-klipy: ✔ 9  ✖ 0  ⊘ 26  běží 1
-- live-klipy: ✔ 0  ✖ 0  ⊘ 12  běží 1
-- long-form: ✔ 1  ✖ 0  ⊘ 0  běží 0
-- denne: poslední úspěch před 1 min; live hlídač běží
+- denne-klipy: ✔ 37  ✖ 0  ⊘ 0  běží 0
+- live-klipy: ✔ 0  ✖ 0  ⊘ 17  běží 1
+- long-form: ✔ 0  ✖ 0  ⊘ 0  běží 1
+- denne: poslední úspěch před 2 min; live hlídač běží
 
-## Publikace (okno 18.11. 12:00 – 19.11. 12:00)
-- bananas: 7/8–10 (+0 navíc), hot 6, hvězdy 4, live 2; poslední 18.11. 19:42, další 19.11. 03:34
-- fanpage: 7/8–10 (+0 navíc), hot 6, hvězdy 4, live 6; poslední 19.11. 03:10, další –
+## Publikace (okno 19.11. 12:00 – 20.11. 12:00)
+- bananas: 0/8–10 (+0 navíc), hot 0, hvězdy 0, live 0; poslední 19.11. 10:51, další –
+- fanpage: 0/8–10 (+0 navíc), hot 0, hvězdy 0, live 0; poslední 19.11. 10:13, další –
 
 ## Výkon (Buffer, 48 h)
-- změřeno 42 z 58 postů, v Bufferu nenalezeno 1
+- změřeno 55 z 74 postů, v Bufferu nenalezeno 1
 - top 5:
-  - 173 zhl. · lacy · instagram · bananas · 15.3 h · live_lacy_1795000007
-  - 173 zhl. · clix · instagram · bananas · 14.9 h · live_clix_1795000387
-  - 135 zhl. · xqc · instagram · bananas · 14.3 h · twitch_WealthyNimbleHamsterDansGame-yrU7UShZomelh1Ke
-  - 0 zhl. · lacy · twitter · bananas · 15.3 h · live_lacy_1795000007
-  - 0 zhl. · lacy · youtube · bananas · 15.3 h · live_lacy_1795000007
-- průměr bananas: facebook 0 (6), instagram 80 (6), threads 0 (3), tiktok 0 (4), twitter 0 (3), youtube 0 (4)
-- průměr fanpage: instagram 0 (7), twitter 0 (3), youtube 0 (6)
-- nejnovější (zhl./h): kaicenat 0/h (0.3 h), ohnepixel 0/h (7.8 h), adinross 0/h (10.7 h), ohnepixel 0/h (11.4 h), kaicenat 0/h (13.0 h)
+  - 1 209 zhl. · xqc · facebook · bananas · 23.3 h · twitch_WealthyNimbleHamsterDansGame-yrU7UShZomelh1Ke
+  - 262 zhl. · xqc · facebook · bananas · 22.3 h · twitch_DifferentPreciousWaffleHotPokket-wMDh_pqLv3Ve6ZOc
+  - 260 zhl. · adinross · facebook · bananas · 19.7 h · kick_clip_01M7QB1PQ1JTDEBN7AFG5XVDKX
+  - 259 zhl. · oozie · facebook · bananas · 8.9 h · twitch_AdventurousHonestTapirKeyboardCat-9Eii4tkWb1VjxGqf
+  - 237 zhl. · xqc · instagram · bananas · 23.3 h · twitch_WealthyNimbleHamsterDansGame-yrU7UShZomelh1Ke
+- průměr bananas: facebook 204 (11), instagram 124 (11), threads 3 (3), tiktok 0 (4), twitter 1 (3), youtube 0 (4)
+- průměr fanpage: instagram 145 (10), twitter 0 (3), youtube 0 (6)
+- nejnovější (zhl./h): top3 0/h (1.6 h), kaicenat 82/h (2.2 h), xqc 0/h (2.8 h), adinross 32/h (4.8 h), caseoh_ 20/h (7.1 h)
+
+## YouTube / TikTok (veřejná čísla z notebooku, 19.11. 11:42)
+- youtube bananas: 0, 0, 0, 0, 1, 0, 9, 48, 550 (součet 608)
+- youtube fanpage: 0, 0, 0, 0, 0, 0 (součet 0)
+- tiktok bananas: 0, 0, 0, 0, 0, 0, 0, 0, 0 (součet 0)
+- tiktok fanpage: 0, 1, 0, 0, 0, 1 (součet 2)
 
 ## Netlify
-- deploye 24 h: 38; měsíc 2.2 GB (soft 85, hard 100, rozpočet 100)
+- deploye 24 h: 44; měsíc 2.6 GB (soft 85, hard 100, rozpočet 100)

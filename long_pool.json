@@ -5760,5 +5760,19 @@
     "vod_offset": 6049,
     "cluster": 1,
     "added": 1795086809
+  },
+  "twitch_SpotlessNiceTriangleDAESuppy-sJc-doVrmpFeEI6t": {
+    "id": "twitch_SpotlessNiceTriangleDAESuppy-sJc-doVrmpFeEI6t",
+    "url": "https://www.twitch.tv/loserfruit/clip/SpotlessNiceTriangleDAESuppy-sJc-doVrmpFeEI6t",
+    "channel": "loserfruit",
+    "platform": "twitch",
+    "title": "predetermined",
+    "views": 1362,
+    "created": 1795007924,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932294659",
+    "vod_offset": 1971,
+    "cluster": 1,
+    "added": 1795087401
   }
 }
