@@ -1207,8 +1207,13 @@ def transcribe(src):
         sung = singing(audio[int(seg["start"] * 16000): int(seg["end"] * 16000)])
         ws = [(w["start"], w["end"], w["word"].strip()) for w in seg.get("words", []) if w["word"].strip()]
         key = re.sub(r"[^a-z ]", "", seg["text"].lower()).strip()
-        if (seg.get("no_speech_prob", 0) > 0.5 or seg.get("avg_logprob", 0) < -0.9
-                or seg.get("compression_ratio", 1) > 2.2 or sung > 0.45 or seen.get(key, 0) >= 2
+        # 19. 11.: fanpage shorts went out with NO captions - over loud game audio Whisper gives no_speech_prob
+        # ~0.7 to plain speech (it is per 30 s window), and shouting scored as "sung" 0.57. Whisper's own rule:
+        # silence only when no_speech is high AND the text is unsure; the game's voices / songs are still caught
+        # by game_share + the chorus check, and every caption must pass the mouth-motion check afterwards
+        nsp, lp = seg.get("no_speech_prob", 0), seg.get("avg_logprob", 0)
+        if ((nsp > 0.6 and lp < -1.0) or lp < -1.2
+                or seg.get("compression_ratio", 1) > 2.4 or sung > 0.6 or seen.get(key, 0) >= 2
                 or game_share(ws, game) >= 0.5):
             dropped += 1
             if seen.get(key, 0) >= 2 or game_share(ws, game) >= 0.5:

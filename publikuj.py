@@ -832,7 +832,10 @@ def title_action(m):
 # concrete event; our 3-phrase pool gave "... Sees Vice City In GTA 6!" three times on launch day. Used
 # only when it reads as a plain English sentence (no junk like "wtf" / "xaxaxa", no slurs, no spoilers).
 VIEWER_BAD = re.compile(r"\*|leak|spoil|ending|final mission|dies\b|death|betray|nigg|fag|retard|\bkys\b|"
-                        r"cunt|whore|\bsex|nude|porn|\bslur|\bdrop\b|giveaway|sub\b|clip it",   # plain swears: starred
+                        r"cunt|whore|\bsex|nude|porn|\bslur|\bdrop\b|giveaway|sub\b|clip it|"   # plain swears: starred
+                        # 19. 11.: "Kai Cenat: Pegging in gta 6 gone wild!" went out - sexual words never in a title
+                        r"pegg|blowjob|handjob|\banal\b|threesome|onlyfans|hentai|\bmilf|\bthot|twerk|booty|"
+                        r"strip ?club|stripper|hooker|\bdick|\bcock|pussy|boob|\btits?\b|naked|horny|\bcum\b|rimjob",
                         re.I)
 VIEWER_GLUE = re.compile(r"\b(the|a|an|to|in|for|of|on|at|with|gets|is|was|first|after|when|his|her|their)\b", re.I)
 

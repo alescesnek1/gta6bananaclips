@@ -16,10 +16,11 @@ import re
 STEMS = ["fuck", "fuk", "fck", "shit", "bitch", "bastard", "asshole", "dick", "pussy", "cunt", "whore", "slut",
          "nigg", "fag", "retard", "porn", "naked", "boob", "titty", "titties", "stripper", "stripclub", "striptease", "hooker",
          "prostitut", "sexual", "horny", "dildo", "jizz", "wank", "twat", "goddamn", "motherf", "bullshit", "dumbass",
-         "jackass", "orgasm", "penis", "vagina", "cocks", "cocksucker", "milf", "cumming"]
+         "jackass", "orgasm", "penis", "vagina", "cocks", "cocksucker", "milf", "cumming", "pegging", "pegged",
+         "blowjob", "handjob", "threesome", "booty", "twerk", "onlyfans", "hentai", "rimjob", "dildo"]
 # short words only as whole words (as stems they would hit "class", "shoe", "cumulative", "title", "comic strip")
 WHOLE = {"ass", "asses", "hoe", "hoes", "cum", "sex", "sexy", "tit", "tits", "damn", "piss", "pissed",
-         "cock", "nude", "nudes", "thot", "dick", "dicks", "shitty", "fucky"}
+         "cock", "nude", "nudes", "thot", "dick", "dicks", "shitty", "fucky", "anal"}
 # "strip" only in these phrases ("comic strip", "strip the car" stay)
 _STRIP = re.compile(r"\b(strip)(?=[\s-]*(club|clubs|bar|joint|show)\b)", re.I)
 # words that start like a stem but are fine
