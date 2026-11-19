@@ -1179,9 +1179,12 @@ class Words(list):
     """Whisper's caption words [(start, end, text)]; .busy = the words of segments dropped from the
     captions (doubtful, repetitive, sung) as (start, end, BUSY): real sound someone may be saying, so
     a cut must not land inside them either (cut_words)."""
-    def __init__(self, items=(), busy=()):
+    def __init__(self, items=(), busy=(), bleep=()):
         super().__init__(items)
         self.busy = list(busy)
+        # 19. 11.: swears in the DROPPED segments (sung / unsure / the game's radio and voices) as (start, end):
+        # no caption, but the sound is bleeped all the same (they went out unbleeped before)
+        self.bleep = list(bleep)
 
 def transcribe(src):
     global _whisper
@@ -1200,7 +1203,7 @@ def transcribe(src):
         key = re.sub(r"[^a-z ]", "", seg["text"].lower()).strip()
         if len(key) >= 8:
             seen[key] = seen.get(key, 0) + 1
-    words, busy, dropped = [], [], 0
+    words, busy, dropped, bleep = [], [], 0, []
     # a line heard twice is a chorus only when it also sounds sung or the game says it too (19. 11.: CaseOh
     # repeating "Don't question it, just accept it" lost every caption of his short)
     chorus = lambda seg, key, ws: seen.get(key, 0) >= 2 and (
@@ -1221,6 +1224,7 @@ def transcribe(src):
                 or seg.get("compression_ratio", 1) > 2.4 or sung > 0.6 or chorus(seg, key, ws)
                 or game_share(ws, game) >= 0.5):
             dropped += 1
+            bleep += [(s, e) for s, e, t in ws if SWEAR_RE.match(_tok(t))]
             if chorus(seg, key, ws) or game_share(ws, game) >= 0.5:
                 continue                              # the game's own audio (song, chorus): never blocks a cut
             # no caption, but it may still be the streamer talking: keep it as occupied time for the cuts
@@ -1229,7 +1233,7 @@ def transcribe(src):
         words += ws
     if dropped:
         log(f"  captions: {dropped} segment(s) dropped as music/lyrics or unsure (kept as occupied time for cuts)")
-    return Words(words, busy)
+    return Words(words, busy, bleep)
 
 # Game audio vs the streamer's mic (18. 11., lacy): a streamer's mic sits in the middle of the
 # stereo picture (L = R), the game's music and voices are wide. The SIDE channel (L - R) therefore
@@ -1640,8 +1644,10 @@ def mask_swears(words, until=1e9):
 def swear_plan(words, card_at, sound_end=None):
     """Captions (masked, only before the score card) and the bleeps: every swear in the clip's sound,
     also under the card / fanpage tail where the clip keeps playing, up to sound_end (where the clip's
-    own sound stops; None = to its end)."""
+    own sound stops; None = to its end) - including the uncaptioned ones (Words.bleep: sung, unsure,
+    the game's own radio and voices)."""
     masked, mute = mask_swears(words)
+    mute = sorted(mute + list(getattr(words, "bleep", None) or []))
     if sound_end is not None:
         mute = [(m0, min(m1, sound_end)) for m0, m1 in mute if m0 < sound_end]
     return [w for w in masked if w[0] < card_at], mute
@@ -1692,7 +1698,8 @@ def captions_ass(words, path, y, cap=None, per=2, anim="pop"):
         "[Events]\nFormat: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\n"
     )
     up = cap.get("upper", True)
-    clean = lambda s: (lambda x: x.upper() if up else x)(s.replace("\\", "").replace("{", "(").replace("}", ")"))
+    from cenzura import cenzura                        # 19. 11.: every rude / sexual word starred in the captions too
+    clean = lambda s: (lambda x: x.upper() if up else x)(cenzura(s.replace("\\", "").replace("{", "(").replace("}", ")")))
     emo = [None] * len(words)                          # emotion colours off (Aleš 17. 11.): one steady highlight
     ecol = lambda k, default: ass_col(EMO_COL[k]) if k else default
     chunks, cur = [], []
@@ -3369,7 +3376,8 @@ def fetch_section(clip, d, dst):
     clip["section"] = [round(float(ps + a), 1), round(float(ps + b), 1)]
     log(f"  cut on sentence pauses: {clip['section']} ({b - a:.0f} s)")
     shift = lambda ws: [(w0 - a, w1 - a, t) for w0, w1, t in ws if w0 >= a and w1 <= b]
-    return Words(shift(words), shift(getattr(words, "busy", [])))
+    shift2 = lambda ws: [(w0 - a, w1 - a) for w0, w1 in ws if w0 >= a and w1 <= b]
+    return Words(shift(words), shift(getattr(words, "busy", [])), shift2(getattr(words, "bleep", [])))
 
 # A viewer's Twitch clip often ends 0.3-1.6 s after the payoff (Kai Cenat, 18. 11.): the AFTER_PEAK
 # rule then had to drop it. The clip is a piece of the streamer's VOD (Helix: video_id + vod_offset),
@@ -3924,6 +3932,12 @@ def loop_cut(src, cw, words, d, peak, a, b, dur, ts, rms, v2, info):
                 new.append((st + w0 - x, st + w1 - x, t))
                 break
     new.sort()
+    bl = [(w0 - p0, w1 - p0) for w0, w1 in getattr(words, "bleep", []) if w0 >= p0 - WORD_TOL and w1 <= e + WORD_TOL]
+    for w0, w1 in getattr(words, "bleep", []):
+        for (x, y), st in zip(segs, starts):
+            if x - WORD_TOL <= w0 and w1 <= y + WORD_TOL:
+                bl.append((st + w0 - x, st + w1 - x))
+                break
     card = max(peak + 0.4, e - RATING_DUR) - p0
     sent = [w for w in words if s - WORD_TOL <= w[0] and w[1] <= p0 + WORD_TOL]
     info["cuts"] = {"start": round(s, 2), "end": round(e, 2), "jumps": len(segs), "fixed": [], "problems": left,
@@ -3936,7 +3950,7 @@ def loop_cut(src, cw, words, d, peak, a, b, dur, ts, rms, v2, info):
     log(f"  loop: payoff {p0:.2f}-{e:.2f} s (peak {peak:.1f}), setup {s:.2f}-{p0:.2f} s, "
         f"{acc:.1f} s total, {len(segs) - 1} jump cuts in the setup")
     log(f"  loop opens on '{info['cuts']['last']}', setup starts '{info['cuts']['first']}'")
-    return out, Words(new), peak - p0, card, [round(x, 2) for x in starts], T
+    return out, Words(new, bleep=sorted(bl)), peak - p0, card, [round(x, 2) for x in starts], T
 
 def edit_cut(src, words, d, clip, hpc=None, v2=False, info=None, peak=None):
     """
