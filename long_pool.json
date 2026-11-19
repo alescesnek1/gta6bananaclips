@@ -5638,5 +5638,19 @@
     "category": "Grand Theft Auto VI",
     "cluster": 1,
     "added": 1795077204
+  },
+  "twitch_GoldenSincereHamburgerHeyGuys-Zo31y1z1tLdwRScS": {
+    "id": "twitch_GoldenSincereHamburgerHeyGuys-Zo31y1z1tLdwRScS",
+    "url": "https://www.twitch.tv/laurenhamdenn/clip/GoldenSincereHamburgerHeyGuys-Zo31y1z1tLdwRScS",
+    "channel": "laurenhamdenn",
+    "platform": "twitch",
+    "title": "shower",
+    "views": 1328,
+    "created": 1795044739,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932652958",
+    "vod_offset": 3851,
+    "cluster": 1,
+    "added": 1795077494
   }
 }
