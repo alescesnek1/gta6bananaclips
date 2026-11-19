@@ -1,0 +1,17 @@
+{
+  "_napoveda": "Ales 19. 11.: text story na fotce, ale nikdy pres oblicej ani prsa postav (detektor obliceje nevidi kresleneho banana). Ke kazdemu obrazku rucne pasmo [od, do] jako podil vysky 1920 px, kam text smi; null = zadne takove misto, obrazek se nepouziva.",
+  "bananas_01.jpg": [0.50, 0.82], "bananas_02.jpg": [0.55, 0.82], "bananas_03.jpg": [0.13, 0.29],
+  "bananas_04.jpg": [0.13, 0.24], "bananas_05.jpg": [0.55, 0.82], "bananas_06.jpg": [0.13, 0.42],
+  "bananas_07.jpg": [0.52, 0.82], "bananas_08.jpg": [0.52, 0.82], "bananas_09.jpg": [0.32, 0.82],
+  "bananas_10.jpg": [0.38, 0.82], "bananas_11.jpg": [0.33, 0.82], "bananas_12.jpg": [0.48, 0.82],
+  "bananas_13.jpg": [0.13, 0.24], "bananas_14.jpg": [0.13, 0.33], "bananas_15.jpg": [0.48, 0.82],
+  "bananas_16.jpg": [0.52, 0.82], "bananas_17.jpg": [0.62, 0.82], "bananas_18.jpg": [0.38, 0.82],
+  "bananas_19.jpg": [0.33, 0.82],
+  "fanpage_01.jpg": [0.60, 0.82], "fanpage_02.jpg": [0.60, 0.82], "fanpage_03.jpg": [0.55, 0.82],
+  "fanpage_04.jpg": [0.62, 0.82], "fanpage_05.jpg": [0.60, 0.82], "fanpage_06.jpg": [0.55, 0.82],
+  "fanpage_07.jpg": [0.62, 0.82], "fanpage_08.jpg": null, "fanpage_09.jpg": [0.64, 0.82],
+  "fanpage_10.jpg": [0.60, 0.82], "fanpage_11.jpg": [0.60, 0.82], "fanpage_12.jpg": null,
+  "fanpage_13.jpg": [0.55, 0.82], "fanpage_14.jpg": [0.50, 0.82], "fanpage_15.jpg": [0.68, 0.82],
+  "fanpage_16.jpg": [0.60, 0.82], "fanpage_17.jpg": [0.13, 0.21], "fanpage_18.jpg": [0.74, 0.82],
+  "fanpage_19.jpg": [0.60, 0.82], "fanpage_20.jpg": [0.60, 0.82]
+}

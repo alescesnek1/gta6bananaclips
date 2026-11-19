@@ -416,6 +416,8 @@ def pool_pick(znacka, bs, day):
     """A pool image not used in the last POOL_GAP_DAYS days: never used first, then the longest unused."""
     free = []
     for p in pool_files(znacka):
+        if pool_zone(p.name) is None:                       # no place for text free of face/chest: never used
+            continue
         last = bs["pool"].get(p.name)
         if last and (day - datetime.fromisoformat(last).date()).days < POOL_GAP_DAYS:
             continue
@@ -714,31 +716,40 @@ def pool_line(znacka, path_name, seed):
     return random.Random(f"{path_name}:{seed}").choice(POOL_TEXT.get(znacka) or POOL_TEXT["bananas"])
 
 
-POOL_BAND = 760                      # text band at the top of a pool story (under Instagram's top UI)
+ZONES = HERE / "assets" / "stories" / "zones.json"
+
+
+def pool_zone(name):
+    """Where the text may sit on this pool image, (top, bottom) in px, from assets/stories/zones.json
+    (owner 19. 11.: on the photo, never over a face or a chest - checked by hand per image). None = nowhere."""
+    z = P.load_json(ZONES, {}).get(name, "missing")
+    if z == "missing":
+        return (SAFE_TOP, H - SAFE_BOTTOM)          # a new image without a zone: the old face/chest detector decides
+    if not z:
+        return None
+    return (max(SAFE_TOP, round(z[0] * H)), min(H - SAFE_BOTTOM, round(z[1] * H)))
 
 
 def pool_frame(path, znacka="bananas", seed=""):
-    """A pool image with one short line. 19. 11. (owner: the text covered the banana's face - the face
-    detector does not see a cartoon): the line sits in its OWN band at the top, the picture is fitted whole
-    under it, so the text can never cover a face or a chest, whatever the picture."""
+    """A pool image (full bleed, no bars) with one short line inside its hand-checked zone: a top zone gets
+    the text right at its top, a lower zone right at its bottom (as far from the faces as possible)."""
     from PIL import Image
-    pic = Image.open(path).convert("RGB")
-    look = BRAND_LOOK.get(znacka) or BRAND_LOOK["bananas"]
-    img = Image.new("RGB", (W, H), (16, 16, 20))
-    area_h = H - POOL_BAND
-    # the full width; only the bottom of a tall picture is cut (heads sit high: a small margin is kept on top)
-    s = max(W / pic.width, area_h / pic.height)
-    fit = pic.resize((round(pic.width * s), round(pic.height * s)), Image.LANCZOS)
-    top = min(round(fit.height * 0.04), fit.height - area_h)
-    left = (fit.width - W) // 2
-    img.paste(fit.crop((left, top, left + W, top + area_h)), (0, POOL_BAND))
+    img = cover(Image.open(path).convert("RGB"))
     rows = [(pool_line(znacka, path.name, seed), "main")]
-    for scale in TEXT_SCALES:
+    zone = pool_zone(path.name)
+    if zone is None:
+        log(f"pool {path.name}: no place free of face/chest (zones.json), left out")
+        return None
+    if path.name not in P.load_json(ZONES, {}):     # not checked by hand yet: the detector
+        return img if place_text(img, rows, znacka) else None
+    look = BRAND_LOOK.get(znacka) or BRAND_LOOK["bananas"]
+    y0, y1 = zone
+    for scale in TEXT_SCALES + (0.54,):              # a narrow zone: a smaller line before none
         laid, hb = layout(rows, look, scale)
-        if hb <= POOL_BAND - SAFE_TOP - 20:
-            draw_rows(img, laid, SAFE_TOP + (POOL_BAND - SAFE_TOP - hb) // 2)
+        if hb <= y1 - y0:
+            draw_rows(img, laid, y0 if y1 <= H * 0.45 else y1 - hb)   # top zone: at its top; else at its bottom
             return img
-    log(f"pool {path.name}: line too long for the band, left out")
+    log(f"pool {path.name}: line does not fit its zone, left out")
     return None
 
 
