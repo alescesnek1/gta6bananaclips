@@ -5680,5 +5680,17 @@
     "vod_offset": 83445,
     "cluster": 1,
     "added": 1795081404
+  },
+  "twitch_ViscousStormySquirrelDancingBanana-2gkXgAHz-CwpC3GO": {
+    "id": "twitch_ViscousStormySquirrelDancingBanana-2gkXgAHz-CwpC3GO",
+    "url": "https://www.twitch.tv/ishowspeed/clip/ViscousStormySquirrelDancingBanana-2gkXgAHz-CwpC3GO",
+    "channel": "ishowspeed",
+    "platform": "twitch",
+    "title": "GYATT OMG THAT CRAZY",
+    "views": 1456,
+    "created": 1795052989,
+    "category": "Grand Theft Auto VI",
+    "cluster": 1,
+    "added": 1795082625
   }
 }
