@@ -161,5 +161,39 @@
     ],
     "quote": "What the hell she think I am fixin' Felix?",
     "slot": "2026-11-19T18:30:00+01:00"
+  },
+  "twitch_PeppyFunGaurPunchTrees-edM6JKBegYQ6zSk-": {
+    "url": "https://6aff2c5f0294e229a40f99f5--gta6bananaclips-media.netlify.app/20261119/twitch_PeppyFunGaurPunchTrees-edM6JKBegYQ6zSk-.mp4",
+    "path": "20261119/twitch_PeppyFunGaurPunchTrees-edM6JKBegYQ6zSk-.mp4",
+    "due": "2026-11-19T19:41:00+01:00",
+    "draft": false,
+    "posts": {
+      "6afc4355ece6dfde5ff6769a": "6aff2c682ebf6787842975b5",
+      "6afc433aece6dfde5ff6749b": "6aff2c695ccf408ebc99b4e2",
+      "6afc42e6ece6dfde5ff66dca": "6aff2c6941532436f6cace47",
+      "6afc4429ece6dfde5ff683db": "6aff2c6acfa0aacc090e090a",
+      "6afc43ffece6dfde5ff68162": "6aff2c6b7218d2f8fc1be62a"
+    },
+    "mb": 8.4,
+    "channel": "kaicenat",
+    "platform": "twitch",
+    "score": 269.3,
+    "hot": false,
+    "rating": 3,
+    "views": 611,
+    "golden": false,
+    "title": "Kai Cenat RAGES OUT In GTA 6! 💀",
+    "video_id": "2932305259",
+    "vod_offset": 30377,
+    "created": 1795037387,
+    "payoff": "https://6aff2c5f0294e229a40f99f5--gta6bananaclips-media.netlify.app/20261119/twitch_PeppyFunGaurPunchTrees-edM6JKBegYQ6zSk-_payoff.mp4",
+    "funny": 0.0,
+    "tags": [
+      "wow",
+      "rage",
+      "chase"
+    ],
+    "quote": "I want to slow down for you, Rutia.",
+    "slot": "2026-11-19T20:00:00+01:00"
   }
 }
