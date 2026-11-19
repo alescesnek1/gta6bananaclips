@@ -126,5 +126,40 @@
     "golden": false,
     "title": "Kai Cenat: Pegging in gta 6 gone wild! 😭",
     "slot": "2026-11-19T10:00:00+01:00"
+  },
+  "twitch_SavoryEagerLlamaLeeroyJenkins-fzfiphCY-mKdwJvr": {
+    "url": "https://6aff17370aab3a03c233c031--gta6bananaclips-media.netlify.app/20261119/twitch_SavoryEagerLlamaLeeroyJenkins-fzfiphCY-mKdwJvr.mp4",
+    "path": "20261119/twitch_SavoryEagerLlamaLeeroyJenkins-fzfiphCY-mKdwJvr.mp4",
+    "due": "2026-11-19T18:42:00+01:00",
+    "draft": false,
+    "posts": {
+      "6afc4355ece6dfde5ff6769a": "6aff173e15631cf5a652f60d",
+      "6afc433aece6dfde5ff6749b": "6aff173fcfb6abb6944d75ed",
+      "6afc42e6ece6dfde5ff66dca": "6aff17405187bf7d547167f6",
+      "6afc4429ece6dfde5ff683db": "6aff174015631cf5a652f67e",
+      "6afc4413ece6dfde5ff68286": "6aff174276fc37c123530f6b",
+      "6afc43ffece6dfde5ff68162": "6aff1743eaafb9df85f7fa1d"
+    },
+    "mb": 8.8,
+    "channel": "ishowspeed",
+    "platform": "twitch",
+    "score": 437.9,
+    "hot": false,
+    "rating": 4,
+    "views": 1100,
+    "golden": false,
+    "title": "IShowSpeed Can't Believe This In GTA 6! 😭",
+    "video_id": null,
+    "vod_offset": null,
+    "created": 1795015240,
+    "payoff": "https://6aff17370aab3a03c233c031--gta6bananaclips-media.netlify.app/20261119/twitch_SavoryEagerLlamaLeeroyJenkins-fzfiphCY-mKdwJvr_payoff.mp4",
+    "funny": 0.0,
+    "tags": [
+      "wow",
+      "rage",
+      "crash"
+    ],
+    "quote": "What the hell she think I am fixin' Felix?",
+    "slot": "2026-11-19T18:30:00+01:00"
   }
 }
