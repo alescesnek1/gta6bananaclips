@@ -9542,7 +9542,7 @@
     "category": "Grand Theft Auto VI",
     "cluster": 1,
     "added": 1795098336,
-    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_HumbleGeniusStrawberryBleedPurple-CYhEi_LZY9mbAQxo\\source.mp4",
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/ishowspeed/20261118_twitch_HumbleGeniusStrawberryBleedPurple-CYhEi_LZY9mbAQxo/source.mp4",
     "peak": 23.85,
     "cut": [
       16.53,
@@ -9567,7 +9567,7 @@
       "_loud": 2.9,
       "_motion": 30.2
     },
-    "quote": "Oh Hell no, hey, oh no No, skip this skip",
+    "quote": "the hell is going on F*** out where Jason at?",
     "rendered": [
       "bananas"
     ],
@@ -11599,7 +11599,7 @@
     "category": "Grand Theft Auto VI",
     "cluster": 1,
     "added": 1795102337,
-    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_SavoryEagerLlamaLeeroyJenkins-fzfiphCY-mKdwJvr\\source.mp4",
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/ishowspeed/20261118_twitch_SavoryEagerLlamaLeeroyJenkins-fzfiphCY-mKdwJvr/source.mp4",
     "peak": 18.150000000000002,
     "cut": [
       3.5,
@@ -14030,13 +14030,13 @@
     "channel": "typicalgamer",
     "platform": "twitch",
     "title": "tg couldnt handle all that gta ahh",
-    "views": 742,
+    "views": 748,
     "created": 1795063281,
     "category": "Grand Theft Auto VI",
     "video_id": "2933000873",
     "vod_offset": 12299,
     "cluster": 1,
-    "added": 1795109391
+    "added": 1795109589
   },
   "twitch_PunchyLongJalapenoFailFish-4TaSsixCiPZBLNYa": {
     "id": "twitch_PunchyLongJalapenoFailFish-4TaSsixCiPZBLNYa",
@@ -14044,13 +14044,13 @@
     "channel": "ohnepixel",
     "platform": "twitch",
     "title": "lucia-jiggle-gta-lonely",
-    "views": 802,
+    "views": 812,
     "created": 1795035302,
     "category": "Grand Theft Auto VI",
     "video_id": "2932275268",
     "vod_offset": 31344,
     "cluster": 1,
-    "added": 1795109391
+    "added": 1795109589
   },
   "twitch_ShakingAgileGoatOhMyDog-IkbzY5jzu8o1x5T7": {
     "id": "twitch_ShakingAgileGoatOhMyDog-IkbzY5jzu8o1x5T7",
@@ -14058,12 +14058,38 @@
     "channel": "parasite",
     "platform": "twitch",
     "title": "gta @ 120fps",
-    "views": 699,
+    "views": 700,
     "created": 1795053837,
     "category": "Grand Theft Auto VI",
     "video_id": "2932903833",
     "vod_offset": 7872,
     "cluster": 1,
-    "added": 1795109391
+    "added": 1795109589
+  },
+  "twitch_OnerousSwissIguanaChefFrank-YhL9t_QVWtPNUe6v": {
+    "id": "twitch_OnerousSwissIguanaChefFrank-YhL9t_QVWtPNUe6v",
+    "url": "https://www.twitch.tv/ishowspeed/clip/OnerousSwissIguanaChefFrank-YhL9t_QVWtPNUe6v",
+    "channel": "ishowspeed",
+    "platform": "twitch",
+    "title": "..",
+    "views": 674,
+    "created": 1795061131,
+    "category": "Grand Theft Auto VI",
+    "cluster": 1,
+    "added": 1795109589
+  },
+  "twitch_ThankfulPiliablePrariedogPrimeMe-Ub5zpoHpUObxhbVz": {
+    "id": "twitch_ThankfulPiliablePrariedogPrimeMe-Ub5zpoHpUObxhbVz",
+    "url": "https://www.twitch.tv/kingwoolz/clip/ThankfulPiliablePrariedogPrimeMe-Ub5zpoHpUObxhbVz",
+    "channel": "kingwoolz",
+    "platform": "twitch",
+    "title": "OVERSIMULATED",
+    "views": 686,
+    "created": 1795055761,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933071028",
+    "vod_offset": 760,
+    "cluster": 1,
+    "added": 1795109589
   }
 }
