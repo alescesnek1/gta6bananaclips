@@ -5842,5 +5842,19 @@
     "vod_offset": 10489,
     "cluster": 1,
     "added": 1795089204
+  },
+  "twitch_BloodyQuaintTigerRaccAttack-J8Y2TNViWGE54NHw": {
+    "id": "twitch_BloodyQuaintTigerRaccAttack-J8Y2TNViWGE54NHw",
+    "url": "https://www.twitch.tv/swagg/clip/BloodyQuaintTigerRaccAttack-J8Y2TNViWGE54NHw",
+    "channel": "swagg",
+    "platform": "twitch",
+    "title": "lamb chop",
+    "views": 1239,
+    "created": 1795028174,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932231823",
+    "vod_offset": 27940,
+    "cluster": 1,
+    "added": 1795089801
   }
 }
