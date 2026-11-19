@@ -5692,5 +5692,19 @@
     "category": "Grand Theft Auto VI",
     "cluster": 1,
     "added": 1795082625
+  },
+  "twitch_BlightedWimpyLasagnaMrDestructoid-t0hnhiHoozGdkLGu": {
+    "id": "twitch_BlightedWimpyLasagnaMrDestructoid-t0hnhiHoozGdkLGu",
+    "url": "https://www.twitch.tv/rayasianboy/clip/BlightedWimpyLasagnaMrDestructoid-t0hnhiHoozGdkLGu",
+    "channel": "rayasianboy",
+    "platform": "twitch",
+    "title": "ray gta 6",
+    "views": 1404,
+    "created": 1795023604,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932386602",
+    "vod_offset": 9678,
+    "cluster": 1,
+    "added": 1795083809
   }
 }
