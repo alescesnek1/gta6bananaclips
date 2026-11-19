@@ -76,6 +76,30 @@ if (Due "long" 115) {
     }
 }
 
+# --- 1a) hardware once (owner 19. 11.: GPU + VRAM, CPU, RAM of this PC, read from the report): one line per part
+$hw = Join-Path $dir "out\hw_reported_v1.txt"
+if (-not (Test-Path $hw)) {
+    try {
+        $cpu = Get-CimInstance Win32_Processor | Select-Object -First 1
+        $ram = [math]::Round((Get-CimInstance Win32_ComputerSystem).TotalPhysicalMemory / 1GB, 1)
+        $lines = @("$(Get-Date -Format s) HW CPU: $($cpu.Name.Trim()) ($($cpu.NumberOfCores) cores / $($cpu.NumberOfLogicalProcessors) threads)",
+                   "$(Get-Date -Format s) HW RAM: $ram GB")
+        $smi = Get-Command nvidia-smi -ErrorAction SilentlyContinue
+        if ($smi) {
+            & nvidia-smi --query-gpu=name,memory.total,driver_version --format=csv,noheader | ForEach-Object { $lines += "$(Get-Date -Format s) HW GPU (nvidia-smi): $_" }
+        }
+        Get-ItemProperty "HKLM:\SYSTEM\ControlSet001\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0*" -ErrorAction SilentlyContinue |
+            Where-Object { $_.DriverDesc } | ForEach-Object {
+                $vram = if ($_."HardwareInformation.qwMemorySize") { [math]::Round([double]$_."HardwareInformation.qwMemorySize" / 1GB, 1) } else { "?" }
+                $lines += "$(Get-Date -Format s) HW GPU: $($_.DriverDesc) VRAM $vram GB"
+            }
+        $lines | Out-File $log -Append -Encoding utf8
+        "done" | Set-Content $hw -Encoding ascii
+    } catch {
+        "$(Get-Date -Format s) HW read FAILED: $($_.Exception.Message)" | Out-File $log -Append -Encoding utf8
+    }
+}
+
 # --- 1c) report in every 30 min (18. 11.: nobody could see what the PC does without going to it): the tail
 # of worker.log as a dispatch input of pc-hlaseni.yml (the token can start workflows, not push). Public repo:
 # long token-like strings are masked, at most 15000 characters.
