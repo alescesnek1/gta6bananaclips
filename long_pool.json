@@ -3381,7 +3381,7 @@
       "_loud": 5.9,
       "_motion": 8.1
     },
-    "quote": "I don't know about Lucy anymore.",
+    "quote": "Go ta - I don't know about Lucy anymore.",
     "rendered": [
       "bananas"
     ],
@@ -3579,7 +3579,7 @@
       "_loud": 2.2,
       "_motion": 18.7
     },
-    "quote": "",
+    "quote": "Noooooo! Come on! Come on!",
     "rendered": [
       "bananas"
     ],
@@ -4333,7 +4333,7 @@
       "_loud": 6.2,
       "_motion": 12.7
     },
-    "quote": "",
+    "quote": "No!",
     "rendered": [
       "bananas",
       "fanpage"
@@ -4786,5 +4786,114 @@
     "vod_offset": 1957,
     "cluster": 1,
     "added": 1795059211
+  },
+  "kick_clip_01M7QF79EME6M21QZ4PP9XQNGQ": {
+    "id": "kick_clip_01M7QF79EME6M21QZ4PP9XQNGQ",
+    "url": "https://kick.com/adinross/clips/clip_01M7QF79EME6M21QZ4PP9XQNGQ",
+    "channel": "adinross",
+    "platform": "kick",
+    "title": "This guy",
+    "views": 1248,
+    "created": 1795010338,
+    "category": "Grand Theft Auto VI (GTA)",
+    "added": 1795060913,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/adinross/20261118_kick_clip_01M7QF79EME6M21QZ4PP9XQNGQ/source.mp4",
+    "peak": 85.95,
+    "cut": [
+      76.93,
+      88.93
+    ],
+    "dur": 182.0,
+    "tags": [
+      "rage",
+      "wow"
+    ],
+    "tag_scores": {
+      "funny": 0.08,
+      "glitch": 0.0,
+      "chase": 0.13,
+      "crash": 0.0,
+      "rage": 1.0,
+      "first-reaction": 0.2,
+      "wow": 0.69,
+      "_loud": 2.9,
+      "_motion": 14.0
+    },
+    "quote": "",
+    "rendered": [
+      "fanpage"
+    ],
+    "cats": {
+      "funny": 0.25,
+      "rage": 0.25,
+      "fail": 0.25,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.25
+    },
+    "proven": [],
+    "evidence": {
+      "funny": [
+        "loud"
+      ],
+      "rage": [
+        "loud"
+      ],
+      "fail": [
+        "loud"
+      ],
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion-spike"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "loud"
+      ]
+    },
+    "fun": 0.48,
+    "signals": {
+      "siren": 0.0,
+      "impact": 16.6,
+      "loud": 6.6,
+      "motion": 6.5,
+      "sustained": 0.21,
+      "spike": 8.6,
+      "laugh": 0,
+      "static": 0.05,
+      "letterbox": 0.0,
+      "luma": 46.7,
+      "dark": 0.0
+    }
+  },
+  "twitch_TrappedYummyMetalWTRuck-5L2ytqbMKZmQThQ5": {
+    "id": "twitch_TrappedYummyMetalWTRuck-5L2ytqbMKZmQThQ5",
+    "url": "https://www.twitch.tv/xqc/clip/TrappedYummyMetalWTRuck-5L2ytqbMKZmQThQ5",
+    "channel": "xqc",
+    "platform": "twitch",
+    "title": "woman aim huh",
+    "views": 1251,
+    "created": 1795042041,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932113307",
+    "vod_offset": 58757,
+    "added": 1795060913
   }
 }
