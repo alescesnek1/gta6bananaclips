@@ -6585,13 +6585,13 @@
     "channel": "ohnepixel",
     "platform": "twitch",
     "title": "Bro Want the ban So bad!! Hahahha",
-    "views": 506,
+    "views": 532,
     "created": 1795092624,
     "category": "Grand Theft Auto VI",
     "video_id": "2933599748",
     "vod_offset": 3142,
     "cluster": 1,
-    "added": 1795102514
+    "added": 1795103431
   },
   "twitch_RespectfulDeadScorpionFreakinStinkin-e2RNV9ax1M-ndSod": {
     "id": "twitch_RespectfulDeadScorpionFreakinStinkin-e2RNV9ax1M-ndSod",
@@ -6599,11 +6599,11 @@
     "channel": "dinah",
     "platform": "twitch",
     "title": "dinah - Highlight dc59b9 Part 09",
-    "views": 802,
+    "views": 818,
     "created": 1795024547,
     "category": "Grand Theft Auto VI",
     "cluster": 1,
-    "added": 1795102514
+    "added": 1795103432
   },
   "twitch_SavoryEagerLlamaLeeroyJenkins-fzfiphCY-mKdwJvr": {
     "id": "twitch_SavoryEagerLlamaLeeroyJenkins-fzfiphCY-mKdwJvr",
@@ -6725,5 +6725,46 @@
     "vod_offset": 5702,
     "cluster": 1,
     "added": 1795102514
+  },
+  "twitch_AbrasivePatientMageRaccAttack-buWjiUiqf-LAh40B": {
+    "id": "twitch_AbrasivePatientMageRaccAttack-buWjiUiqf-LAh40B",
+    "url": "https://www.twitch.tv/jasontheween/clip/AbrasivePatientMageRaccAttack-buWjiUiqf-LAh40B",
+    "channel": "jasontheween",
+    "platform": "twitch",
+    "title": "AYOOOO",
+    "views": 850,
+    "created": 1795027053,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932190650",
+    "vod_offset": 30890,
+    "cluster": 1,
+    "added": 1795103431
+  },
+  "twitch_PunchySpeedyCasetteRalpherZ-oNhHMUfHYqCFg6lg": {
+    "id": "twitch_PunchySpeedyCasetteRalpherZ-oNhHMUfHYqCFg6lg",
+    "url": "https://www.twitch.tv/kaicenat/clip/PunchySpeedyCasetteRalpherZ-oNhHMUfHYqCFg6lg",
+    "channel": "kaicenat",
+    "platform": "twitch",
+    "title": "Lucia and Jason in a steamy moment🔥",
+    "views": 742,
+    "created": 1795029260,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932305259",
+    "vod_offset": 22384,
+    "added": 1795103432
+  },
+  "twitch_UnusualAssiduousBeeM4xHeh-rWVNJTmSUscys1_L": {
+    "id": "twitch_UnusualAssiduousBeeM4xHeh-rWVNJTmSUscys1_L",
+    "url": "https://www.twitch.tv/zerkaa/clip/UnusualAssiduousBeeM4xHeh-rWVNJTmSUscys1_L",
+    "channel": "zerkaa",
+    "platform": "twitch",
+    "title": "title",
+    "views": 808,
+    "created": 1795029973,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932227427",
+    "vod_offset": 29760,
+    "cluster": 1,
+    "added": 1795103432
   }
 }
