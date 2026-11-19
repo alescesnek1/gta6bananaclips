@@ -77,6 +77,14 @@
         },
         "draft": false,
         "done": true
+      },
+      "live_hasanabi_1795055848": {
+        "due": "2026-11-19T04:07:00+01:00",
+        "posts": {
+          "6af7142262b70b94b01ac608": "6afe646fb16549e9b81bf1fc"
+        },
+        "draft": false,
+        "done": true
       }
     },
     "days": {
