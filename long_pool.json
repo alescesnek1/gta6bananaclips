@@ -15072,5 +15072,33 @@
     "category": "Grand Theft Auto VI",
     "cluster": 1,
     "added": 1795117390
+  },
+  "twitch_EvilChillyClintmullinsPoooound-P_ZS6NqbRvPOkAki": {
+    "id": "twitch_EvilChillyClintmullinsPoooound-P_ZS6NqbRvPOkAki",
+    "url": "https://www.twitch.tv/yourragegaming/clip/EvilChillyClintmullinsPoooound-P_ZS6NqbRvPOkAki",
+    "channel": "yourragegaming",
+    "platform": "twitch",
+    "title": "Yourrage DIES on the first mission in the most unexpected way😭😭😭",
+    "views": 544,
+    "created": 1795066896,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933174196",
+    "vod_offset": 6697,
+    "cluster": 1,
+    "added": 1795118002
+  },
+  "twitch_SmallCleanBarracudaFrankerZ-P-FFfcDRTOFrxpIy": {
+    "id": "twitch_SmallCleanBarracudaFrankerZ-P-FFfcDRTOFrxpIy",
+    "url": "https://www.twitch.tv/theburntpeanut/clip/SmallCleanBarracudaFrankerZ-P-FFfcDRTOFrxpIy",
+    "channel": "theburntpeanut",
+    "platform": "twitch",
+    "title": "Bigggg Boat",
+    "views": 546,
+    "created": 1795031593,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932226282",
+    "vod_offset": 31711,
+    "cluster": 1,
+    "added": 1795118002
   }
 }
