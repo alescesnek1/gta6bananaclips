@@ -58,7 +58,7 @@
       "first": "funny-day",
       "_first": "Ales 18. 11. vecer: zadne nudne koukani na grafiku -> prvni dil akcni serie misto first-reactions"
     },
-    "long_min_gap_h": 20,
+    "long_min_gap_h": 8,
     "long_target_min": 8,
     "long_retry_h": 6,
     "long_flags": {
@@ -80,7 +80,8 @@
     "_exp": "Experimenty (experimenty.py, docs/dva-ucty.md): max exp_max_per_day denne navic ke kvote, zapina je az data (dost silneho materialu), meri se 48 h po vydani; koncept pod 60 % klasiky po 5 postech se sam vypne (experimenty.json), nad 100 % smi 2x denne. false = vypnuto hned.",
     "exp_first": true,
     "exp_tier3": false,
-    "exp_max_per_day": 1
+    "exp_max_per_day": 1,
+    "_long_min_gap_h": "Ales 19. 11.: long-formu delat vic (kazdy koncept samostatne video) -> odstup 8 h misto 20; dil jde jen s 8 min akce."
   },
   "fanpage": {
     "name": "gta6fanpageclip",
@@ -133,15 +134,14 @@
     "long_calendar": {
       "_napoveda": "Ales 18. 11.: long-form se dela HNED, jak je zasoba klipu (zadny den v tydnu, zadny den predem). Beh kazde 2 h vezme dalsi serii z rotace; ma-li pool na silny dil (long_target_min po strizich, nikdy pod 5 min), postavi ho a hned posle e-mail, jinak tise preskoci. Prvni dil kanalu = first (kdyz ma material). Nejvys 1 dil za long_min_gap_h hodin, po chybe dalsi pokus za long_retry_h. Fanpage = THE STORY (bez poradi): noc jednoho streamera, pak same-mission kdyz je multi-POV (pozice same_mission_slot v rotaci) jinak After Dark, pak After Dark.",
       "rotation": [
-        "streamer-night",
-        "after-dark",
-        "after-dark"
+        "same-mission",
+        "chases"
       ],
-      "first": "after-dark",
       "same_mission_slot": 1,
-      "_first": "Ales 19. 11.: streamer-night nasla jen 3-5 momentu jednoho streamera -> After Dark (akce, jine momenty nez bananas dil, pouzite se neopakuji)"
+      "_first": "Ales 19. 11.: fanpage jiny koncept nez sestrihy -> stridani 'GTA 6: Same Mission, N Streamers' a 'GTA 6 Craziest Police Chases'; kdyz stejna mise nema material, postavi se honicky (fallback).",
+      "fallback": "chases"
     },
-    "long_min_gap_h": 20,
+    "long_min_gap_h": 8,
     "long_target_min": 8,
     "long_retry_h": 6,
     "long_flags": {
@@ -162,6 +162,7 @@
     "_exp": "Experimenty (experimenty.py, docs/dva-ucty.md): max exp_max_per_day denne navic ke kvote, zapina je az data (dost silneho materialu), meri se 48 h po vydani; koncept pod 60 % klasiky po 5 postech se sam vypne (experimenty.json), nad 100 % smi 2x denne. false = vypnuto hned.",
     "exp_multi_pov": true,
     "exp_story": true,
-    "exp_max_per_day": 1
+    "exp_max_per_day": 1,
+    "_long_min_gap_h": "Ales 19. 11.: long-formu delat vic (kazdy koncept samostatne video) -> odstup 8 h misto 20; dil jde jen s 8 min akce."
   }
 }

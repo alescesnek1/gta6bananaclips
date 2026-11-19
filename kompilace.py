@@ -1482,7 +1482,11 @@ MODEL_IN_VIDEO = True                                  # owner 18. 11.: her reac
 LETTERBOX = int((H - W / 2.35) / 2)                       # 2.35:1 bars: 131 px top and bottom
 
 def main_series(z):
-    """The channel's main series (fallback of every themed day)."""
+    """The channel's main series (fallback of every themed day); brands.json long_calendar.fallback wins
+    (19. 11.: fanpage falls back to police chases, not another compilation)."""
+    fb = (brand_cfg(z, "long_calendar", {}) or {}).get("fallback")
+    if fb:
+        return fb
     return "after-dark" if z == "fanpage" and flag(z, "fanpage_story") else DAILY[z]
 
 def story_mode(z):
