@@ -15163,13 +15163,13 @@
     "channel": "asianjeff",
     "platform": "twitch",
     "title": "jeff gta6",
-    "views": 527,
+    "views": 542,
     "created": 1795066592,
     "category": "Grand Theft Auto VI",
     "video_id": "2933231152",
     "vod_offset": 2771,
     "cluster": 1,
-    "added": 1795120128
+    "added": 1795120598
   },
   "twitch_EagerBovineVelociraptorTwitchRaid-j2H8aK-F-0bObWVL": {
     "id": "twitch_EagerBovineVelociraptorTwitchRaid-j2H8aK-F-0bObWVL",
@@ -15191,11 +15191,11 @@
     "channel": "ishowspeed",
     "platform": "twitch",
     "title": "LMAO moment | ishowspeed",
-    "views": 532,
+    "views": 546,
     "created": 1795061094,
     "category": "Grand Theft Auto VI",
     "cluster": 1,
-    "added": 1795120128,
+    "added": 1795120598,
     "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/ishowspeed/20261119_twitch_ObeseObliqueTildeHassanChop-V71KdClKP_JCqGtj/source.mp4",
     "peak": 22.25,
     "cut": [
@@ -15219,7 +15219,8 @@
     },
     "quote": "Yeah, okay, have a nice rest of yourself What do you mean?",
     "rendered": [
-      "bananas"
+      "bananas",
+      "fanpage"
     ],
     "cats": {
       "funny": 0.7,
@@ -15290,10 +15291,10 @@
     "channel": "ishowspeed",
     "platform": "twitch",
     "title": "h",
-    "views": 543,
+    "views": 554,
     "created": 1795081508,
     "category": "Grand Theft Auto VI",
     "cluster": 1,
-    "added": 1795120128
+    "added": 1795120598
   }
 }
