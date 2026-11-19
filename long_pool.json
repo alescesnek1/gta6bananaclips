@@ -6112,5 +6112,33 @@
     "vod_offset": 4823,
     "cluster": 1,
     "added": 1795093698
+  },
+  "twitch_ExuberantBoldPickles4Head-Wwed_Pva3ZyvdUoA": {
+    "id": "twitch_ExuberantBoldPickles4Head-Wwed_Pva3ZyvdUoA",
+    "url": "https://www.twitch.tv/sunglitters/clip/ExuberantBoldPickles4Head-Wwed_Pva3ZyvdUoA",
+    "channel": "sunglitters",
+    "platform": "twitch",
+    "title": "I see his WAS (yt hates this)",
+    "views": 1038,
+    "created": 1795009001,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932277730",
+    "vod_offset": 4726,
+    "cluster": 1,
+    "added": 1795094000
+  },
+  "twitch_KawaiiSoftJamThisIsSparta-Nxo2QqGGcEzhAMFN": {
+    "id": "twitch_KawaiiSoftJamThisIsSparta-Nxo2QqGGcEzhAMFN",
+    "url": "https://www.twitch.tv/caseoh_/clip/KawaiiSoftJamThisIsSparta-Nxo2QqGGcEzhAMFN",
+    "channel": "caseoh_",
+    "platform": "twitch",
+    "title": "1",
+    "views": 1426,
+    "created": 1795037328,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932628190",
+    "vod_offset": 6689,
+    "cluster": 1,
+    "added": 1795094000
   }
 }
