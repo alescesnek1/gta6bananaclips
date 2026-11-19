@@ -5828,5 +5828,19 @@
     "vod_offset": 1778,
     "cluster": 1,
     "added": 1795088593
+  },
+  "twitch_CoyGeniusCaterpillarOneHand-XSf9ZPw4j1vToTSO": {
+    "id": "twitch_CoyGeniusCaterpillarOneHand-XSf9ZPw4j1vToTSO",
+    "url": "https://www.twitch.tv/nickeh30/clip/CoyGeniusCaterpillarOneHand-XSf9ZPw4j1vToTSO",
+    "channel": "nickeh30",
+    "platform": "twitch",
+    "title": "look at him lol",
+    "views": 1270,
+    "created": 1795023865,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932380541",
+    "vod_offset": 10489,
+    "cluster": 1,
+    "added": 1795089204
   }
 }
