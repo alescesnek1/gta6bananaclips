@@ -5626,5 +5626,17 @@
     "vod_offset": 14990,
     "cluster": 1,
     "added": 1795076313
+  },
+  "twitch_HumbleGeniusStrawberryBleedPurple-CYhEi_LZY9mbAQxo": {
+    "id": "twitch_HumbleGeniusStrawberryBleedPurple-CYhEi_LZY9mbAQxo",
+    "url": "https://www.twitch.tv/ishowspeed/clip/HumbleGeniusStrawberryBleedPurple-CYhEi_LZY9mbAQxo",
+    "channel": "ishowspeed",
+    "platform": "twitch",
+    "title": "bahaha",
+    "views": 1323,
+    "created": 1795038747,
+    "category": "Grand Theft Auto VI",
+    "cluster": 1,
+    "added": 1795077204
   }
 }
