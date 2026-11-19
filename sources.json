@@ -242,5 +242,8 @@
   "youtube_primary": [
     "ishowspeed"
   ],
-  "youtube_primary_x": 8
+  "youtube_primary_x": 8,
+  "min_viral": 600,
+  "action_min": 0.6,
+  "_min_viral": "Ales 19. 11.: shorty nejsou dost viralni ani akcni -> kazdy short (i dohaneni minima) min. skore 600 (krome Kai/Speed/xQc), akcni stitek >= 0,6."
 }

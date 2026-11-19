@@ -1217,10 +1217,14 @@ def action_gate(m, src):
         return ""
     if exceptional(m, src) or (m.get("cluster") or 1) >= max(10, (m.get("viewers") or 0) / 5000) or outburst(m, src):
         return ""
+    top = {x.lower() for x in src.get("star_tier1", [])}
+    if not is_live(m) and (m.get("score") or 0) < src.get("min_viral", 600)             and str(m.get("channel") or "").lower() not in top:
+        return f"not viral enough (score {m.get('score') or 0:.0f} < {src.get('min_viral', 600)})"
     sc = m.get("tag_scores") or {}
     act = max((sc.get(t) or 0) for t in ACTION_TAGS)
-    if act < ACTION_MIN:
-        return f"no action: best action tag {act:.2f} < {ACTION_MIN}"
+    amin = src.get("action_min", ACTION_MIN)
+    if act < amin:
+        return f"no action: best action tag {act:.2f} < {amin}"
     if (sc.get("first-reaction") or 0) > act + 0.15:
         return f"mostly a first look at GTA 6 (first-reaction {sc.get('first-reaction'):.2f} > action {act:.2f})"
     return ""

@@ -4213,6 +4213,13 @@ def render(clip, src=None, clean=False):
             # seconds of the setup that runs into P0, and end with the video (the seam stays exact)
             card_at = max(hook_t + 0.5, dur - RATING_DUR)
             reactions = [r for r in reactions if r[0] < hook_t or r[0] + REACTIONS[r[1]][2] - REACTIONS[r[1]][1] < card_at - 0.2]
+        # owner 18. 11.: only clips with real action go out (publikuj.action_gate). Checked HERE too, right after
+        # the transcript and before any encode (19. 11.: a 25 min render of a "first look" clip was thrown away at
+        # publishing and the slot stayed empty all evening) -> a failed try, the batch takes the next candidate
+        if not non_game and not os.environ.get("KLIPY_NO_ACTION_GATE"):
+            why = render_action_gate(clip, words0, orig, hpc.get("peak"), mtags)
+            if why:
+                raise RenderFailed(why)
         ff = ["ffmpeg", "-nostdin", "-y", "-hide_banner", "-loglevel", "error", "-i", str(src)]
 
         # Render, check, and REPAIR instead of giving up (Aleš: a cut face or black bars must be fixed):
@@ -4713,6 +4720,8 @@ def mark(clip_id, ok, why=None):
         state.get("failed_why", {}).pop(clip_id, None)
     else:
         state["failed"][clip_id] = state["failed"].get(clip_id, 0) + 1
+        if why and "not rendered" in str(why):        # the action gate's verdict does not change: never again
+            state["failed"][clip_id] = max(state["failed"][clip_id], MAX_TRIES)
         if why:
             state.setdefault("failed_why", {})[clip_id] = str(why)[:300]
     save_json(STATE, state)
@@ -4966,7 +4975,13 @@ def cmd_batch(a):
         # clips of any score, `good_n` that need good_score, the rest of `max` extra_score, and on top
         # up to `hot` clips spreading fast (score >= hot_score, < 3 h old) for the hot path
         tried = set()
-        total = process(live, a.clean, limit=min(a.owed, a.max), tried=tried)
+        # owner 19. 11.: "the viral moments are not that viral" -> catch-up clips need min_viral too (top stars
+        # Kai Cenat / IShowSpeed / xQc excepted); fewer posts beat weak ones
+        cfg0 = load_json(SOURCES, {})
+        top0 = {x.lower() for x in cfg0.get("star_tier1", [])}
+        floor = cfg0.get("min_viral", 600)
+        owed_pool = [c for c in live if virality(c) >= floor or str(c.get("channel", "")).lower() in top0]
+        total = process(owed_pool, a.clean, limit=min(a.owed, a.max), tried=tried)
         total += process([c for c in live if virality(c) >= a.min_score], a.clean,
                          limit=min(a.good_n, a.max - total), tried=tried)
         total += process([c for c in live if virality(c) >= max(a.extra_score, a.min_score)], a.clean,
@@ -5119,6 +5134,37 @@ def motion_stats(src):
             diffs.append(float(np.abs(g - prev).mean()))
         prev = g
     return (float(np.mean(diffs)), float(np.percentile(diffs, 95))) if diffs else (0.0, 0.0)
+
+ACTION_TAGS = ("crash", "chase", "glitch", "funny", "rage")
+
+def render_action_gate(clip, words, src, peak, mtags):
+    """'' = render it, else why not (same rule as publikuj.action_gate, before the encode). The moment's tags
+    are kept in mtags (the model sticker reuses them). Exceptions by numbers only: a live explosion >= the
+    exceptional live_z, a cluster of max(10, viewers/5000) viewer clips, score >= 4 x hot_score, or a loud
+    outburst of an outburst streamer (IShowSpeed)."""
+    src_cfg = load_json(SOURCES, {})
+    ex = src_cfg.get("exceptional") or {}
+    hs = src_cfg.get("hot_score", 2000)
+    if ((clip.get("live") and (clip.get("spike_z") or 0) >= ex.get("live_z", 80))
+            or (clip.get("cluster") or 1) >= max(10, (clip.get("viewers") or 0) / 5000)
+            or (clip.get("score") or 0) >= ex.get("score_x", 4) * hs):
+        return ""
+    try:
+        tags, sc = moment_tags(words, src, peak, clip.get("title"), clip.get("created") or 0)
+    except Exception as e:                                # a broken probe never kills a clip
+        log(f"  action gate: tags failed ({str(e)[-80:]}), rendering")
+        return ""
+    mtags["tags"] = tags
+    if str(clip.get("channel") or "").lower() in {x.lower() for x in src_cfg.get("outburst_streamers", [])} \
+            and (sc.get("_loud") or 0) >= src_cfg.get("outburst_loud", 5.0):
+        return ""
+    act = max((sc.get(t) or 0) for t in ACTION_TAGS)
+    amin = src_cfg.get("action_min", 0.6)
+    if act < amin:
+        return f"no action (best action tag {act:.2f} < {amin}) - not rendered"
+    if (sc.get("first-reaction") or 0) > act + 0.15:
+        return f"mostly a first look at GTA 6 ({sc.get('first-reaction'):.2f} > {act:.2f}) - not rendered"
+    return ""
 
 def moment_tags(words, src, peak=None, title="", created=0):
     """
