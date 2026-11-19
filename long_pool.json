@@ -1041,13 +1041,79 @@
     "channel": "lacy",
     "platform": "twitch",
     "title": "LACY JUST KILLED AN INNCOCENT DOGGGG",
-    "views": 509,
+    "views": 13194,
     "created": 1795004087,
     "category": "Grand Theft Auto VI",
     "video_id": "2932194507",
     "vod_offset": 7362,
     "cluster": 3,
-    "added": 1795008508
+    "added": 1795094554,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_ThirstyAcceptableRaccoonDxAbomb-NT930bCo04OgUQHD\\source.mp4",
+    "peak": 3.25,
+    "cut": [
+      0.0,
+      7.94
+    ],
+    "dur": 7.94,
+    "tags": [
+      "crash"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.3,
+      "rage": 0.0,
+      "first-reaction": 0.2,
+      "wow": 0.0,
+      "_loud": 4.0,
+      "_motion": 16.2
+    },
+    "quote": "Hey, buddy, come here come here, buddy",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "proven": [],
+    "evidence": {
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.48,
+    "signals": {
+      "siren": 0.0,
+      "impact": 31.2,
+      "loud": 4.4,
+      "motion": 12.4,
+      "sustained": 0.55,
+      "spike": 1.9,
+      "laugh": 0,
+      "static": 0.05,
+      "letterbox": 0.0,
+      "luma": 87.6,
+      "dark": 0.0
+    }
   },
   "twitch_PiercingSlipperyTortoiseDuDudu-ShespqH5CNlosqhC": {
     "id": "twitch_PiercingSlipperyTortoiseDuDudu-ShespqH5CNlosqhC",
@@ -1145,13 +1211,83 @@
     "channel": "lacy",
     "platform": "twitch",
     "title": "uhhhh ok",
-    "views": 649,
+    "views": 4299,
     "created": 1795001715,
     "category": "Grand Theft Auto VI",
     "video_id": "2932194507",
     "vod_offset": 5019,
     "cluster": 1,
-    "added": 1795011956
+    "added": 1795095631,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_HumbleOpenPassionfruitPrimeMe-kw5lcvoycKcFD4j5\\source.mp4",
+    "peak": 15.65,
+    "cut": [
+      0.0,
+      30.02
+    ],
+    "dur": 30.02,
+    "tags": [
+      "rage"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.2,
+      "crash": 0.0,
+      "rage": 0.87,
+      "first-reaction": 0.2,
+      "wow": 0.08,
+      "_loud": 1.7,
+      "_motion": 25.4
+    },
+    "quote": "I had to kill the tiger bro Fuck this shit down.",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.7,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "primary": "rage",
+    "proven": [],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.51,
+    "signals": {
+      "siren": 0.0,
+      "impact": 25.8,
+      "loud": 2.2,
+      "motion": 20.5,
+      "sustained": 0.83,
+      "spike": 2.5,
+      "laugh": 0,
+      "static": 0.06,
+      "letterbox": 0.0,
+      "luma": 61.0,
+      "dark": 0.0
+    }
   },
   "twitch_TiredCrepuscularLettuceTebowing-_ckSEJKNEXXBWDj1": {
     "id": "twitch_TiredCrepuscularLettuceTebowing-_ckSEJKNEXXBWDj1",
@@ -1820,13 +1956,68 @@
     "channel": "brycexd",
     "platform": "twitch",
     "title": "audacity auda ticker",
-    "views": 694,
+    "views": 8909,
     "created": 1795015910,
     "category": "Grand Theft Auto VI",
     "video_id": "2932205344",
     "vod_offset": 17677,
     "cluster": 1,
-    "added": 1795016904
+    "added": 1795094928,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_CallousInspiringRuffSuperVinlin-ZORXxsZrAvTCjx7k\\source.mp4",
+    "peak": 27.25,
+    "cut": [
+      0.0,
+      28.75
+    ],
+    "dur": 30.02,
+    "tags": [],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 0.2,
+      "wow": 0.0,
+      "_loud": 1.5,
+      "_motion": 4.1
+    },
+    "quote": "",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "proven": [],
+    "evidence": {
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.15,
+    "signals": {
+      "siren": 0.0,
+      "impact": 23.3,
+      "loud": 1.7,
+      "motion": 2.5,
+      "sustained": 0.0,
+      "spike": 2.7,
+      "laugh": 0,
+      "static": 0.38,
+      "letterbox": 0.0,
+      "luma": 84.1,
+      "dark": 0.0
+    }
   },
   "twitch_LachrymoseDaintyAlmondCclamChamp-QZNm8Z_rQRDFM9Bi": {
     "id": "twitch_LachrymoseDaintyAlmondCclamChamp-QZNm8Z_rQRDFM9Bi",
@@ -1834,13 +2025,77 @@
     "channel": "xqc",
     "platform": "twitch",
     "title": "GTA 6 First Weird Radio Conversations",
-    "views": 545,
+    "views": 1451,
     "created": 1795002692,
     "category": "Grand Theft Auto VI",
     "video_id": "2932113307",
     "vod_offset": 19131,
     "cluster": 1,
-    "added": 1795016904
+    "added": 1795104559,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_LachrymoseDaintyAlmondCclamChamp-QZNm8Z_rQRDFM9Bi\\source.mp4",
+    "peak": 52.45,
+    "cut": [
+      13.7,
+      53.7
+    ],
+    "dur": 60.01,
+    "tags": [
+      "first-reaction"
+    ],
+    "tag_scores": {
+      "funny": 0.15,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.15,
+      "first-reaction": 0.5,
+      "wow": 0.12,
+      "_loud": 1.3,
+      "_motion": 12.6
+    },
+    "quote": "Thank you, doctor.",
+    "cats": {
+      "funny": 0.24,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.73,
+      "wow": 0.0
+    },
+    "primary": "first-reaction",
+    "proven": [
+      "first-reaction"
+    ],
+    "evidence": {
+      "funny": [
+        "text"
+      ],
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ]
+    },
+    "fun": 0.21,
+    "signals": {
+      "siren": 0.0,
+      "impact": 9.9,
+      "loud": 1.2,
+      "motion": 9.5,
+      "sustained": 0.21,
+      "spike": 2.7,
+      "laugh": 0,
+      "static": 0.08,
+      "letterbox": 0.0,
+      "luma": 21.0,
+      "dark": 0.0
+    }
   },
   "twitch_ShySnappyShingleYouWHY-vW__zYusz_5ijA9L": {
     "id": "twitch_ShySnappyShingleYouWHY-vW__zYusz_5ijA9L",
@@ -1848,13 +2103,90 @@
     "channel": "brendaniel",
     "platform": "twitch",
     "title": "BIG FOOT REAL",
-    "views": 552,
+    "views": 1610,
     "created": 1795014566,
     "category": "Grand Theft Auto VI",
     "video_id": "2932259683",
     "vod_offset": 12017,
     "cluster": 1,
-    "added": 1795016904
+    "added": 1795104071,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_ShySnappyShingleYouWHY-vW__zYusz_5ijA9L\\source.mp4",
+    "peak": 15.05,
+    "cut": [
+      2.24,
+      16.25
+    ],
+    "dur": 24.1,
+    "tags": [
+      "rage",
+      "wow"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.0,
+      "rage": 1.0,
+      "first-reaction": 0.2,
+      "wow": 1.0,
+      "_loud": 1.7,
+      "_motion": 14.5
+    },
+    "quote": "We gotta get him.",
+    "cats": {
+      "funny": 0.0,
+      "rage": 1.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 1.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.7
+    },
+    "primary": "rage",
+    "proven": [],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "easter-egg": [
+        "text"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.46,
+    "signals": {
+      "siren": 0.0,
+      "impact": 13.6,
+      "loud": 1.5,
+      "motion": 11.8,
+      "sustained": 0.46,
+      "spike": 1.8,
+      "laugh": 0,
+      "static": 0.0,
+      "letterbox": 0.0,
+      "luma": 72.6,
+      "dark": 0.0
+    }
   },
   "twitch_WealthyObliqueCiderNononoCat-4AWlrWlfOilJh5Vi": {
     "id": "twitch_WealthyObliqueCiderNononoCat-4AWlrWlfOilJh5Vi",
@@ -1876,13 +2208,102 @@
     "channel": "ohnepixel",
     "platform": "twitch",
     "title": "happy ohne",
-    "views": 515,
+    "views": 2959,
     "created": 1795005516,
     "category": "Grand Theft Auto VI",
     "video_id": "2932275268",
     "vod_offset": 1532,
     "cluster": 1,
-    "added": 1795018400
+    "added": 1795098747,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_ClumsyWimpyPuppySaltBae-UHUqwCCm1IBg3Pfl\\source.mp4",
+    "peak": 27.150000000000002,
+    "cut": [
+      0.77,
+      29.99
+    ],
+    "dur": 30.02,
+    "tags": [
+      "rage",
+      "wow",
+      "crash"
+    ],
+    "tag_scores": {
+      "funny": 0.16,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.3,
+      "rage": 0.69,
+      "first-reaction": 0.2,
+      "wow": 0.47,
+      "_loud": 5.1,
+      "_motion": 10.3
+    },
+    "quote": "No you won't Nice is bossy, bro.",
+    "cats": {
+      "funny": 0.25,
+      "rage": 0.93,
+      "fail": 0.25,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.6
+    },
+    "primary": "rage",
+    "proven": [
+      "rage",
+      "wow"
+    ],
+    "evidence": {
+      "funny": [
+        "loud"
+      ],
+      "rage": [
+        "loud",
+        "text"
+      ],
+      "fail": [
+        "loud"
+      ],
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion-spike"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "loud",
+        "text"
+      ]
+    },
+    "fun": 0.59,
+    "signals": {
+      "siren": 0.0,
+      "impact": 10.2,
+      "loud": 5.5,
+      "motion": 6.7,
+      "sustained": 0.18,
+      "spike": 10.0,
+      "laugh": 0,
+      "static": 0.1,
+      "letterbox": 0.24,
+      "luma": 33.3,
+      "dark": 0.0
+    }
   },
   "kick_clip_01M7QFDDYEWM7WHDG2PEYQXZNT": {
     "id": "kick_clip_01M7QFDDYEWM7WHDG2PEYQXZNT",
@@ -1901,13 +2322,80 @@
     "channel": "quin69",
     "platform": "twitch",
     "title": "father of 4 btw",
-    "views": 586,
+    "views": 5278,
     "created": 1795015930,
     "category": "Grand Theft Auto VI",
     "video_id": "2932203147",
     "vod_offset": 17852,
     "cluster": 1,
-    "added": 1795019560
+    "added": 1795095381,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_ModernBigWolfResidentSleeper-zUnNje_xisYIyfTG\\source.mp4",
+    "peak": 19.55,
+    "cut": [
+      3.94,
+      20.77
+    ],
+    "dur": 22.17,
+    "tags": [],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.05,
+      "first-reaction": 0.2,
+      "wow": 0.04,
+      "_loud": 2.0,
+      "_motion": 10.4
+    },
+    "quote": "Let me in my day",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.25,
+      "physics": 0.25,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "proven": [],
+    "evidence": {
+      "fail": [
+        "impact"
+      ],
+      "physics": [
+        "impact"
+      ],
+      "crash": [
+        "impact"
+      ],
+      "stunt": [
+        "impact"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.25,
+    "signals": {
+      "siren": 0.0,
+      "impact": 74.2,
+      "loud": 1.9,
+      "motion": 7.6,
+      "sustained": 0.21,
+      "spike": 3.3,
+      "laugh": 0,
+      "static": 0.01,
+      "letterbox": 0.0,
+      "luma": 65.0,
+      "dark": 0.0
+    }
   },
   "twitch_EnergeticVastTofuTheRinger-Mi3gDMWyJsLZwDUy": {
     "id": "twitch_EnergeticVastTofuTheRinger-Mi3gDMWyJsLZwDUy",
@@ -2301,11 +2789,84 @@
     "channel": "ishowspeed",
     "platform": "twitch",
     "title": "first robbery speed",
-    "views": 541,
+    "views": 9634,
     "created": 1795009434,
     "category": "Grand Theft Auto VI",
     "cluster": 1,
-    "added": 1795021585
+    "added": 1795094704,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_CrazyAbnegateLapwingPipeHype-fzo4DD3_M-TisQLE\\source.mp4",
+    "peak": 29.05,
+    "cut": [
+      17.45,
+      30.02
+    ],
+    "dur": 30.02,
+    "tags": [
+      "rage"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.2,
+      "crash": 0.0,
+      "rage": 0.92,
+      "first-reaction": 0.2,
+      "wow": 0.08,
+      "_loud": 2.1,
+      "_motion": 32.1
+    },
+    "quote": "Fucking stick it's a stick up party Give me this",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.35,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.7,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "primary": "mission",
+    "proven": [],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "mission": [
+        "text"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.47,
+    "signals": {
+      "siren": 0.0,
+      "impact": 18.5,
+      "loud": 2.2,
+      "motion": 20.7,
+      "sustained": 0.66,
+      "spike": 2.9,
+      "laugh": 0,
+      "static": 0.03,
+      "letterbox": 0.0,
+      "luma": 81.2,
+      "dark": 0.0
+    }
   },
   "twitch_FitAmazingRedpandaTBTacoLeft-ibIvB_HUTHVEr57b": {
     "id": "twitch_FitAmazingRedpandaTBTacoLeft-ibIvB_HUTHVEr57b",
@@ -2434,13 +2995,98 @@
     "channel": "theburntpeanut",
     "platform": "twitch",
     "title": "I cant hear im in school lol",
-    "views": 503,
+    "views": 2215,
     "created": 1795004272,
     "category": "Grand Theft Auto VI",
     "video_id": "2932226282",
     "vod_offset": 4450,
     "cluster": 1,
-    "added": 1795022400
+    "added": 1795099809,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_ComfortableLachrymosePeppermintDendiFace-Aui_95KVt5WTgUSb\\source.mp4",
+    "peak": 26.05,
+    "cut": [
+      11.24,
+      27.25
+    ],
+    "dur": 60.01,
+    "tags": [
+      "funny",
+      "wow",
+      "rage"
+    ],
+    "tag_scores": {
+      "funny": 0.98,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.75,
+      "first-reaction": 0.2,
+      "wow": 0.89,
+      "_loud": 2.7,
+      "_motion": 9.9
+    },
+    "quote": "What do you mean?",
+    "cats": {
+      "funny": 1.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.25,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.35
+    },
+    "primary": "funny",
+    "proven": [],
+    "evidence": {
+      "funny": [
+        "text"
+      ],
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion",
+        "motion-spike"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.47,
+    "signals": {
+      "siren": 0.0,
+      "impact": 31.2,
+      "loud": 4.0,
+      "motion": 12.3,
+      "sustained": 0.43,
+      "spike": 7.1,
+      "laugh": 0,
+      "static": 0.0,
+      "letterbox": 0.0,
+      "luma": 86.9,
+      "dark": 0.0
+    }
   },
   "twitch_GracefulNimblePeppermintGrammarKing-gwZm5tSIlpdLgCg-": {
     "id": "twitch_GracefulNimblePeppermintGrammarKing-gwZm5tSIlpdLgCg-",
@@ -2448,13 +3094,90 @@
     "channel": "ohnepixel",
     "platform": "twitch",
     "title": "bang",
-    "views": 801,
+    "views": 6686,
     "created": 1795021501,
     "category": "Grand Theft Auto VI",
     "video_id": "2932275268",
     "vod_offset": 17517,
     "cluster": 1,
-    "added": 1795023264
+    "added": 1795095092,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_GracefulNimblePeppermintGrammarKing-gwZm5tSIlpdLgCg-\\source.mp4",
+    "peak": 4.45,
+    "cut": [
+      0.0,
+      14.02
+    ],
+    "dur": 14.02,
+    "tags": [
+      "rage",
+      "wow"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.2,
+      "crash": 0.0,
+      "rage": 1.0,
+      "first-reaction": 0.2,
+      "wow": 1.0,
+      "_loud": 1.8,
+      "_motion": 31.4
+    },
+    "quote": "America's number one pawn side?",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.7,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.6,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 1.0
+    },
+    "primary": "wow",
+    "proven": [
+      "chase"
+    ],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "chase": [
+        "motion",
+        "text"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.6,
+    "signals": {
+      "siren": 0.0,
+      "impact": 7.5,
+      "loud": 1.9,
+      "motion": 22.0,
+      "sustained": 0.85,
+      "spike": 2.4,
+      "laugh": 0,
+      "static": 0.02,
+      "letterbox": 0.0,
+      "luma": 121.0,
+      "dark": 0.0
+    }
   },
   "twitch_SpikyAlertCookieDuDudu-o9wrV5cBrwlNKB_5": {
     "id": "twitch_SpikyAlertCookieDuDudu-o9wrV5cBrwlNKB_5",
@@ -2547,13 +3270,77 @@
     "channel": "kaicenat",
     "platform": "twitch",
     "title": "wtf is gta bro",
-    "views": 1438,
+    "views": 8113,
     "created": 1795004462,
     "category": "Grand Theft Auto VI",
     "video_id": "2858049515",
     "vod_offset": 2286,
     "cluster": 1,
-    "added": 1795023924
+    "added": 1795094979,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_TubularAwkwardFrogPanicBasket-16J-tuUOS6Kxw8bS\\source.mp4",
+    "peak": 29.450000000000003,
+    "cut": [
+      0.0,
+      30.02
+    ],
+    "dur": 30.02,
+    "tags": [],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.2,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 0.2,
+      "wow": 0.0,
+      "_loud": 0.0,
+      "_motion": 22.3
+    },
+    "quote": "you",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "proven": [],
+    "evidence": {
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.29,
+    "signals": {
+      "siren": 0.0,
+      "impact": 0.0,
+      "loud": 0.5,
+      "motion": 16.2,
+      "sustained": 0.53,
+      "spike": 5.9,
+      "laugh": 0,
+      "static": 0.0,
+      "letterbox": 0.0,
+      "luma": 69.1,
+      "dark": 0.0
+    }
   },
   "twitch_CreativeHeadstrongAniseFunRun-_f88pOqgLQhawQRA": {
     "id": "twitch_CreativeHeadstrongAniseFunRun-_f88pOqgLQhawQRA",
@@ -2670,13 +3457,86 @@
     "channel": "xqc",
     "platform": "twitch",
     "title": "GYAT! Mandy",
-    "views": 763,
+    "views": 3512,
     "created": 1795009537,
     "category": "Grand Theft Auto VI",
     "video_id": "2932113307",
     "vod_offset": 23886,
     "cluster": 1,
-    "added": 1795025105
+    "added": 1795098522,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_RoundOutstandingFungusStoneLightning-5YP8a2fVmgEKQEUk\\source.mp4",
+    "peak": 50.75,
+    "cut": [
+      11.95,
+      52.94
+    ],
+    "dur": 60.03,
+    "tags": [
+      "wow",
+      "rage"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.4,
+      "first-reaction": 0.2,
+      "wow": 0.7,
+      "_loud": 2.2,
+      "_motion": 7.5
+    },
+    "quote": "What, did you kill somebody?",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.29,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "proven": [],
+    "evidence": {
+      "fail": [
+        "text"
+      ],
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion-spike"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.32,
+    "signals": {
+      "siren": 0.0,
+      "impact": 48.0,
+      "loud": 4.2,
+      "motion": 3.6,
+      "sustained": 0.05,
+      "spike": 9.2,
+      "laugh": 0,
+      "static": 0.01,
+      "letterbox": 0.0,
+      "luma": 34.0,
+      "dark": 0.0
+    }
   },
   "twitch_TentativeFriendlySandpiperNotLikeThis-bnrx7Wfyqgfs7ZJg": {
     "id": "twitch_TentativeFriendlySandpiperNotLikeThis-bnrx7Wfyqgfs7ZJg",
@@ -2896,13 +3756,77 @@
     "channel": "typicalgamer",
     "platform": "twitch",
     "title": "Typical gamer gets suprised!",
-    "views": 504,
+    "views": 1715,
     "created": 1795001619,
     "category": "Grand Theft Auto VI",
     "video_id": "2930583379",
     "vod_offset": 156199,
     "cluster": 1,
-    "added": 1795027427
+    "added": 1795103447,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_AmorphousStrangeLyrebirdFloof-gb8v0UybXlp5mRv9\\source.mp4",
+    "peak": 33.85,
+    "cut": [
+      1.63,
+      36.04
+    ],
+    "dur": 37.58,
+    "tags": [],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 0.2,
+      "wow": 0.0,
+      "_loud": 2.5,
+      "_motion": 20.5
+    },
+    "quote": "I don't have to think about we're good.",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "proven": [],
+    "evidence": {
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.39,
+    "signals": {
+      "siren": 0.0,
+      "impact": 17.1,
+      "loud": 2.6,
+      "motion": 16.1,
+      "sustained": 0.69,
+      "spike": 2.5,
+      "laugh": 0,
+      "static": 0.04,
+      "letterbox": 0.0,
+      "luma": 42.3,
+      "dark": 0.0
+    }
   },
   "twitch_EsteemedAlertBoarTTours-qTa7AtR3giDjQF5-": {
     "id": "twitch_EsteemedAlertBoarTTours-qTa7AtR3giDjQF5-",
@@ -2924,13 +3848,77 @@
     "channel": "lacy",
     "platform": "twitch",
     "title": "cars have security systems?",
-    "views": 702,
+    "views": 1770,
     "created": 1795004593,
     "category": "Grand Theft Auto VI",
     "video_id": "2932194507",
     "vod_offset": 7839,
     "cluster": 1,
-    "added": 1795027685
+    "added": 1795102981,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_AbstruseGrossMetalMVGame-LfXvAGlp6PoHBBwk\\source.mp4",
+    "peak": 13.65,
+    "cut": [
+      0.0,
+      14.85
+    ],
+    "dur": 15.02,
+    "tags": [],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.2,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 0.2,
+      "wow": 0.0,
+      "_loud": 1.9,
+      "_motion": 32.2
+    },
+    "quote": "Some cars have security systems?",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "proven": [],
+    "evidence": {
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.38,
+    "signals": {
+      "siren": 0.0,
+      "impact": 11.2,
+      "loud": 1.9,
+      "motion": 23.6,
+      "sustained": 0.98,
+      "spike": 1.6,
+      "laugh": 0,
+      "static": 0.04,
+      "letterbox": 0.0,
+      "luma": 99.9,
+      "dark": 0.0
+    }
   },
   "twitch_DepressedJollyBatteryKlappa-zR_WXGaFqKX9RKtk": {
     "id": "twitch_DepressedJollyBatteryKlappa-zR_WXGaFqKX9RKtk",
@@ -3041,11 +4029,78 @@
     "channel": "king_wolfe_",
     "platform": "twitch",
     "title": "Forced Taught Empathy…",
-    "views": 504,
+    "views": 9162,
     "created": 1795017396,
     "category": "Grand Theft Auto VI",
     "cluster": 1,
-    "added": 1795028039
+    "added": 1795094797,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_SavageEphemeralSwanPMSTwin-CdV0_Uj1h7SAGkLW\\source.mp4",
+    "peak": 17.95,
+    "cut": [
+      0.0,
+      28.26
+    ],
+    "dur": 30.0,
+    "tags": [],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 0.2,
+      "wow": 0.0,
+      "_loud": 2.1,
+      "_motion": 11.2
+    },
+    "quote": "Just have to get him back to camp.",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "proven": [],
+    "evidence": {
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion-spike"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.28,
+    "signals": {
+      "siren": 0.0,
+      "impact": 15.9,
+      "loud": 2.2,
+      "motion": 7.8,
+      "sustained": 0.12,
+      "spike": 7.7,
+      "laugh": 0,
+      "static": 0.0,
+      "letterbox": 0.0,
+      "luma": 96.6,
+      "dark": 0.0
+    }
   },
   "twitch_AwkwardColdbloodedBunnyKappaWealth-jwq_HEi8HgaRlves": {
     "id": "twitch_AwkwardColdbloodedBunnyKappaWealth-jwq_HEi8HgaRlves",
@@ -3125,13 +4180,77 @@
     "channel": "theburntpeanut",
     "platform": "twitch",
     "title": "Bungulator Moves to NZ",
-    "views": 505,
+    "views": 2235,
     "created": 1795012743,
     "category": "Grand Theft Auto VI",
     "video_id": "2932226282",
     "vod_offset": 12896,
     "cluster": 1,
-    "added": 1795028713
+    "added": 1795099746,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_ThoughtfulGoldenTurtleVoteNay-aqQZ9CeCoLkGoqU3\\source.mp4",
+    "peak": 3.45,
+    "cut": [
+      0.0,
+      5.57
+    ],
+    "dur": 5.57,
+    "tags": [],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.2,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 0.2,
+      "wow": 0.0,
+      "_loud": 1.6,
+      "_motion": 22.8
+    },
+    "quote": "the times how are you already playing I moved to New Zealand",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "proven": [],
+    "evidence": {
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.35,
+    "signals": {
+      "siren": 0.0,
+      "impact": 12.5,
+      "loud": 1.6,
+      "motion": 17.2,
+      "sustained": 0.62,
+      "spike": 4.7,
+      "laugh": 0,
+      "static": 0.0,
+      "letterbox": 0.0,
+      "luma": 94.9,
+      "dark": 0.0
+    }
   },
   "twitch_DullCalmGullUWot-yyTc1tkQ0S4Gv-5E": {
     "id": "twitch_DullCalmGullUWot-yyTc1tkQ0S4Gv-5E",
@@ -3257,13 +4376,100 @@
     "channel": "chiblee",
     "platform": "twitch",
     "title": "longest wheelie of his life",
-    "views": 525,
+    "views": 2844,
     "created": 1795025221,
     "category": "Grand Theft Auto VI",
     "video_id": "2932192328",
     "vod_offset": 28763,
     "cluster": 1,
-    "added": 1795032281
+    "added": 1795098915,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_AgileWimpyGalagoHotPokket-bKauWuESiYWiWCZh\\source.mp4",
+    "peak": 31.450000000000003,
+    "cut": [
+      3.57,
+      32.65
+    ],
+    "dur": 32.94,
+    "tags": [
+      "rage",
+      "wow"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.0,
+      "rage": 0.74,
+      "first-reaction": 0.2,
+      "wow": 0.43,
+      "_loud": 1.4,
+      "_motion": 19.5
+    },
+    "quote": "That's how I die",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.7,
+      "fail": 0.35,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.25,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.35
+    },
+    "primary": "rage",
+    "proven": [],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "fail": [
+        "text"
+      ],
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion",
+        "motion-spike"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.44,
+    "signals": {
+      "siren": 0.0,
+      "impact": 13.4,
+      "loud": 1.4,
+      "motion": 13.4,
+      "sustained": 0.44,
+      "spike": 7.2,
+      "laugh": 0,
+      "static": 0.0,
+      "letterbox": 0.0,
+      "luma": 64.5,
+      "dark": 0.24
+    }
   },
   "twitch_GrossSmoggyLadiesFUNgineer-ke4af90JEX91EDuX": {
     "id": "twitch_GrossSmoggyLadiesFUNgineer-ke4af90JEX91EDuX",
@@ -3271,13 +4477,82 @@
     "channel": "jasontheween",
     "platform": "twitch",
     "title": "gta 6",
-    "views": 683,
+    "views": 4482,
     "created": 1795009784,
     "category": "Grand Theft Auto VI",
     "video_id": "2932190650",
     "vod_offset": 13582,
     "cluster": 1,
-    "added": 1795031825
+    "added": 1795095549,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_GrossSmoggyLadiesFUNgineer-ke4af90JEX91EDuX\\source.mp4",
+    "peak": 56.25,
+    "cut": [
+      16.75,
+      58.09
+    ],
+    "dur": 58.09,
+    "tags": [
+      "rage",
+      "wow",
+      "first-reaction"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 1.0,
+      "first-reaction": 0.88,
+      "wow": 1.0,
+      "_loud": 2.0,
+      "_motion": 5.6
+    },
+    "quote": "There you go, there's gotta be T .T .A.",
+    "cats": {
+      "funny": 0.0,
+      "rage": 1.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.95,
+      "wow": 1.0
+    },
+    "primary": "rage",
+    "proven": [
+      "first-reaction"
+    ],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.0,
+    "signals": {
+      "siren": 0.0,
+      "impact": 18.8,
+      "loud": 1.6,
+      "motion": 4.4,
+      "sustained": 0.01,
+      "spike": 2.9,
+      "laugh": 0,
+      "static": 0.07,
+      "letterbox": 0.0,
+      "luma": 9.4,
+      "dark": 1.0
+    }
   },
   "twitch_ManlyProudPidgeonBloodTrail-PjN9TVhQ1zqg3GPr": {
     "id": "twitch_ManlyProudPidgeonBloodTrail-PjN9TVhQ1zqg3GPr",
@@ -3646,13 +4921,87 @@
     "channel": "ohnepixel",
     "platform": "twitch",
     "title": "ohnePixel gets into a high-speed chase",
-    "views": 1381,
+    "views": 10402,
     "created": 1795028729,
     "category": "Grand Theft Auto VI",
     "video_id": "2932275268",
     "vod_offset": 24585,
     "cluster": 1,
-    "added": 1795033968
+    "added": 1795094639,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_ThankfulSoftKoupreyOMGScoots-8rWxvM1hXbQ2r_nz\\source.mp4",
+    "peak": 16.85,
+    "cut": [
+      1.21,
+      18.05
+    ],
+    "dur": 24.0,
+    "tags": [
+      "rage",
+      "chase"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.94,
+      "crash": 0.0,
+      "rage": 1.0,
+      "first-reaction": 0.2,
+      "wow": 0.16,
+      "_loud": 2.7,
+      "_motion": 32.6
+    },
+    "quote": "fuck nonononono you are a terrible person it's for shishani",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.7,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.95,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "primary": "chase",
+    "proven": [
+      "chase"
+    ],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "chase": [
+        "motion",
+        "text"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.56,
+    "signals": {
+      "siren": 0.0,
+      "impact": 18.1,
+      "loud": 2.8,
+      "motion": 24.6,
+      "sustained": 0.87,
+      "spike": 3.0,
+      "laugh": 0,
+      "static": 0.01,
+      "letterbox": 0.0,
+      "luma": 110.1,
+      "dark": 0.0
+    }
   },
   "kick_clip_01M7QCCG08XKJGGNGN2NG1J3EN": {
     "id": "kick_clip_01M7QCCG08XKJGGNGN2NG1J3EN",
@@ -3837,11 +5186,78 @@
     "channel": "ishowspeed",
     "platform": "twitch",
     "title": "Ishowspeed robi gagry gagry gagry",
-    "views": 631,
+    "views": 2317,
     "created": 1795016908,
     "category": "Grand Theft Auto VI",
     "cluster": 1,
-    "added": 1795036337
+    "added": 1795097457,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_EncouragingAntsyElephantTBTacoRight-rgxRdyetbHC8TzQ2\\source.mp4",
+    "peak": 4.65,
+    "cut": [
+      0.0,
+      5.01
+    ],
+    "dur": 5.01,
+    "tags": [],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 0.2,
+      "wow": 0.0,
+      "_loud": 2.6,
+      "_motion": 9.1
+    },
+    "quote": "Yeah",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "proven": [],
+    "evidence": {
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion-spike"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.0,
+    "signals": {
+      "siren": 0.0,
+      "impact": 15.0,
+      "loud": 2.7,
+      "motion": 6.7,
+      "sustained": 0.21,
+      "spike": 8.1,
+      "laugh": 0,
+      "static": 0.44,
+      "letterbox": 0.0,
+      "luma": 60.3,
+      "dark": 0.0
+    }
   },
   "twitch_ReliablePowerfulOilBatChest-ydNija0st6UB0byp": {
     "id": "twitch_ReliablePowerfulOilBatChest-ydNija0st6UB0byp",
@@ -3849,10 +5265,88 @@
     "channel": "lirik",
     "platform": "twitch",
     "title": "Lirik finds An Easter egg",
-    "views": 991,
+    "views": 28292,
     "created": 1795034357,
     "category": "Grand Theft Auto VI",
-    "added": 1795037214
+    "added": 1795094418,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_ReliablePowerfulOilBatChest-ydNija0st6UB0byp\\source.mp4",
+    "peak": 54.650000000000006,
+    "cut": [
+      14.67,
+      55.85
+    ],
+    "dur": 60.01,
+    "tags": [
+      "wow",
+      "rage",
+      "funny"
+    ],
+    "tag_scores": {
+      "funny": 0.31,
+      "glitch": 0.0,
+      "chase": 0.2,
+      "crash": 0.0,
+      "rage": 0.66,
+      "first-reaction": 0.2,
+      "wow": 1.0,
+      "_loud": 2.7,
+      "_motion": 24.1
+    },
+    "quote": "Go the other way, bro",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.35,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.7,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 1.0
+    },
+    "primary": "wow",
+    "proven": [],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "easter-egg": [
+        "text"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.69,
+    "signals": {
+      "siren": 0.0,
+      "impact": 8.1,
+      "loud": 3.1,
+      "motion": 18.7,
+      "sustained": 0.95,
+      "spike": 2.2,
+      "laugh": 0,
+      "static": 0.0,
+      "letterbox": 0.0,
+      "luma": 118.4,
+      "dark": 0.0
+    }
   },
   "twitch_ColorfulProtectiveKittenCharlietheUnicorn-BTakUsG1USTpEf1E": {
     "id": "twitch_ColorfulProtectiveKittenCharlietheUnicorn-BTakUsG1USTpEf1E",
@@ -3860,13 +5354,77 @@
     "channel": "zoil",
     "platform": "twitch",
     "title": "theMaster",
-    "views": 597,
+    "views": 1460,
     "created": 1795002008,
     "category": "Grand Theft Auto VI",
     "video_id": "2932212372",
     "vod_offset": 3003,
     "cluster": 1,
-    "added": 1795037569
+    "added": 1795104427,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_ColorfulProtectiveKittenCharlietheUnicorn-BTakUsG1USTpEf1E\\source.mp4",
+    "peak": 53.45,
+    "cut": [
+      14.65,
+      54.65
+    ],
+    "dur": 60.01,
+    "tags": [
+      "rage"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.24,
+      "crash": 0.0,
+      "rage": 0.79,
+      "first-reaction": 0.2,
+      "wow": 0.24,
+      "_loud": 4.0,
+      "_motion": 3.7
+    },
+    "quote": "I don't pay more I'm broke!",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.65,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.32,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "primary": "rage",
+    "proven": [],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "chase": [
+        "text"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.4,
+    "signals": {
+      "siren": 0.0,
+      "impact": 13.5,
+      "loud": 4.2,
+      "motion": 3.2,
+      "sustained": 0.0,
+      "spike": 4.0,
+      "laugh": 0,
+      "static": 0.14,
+      "letterbox": 0.0,
+      "luma": 14.7,
+      "dark": 0.23
+    }
   },
   "twitch_DarlingHealthyGrouseMVGame--9sw1QWYsqn-hG8N": {
     "id": "twitch_DarlingHealthyGrouseMVGame--9sw1QWYsqn-hG8N",
@@ -3874,13 +5432,93 @@
     "channel": "zlaner",
     "platform": "twitch",
     "title": "Inception",
-    "views": 610,
+    "views": 2112,
     "created": 1795009560,
     "category": "Grand Theft Auto VI",
     "video_id": "2932157318",
     "vod_offset": 18777,
     "cluster": 1,
-    "added": 1795037569
+    "added": 1795099993,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_DarlingHealthyGrouseMVGame--9sw1QWYsqn-hG8N\\source.mp4",
+    "peak": 34.25,
+    "cut": [
+      1.68,
+      38.99
+    ],
+    "dur": 49.92,
+    "tags": [
+      "wow",
+      "rage"
+    ],
+    "tag_scores": {
+      "funny": 0.16,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.21,
+      "rage": 0.61,
+      "first-reaction": 0.2,
+      "wow": 0.65,
+      "_loud": 3.0,
+      "_motion": 3.0
+    },
+    "quote": "Brother, I'm about to play a game in a game!",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.54,
+      "fail": 0.0,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.0,
+      "crash": 0.6,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.27
+    },
+    "primary": "crash",
+    "proven": [
+      "crash"
+    ],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "crash": [
+        "motion-spike",
+        "text"
+      ],
+      "stunt": [
+        "motion-spike"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.37,
+    "signals": {
+      "siren": 0.0,
+      "impact": 38.1,
+      "loud": 3.0,
+      "motion": 2.3,
+      "sustained": 0.03,
+      "spike": 32.2,
+      "laugh": 0,
+      "static": 0.05,
+      "letterbox": 0.0,
+      "luma": 51.6,
+      "dark": 0.24
+    }
   },
   "twitch_BlightedLightOwlYouWHY-W5j62q7ze1LGleAm": {
     "id": "twitch_BlightedLightOwlYouWHY-W5j62q7ze1LGleAm",
@@ -3902,13 +5540,84 @@
     "channel": "ohnepixel",
     "platform": "twitch",
     "title": "i see dick hype",
-    "views": 1047,
+    "views": 1795,
     "created": 1795006726,
     "category": "Grand Theft Auto VI",
     "video_id": "2932275268",
     "vod_offset": 2751,
     "cluster": 2,
-    "added": 1795037898
+    "added": 1795102478,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_EphemeralDarlingHeronPeteZaroll-CTH7FFmj2M1rcJSV\\source.mp4",
+    "peak": 20.85,
+    "cut": [
+      11.85,
+      22.05
+    ],
+    "dur": 23.94,
+    "tags": [
+      "wow",
+      "funny"
+    ],
+    "tag_scores": {
+      "funny": 0.43,
+      "glitch": 0.0,
+      "chase": 0.2,
+      "crash": 0.0,
+      "rage": 0.15,
+      "first-reaction": 0.2,
+      "wow": 0.51,
+      "_loud": 2.2,
+      "_motion": 33.1
+    },
+    "quote": "I see dick!",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.35
+    },
+    "primary": "wow",
+    "proven": [],
+    "evidence": {
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.42,
+    "signals": {
+      "siren": 0.0,
+      "impact": 7.5,
+      "loud": 1.8,
+      "motion": 32.2,
+      "sustained": 0.93,
+      "spike": 3.9,
+      "laugh": 0,
+      "static": 0.09,
+      "letterbox": 0.0,
+      "luma": 109.7,
+      "dark": 0.0
+    }
   },
   "twitch_LivelyObliqueMangetoutPartyTime--sPkk1kMup-5SpU7": {
     "id": "twitch_LivelyObliqueMangetoutPartyTime--sPkk1kMup-5SpU7",
@@ -3941,10 +5650,84 @@
     "channel": "stableronaldo",
     "platform": "twitch",
     "title": "GYAT DAMNNN",
-    "views": 528,
+    "views": 6945,
     "created": 1795034626,
     "category": "Grand Theft Auto VI",
-    "added": 1795040238
+    "added": 1795095046,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_DarlingJoyousYogurtCclamChamp-R3ta59T4kBJrwSVd\\source.mp4",
+    "peak": 32.05,
+    "cut": [
+      1.96,
+      37.7
+    ],
+    "dur": 39.32,
+    "tags": [
+      "wow",
+      "rage"
+    ],
+    "tag_scores": {
+      "funny": 0.08,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.5,
+      "first-reaction": 0.2,
+      "wow": 0.83,
+      "_loud": 6.2,
+      "_motion": 5.2
+    },
+    "quote": "I just wanna - Yes, I got no more money for you though.",
+    "cats": {
+      "funny": 0.25,
+      "rage": 0.25,
+      "fail": 0.25,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.95
+    },
+    "primary": "wow",
+    "proven": [
+      "wow"
+    ],
+    "evidence": {
+      "funny": [
+        "loud"
+      ],
+      "rage": [
+        "loud"
+      ],
+      "fail": [
+        "loud"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "loud",
+        "text"
+      ]
+    },
+    "fun": 0.0,
+    "signals": {
+      "siren": 0.0,
+      "impact": 16.5,
+      "loud": 6.8,
+      "motion": 3.9,
+      "sustained": 0.0,
+      "spike": 2.2,
+      "laugh": 0,
+      "static": 0.3,
+      "letterbox": 0.0,
+      "luma": 9.7,
+      "dark": 1.0
+    }
   },
   "twitch_UnusualConsiderateLionGingerPower-oJF7Ao2MX9omrH0x": {
     "id": "twitch_UnusualConsiderateLionGingerPower-oJF7Ao2MX9omrH0x",
@@ -3966,13 +5749,88 @@
     "channel": "sashagrey",
     "platform": "twitch",
     "title": "🌴 !DROPS COUNTDOWN TO GTA VI @SASHAGREY",
-    "views": 705,
+    "views": 1892,
     "created": 1795005487,
     "category": "Grand Theft Auto VI",
     "video_id": "2932206166",
     "vod_offset": 7241,
     "cluster": 1,
-    "added": 1795042711
+    "added": 1795101938,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_EphemeralDirtySoybeanDAESuppy-M-swyIPFDMfIaQor\\source.mp4",
+    "peak": 27.35,
+    "cut": [
+      10.04,
+      28.58
+    ],
+    "dur": 30.0,
+    "tags": [
+      "first-reaction",
+      "rage",
+      "crash"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.3,
+      "rage": 0.45,
+      "first-reaction": 1.0,
+      "wow": 0.16,
+      "_loud": 13.2,
+      "_motion": 8.4
+    },
+    "quote": "R1 to wank it!",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.95,
+      "wow": 0.0
+    },
+    "primary": "first-reaction",
+    "proven": [
+      "first-reaction"
+    ],
+    "evidence": {
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion-spike"
+      ],
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ]
+    },
+    "fun": 0.15,
+    "signals": {
+      "siren": 0.0,
+      "impact": 49.4,
+      "loud": 2.3,
+      "motion": 3.2,
+      "sustained": 0.03,
+      "spike": 22.1,
+      "laugh": 0,
+      "static": 0.1,
+      "letterbox": 0.0,
+      "luma": 102.3,
+      "dark": 0.0
+    }
   },
   "twitch_CooperativeSeductiveCheesecakeTBTacoRight-tc-OFEtczIvOMmTP": {
     "id": "twitch_CooperativeSeductiveCheesecakeTBTacoRight-tc-OFEtczIvOMmTP",
@@ -3980,13 +5838,86 @@
     "channel": "vanosscrew",
     "platform": "twitch",
     "title": "W GTA 6 STREAM",
-    "views": 932,
+    "views": 2435,
     "created": 1795021460,
     "category": "Grand Theft Auto VI",
     "video_id": "2932487365",
     "vod_offset": 74,
     "cluster": 1,
-    "added": 1795048325
+    "added": 1795099638,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_CooperativeSeductiveCheesecakeTBTacoRight-tc-OFEtczIvOMmTP\\source.mp4",
+    "peak": 16.05,
+    "cut": [
+      0.0,
+      30.02
+    ],
+    "dur": 30.02,
+    "tags": [
+      "first-reaction"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 1.0,
+      "wow": 0.0,
+      "_loud": 0.0,
+      "_motion": 3.9
+    },
+    "quote": "you",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.95,
+      "wow": 0.0
+    },
+    "primary": "first-reaction",
+    "proven": [
+      "first-reaction"
+    ],
+    "evidence": {
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion-spike"
+      ],
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ]
+    },
+    "fun": 0.0,
+    "signals": {
+      "siren": 0.0,
+      "impact": 0.0,
+      "loud": 0.5,
+      "motion": 2.7,
+      "sustained": 0.03,
+      "spike": 9.4,
+      "laugh": 0,
+      "static": 0.47,
+      "letterbox": 0.0,
+      "luma": 45.4,
+      "dark": 0.0
+    }
   },
   "twitch_ModernClumsyBobaFloof-6H36OkNrTo9oo_Er": {
     "id": "twitch_ModernClumsyBobaFloof-6H36OkNrTo9oo_Er",
@@ -3994,12 +5925,98 @@
     "channel": "jasontheween",
     "platform": "twitch",
     "title": "moments before disaster",
-    "views": 1114,
+    "views": 2339,
     "created": 1795036962,
     "category": "Grand Theft Auto VI",
     "video_id": "2932190650",
     "vod_offset": 40580,
-    "added": 1795048325
+    "added": 1795099698,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_ModernClumsyBobaFloof-6H36OkNrTo9oo_Er\\source.mp4",
+    "peak": 8.65,
+    "cut": [
+      0.0,
+      19.56
+    ],
+    "dur": 20.29,
+    "tags": [
+      "rage",
+      "crash"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.3,
+      "rage": 0.7,
+      "first-reaction": 0.2,
+      "wow": 0.04,
+      "_loud": 42.4,
+      "_motion": 13.1
+    },
+    "quote": "my bag dude my dumbass PC just got fucked turn",
+    "cats": {
+      "funny": 0.25,
+      "rage": 0.6,
+      "fail": 0.25,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.25
+    },
+    "primary": "rage",
+    "proven": [
+      "rage"
+    ],
+    "evidence": {
+      "funny": [
+        "loud"
+      ],
+      "rage": [
+        "loud",
+        "text"
+      ],
+      "fail": [
+        "loud"
+      ],
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion-spike"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "loud"
+      ]
+    },
+    "fun": 0.66,
+    "signals": {
+      "siren": 0.0,
+      "impact": 45.0,
+      "loud": 44.7,
+      "motion": 9.0,
+      "sustained": 0.27,
+      "spike": 13.6,
+      "laugh": 0,
+      "static": 0.0,
+      "letterbox": 0.0,
+      "luma": 69.7,
+      "dark": 0.2
+    }
   },
   "twitch_PeppySlickOwlAliens-6hpIHuZQymeRQ2y9": {
     "id": "twitch_PeppySlickOwlAliens-6hpIHuZQymeRQ2y9",
@@ -4202,10 +6219,87 @@
     "channel": "caseoh_",
     "platform": "twitch",
     "title": "W PLAN 🤣🤣🤣👍",
-    "views": 1265,
+    "views": 3542,
     "created": 1795039571,
     "category": "Grand Theft Auto VI",
-    "added": 1795048325
+    "added": 1795096277,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_SwissBenevolentRhinocerosRedCoat-_qn39IFUSFPG0nep\\source.mp4",
+    "peak": 31.85,
+    "cut": [
+      3.91,
+      35.18
+    ],
+    "dur": 48.0,
+    "tags": [
+      "funny",
+      "first-reaction"
+    ],
+    "tag_scores": {
+      "funny": 1.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.05,
+      "first-reaction": 0.46,
+      "wow": 0.04,
+      "_loud": 2.4,
+      "_motion": 13.9
+    },
+    "quote": "How you doing officer?",
+    "cats": {
+      "funny": 1.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.6,
+      "wow": 0.0
+    },
+    "primary": "funny",
+    "proven": [
+      "first-reaction"
+    ],
+    "evidence": {
+      "funny": [
+        "text"
+      ],
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion-spike"
+      ],
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ]
+    },
+    "fun": 0.29,
+    "signals": {
+      "siren": 0.0,
+      "impact": 10.1,
+      "loud": 2.8,
+      "motion": 7.1,
+      "sustained": 0.27,
+      "spike": 18.2,
+      "laugh": 0,
+      "static": 0.01,
+      "letterbox": 0.0,
+      "luma": 37.5,
+      "dark": 0.0
+    }
   },
   "twitch_JazzySpineyCarrotJebaited-NGZc_OR4GLxdZYQg": {
     "id": "twitch_JazzySpineyCarrotJebaited-NGZc_OR4GLxdZYQg",
@@ -4227,13 +6321,87 @@
     "channel": "squeex",
     "platform": "twitch",
     "title": "Streamer Squeex banned for using his phone while driving",
-    "views": 613,
+    "views": 3081,
     "created": 1795045091,
     "category": "Grand Theft Auto VI",
     "video_id": "2932676275",
     "vod_offset": 11285,
     "cluster": 1,
-    "added": 1795049062
+    "added": 1795098602,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_ApatheticZealousNarwhalGivePLZ-GRLYnD-EvYUUZmuH\\source.mp4",
+    "peak": 19.150000000000002,
+    "cut": [
+      4.76,
+      20.65
+    ],
+    "dur": 26.88,
+    "tags": [],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 0.2,
+      "wow": 0.0,
+      "_loud": 1.6,
+      "_motion": 20.4
+    },
+    "quote": "Wait that's a nice bike.",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.25,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "proven": [],
+    "evidence": {
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion",
+        "motion-spike"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.34,
+    "signals": {
+      "siren": 0.0,
+      "impact": 22.2,
+      "loud": 1.8,
+      "motion": 15.4,
+      "sustained": 0.48,
+      "spike": 7.0,
+      "laugh": 0,
+      "static": 0.03,
+      "letterbox": 0.0,
+      "luma": 96.5,
+      "dark": 0.0
+    }
   },
   "twitch_TiredConfidentPhoneCopyThis-bndkrew-Sq62qYKf": {
     "id": "twitch_TiredConfidentPhoneCopyThis-bndkrew-Sq62qYKf",
@@ -4329,13 +6497,88 @@
     "channel": "theburntpeanut",
     "platform": "twitch",
     "title": "oh well",
-    "views": 542,
+    "views": 3890,
     "created": 1795045780,
     "category": "Grand Theft Auto VI",
     "video_id": "2932226282",
     "vod_offset": 45896,
     "cluster": 1,
-    "added": 1795049062
+    "added": 1795096068,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_TubularBashfulHeronShadyLulu-XAm39nSjTyF0Gwcp\\source.mp4",
+    "peak": 25.85,
+    "cut": [
+      1.9,
+      27.05
+    ],
+    "dur": 29.35,
+    "tags": [
+      "chase",
+      "rage",
+      "wow"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.78,
+      "crash": 0.29,
+      "rage": 0.34,
+      "first-reaction": 0.2,
+      "wow": 0.33,
+      "_loud": 1.8,
+      "_motion": 27.1
+    },
+    "quote": "Oh is it dog?",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.35,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.35
+    },
+    "primary": "crash",
+    "proven": [],
+    "evidence": {
+      "chase": [
+        "motion"
+      ],
+      "crash": [
+        "text"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.44,
+    "signals": {
+      "siren": 0.0,
+      "impact": 7.2,
+      "loud": 1.9,
+      "motion": 21.7,
+      "sustained": 0.9,
+      "spike": 2.3,
+      "laugh": 0,
+      "static": 0.0,
+      "letterbox": 0.0,
+      "luma": 89.8,
+      "dark": 0.0
+    }
   },
   "twitch_WealthyResilientAsparagusTheTarFu-rp1M2oftyXFTLGfW": {
     "id": "twitch_WealthyResilientAsparagusTheTarFu-rp1M2oftyXFTLGfW",
@@ -4343,13 +6586,86 @@
     "channel": "ohnepixel",
     "platform": "twitch",
     "title": "GTA first impressions",
-    "views": 1130,
+    "views": 2023,
     "created": 1795036720,
     "category": "Grand Theft Auto VI",
     "video_id": "2932275268",
     "vod_offset": 32658,
     "cluster": 1,
-    "added": 1795049062
+    "added": 1795100254,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_WealthyResilientAsparagusTheTarFu-rp1M2oftyXFTLGfW\\source.mp4",
+    "peak": 22.950000000000003,
+    "cut": [
+      0.0,
+      25.64
+    ],
+    "dur": 27.9,
+    "tags": [
+      "rage"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.41,
+      "first-reaction": 0.2,
+      "wow": 0.12,
+      "_loud": 1.7,
+      "_motion": 4.8
+    },
+    "quote": "What is this shit, bro?",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.31,
+      "fail": 0.0,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "primary": "rage",
+    "proven": [],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion-spike"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.15,
+    "signals": {
+      "siren": 0.0,
+      "impact": 13.7,
+      "loud": 1.7,
+      "motion": 1.8,
+      "sustained": 0.02,
+      "spike": 8.3,
+      "laugh": 0,
+      "static": 0.03,
+      "letterbox": 0.0,
+      "luma": 25.8,
+      "dark": 0.0
+    }
   },
   "twitch_SlickCreativeDonkeyJKanStyle-VHXWX3b9QwEu-UIT": {
     "id": "twitch_SlickCreativeDonkeyJKanStyle-VHXWX3b9QwEu-UIT",
@@ -4357,13 +6673,72 @@
     "channel": "zerkaa",
     "platform": "twitch",
     "title": "We don't touch that light switch",
-    "views": 545,
+    "views": 1894,
     "created": 1795035538,
     "category": "Grand Theft Auto VI",
     "video_id": "2932227427",
     "vod_offset": 17705,
     "cluster": 1,
-    "added": 1795049762
+    "added": 1795101809,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_SlickCreativeDonkeyJKanStyle-VHXWX3b9QwEu-UIT\\source.mp4",
+    "peak": 21.950000000000003,
+    "cut": [
+      3.47,
+      23.22
+    ],
+    "dur": 35.22,
+    "tags": [],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.2,
+      "first-reaction": 0.2,
+      "wow": 0.16,
+      "_loud": 2.6,
+      "_motion": 11.1
+    },
+    "quote": "bad things What's this No, that's just something I picked up.",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.35,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "primary": "stunt",
+    "proven": [],
+    "evidence": {
+      "stunt": [
+        "text"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.28,
+    "signals": {
+      "siren": 0.0,
+      "impact": 7.9,
+      "loud": 2.8,
+      "motion": 7.4,
+      "sustained": 0.18,
+      "spike": 4.7,
+      "laugh": 0,
+      "static": 0.17,
+      "letterbox": 0.25,
+      "luma": 26.3,
+      "dark": 0.0
+    }
   },
   "twitch_StormyDifferentPoxDatBoi-0neb1W_xYNBgSzag": {
     "id": "twitch_StormyDifferentPoxDatBoi-0neb1W_xYNBgSzag",
@@ -4632,13 +7007,74 @@
     "channel": "ohnepixel",
     "platform": "twitch",
     "title": "\"No more crashing\"",
-    "views": 1137,
+    "views": 1864,
     "created": 1795040222,
     "category": "Grand Theft Auto VI",
     "video_id": "2932275268",
     "vod_offset": 36222,
     "cluster": 1,
-    "added": 1795055226
+    "added": 1795102315,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_MuddySmellyAlfalfaBrokeBack-2CcHHR8GSpna-nkj\\source.mp4",
+    "peak": 17.85,
+    "cut": [
+      2.58,
+      19.35
+    ],
+    "dur": 21.16,
+    "tags": [
+      "crash"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 1.0,
+      "rage": 0.05,
+      "first-reaction": 0.2,
+      "wow": 0.04,
+      "_loud": 2.0,
+      "_motion": 13.1
+    },
+    "quote": "And from your hearts to your airwaves, this is a beli -",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 1.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "primary": "crash",
+    "proven": [],
+    "evidence": {
+      "crash": [
+        "text"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.28,
+    "signals": {
+      "siren": 0.0,
+      "impact": 7.1,
+      "loud": 2.2,
+      "motion": 9.8,
+      "sustained": 0.13,
+      "spike": 3.8,
+      "laugh": 0,
+      "static": 0.01,
+      "letterbox": 0.0,
+      "luma": 73.1,
+      "dark": 0.0
+    }
   },
   "twitch_PuzzledAltruisticKeyboardDendiFace-Cr8-KmLXjfi54ctI": {
     "id": "twitch_PuzzledAltruisticKeyboardDendiFace-Cr8-KmLXjfi54ctI",
@@ -4646,11 +7082,81 @@
     "channel": "ishowspeed",
     "platform": "twitch",
     "title": "i just seen a roadkill",
-    "views": 1113,
+    "views": 2464,
     "created": 1795012361,
     "category": "Grand Theft Auto VI",
     "cluster": 1,
-    "added": 1795055226
+    "added": 1795097420,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_PuzzledAltruisticKeyboardDendiFace-Cr8-KmLXjfi54ctI\\source.mp4",
+    "peak": 15.05,
+    "cut": [
+      1.57,
+      16.13
+    ],
+    "dur": 16.13,
+    "tags": [
+      "wow"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.2,
+      "crash": 0.0,
+      "rage": 0.2,
+      "first-reaction": 0.2,
+      "wow": 0.54,
+      "_loud": 2.2,
+      "_motion": 24.8
+    },
+    "quote": "Oh, oh my god.",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.35
+    },
+    "primary": "wow",
+    "proven": [],
+    "evidence": {
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.41,
+    "signals": {
+      "siren": 0.0,
+      "impact": 32.7,
+      "loud": 1.8,
+      "motion": 17.0,
+      "sustained": 0.63,
+      "spike": 2.7,
+      "laugh": 0,
+      "static": 0.03,
+      "letterbox": 0.0,
+      "luma": 101.1,
+      "dark": 0.0
+    }
   },
   "twitch_GentleAssiduousChinchillaCmonBruh-Oo-FKE4TJnFa1tBs": {
     "id": "twitch_GentleAssiduousChinchillaCmonBruh-Oo-FKE4TJnFa1tBs",
@@ -4658,13 +7164,86 @@
     "channel": "hutchmf",
     "platform": "twitch",
     "title": "lets go !!",
-    "views": 1022,
+    "views": 1957,
     "created": 1795028066,
     "category": "Grand Theft Auto VI",
     "video_id": "2932152494",
     "vod_offset": 38159,
     "cluster": 1,
-    "added": 1795056745
+    "added": 1795101260,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_GentleAssiduousChinchillaCmonBruh-Oo-FKE4TJnFa1tBs\\source.mp4",
+    "peak": 7.050000000000001,
+    "cut": [
+      0.0,
+      8.55
+    ],
+    "dur": 8.6,
+    "tags": [
+      "wow"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 0.2,
+      "wow": 0.94,
+      "_loud": 3.7,
+      "_motion": 17.6
+    },
+    "quote": "Oh! Oh! Oh! Hey! Oh!",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.7
+    },
+    "primary": "wow",
+    "proven": [],
+    "evidence": {
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion-spike"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.54,
+    "signals": {
+      "siren": 0.0,
+      "impact": 12.6,
+      "loud": 4.2,
+      "motion": 12.6,
+      "sustained": 0.15,
+      "spike": 7.0,
+      "laugh": 0,
+      "static": 0.0,
+      "letterbox": 0.0,
+      "luma": 58.6,
+      "dark": 0.0
+    }
   },
   "twitch_InventiveStylishSwanTBCheesePull-bpUxg33iLnxUyEOG": {
     "id": "twitch_InventiveStylishSwanTBCheesePull-bpUxg33iLnxUyEOG",
@@ -4749,12 +7328,96 @@
     "channel": "xqc",
     "platform": "twitch",
     "title": "whaaaaat",
-    "views": 1341,
+    "views": 2765,
     "created": 1795030930,
     "category": "Grand Theft Auto VI",
     "video_id": "2932113307",
     "vod_offset": 47641,
-    "added": 1795056745
+    "added": 1795099240,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_KathishSavoryDugongFutureMan-DWZNl__pV8YNV4qg\\source.mp4",
+    "peak": 54.25,
+    "cut": [
+      18.18,
+      58.18
+    ],
+    "dur": 60.0,
+    "tags": [
+      "rage",
+      "wow"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.2,
+      "crash": 0.0,
+      "rage": 1.0,
+      "first-reaction": 0.2,
+      "wow": 0.94,
+      "_loud": 1.8,
+      "_motion": 31.1
+    },
+    "quote": "Wait a minute now.",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.7,
+      "fail": 0.0,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.25,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.7
+    },
+    "primary": "rage",
+    "proven": [],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion",
+        "motion-spike"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.59,
+    "signals": {
+      "siren": 0.0,
+      "impact": 10.9,
+      "loud": 2.1,
+      "motion": 24.7,
+      "sustained": 0.6,
+      "spike": 13.6,
+      "laugh": 0,
+      "static": 0.01,
+      "letterbox": 0.0,
+      "luma": 45.9,
+      "dark": 0.03
+    }
   },
   "twitch_EvilKindChamoisFreakinStinkin-_Q6h9MGvEezIzSw0": {
     "id": "twitch_EvilKindChamoisFreakinStinkin-_Q6h9MGvEezIzSw0",
@@ -4849,13 +7512,86 @@
     "channel": "ohnepixel",
     "platform": "twitch",
     "title": "ohne just wants to see sum stuff",
-    "views": 1067,
+    "views": 2709,
     "created": 1795025546,
     "category": "Grand Theft Auto VI",
     "video_id": "2932275268",
     "vod_offset": 21518,
     "cluster": 1,
-    "added": 1795056745
+    "added": 1795099426,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_UninterestedSoftLorisKlappa-60EV5Q5rHYYd9sc7\\source.mp4",
+    "peak": 48.150000000000006,
+    "cut": [
+      8.61,
+      49.65
+    ],
+    "dur": 60.01,
+    "tags": [
+      "wow"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 0.2,
+      "wow": 0.86,
+      "_loud": 2.4,
+      "_motion": 12.9
+    },
+    "quote": "Alright, alright, alright, alright.",
+    "cats": {
+      "funny": 0.25,
+      "rage": 0.25,
+      "fail": 0.25,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 1.0
+    },
+    "primary": "wow",
+    "proven": [
+      "wow"
+    ],
+    "evidence": {
+      "funny": [
+        "loud"
+      ],
+      "rage": [
+        "loud"
+      ],
+      "fail": [
+        "loud"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "loud",
+        "text"
+      ]
+    },
+    "fun": 0.73,
+    "signals": {
+      "siren": 0.0,
+      "impact": 15.1,
+      "loud": 5.9,
+      "motion": 11.5,
+      "sustained": 0.38,
+      "spike": 4.8,
+      "laugh": 0,
+      "static": 0.01,
+      "letterbox": 0.05,
+      "luma": 19.2,
+      "dark": 0.29
+    }
   },
   "kick_clip_01M7RP0WZYS0W8VVWWZ4CR5M7B": {
     "id": "kick_clip_01M7RP0WZYS0W8VVWWZ4CR5M7B",
@@ -4866,7 +7602,77 @@
     "views": 1636,
     "created": 1795051044,
     "category": "Grand Theft Auto VI (GTA)",
-    "added": 1795058349
+    "added": 1795103976,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\kick_clip_01M7RP0WZYS0W8VVWWZ4CR5M7B\\source.mp4",
+    "peak": 26.85,
+    "cut": [
+      0.0,
+      29.98
+    ],
+    "dur": 29.98,
+    "tags": [],
+    "tag_scores": {
+      "funny": 0.24,
+      "glitch": 0.0,
+      "chase": 0.2,
+      "crash": 0.0,
+      "rage": 0.15,
+      "first-reaction": 0.2,
+      "wow": 0.12,
+      "_loud": 2.3,
+      "_motion": 22.8
+    },
+    "quote": "house and how it I didn't fix the railing paint",
+    "cats": {
+      "funny": 0.29,
+      "rage": 0.0,
+      "fail": 0.29,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "proven": [],
+    "evidence": {
+      "funny": [
+        "text"
+      ],
+      "fail": [
+        "text"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.41,
+    "signals": {
+      "siren": 0.0,
+      "impact": 13.7,
+      "loud": 2.7,
+      "motion": 17.3,
+      "sustained": 0.61,
+      "spike": 4.9,
+      "laugh": 0,
+      "static": 0.04,
+      "letterbox": 0.0,
+      "luma": 44.6,
+      "dark": 0.0
+    }
   },
   "twitch_CuriousBadEchidnaCoolStoryBro-g66TfyHbfF_r5vxZ": {
     "id": "twitch_CuriousBadEchidnaCoolStoryBro-g66TfyHbfF_r5vxZ",
@@ -4945,13 +7751,81 @@
     "channel": "ohnepixel",
     "platform": "twitch",
     "title": "gta-6-text-bug",
-    "views": 1194,
+    "views": 4122,
     "created": 1795005042,
     "category": "Grand Theft Auto VI",
     "video_id": "2932275268",
     "vod_offset": 1079,
     "cluster": 1,
-    "added": 1795058349
+    "added": 1795095863,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_InnocentArtsyHyenaOhMyDog--9COXVqc1TGfCb5X\\source.mp4",
+    "peak": 23.85,
+    "cut": [
+      0.0,
+      25.62
+    ],
+    "dur": 25.64,
+    "tags": [
+      "glitch",
+      "rage"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.77,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.36,
+      "first-reaction": 0.2,
+      "wow": 0.08,
+      "_loud": 2.1,
+      "_motion": 1.3
+    },
+    "quote": "Um, I don't even know.",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.31,
+      "fail": 0.31,
+      "physics": 0.0,
+      "glitch": 0.94,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "primary": "glitch",
+    "proven": [],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "fail": [
+        "text"
+      ],
+      "glitch": [
+        "text"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.0,
+    "signals": {
+      "siren": 0.0,
+      "impact": 27.4,
+      "loud": 2.6,
+      "motion": 0.8,
+      "sustained": 0.0,
+      "spike": 2.6,
+      "laugh": 0,
+      "static": 0.89,
+      "letterbox": 0.0,
+      "luma": 74.1,
+      "dark": 0.0
+    }
   },
   "twitch_PunchyGlutenFreeCheesecakeNinjaGrumpy-FgCJzHC4BNv_XGNH": {
     "id": "twitch_PunchyGlutenFreeCheesecakeNinjaGrumpy-FgCJzHC4BNv_XGNH",
@@ -4959,10 +7833,83 @@
     "channel": "summit1g",
     "platform": "twitch",
     "title": "???????",
-    "views": 820,
+    "views": 1496,
     "created": 1795047355,
     "category": "Grand Theft Auto VI",
-    "added": 1795058349
+    "added": 1795104232,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_PunchyGlutenFreeCheesecakeNinjaGrumpy-FgCJzHC4BNv_XGNH\\source.mp4",
+    "peak": 49.25,
+    "cut": [
+      10.45,
+      50.45
+    ],
+    "dur": 60.01,
+    "tags": [
+      "rage"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.38,
+      "first-reaction": 0.2,
+      "wow": 0.04,
+      "_loud": 3.0,
+      "_motion": 13.1
+    },
+    "quote": "Fuck is happening My dad",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.35,
+      "fail": 0.0,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "primary": "rage",
+    "proven": [],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion-spike"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.3,
+    "signals": {
+      "siren": 0.0,
+      "impact": 19.2,
+      "loud": 2.4,
+      "motion": 7.5,
+      "sustained": 0.21,
+      "spike": 11.1,
+      "laugh": 0,
+      "static": 0.06,
+      "letterbox": 0.0,
+      "luma": 55.6,
+      "dark": 0.15
+    }
   },
   "twitch_SweetObeseMeatloafPeanutButterJellyTime-h-W9n-DpZ47Sqvvv": {
     "id": "twitch_SweetObeseMeatloafPeanutButterJellyTime-h-W9n-DpZ47Sqvvv",
@@ -4984,10 +7931,98 @@
     "channel": "timthetatman",
     "platform": "twitch",
     "title": "LMAO",
-    "views": 611,
+    "views": 3978,
     "created": 1795048246,
     "category": "Grand Theft Auto VI",
-    "added": 1795058769
+    "added": 1795095974,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_BrightWanderingLemurAMPTropPunch-1Ygg3jlwmtQYBO13\\source.mp4",
+    "peak": 55.45,
+    "cut": [
+      19.58,
+      59.58
+    ],
+    "dur": 60.02,
+    "tags": [
+      "rage",
+      "wow",
+      "funny"
+    ],
+    "tag_scores": {
+      "funny": 0.53,
+      "glitch": 0.0,
+      "chase": 0.2,
+      "crash": 0.0,
+      "rage": 1.0,
+      "first-reaction": 0.2,
+      "wow": 1.0,
+      "_loud": 1.5,
+      "_motion": 35.3
+    },
+    "quote": "I Think my entire YouTube channel might get fucking banned",
+    "cats": {
+      "funny": 0.7,
+      "rage": 0.7,
+      "fail": 0.0,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.25,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.7
+    },
+    "primary": "funny",
+    "proven": [],
+    "evidence": {
+      "funny": [
+        "text"
+      ],
+      "rage": [
+        "text"
+      ],
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion",
+        "motion-spike"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.57,
+    "signals": {
+      "siren": 0.0,
+      "impact": 7.5,
+      "loud": 1.6,
+      "motion": 25.7,
+      "sustained": 0.74,
+      "spike": 9.7,
+      "laugh": 0,
+      "static": 0.04,
+      "letterbox": 0.0,
+      "luma": 56.5,
+      "dark": 0.03
+    }
   },
   "twitch_HeadstrongEnthusiasticDragonflyOSsloth-gCmDYEr1mzJEH3tW": {
     "id": "twitch_HeadstrongEnthusiasticDragonflyOSsloth-gCmDYEr1mzJEH3tW",
@@ -4995,13 +8030,84 @@
     "channel": "squeex",
     "platform": "twitch",
     "title": "classic",
-    "views": 1050,
+    "views": 4853,
     "created": 1795035731,
     "category": "Grand Theft Auto VI",
     "video_id": "2932676275",
     "vod_offset": 1957,
     "cluster": 1,
-    "added": 1795059211
+    "added": 1795095465,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_HeadstrongEnthusiasticDragonflyOSsloth-gCmDYEr1mzJEH3tW\\source.mp4",
+    "peak": 29.450000000000003,
+    "cut": [
+      11.4,
+      30.65
+    ],
+    "dur": 44.52,
+    "tags": [
+      "chase",
+      "rage"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.58,
+      "crash": 0.0,
+      "rage": 0.43,
+      "first-reaction": 0.2,
+      "wow": 0.04,
+      "_loud": 1.9,
+      "_motion": 23.3
+    },
+    "quote": "You are such an ass I'm trying to beat the cops Dude!",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.6,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "primary": "chase",
+    "proven": [
+      "chase"
+    ],
+    "evidence": {
+      "chase": [
+        "motion",
+        "text"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.37,
+    "signals": {
+      "siren": 0.0,
+      "impact": 4.9,
+      "loud": 1.6,
+      "motion": 18.6,
+      "sustained": 0.75,
+      "spike": 3.9,
+      "laugh": 0,
+      "static": 0.02,
+      "letterbox": 0.0,
+      "luma": 70.7,
+      "dark": 0.0
+    }
   },
   "kick_clip_01M7QF79EME6M21QZ4PP9XQNGQ": {
     "id": "kick_clip_01M7QF79EME6M21QZ4PP9XQNGQ",
@@ -5105,12 +8211,78 @@
     "channel": "xqc",
     "platform": "twitch",
     "title": "woman aim huh",
-    "views": 1305,
+    "views": 2072,
     "created": 1795042041,
     "category": "Grand Theft Auto VI",
     "video_id": "2932113307",
     "vod_offset": 58757,
-    "added": 1795062053
+    "added": 1795100070,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_TrappedYummyMetalWTRuck-5L2ytqbMKZmQThQ5\\source.mp4",
+    "peak": 30.85,
+    "cut": [
+      7.39,
+      32.35
+    ],
+    "dur": 33.73,
+    "tags": [
+      "rage"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.0,
+      "rage": 0.48,
+      "first-reaction": 0.2,
+      "wow": 0.04,
+      "_loud": 2.5,
+      "_motion": 20.7
+    },
+    "quote": "I thought you were still here!",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "proven": [],
+    "evidence": {
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.39,
+    "signals": {
+      "siren": 0.0,
+      "impact": 16.4,
+      "loud": 3.1,
+      "motion": 13.6,
+      "sustained": 0.55,
+      "spike": 3.2,
+      "laugh": 0,
+      "static": 0.01,
+      "letterbox": 0.12,
+      "luma": 45.0,
+      "dark": 0.0
+    }
   },
   "twitch_BeautifulModernTermiteYouWHY-nEB5VffTKnvTR2UD": {
     "id": "twitch_BeautifulModernTermiteYouWHY-nEB5VffTKnvTR2UD",
@@ -5219,13 +8391,101 @@
     "channel": "jasontheween",
     "platform": "twitch",
     "title": "Jason first time to shoe store in gta 6",
-    "views": 1177,
+    "views": 1674,
     "created": 1795009741,
     "category": "Grand Theft Auto VI",
     "video_id": "2932190650",
     "vod_offset": 13450,
     "cluster": 1,
-    "added": 1795065795
+    "added": 1795103751,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_SmallEnjoyableTaroOSfrog-_Zzas-tX_kGF_p0r\\source.mp4",
+    "peak": 25.85,
+    "cut": [
+      7.27,
+      27.05
+    ],
+    "dur": 34.28,
+    "tags": [
+      "first-reaction",
+      "wow"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.25,
+      "first-reaction": 1.0,
+      "wow": 0.37,
+      "_loud": 11.3,
+      "_motion": 4.6
+    },
+    "quote": "You Yeah Yo, bro, this you gotta be TTS I",
+    "cats": {
+      "funny": 0.25,
+      "rage": 0.25,
+      "fail": 0.6,
+      "physics": 0.25,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 1.0,
+      "wow": 0.6
+    },
+    "primary": "first-reaction",
+    "proven": [
+      "fail",
+      "first-reaction",
+      "wow"
+    ],
+    "evidence": {
+      "funny": [
+        "loud"
+      ],
+      "rage": [
+        "loud"
+      ],
+      "fail": [
+        "impact",
+        "loud",
+        "text"
+      ],
+      "physics": [
+        "impact"
+      ],
+      "crash": [
+        "impact"
+      ],
+      "stunt": [
+        "impact"
+      ],
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ],
+      "wow": [
+        "loud",
+        "text"
+      ]
+    },
+    "fun": 0.0,
+    "signals": {
+      "siren": 0.0,
+      "impact": 63.6,
+      "loud": 11.9,
+      "motion": 3.3,
+      "sustained": 0.0,
+      "spike": 2.3,
+      "laugh": 0,
+      "static": 0.26,
+      "letterbox": 0.0,
+      "luma": 12.0,
+      "dark": 0.9
+    }
   },
   "twitch_ResoluteCourteousPistachioSuperVinlin-DzGhsfoP-l4gFmBB": {
     "id": "twitch_ResoluteCourteousPistachioSuperVinlin-DzGhsfoP-l4gFmBB",
@@ -5233,13 +8493,87 @@
     "channel": "kaicenat",
     "platform": "twitch",
     "title": "Kai wants a side girl",
-    "views": 1438,
+    "views": 2584,
     "created": 1795017293,
     "category": "Grand Theft Auto VI",
     "video_id": "2932305259",
     "vod_offset": 10464,
     "cluster": 1,
-    "added": 1795067052
+    "added": 1795099536,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_ResoluteCourteousPistachioSuperVinlin-DzGhsfoP-l4gFmBB\\source.mp4",
+    "peak": 17.95,
+    "cut": [
+      2.43,
+      19.15
+    ],
+    "dur": 19.16,
+    "tags": [
+      "rage",
+      "wow"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 1.0,
+      "first-reaction": 0.2,
+      "wow": 0.64,
+      "_loud": 1.4,
+      "_motion": 10.2
+    },
+    "quote": "My main bitch in prison, but you the saw bitch.",
+    "cats": {
+      "funny": 0.0,
+      "rage": 1.0,
+      "fail": 0.0,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "primary": "rage",
+    "proven": [],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion-spike"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.33,
+    "signals": {
+      "siren": 0.0,
+      "impact": 23.9,
+      "loud": 1.5,
+      "motion": 5.3,
+      "sustained": 0.14,
+      "spike": 15.5,
+      "laugh": 0,
+      "static": 0.02,
+      "letterbox": 0.0,
+      "luma": 48.4,
+      "dark": 0.0
+    }
   },
   "twitch_SeductivePlacidOysterOSsloth-n4IP8pGHH3fu5X8z": {
     "id": "twitch_SeductivePlacidOysterOSsloth-n4IP8pGHH3fu5X8z",
@@ -5247,13 +8581,80 @@
     "channel": "kaicenat",
     "platform": "twitch",
     "title": "first baby in gta",
-    "views": 1535,
+    "views": 2202,
     "created": 1795008899,
     "category": "Grand Theft Auto VI",
     "video_id": "2932305259",
     "vod_offset": 2090,
     "cluster": 1,
-    "added": 1795067052
+    "added": 1795099905,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_SeductivePlacidOysterOSsloth-n4IP8pGHH3fu5X8z\\source.mp4",
+    "peak": 34.85,
+    "cut": [
+      0.0,
+      36.35
+    ],
+    "dur": 60.01,
+    "tags": [],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.0,
+      "rage": 0.05,
+      "first-reaction": 0.2,
+      "wow": 0.26,
+      "_loud": 2.7,
+      "_motion": 17.9
+    },
+    "quote": "Holy it's burning back.",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.29
+    },
+    "proven": [],
+    "evidence": {
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.28,
+    "signals": {
+      "siren": 0.0,
+      "impact": 11.3,
+      "loud": 2.5,
+      "motion": 13.8,
+      "sustained": 0.49,
+      "spike": 5.3,
+      "laugh": 0,
+      "static": 0.1,
+      "letterbox": 0.25,
+      "luma": 46.4,
+      "dark": 0.0
+    }
   },
   "twitch_AlluringBlatantMacaroniCclamChamp-EQlAbNoKjIy6FBFD": {
     "id": "twitch_AlluringBlatantMacaroniCclamChamp-EQlAbNoKjIy6FBFD",
@@ -5332,10 +8733,80 @@
     "channel": "stableronaldo",
     "platform": "twitch",
     "title": "StableRonaldo flashed🔞🔞",
-    "views": 1326,
+    "views": 1914,
     "created": 1795035015,
     "category": "Grand Theft Auto VI",
-    "added": 1795069563
+    "added": 1795101423,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_BashfulDreamyDragonflyGingerPower-KVNXb4B9B7tJHtVt\\source.mp4",
+    "peak": 14.350000000000001,
+    "cut": [
+      1.69,
+      15.55
+    ],
+    "dur": 20.25,
+    "tags": [
+      "rage",
+      "wow"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.0,
+      "rage": 0.71,
+      "first-reaction": 0.2,
+      "wow": 0.62,
+      "_loud": 2.0,
+      "_motion": 14.3
+    },
+    "quote": "This one was gonna go all the way.",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "proven": [],
+    "evidence": {
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion-spike"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.0,
+    "signals": {
+      "siren": 0.0,
+      "impact": 13.9,
+      "loud": 2.6,
+      "motion": 8.7,
+      "sustained": 0.14,
+      "spike": 9.7,
+      "laugh": 0,
+      "static": 0.0,
+      "letterbox": 0.0,
+      "luma": 21.5,
+      "dark": 0.79
+    }
   },
   "twitch_CooperativeAthleticMarjoramPeoplesChamp-ED9p6JnfM5HqbI2l": {
     "id": "twitch_CooperativeAthleticMarjoramPeoplesChamp-ED9p6JnfM5HqbI2l",
@@ -5450,12 +8921,76 @@
     "channel": "xqc",
     "platform": "twitch",
     "title": "xQc shares his thoughts on GTA VI after a 24hr stream",
-    "views": 1513,
+    "views": 15491,
     "created": 1795067063,
     "category": "Grand Theft Auto VI",
     "video_id": "2932113307",
     "vod_offset": 83165,
-    "added": 1795071486
+    "added": 1795094524,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_VivaciousCallousYogurtDxCat-tcAghtrsbnP82HX2\\source.mp4",
+    "peak": 27.85,
+    "cut": [
+      4.29,
+      31.56
+    ],
+    "dur": 33.69,
+    "tags": [
+      "first-reaction"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 0.67,
+      "wow": 0.24,
+      "_loud": 1.4,
+      "_motion": 2.3
+    },
+    "quote": "But 30 FPS going down from 30 into like Like into the 20s?",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.87,
+      "wow": 0.31
+    },
+    "primary": "first-reaction",
+    "proven": [
+      "first-reaction"
+    ],
+    "evidence": {
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.0,
+    "signals": {
+      "siren": 0.0,
+      "impact": 13.9,
+      "loud": 1.4,
+      "motion": 1.4,
+      "sustained": 0.0,
+      "spike": 1.2,
+      "laugh": 0,
+      "static": 0.59,
+      "letterbox": 0.0,
+      "luma": 59.9,
+      "dark": 0.0
+    }
   },
   "twitch_BumblingConsiderateMagpieAsianGlow-uwONm1vYSnm95Wzn": {
     "id": "twitch_BumblingConsiderateMagpieAsianGlow-uwONm1vYSnm95Wzn",
@@ -5463,12 +8998,82 @@
     "channel": "kaicenat",
     "platform": "twitch",
     "title": "GYATT",
-    "views": 1384,
+    "views": 1878,
     "created": 1795017207,
     "category": "Grand Theft Auto VI",
     "video_id": "2932305259",
     "vod_offset": 10368,
-    "added": 1795073230
+    "added": 1795102174,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_BumblingConsiderateMagpieAsianGlow-uwONm1vYSnm95Wzn\\source.mp4",
+    "peak": 28.150000000000002,
+    "cut": [
+      1.25,
+      29.99
+    ],
+    "dur": 30.02,
+    "tags": [
+      "rage"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.0,
+      "rage": 1.0,
+      "first-reaction": 0.2,
+      "wow": 0.2,
+      "_loud": 2.4,
+      "_motion": 15.1
+    },
+    "quote": "Why don't you like me?",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.99,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "primary": "rage",
+    "proven": [],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.51,
+    "signals": {
+      "siren": 0.0,
+      "impact": 26.1,
+      "loud": 2.6,
+      "motion": 10.4,
+      "sustained": 0.4,
+      "spike": 3.8,
+      "laugh": 0,
+      "static": 0.01,
+      "letterbox": 0.0,
+      "luma": 42.0,
+      "dark": 0.0
+    }
   },
   "twitch_DelightfulLachrymoseMelonVoteYea-JeFCNhZHEyTfoOMJ": {
     "id": "twitch_DelightfulLachrymoseMelonVoteYea-JeFCNhZHEyTfoOMJ",
@@ -5560,12 +9165,93 @@
     "channel": "kaicenat",
     "platform": "twitch",
     "title": "gta",
-    "views": 1428,
+    "views": 1767,
     "created": 1795007628,
     "category": "Grand Theft Auto VI",
     "video_id": "2932305259",
     "vod_offset": 692,
-    "added": 1795073230
+    "added": 1795103107,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_DifficultTrustworthyCobblerRaccAttack-eZdV25Nhm-1NTlM2\\source.mp4",
+    "peak": 21.150000000000002,
+    "cut": [
+      9.34,
+      22.72
+    ],
+    "dur": 22.98,
+    "tags": [
+      "rage",
+      "wow",
+      "funny"
+    ],
+    "tag_scores": {
+      "funny": 0.36,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.0,
+      "rage": 0.56,
+      "first-reaction": 0.2,
+      "wow": 0.52,
+      "_loud": 2.0,
+      "_motion": 17.0
+    },
+    "quote": "City plan city is playing channel manager and videographer today y 'all",
+    "cats": {
+      "funny": 0.35,
+      "rage": 0.35,
+      "fail": 0.0,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.35
+    },
+    "primary": "funny",
+    "proven": [],
+    "evidence": {
+      "funny": [
+        "text"
+      ],
+      "rage": [
+        "text"
+      ],
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion-spike"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.15,
+    "signals": {
+      "siren": 0.0,
+      "impact": 23.1,
+      "loud": 1.5,
+      "motion": 1.8,
+      "sustained": 0.04,
+      "spike": 30.3,
+      "laugh": 0,
+      "static": 0.01,
+      "letterbox": 0.0,
+      "luma": 75.6,
+      "dark": 0.0
+    }
   },
   "twitch_BetterBoxyPhoneKappaPride-dj6XJ97C0t6ZaTrX": {
     "id": "twitch_BetterBoxyPhoneKappaPride-dj6XJ97C0t6ZaTrX",
@@ -5678,13 +9364,94 @@
     "channel": "stableronaldo",
     "platform": "twitch",
     "title": "valid crashout",
-    "views": 1338,
+    "views": 1666,
     "created": 1795020737,
     "category": "Grand Theft Auto VI",
     "video_id": "2932442046",
     "vod_offset": 2558,
     "cluster": 1,
-    "added": 1795073753
+    "added": 1795103804,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_HonestFancyLobsterRalpherZ-93UgISJRoL1Yxcn1\\source.mp4",
+    "peak": 23.150000000000002,
+    "cut": [
+      0.69,
+      24.81
+    ],
+    "dur": 24.81,
+    "tags": [
+      "rage",
+      "crash",
+      "wow"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.2,
+      "crash": 0.57,
+      "rage": 0.72,
+      "first-reaction": 0.2,
+      "wow": 0.4,
+      "_loud": 1.5,
+      "_motion": 24.6
+    },
+    "quote": "Yo, I've never been able to beat the first -",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.7,
+      "fail": 0.35,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.7,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.35
+    },
+    "primary": "rage",
+    "proven": [],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "fail": [
+        "text"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "crash": [
+        "text"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.51,
+    "signals": {
+      "siren": 0.0,
+      "impact": 7.0,
+      "loud": 1.6,
+      "motion": 18.7,
+      "sustained": 0.78,
+      "spike": 2.7,
+      "laugh": 0,
+      "static": 0.0,
+      "letterbox": 0.0,
+      "luma": 50.6,
+      "dark": 0.0
+    }
   },
   "twitch_PlumpShortCocoaUncleNox-JFdOfd1oKnTda-or": {
     "id": "twitch_PlumpShortCocoaUncleNox-JFdOfd1oKnTda-or",
@@ -5692,13 +9459,77 @@
     "channel": "realkatieb",
     "platform": "twitch",
     "title": "right",
-    "views": 1317,
+    "views": 1974,
     "created": 1795039675,
     "category": "Grand Theft Auto VI",
     "video_id": "2932534214",
     "vod_offset": 14990,
     "cluster": 1,
-    "added": 1795076313
+    "added": 1795100393,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_PlumpShortCocoaUncleNox-JFdOfd1oKnTda-or\\source.mp4",
+    "peak": 10.25,
+    "cut": [
+      1.88,
+      11.45
+    ],
+    "dur": 30.02,
+    "tags": [],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 0.2,
+      "wow": 0.0,
+      "_loud": 2.9,
+      "_motion": 13.2
+    },
+    "quote": "Wait, the taxi's so nice that I can talk to",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "proven": [],
+    "evidence": {
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.28,
+    "signals": {
+      "siren": 0.0,
+      "impact": 13.7,
+      "loud": 1.5,
+      "motion": 12.7,
+      "sustained": 0.68,
+      "spike": 1.3,
+      "laugh": 0,
+      "static": 0.05,
+      "letterbox": 0.0,
+      "luma": 78.8,
+      "dark": 0.0
+    }
   },
   "twitch_HumbleGeniusStrawberryBleedPurple-CYhEi_LZY9mbAQxo": {
     "id": "twitch_HumbleGeniusStrawberryBleedPurple-CYhEi_LZY9mbAQxo",
@@ -5711,11 +9542,13 @@
     "category": "Grand Theft Auto VI",
     "cluster": 1,
     "added": 1795098336,
-    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/ishowspeed/20261118_twitch_HumbleGeniusStrawberryBleedPurple-CYhEi_LZY9mbAQxo/source.mp4",
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_HumbleGeniusStrawberryBleedPurple-CYhEi_LZY9mbAQxo\\source.mp4",
     "peak": 23.85,
     "cut": [
       16.53,
-      26.97
+      26.97,
+      5.3,
+      26.98
     ],
     "dur": 28.95,
     "tags": [
@@ -5734,7 +9567,7 @@
       "_loud": 2.9,
       "_motion": 30.2
     },
-    "quote": "the hell is going on F*** out where Jason at?",
+    "quote": "Oh Hell no, hey, oh no No, skip this skip",
     "rendered": [
       "bananas"
     ],
@@ -5791,14 +9624,14 @@
         "text"
       ]
     },
-    "fun": 0.49,
+    "fun": 0.56,
     "signals": {
       "siren": 0.0,
       "impact": 18.5,
-      "loud": 2.0,
+      "loud": 3.1,
       "motion": 31.0,
       "sustained": 0.73,
-      "spike": 8.6,
+      "spike": 8.7,
       "laugh": 0,
       "static": 0.01,
       "letterbox": 0.0,
@@ -5826,13 +9659,94 @@
     "channel": "jerma985",
     "platform": "twitch",
     "title": "Jerma in a sticky situation",
-    "views": 521,
+    "views": 1371,
     "created": 1795072442,
     "category": "Grand Theft Auto VI",
     "video_id": "2933227596",
     "vod_offset": 8702,
     "cluster": 2,
-    "added": 1795080375
+    "added": 1795104950,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_NeighborlyScrumptiousBeanEleGiggle-vCkxTlQrhDPjBG4l\\source.mp4",
+    "peak": 22.85,
+    "cut": [
+      5.43,
+      30.82
+    ],
+    "dur": 38.76,
+    "tags": [
+      "funny"
+    ],
+    "tag_scores": {
+      "funny": 0.45,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.15,
+      "first-reaction": 0.2,
+      "wow": 0.16,
+      "_loud": 3.2,
+      "_motion": 12.1
+    },
+    "quote": "Ass man is the license plate No, no, no That's GG I Hey.",
+    "cats": {
+      "funny": 0.25,
+      "rage": 0.25,
+      "fail": 0.25,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.25
+    },
+    "proven": [],
+    "evidence": {
+      "funny": [
+        "loud"
+      ],
+      "rage": [
+        "loud"
+      ],
+      "fail": [
+        "loud"
+      ],
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion-spike"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "loud"
+      ]
+    },
+    "fun": 0.41,
+    "signals": {
+      "siren": 0.0,
+      "impact": 12.9,
+      "loud": 5.2,
+      "motion": 7.0,
+      "sustained": 0.24,
+      "spike": 8.7,
+      "laugh": 0,
+      "static": 0.01,
+      "letterbox": 0.0,
+      "luma": 45.0,
+      "dark": 0.0
+    }
   },
   "twitch_InquisitiveJollyVanillaDxCat-vctI-tQHron3Wd5I": {
     "id": "twitch_InquisitiveJollyVanillaDxCat-vctI-tQHron3Wd5I",
@@ -5840,13 +9754,81 @@
     "channel": "xqc",
     "platform": "twitch",
     "title": "part 2 XQC framegen ON",
-    "views": 521,
+    "views": 1642,
     "created": 1795071829,
     "category": "Grand Theft Auto VI",
     "video_id": "2932113307",
     "vod_offset": 83445,
     "cluster": 1,
-    "added": 1795081404
+    "added": 1795105681,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_InquisitiveJollyVanillaDxCat-vctI-tQHron3Wd5I\\source.mp4",
+    "peak": 58.25,
+    "cut": [
+      16.01,
+      59.45
+    ],
+    "dur": 60.0,
+    "tags": [],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.0,
+      "rage": 0.27,
+      "first-reaction": 0.2,
+      "wow": 0.04,
+      "_loud": 1.9,
+      "_motion": 15.7
+    },
+    "quote": "But it's so bad that I feel like I have to do it.",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.33,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "primary": "rage",
+    "proven": [],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.53,
+    "signals": {
+      "siren": 0.0,
+      "impact": 12.4,
+      "loud": 4.6,
+      "motion": 14.7,
+      "sustained": 0.67,
+      "spike": 3.4,
+      "laugh": 0,
+      "static": 0.01,
+      "letterbox": 0.0,
+      "luma": 99.6,
+      "dark": 0.0
+    }
   },
   "twitch_ViscousStormySquirrelDancingBanana-2gkXgAHz-CwpC3GO": {
     "id": "twitch_ViscousStormySquirrelDancingBanana-2gkXgAHz-CwpC3GO",
@@ -5958,13 +9940,90 @@
     "channel": "rayasianboy",
     "platform": "twitch",
     "title": "ray gta 6",
-    "views": 1404,
+    "views": 1792,
     "created": 1795023604,
     "category": "Grand Theft Auto VI",
     "video_id": "2932386602",
     "vod_offset": 9678,
     "cluster": 1,
-    "added": 1795083809
+    "added": 1795102702,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_BlightedWimpyLasagnaMrDestructoid-t0hnhiHoozGdkLGu\\source.mp4",
+    "peak": 13.950000000000001,
+    "cut": [
+      0.0,
+      16.98
+    ],
+    "dur": 30.0,
+    "tags": [
+      "rage",
+      "first-reaction"
+    ],
+    "tag_scores": {
+      "funny": 0.08,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 1.0,
+      "first-reaction": 1.0,
+      "wow": 0.2,
+      "_loud": 5.7,
+      "_motion": 4.7
+    },
+    "quote": "I've been waiting for this moment for man.",
+    "cats": {
+      "funny": 0.0,
+      "rage": 1.0,
+      "fail": 0.0,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 1.0,
+      "wow": 0.0
+    },
+    "primary": "rage",
+    "proven": [
+      "first-reaction"
+    ],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion-spike"
+      ],
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ]
+    },
+    "fun": 0.15,
+    "signals": {
+      "siren": 0.0,
+      "impact": 18.0,
+      "loud": 1.9,
+      "motion": 4.2,
+      "sustained": 0.03,
+      "spike": 6.2,
+      "laugh": 0,
+      "static": 0.05,
+      "letterbox": 0.0,
+      "luma": 41.9,
+      "dark": 0.0
+    }
   },
   "twitch_BoringSavorySproutNomNom-Tg3HdUU0NAhGmGJw": {
     "id": "twitch_BoringSavorySproutNomNom-Tg3HdUU0NAhGmGJw",
@@ -5986,11 +10045,90 @@
     "channel": "ishowspeed",
     "platform": "twitch",
     "title": "SPEED PLAYING GTA 6",
-    "views": 1397,
+    "views": 1709,
     "created": 1795009480,
     "category": "Grand Theft Auto VI",
     "cluster": 1,
-    "added": 1795084415
+    "added": 1795097513,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_DifferentBlindingMartenKappaPride-0r0DTjKY8R7hrnkX\\source.mp4",
+    "peak": 29.450000000000003,
+    "cut": [
+      1.1,
+      30.02
+    ],
+    "dur": 30.02,
+    "tags": [
+      "wow",
+      "chase",
+      "first-reaction",
+      "rage"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.94,
+      "crash": 0.0,
+      "rage": 0.67,
+      "first-reaction": 0.94,
+      "wow": 0.98,
+      "_loud": 1.9,
+      "_motion": 31.3
+    },
+    "quote": "Oh my days.",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.35,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.95,
+      "wow": 0.7
+    },
+    "primary": "first-reaction",
+    "proven": [
+      "first-reaction"
+    ],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.54,
+    "signals": {
+      "siren": 0.0,
+      "impact": 12.6,
+      "loud": 2.1,
+      "motion": 24.0,
+      "sustained": 0.91,
+      "spike": 2.5,
+      "laugh": 0,
+      "static": 0.03,
+      "letterbox": 0.0,
+      "luma": 71.0,
+      "dark": 0.0
+    }
   },
   "twitch_ReliableSpikyKathyDBstyle-OHuzTGWjb3U-qyIu": {
     "id": "twitch_ReliableSpikyKathyDBstyle-OHuzTGWjb3U-qyIu",
@@ -5998,13 +10136,101 @@
     "channel": "zackrawrr",
     "platform": "twitch",
     "title": "speechless",
-    "views": 1424,
+    "views": 1650,
     "created": 1795031498,
     "category": "Grand Theft Auto VI",
     "video_id": "2932469290",
     "vod_offset": 11274,
     "cluster": 1,
-    "added": 1795085015
+    "added": 1795103894,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_ReliableSpikyKathyDBstyle-OHuzTGWjb3U-qyIu\\source.mp4",
+    "peak": 32.75,
+    "cut": [
+      2.9,
+      34.08
+    ],
+    "dur": 54.76,
+    "tags": [
+      "wow",
+      "rage"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.73,
+      "first-reaction": 0.2,
+      "wow": 1.0,
+      "_loud": 5.3,
+      "_motion": 6.7
+    },
+    "quote": "Okay, so all right.",
+    "cats": {
+      "funny": 0.25,
+      "rage": 0.6,
+      "fail": 0.25,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 1.0
+    },
+    "primary": "wow",
+    "proven": [
+      "rage",
+      "wow"
+    ],
+    "evidence": {
+      "funny": [
+        "loud"
+      ],
+      "rage": [
+        "loud",
+        "text"
+      ],
+      "fail": [
+        "loud"
+      ],
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion-spike"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "loud",
+        "text"
+      ]
+    },
+    "fun": 0.65,
+    "signals": {
+      "siren": 0.0,
+      "impact": 44.8,
+      "loud": 5.9,
+      "motion": 6.3,
+      "sustained": 0.13,
+      "spike": 10.4,
+      "laugh": 0,
+      "static": 0.0,
+      "letterbox": 0.0,
+      "luma": 43.3,
+      "dark": 0.0
+    }
   },
   "twitch_HealthyEagerNarwhalPastaThat-n30yHBQEfYrm3t1S": {
     "id": "twitch_HealthyEagerNarwhalPastaThat-n30yHBQEfYrm3t1S",
@@ -6026,13 +10252,87 @@
     "channel": "loserfruit",
     "platform": "twitch",
     "title": "predetermined",
-    "views": 1362,
+    "views": 1487,
     "created": 1795007924,
     "category": "Grand Theft Auto VI",
     "video_id": "2932294659",
     "vod_offset": 1971,
     "cluster": 1,
-    "added": 1795087401
+    "added": 1795104344,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_SpotlessNiceTriangleDAESuppy-sJc-doVrmpFeEI6t\\source.mp4",
+    "peak": 24.150000000000002,
+    "cut": [
+      0.0,
+      25.35
+    ],
+    "dur": 60.03,
+    "tags": [
+      "rage",
+      "funny"
+    ],
+    "tag_scores": {
+      "funny": 0.31,
+      "glitch": 0.0,
+      "chase": 0.2,
+      "crash": 0.0,
+      "rage": 0.51,
+      "first-reaction": 0.2,
+      "wow": 0.08,
+      "_loud": 2.7,
+      "_motion": 23.9
+    },
+    "quote": "Do I get into a car and leave?",
+    "cats": {
+      "funny": 0.35,
+      "rage": 0.35,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "primary": "funny",
+    "proven": [],
+    "evidence": {
+      "funny": [
+        "text"
+      ],
+      "rage": [
+        "text"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.54,
+    "signals": {
+      "siren": 0.0,
+      "impact": 10.5,
+      "loud": 3.0,
+      "motion": 23.0,
+      "sustained": 0.9,
+      "spike": 1.9,
+      "laugh": 1,
+      "static": 0.05,
+      "letterbox": 0.0,
+      "luma": 57.1,
+      "dark": 0.0
+    }
   },
   "twitch_BlightedRelatedKathyKeepo-HKuu-b-IkUwSQ39d": {
     "id": "twitch_BlightedRelatedKathyKeepo-HKuu-b-IkUwSQ39d",
@@ -6040,13 +10340,85 @@
     "channel": "kaicenat",
     "platform": "twitch",
     "title": "kai gets emotional",
-    "views": 1315,
+    "views": 1358,
     "created": 1795004596,
     "category": "Grand Theft Auto VI",
     "video_id": "2858049515",
     "vod_offset": 2410,
     "cluster": 1,
-    "added": 1795088593
+    "added": 1795105042,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_BlightedRelatedKathyKeepo-HKuu-b-IkUwSQ39d\\source.mp4",
+    "peak": 21.950000000000003,
+    "cut": [
+      1.31,
+      26.06
+    ],
+    "dur": 30.02,
+    "tags": [
+      "chase",
+      "first-reaction",
+      "wow"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.48,
+      "crash": 0.0,
+      "rage": 0.05,
+      "first-reaction": 0.48,
+      "wow": 0.32,
+      "_loud": 1.3,
+      "_motion": 29.5
+    },
+    "quote": "One night we snuck in and a buddy of mine, he got it working.",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.6,
+      "wow": 0.0
+    },
+    "primary": "first-reaction",
+    "proven": [
+      "first-reaction"
+    ],
+    "evidence": {
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ]
+    },
+    "fun": 0.33,
+    "signals": {
+      "siren": 0.0,
+      "impact": 6.4,
+      "loud": 1.3,
+      "motion": 23.5,
+      "sustained": 0.71,
+      "spike": 2.8,
+      "laugh": 0,
+      "static": 0.0,
+      "letterbox": 0.0,
+      "luma": 65.1,
+      "dark": 0.0
+    }
   },
   "twitch_BlithePowerfulMooseOneHand-N3QteSWl9GS2nMc3": {
     "id": "twitch_BlithePowerfulMooseOneHand-N3QteSWl9GS2nMc3",
@@ -6066,13 +10438,87 @@
     "channel": "marlon",
     "platform": "twitch",
     "title": "WTF",
-    "views": 1472,
+    "views": 1786,
     "created": 1795028624,
     "category": "Grand Theft Auto VI",
     "video_id": "2932567591",
     "vod_offset": 1800,
     "cluster": 1,
-    "added": 1795088593
+    "added": 1795102853,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_GeniusHappyCookieWholeWheat-ycx2UAFgtgFJxOQ_\\source.mp4",
+    "peak": 21.85,
+    "cut": [
+      0.0,
+      25.86
+    ],
+    "dur": 30.01,
+    "tags": [
+      "chase",
+      "rage"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.5,
+      "crash": 0.0,
+      "rage": 0.4,
+      "first-reaction": 0.2,
+      "wow": 0.08,
+      "_loud": 1.7,
+      "_motion": 32.4
+    },
+    "quote": "yeah oh shit oh press exit jump yeah I got",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.35,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.6,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "primary": "stunt",
+    "proven": [
+      "stunt"
+    ],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion",
+        "text"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.43,
+    "signals": {
+      "siren": 0.0,
+      "impact": 4.9,
+      "loud": 1.9,
+      "motion": 24.9,
+      "sustained": 0.86,
+      "spike": 2.2,
+      "laugh": 0,
+      "static": 0.04,
+      "letterbox": 0.0,
+      "luma": 72.3,
+      "dark": 0.0
+    }
   },
   "twitch_StrongPeacefulSlothOpieOP-mtCWDBAk9aw8xseW": {
     "id": "twitch_StrongPeacefulSlothOpieOP-mtCWDBAk9aw8xseW",
@@ -6094,13 +10540,87 @@
     "channel": "nickeh30",
     "platform": "twitch",
     "title": "look at him lol",
-    "views": 1270,
+    "views": 1382,
     "created": 1795023865,
     "category": "Grand Theft Auto VI",
     "video_id": "2932380541",
     "vod_offset": 10489,
     "cluster": 1,
-    "added": 1795089204
+    "added": 1795104756,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_CoyGeniusCaterpillarOneHand-XSf9ZPw4j1vToTSO\\source.mp4",
+    "peak": 22.25,
+    "cut": [
+      0.0,
+      23.35
+    ],
+    "dur": 23.35,
+    "tags": [
+      "funny",
+      "wow"
+    ],
+    "tag_scores": {
+      "funny": 0.64,
+      "glitch": 0.0,
+      "chase": 0.2,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 0.2,
+      "wow": 0.32,
+      "_loud": 3.8,
+      "_motion": 28.5
+    },
+    "quote": "This is crazy, can I go in her house?",
+    "cats": {
+      "funny": 0.7,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.35
+    },
+    "primary": "funny",
+    "proven": [],
+    "evidence": {
+      "funny": [
+        "text"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.58,
+    "signals": {
+      "siren": 0.0,
+      "impact": 30.9,
+      "loud": 4.6,
+      "motion": 21.5,
+      "sustained": 0.63,
+      "spike": 2.4,
+      "laugh": 0,
+      "static": 0.04,
+      "letterbox": 0.0,
+      "luma": 121.5,
+      "dark": 0.0
+    }
   },
   "twitch_BloodyQuaintTigerRaccAttack-J8Y2TNViWGE54NHw": {
     "id": "twitch_BloodyQuaintTigerRaccAttack-J8Y2TNViWGE54NHw",
@@ -6108,13 +10628,89 @@
     "channel": "swagg",
     "platform": "twitch",
     "title": "lamb chop",
-    "views": 1239,
+    "views": 1373,
     "created": 1795028174,
     "category": "Grand Theft Auto VI",
     "video_id": "2932231823",
     "vod_offset": 27940,
     "cluster": 1,
-    "added": 1795089801
+    "added": 1795104861,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_BloodyQuaintTigerRaccAttack-J8Y2TNViWGE54NHw\\source.mp4",
+    "peak": 49.85,
+    "cut": [
+      9.61,
+      51.05
+    ],
+    "dur": 60.01,
+    "tags": [
+      "rage",
+      "wow",
+      "first-reaction",
+      "crash"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.2,
+      "crash": 0.3,
+      "rage": 1.0,
+      "first-reaction": 0.41,
+      "wow": 0.53,
+      "_loud": 5.1,
+      "_motion": 23.2
+    },
+    "quote": "Ate to like change, no!",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.84,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.6,
+      "wow": 0.0
+    },
+    "primary": "rage",
+    "proven": [
+      "first-reaction"
+    ],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ]
+    },
+    "fun": 0.67,
+    "signals": {
+      "siren": 0.0,
+      "impact": 27.5,
+      "loud": 3.7,
+      "motion": 18.0,
+      "sustained": 0.73,
+      "spike": 3.2,
+      "laugh": 0,
+      "static": 0.06,
+      "letterbox": 0.0,
+      "luma": 82.9,
+      "dark": 0.0
+    }
   },
   "twitch_EnjoyableProductiveMetalBuddhaBar-jO0go0XHeDTtKuKl": {
     "id": "twitch_EnjoyableProductiveMetalBuddhaBar-jO0go0XHeDTtKuKl",
@@ -6122,13 +10718,91 @@
     "channel": "mrsavage",
     "platform": "twitch",
     "title": "mrsavage - Highlight 1dc354 Part 15",
-    "views": 1226,
+    "views": 1339,
     "created": 1795022997,
     "category": "Grand Theft Auto VI",
     "video_id": "2932376551",
     "vod_offset": 10055,
     "cluster": 1,
-    "added": 1795090404
+    "added": 1795105147,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_EnjoyableProductiveMetalBuddhaBar-jO0go0XHeDTtKuKl\\source.mp4",
+    "peak": 48.150000000000006,
+    "cut": [
+      7.73,
+      49.78
+    ],
+    "dur": 60.01,
+    "tags": [
+      "crash"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.3,
+      "rage": 0.25,
+      "first-reaction": 0.2,
+      "wow": 0.0,
+      "_loud": 7.0,
+      "_motion": 15.0
+    },
+    "quote": "Okay, wait, so if I while leaving your spamming I was wait",
+    "cats": {
+      "funny": 0.25,
+      "rage": 0.25,
+      "fail": 0.25,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.25
+    },
+    "proven": [],
+    "evidence": {
+      "funny": [
+        "loud"
+      ],
+      "rage": [
+        "loud"
+      ],
+      "fail": [
+        "loud"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "loud"
+      ]
+    },
+    "fun": 0.0,
+    "signals": {
+      "siren": 0.0,
+      "impact": 44.6,
+      "loud": 7.7,
+      "motion": 11.9,
+      "sustained": 0.46,
+      "spike": 2.9,
+      "laugh": 0,
+      "static": 0.06,
+      "letterbox": 0.0,
+      "luma": 14.7,
+      "dark": 0.55
+    }
   },
   "twitch_AssiduousSpookyKoupreyDogFace-3EeIjer0tUnWSNB_": {
     "id": "twitch_AssiduousSpookyKoupreyDogFace-3EeIjer0tUnWSNB_",
@@ -6136,11 +10810,85 @@
     "channel": "ishowspeed",
     "platform": "twitch",
     "title": "HHAHAHHAHAHA",
-    "views": 1305,
+    "views": 1443,
     "created": 1795010260,
     "category": "Grand Theft Auto VI",
     "cluster": 1,
-    "added": 1795090992
+    "added": 1795097575,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_AssiduousSpookyKoupreyDogFace-3EeIjer0tUnWSNB_\\source.mp4",
+    "peak": 29.450000000000003,
+    "cut": [
+      2.47,
+      30.02
+    ],
+    "dur": 30.02,
+    "tags": [
+      "rage",
+      "wow"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.0,
+      "rage": 0.51,
+      "first-reaction": 0.2,
+      "wow": 0.47,
+      "_loud": 1.6,
+      "_motion": 18.2
+    },
+    "quote": "I'm thinking to do a little bit of",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.35,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.35
+    },
+    "primary": "rage",
+    "proven": [],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.38,
+    "signals": {
+      "siren": 0.0,
+      "impact": 34.2,
+      "loud": 1.5,
+      "motion": 12.9,
+      "sustained": 0.51,
+      "spike": 3.1,
+      "laugh": 0,
+      "static": 0.02,
+      "letterbox": 0.0,
+      "luma": 29.5,
+      "dark": 0.0
+    }
   },
   "twitch_BrainyQuaintDelicataNerfBlueBlaster-eBy9iL6u4j0tYtDd": {
     "id": "twitch_BrainyQuaintDelicataNerfBlueBlaster-eBy9iL6u4j0tYtDd",
@@ -6204,11 +10952,102 @@
     "channel": "ishowspeed",
     "platform": "twitch",
     "title": "divertido",
-    "views": 1155,
+    "views": 1294,
     "created": 1795015583,
     "category": "Grand Theft Auto VI",
     "cluster": 1,
-    "added": 1795092210
+    "added": 1795097669,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_SullenMushyToadRiPepperonis-X3cHCFmq9kIrTsxn\\source.mp4",
+    "peak": 34.45,
+    "cut": [
+      4.74,
+      35.65
+    ],
+    "dur": 60.01,
+    "tags": [
+      "rage",
+      "wow",
+      "chase",
+      "crash"
+    ],
+    "tag_scores": {
+      "funny": 0.21,
+      "glitch": 0.0,
+      "chase": 0.52,
+      "crash": 0.3,
+      "rage": 1.0,
+      "first-reaction": 0.2,
+      "wow": 0.74,
+      "_loud": 9.3,
+      "_motion": 16.6
+    },
+    "quote": "What do you need time time?",
+    "cats": {
+      "funny": 0.25,
+      "rage": 0.25,
+      "fail": 0.25,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.32,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.6
+    },
+    "primary": "wow",
+    "proven": [
+      "wow"
+    ],
+    "evidence": {
+      "funny": [
+        "loud"
+      ],
+      "rage": [
+        "loud"
+      ],
+      "fail": [
+        "loud"
+      ],
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "chase": [
+        "text"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion-spike"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "loud",
+        "text"
+      ]
+    },
+    "fun": 0.62,
+    "signals": {
+      "siren": 0.0,
+      "impact": 30.6,
+      "loud": 8.9,
+      "motion": 7.2,
+      "sustained": 0.21,
+      "spike": 11.2,
+      "laugh": 0,
+      "static": 0.03,
+      "letterbox": 0.0,
+      "luma": 68.0,
+      "dark": 0.0
+    }
   },
   "twitch_OddHedonisticDonkeySwiftRage-6Fns0uGwe32Hh0Of": {
     "id": "twitch_OddHedonisticDonkeySwiftRage-6Fns0uGwe32Hh0Of",
@@ -6300,13 +11139,86 @@
     "channel": "caseoh_",
     "platform": "twitch",
     "title": "1",
-    "views": 1426,
+    "views": 1503,
     "created": 1795037328,
     "category": "Grand Theft Auto VI",
     "video_id": "2932628190",
     "vod_offset": 6689,
     "cluster": 1,
-    "added": 1795094000
+    "added": 1795104151,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_KawaiiSoftJamThisIsSparta-Nxo2QqGGcEzhAMFN\\source.mp4",
+    "peak": 21.05,
+    "cut": [
+      2.24,
+      23.72
+    ],
+    "dur": 25.03,
+    "tags": [
+      "wow"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.1,
+      "first-reaction": 0.2,
+      "wow": 0.43,
+      "_loud": 3.9,
+      "_motion": 7.0
+    },
+    "quote": "They used to dance.",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.35
+    },
+    "primary": "wow",
+    "proven": [],
+    "evidence": {
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion-spike"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.36,
+    "signals": {
+      "siren": 0.0,
+      "impact": 52.8,
+      "loud": 4.0,
+      "motion": 5.1,
+      "sustained": 0.09,
+      "spike": 6.3,
+      "laugh": 0,
+      "static": 0.03,
+      "letterbox": 0.0,
+      "luma": 26.0,
+      "dark": 0.0
+    }
   },
   "twitch_FrailSwissHummingbirdHassaanChop-KSHCmGWFjVkoQxaj": {
     "id": "twitch_FrailSwissHummingbirdHassaanChop-KSHCmGWFjVkoQxaj",
@@ -6480,11 +11392,82 @@
     "channel": "ishowspeed",
     "platform": "twitch",
     "title": "SPEED JAVKS OLD LADY VEHICHLE",
-    "views": 1254,
+    "views": 1263,
     "created": 1795013927,
     "category": "Grand Theft Auto VI",
     "cluster": 1,
-    "added": 1795096994
+    "added": 1795097789,
+    "name": "IShowSpeed",
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_HilariousTiredManateeFrankerZ-d3IrR90WPncoIVyg\\source.mp4",
+    "peak": 57.25,
+    "cut": [
+      19.33,
+      59.82
+    ],
+    "dur": 60.01,
+    "tags": [
+      "wow"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.0,
+      "rage": 0.2,
+      "first-reaction": 0.2,
+      "wow": 0.42,
+      "_loud": 3.0,
+      "_motion": 19.6
+    },
+    "quote": "I ain't even all right.",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.35
+    },
+    "primary": "wow",
+    "proven": [],
+    "evidence": {
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.46,
+    "signals": {
+      "siren": 0.0,
+      "impact": 18.0,
+      "loud": 3.0,
+      "motion": 16.3,
+      "sustained": 0.57,
+      "spike": 4.2,
+      "laugh": 0,
+      "static": 0.03,
+      "letterbox": 0.0,
+      "luma": 111.6,
+      "dark": 0.0
+    }
   },
   "twitch_HonestUnsightlyRingPJSugar-thab6msCCtg7e7d-": {
     "id": "twitch_HonestUnsightlyRingPJSugar-thab6msCCtg7e7d-",
@@ -6616,11 +11599,13 @@
     "category": "Grand Theft Auto VI",
     "cluster": 1,
     "added": 1795102337,
-    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/ishowspeed/20261118_twitch_SavoryEagerLlamaLeeroyJenkins-fzfiphCY-mKdwJvr/source.mp4",
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_SavoryEagerLlamaLeeroyJenkins-fzfiphCY-mKdwJvr\\source.mp4",
     "peak": 18.150000000000002,
     "cut": [
       3.5,
-      21.17
+      21.17,
+      1.65,
+      20.02
     ],
     "dur": 30.02,
     "tags": [
@@ -6702,15 +11687,16 @@
       "siren": 0.0,
       "impact": 174.0,
       "loud": 20.2,
-      "motion": 19.0,
+      "motion": 19.3,
       "sustained": 0.76,
       "spike": 3.0,
       "laugh": 0,
       "static": 0.03,
       "letterbox": 0.0,
-      "luma": 75.6,
+      "luma": 76.1,
       "dark": 0.0
-    }
+    },
+    "name": "IShowSpeed"
   },
   "twitch_ShortDistinctAlmondANELE-r2EGGu_5hzOMYGW1": {
     "id": "twitch_ShortDistinctAlmondANELE-r2EGGu_5hzOMYGW1",
@@ -7082,5 +12068,1741 @@
     "vod_offset": 8872,
     "cluster": 1,
     "added": 1795106282
+  },
+  "twitch_ArtsyAnnoyingGrassM4xHeh-zMpJxr9oZD36PWN6": {
+    "id": "twitch_ArtsyAnnoyingGrassM4xHeh-zMpJxr9oZD36PWN6",
+    "url": "https://www.twitch.tv/ohnepixel/clip/ArtsyAnnoyingGrassM4xHeh-zMpJxr9oZD36PWN6",
+    "channel": "ohnepixel",
+    "name": "ohnePixel",
+    "platform": "twitch",
+    "title": "🔴[DROPS] GTA 6 EARLY ACCESS🔴",
+    "views": 1613,
+    "created": 1795005020,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932275268",
+    "vod_offset": 1088,
+    "added": 1795104022,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_ArtsyAnnoyingGrassM4xHeh-zMpJxr9oZD36PWN6\\source.mp4",
+    "peak": 26.05,
+    "cut": [
+      0.0,
+      29.26
+    ],
+    "dur": 30.02,
+    "tags": [
+      "first-reaction",
+      "rage"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.24,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.44,
+      "first-reaction": 0.68,
+      "wow": 0.16,
+      "_loud": 2.1,
+      "_motion": 1.2
+    },
+    "quote": "No, no, no.",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.3,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.3,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.84,
+      "wow": 0.0
+    },
+    "primary": "first-reaction",
+    "proven": [
+      "first-reaction"
+    ],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "glitch": [
+        "text"
+      ],
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ]
+    },
+    "fun": 0.0,
+    "signals": {
+      "siren": 0.0,
+      "impact": 21.1,
+      "loud": 2.6,
+      "motion": 0.8,
+      "sustained": 0.0,
+      "spike": 2.2,
+      "laugh": 0,
+      "static": 0.89,
+      "letterbox": 0.0,
+      "luma": 74.1,
+      "dark": 0.0
+    }
+  },
+  "twitch_BitterLachrymoseSaladGingerPower-OQPIiBKsXb27dgzM": {
+    "id": "twitch_BitterLachrymoseSaladGingerPower-OQPIiBKsXb27dgzM",
+    "url": "https://www.twitch.tv/lirik/clip/BitterLachrymoseSaladGingerPower-OQPIiBKsXb27dgzM",
+    "channel": "lirik",
+    "name": "LIRIK",
+    "platform": "twitch",
+    "title": "Paw Patrol in GTA6",
+    "views": 1445,
+    "created": 1795034389,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932444934",
+    "vod_offset": 15968,
+    "added": 1795104683,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_BitterLachrymoseSaladGingerPower-OQPIiBKsXb27dgzM\\source.mp4",
+    "peak": 32.85,
+    "cut": [
+      4.0,
+      34.35
+    ],
+    "dur": 46.53,
+    "tags": [
+      "wow",
+      "first-reaction",
+      "rage",
+      "funny"
+    ],
+    "tag_scores": {
+      "funny": 0.35,
+      "glitch": 0.0,
+      "chase": 0.2,
+      "crash": 0.0,
+      "rage": 0.7,
+      "first-reaction": 0.91,
+      "wow": 1.0,
+      "_loud": 2.4,
+      "_motion": 23.2
+    },
+    "quote": "I Can't go that far down What the fuck Yeah,",
+    "cats": {
+      "funny": 0.35,
+      "rage": 0.35,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.95,
+      "wow": 1.0
+    },
+    "primary": "wow",
+    "proven": [
+      "first-reaction"
+    ],
+    "evidence": {
+      "funny": [
+        "text"
+      ],
+      "rage": [
+        "text"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.67,
+    "signals": {
+      "siren": 0.0,
+      "impact": 10.9,
+      "loud": 3.5,
+      "motion": 19.3,
+      "sustained": 0.91,
+      "spike": 4.7,
+      "laugh": 0,
+      "static": 0.0,
+      "letterbox": 0.0,
+      "luma": 123.2,
+      "dark": 0.0
+    }
+  },
+  "twitch_BombasticSpookyAlpacaBibleThump-Ro8z9XgpJAAF_WGU": {
+    "id": "twitch_BombasticSpookyAlpacaBibleThump-Ro8z9XgpJAAF_WGU",
+    "url": "https://www.twitch.tv/ishowspeed/clip/BombasticSpookyAlpacaBibleThump-Ro8z9XgpJAAF_WGU",
+    "channel": "ishowspeed",
+    "name": "IShowSpeed",
+    "platform": "twitch",
+    "title": "ummmmmm",
+    "views": 937,
+    "created": 1795038630,
+    "category": "Grand Theft Auto VI",
+    "added": 1795098300,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_BombasticSpookyAlpacaBibleThump-Ro8z9XgpJAAF_WGU\\source.mp4",
+    "peak": 17.25,
+    "cut": [
+      2.08,
+      18.62
+    ],
+    "dur": 28.0,
+    "tags": [
+      "funny",
+      "wow"
+    ],
+    "tag_scores": {
+      "funny": 0.33,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 0.2,
+      "wow": 0.33,
+      "_loud": 1.7,
+      "_motion": 19.2
+    },
+    "quote": "[\"We Can Play It So High\"] [\"We Can Play It",
+    "cats": {
+      "funny": 0.35,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.35
+    },
+    "primary": "funny",
+    "proven": [],
+    "evidence": {
+      "funny": [
+        "text"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.41,
+    "signals": {
+      "siren": 0.0,
+      "impact": 8.7,
+      "loud": 1.9,
+      "motion": 18.7,
+      "sustained": 0.85,
+      "spike": 2.0,
+      "laugh": 0,
+      "static": 0.1,
+      "letterbox": 0.06,
+      "luma": 28.6,
+      "dark": 0.12
+    }
+  },
+  "twitch_BusyRudeFriseeMrDestructoid-OJUxO3DLdRRGvnLD": {
+    "id": "twitch_BusyRudeFriseeMrDestructoid-OJUxO3DLdRRGvnLD",
+    "url": "https://www.twitch.tv/ishowspeed/clip/BusyRudeFriseeMrDestructoid-OJUxO3DLdRRGvnLD",
+    "channel": "ishowspeed",
+    "name": "IShowSpeed",
+    "platform": "twitch",
+    "title": "KKKKKKKKK",
+    "views": 964,
+    "created": 1795015500,
+    "category": "Grand Theft Auto VI",
+    "added": 1795098092,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_BusyRudeFriseeMrDestructoid-OJUxO3DLdRRGvnLD\\source.mp4",
+    "peak": 27.650000000000002,
+    "cut": [
+      18.43,
+      29.96
+    ],
+    "dur": 30.02,
+    "tags": [
+      "rage",
+      "crash"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.3,
+      "rage": 0.71,
+      "first-reaction": 0.2,
+      "wow": 0.12,
+      "_loud": 6.7,
+      "_motion": 16.0
+    },
+    "quote": "Do I look okay?",
+    "cats": {
+      "funny": 0.25,
+      "rage": 0.25,
+      "fail": 0.25,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.25
+    },
+    "proven": [],
+    "evidence": {
+      "funny": [
+        "loud"
+      ],
+      "rage": [
+        "loud"
+      ],
+      "fail": [
+        "loud"
+      ],
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion-spike"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "loud"
+      ]
+    },
+    "fun": 0.56,
+    "signals": {
+      "siren": 0.0,
+      "impact": 54.6,
+      "loud": 17.2,
+      "motion": 6.5,
+      "sustained": 0.2,
+      "spike": 9.5,
+      "laugh": 0,
+      "static": 0.05,
+      "letterbox": 0.0,
+      "luma": 69.9,
+      "dark": 0.0
+    }
+  },
+  "twitch_ConfidentDirtyBillDAESuppy-KToxHp9159ykNiuR": {
+    "id": "twitch_ConfidentDirtyBillDAESuppy-KToxHp9159ykNiuR",
+    "url": "https://www.twitch.tv/ishowspeed/clip/ConfidentDirtyBillDAESuppy-KToxHp9159ykNiuR",
+    "channel": "ishowspeed",
+    "name": "IShowSpeed",
+    "platform": "twitch",
+    "title": "GTA 6 is out 🤩🤩",
+    "views": 945,
+    "created": 1795008567,
+    "category": "Grand Theft Auto VI",
+    "added": 1795098187,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_ConfidentDirtyBillDAESuppy-KToxHp9159ykNiuR\\source.mp4",
+    "peak": 26.450000000000003,
+    "cut": [
+      0.0,
+      27.96
+    ],
+    "dur": 30.02,
+    "tags": [
+      "first-reaction",
+      "funny"
+    ],
+    "tag_scores": {
+      "funny": 0.6,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.05,
+      "first-reaction": 0.72,
+      "wow": 0.08,
+      "_loud": 1.6,
+      "_motion": 1.7
+    },
+    "quote": "I can't wait to press X, bro.",
+    "cats": {
+      "funny": 0.33,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.91,
+      "wow": 0.0
+    },
+    "primary": "first-reaction",
+    "proven": [
+      "first-reaction"
+    ],
+    "evidence": {
+      "funny": [
+        "text"
+      ],
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ]
+    },
+    "fun": 0.0,
+    "signals": {
+      "siren": 0.0,
+      "impact": 10.1,
+      "loud": 1.6,
+      "motion": 1.4,
+      "sustained": 0.0,
+      "spike": 1.2,
+      "laugh": 0,
+      "static": 0.9,
+      "letterbox": 0.0,
+      "luma": 12.2,
+      "dark": 1.0
+    }
+  },
+  "twitch_DreamyCharmingMonkeyPipeHype-GQVBVBbVXKLeOF-U": {
+    "id": "twitch_DreamyCharmingMonkeyPipeHype-GQVBVBbVXKLeOF-U",
+    "url": "https://www.twitch.tv/ohnepixel/clip/DreamyCharmingMonkeyPipeHype-GQVBVBbVXKLeOF-U",
+    "channel": "ohnepixel",
+    "name": "ohnePixel",
+    "platform": "twitch",
+    "title": "Ohne 911",
+    "views": 1687,
+    "created": 1795021606,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932275268",
+    "vod_offset": 17654,
+    "added": 1795103705,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_DreamyCharmingMonkeyPipeHype-GQVBVBbVXKLeOF-U\\source.mp4",
+    "peak": 16.15,
+    "cut": [
+      3.83,
+      18.01
+    ],
+    "dur": 30.02,
+    "tags": [
+      "wow",
+      "rage"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.0,
+      "rage": 0.55,
+      "first-reaction": 0.2,
+      "wow": 1.0,
+      "_loud": 1.8,
+      "_motion": 21.0
+    },
+    "quote": "I couldn't have again!",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "proven": [],
+    "evidence": {
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.36,
+    "signals": {
+      "siren": 0.0,
+      "impact": 9.9,
+      "loud": 1.7,
+      "motion": 19.2,
+      "sustained": 0.84,
+      "spike": 5.6,
+      "laugh": 0,
+      "static": 0.01,
+      "letterbox": 0.0,
+      "luma": 86.3,
+      "dark": 0.0
+    }
+  },
+  "twitch_ExquisiteInnocentGaragePoooound-mLDj-ot7Fg9JJjLA": {
+    "id": "twitch_ExquisiteInnocentGaragePoooound-mLDj-ot7Fg9JJjLA",
+    "url": "https://www.twitch.tv/kaicenat/clip/ExquisiteInnocentGaragePoooound-mLDj-ot7Fg9JJjLA",
+    "channel": "kaicenat",
+    "name": "KaiCenat",
+    "platform": "twitch",
+    "title": "o0mg",
+    "views": 1601,
+    "created": 1795037767,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932305259",
+    "vod_offset": 30906,
+    "added": 1795105767,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_ExquisiteInnocentGaragePoooound-mLDj-ot7Fg9JJjLA\\source.mp4",
+    "peak": 8.05,
+    "cut": [
+      0.0,
+      9.55
+    ],
+    "dur": 11.25,
+    "tags": [
+      "wow"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.2,
+      "crash": 0.0,
+      "rage": 0.05,
+      "first-reaction": 0.2,
+      "wow": 0.52,
+      "_loud": 1.4,
+      "_motion": 22.0
+    },
+    "quote": "Oh, hey! What the...",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.35
+    },
+    "primary": "wow",
+    "proven": [],
+    "evidence": {
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.36,
+    "signals": {
+      "siren": 0.0,
+      "impact": 5.6,
+      "loud": 1.4,
+      "motion": 15.4,
+      "sustained": 0.42,
+      "spike": 3.6,
+      "laugh": 0,
+      "static": 0.15,
+      "letterbox": 0.0,
+      "luma": 37.6,
+      "dark": 0.0
+    }
+  },
+  "twitch_FlaccidPhilanthropicSoymilkCoolStoryBob-Doh5BDaNQUdfM-qY": {
+    "id": "twitch_FlaccidPhilanthropicSoymilkCoolStoryBob-Doh5BDaNQUdfM-qY",
+    "url": "https://www.twitch.tv/ishowspeed/clip/FlaccidPhilanthropicSoymilkCoolStoryBob-Doh5BDaNQUdfM-qY",
+    "channel": "ishowspeed",
+    "name": "IShowSpeed",
+    "platform": "twitch",
+    "title": "dayum",
+    "views": 794,
+    "created": 1795015330,
+    "category": "Grand Theft Auto VI",
+    "added": 1795098392,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_FlaccidPhilanthropicSoymilkCoolStoryBob-Doh5BDaNQUdfM-qY\\source.mp4",
+    "peak": 14.950000000000001,
+    "cut": [
+      3.35,
+      19.5
+    ],
+    "dur": 30.02,
+    "tags": [
+      "wow"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.2,
+      "first-reaction": 0.2,
+      "wow": 0.47,
+      "_loud": 2.3,
+      "_motion": 10.4
+    },
+    "quote": "It's just so crazy what you can learn from a little scrolling on Snapchat.",
+    "cats": {
+      "funny": 0.25,
+      "rage": 0.25,
+      "fail": 0.25,
+      "physics": 0.6,
+      "glitch": 0.25,
+      "chase": 0.0,
+      "crash": 0.6,
+      "stunt": 0.6,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.6
+    },
+    "primary": "physics",
+    "proven": [
+      "wow"
+    ],
+    "evidence": {
+      "funny": [
+        "loud"
+      ],
+      "rage": [
+        "loud"
+      ],
+      "fail": [
+        "impact",
+        "loud"
+      ],
+      "physics": [
+        "impact",
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "crash": [
+        "impact",
+        "motion-spike"
+      ],
+      "stunt": [
+        "impact",
+        "motion-spike"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "loud",
+        "text"
+      ]
+    },
+    "fun": 0.48,
+    "signals": {
+      "siren": 0.0,
+      "impact": 84.6,
+      "loud": 5.6,
+      "motion": 7.1,
+      "sustained": 0.18,
+      "spike": 11.5,
+      "laugh": 0,
+      "static": 0.03,
+      "letterbox": 0.0,
+      "luma": 51.3,
+      "dark": 0.0
+    }
+  },
+  "twitch_FrozenWiseJalapenoPhilosoraptor-b3V_R42uxr3LXJNr": {
+    "id": "twitch_FrozenWiseJalapenoPhilosoraptor-b3V_R42uxr3LXJNr",
+    "url": "https://www.twitch.tv/ishowspeed/clip/FrozenWiseJalapenoPhilosoraptor-b3V_R42uxr3LXJNr",
+    "channel": "ishowspeed",
+    "name": "IShowSpeed",
+    "platform": "twitch",
+    "title": "mandy naked gta6",
+    "views": 1222,
+    "created": 1795015531,
+    "category": "Grand Theft Auto VI",
+    "added": 1795097861,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_FrozenWiseJalapenoPhilosoraptor-b3V_R42uxr3LXJNr\\source.mp4",
+    "peak": 13.950000000000001,
+    "cut": [
+      1.3,
+      15.02
+    ],
+    "dur": 15.02,
+    "tags": [
+      "first-reaction",
+      "funny"
+    ],
+    "tag_scores": {
+      "funny": 0.33,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.0,
+      "rage": 0.05,
+      "first-reaction": 0.85,
+      "wow": 0.04,
+      "_loud": 5.2,
+      "_motion": 17.9
+    },
+    "quote": "Why don't you like me what I do like you with?",
+    "cats": {
+      "funny": 0.6,
+      "rage": 0.25,
+      "fail": 0.25,
+      "physics": 0.25,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.95,
+      "wow": 0.25
+    },
+    "primary": "first-reaction",
+    "proven": [
+      "funny",
+      "first-reaction"
+    ],
+    "evidence": {
+      "funny": [
+        "loud",
+        "text"
+      ],
+      "rage": [
+        "loud"
+      ],
+      "fail": [
+        "impact",
+        "loud"
+      ],
+      "physics": [
+        "impact"
+      ],
+      "crash": [
+        "impact"
+      ],
+      "stunt": [
+        "impact"
+      ],
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ],
+      "wow": [
+        "loud"
+      ]
+    },
+    "fun": 0.64,
+    "signals": {
+      "siren": 0.0,
+      "impact": 63.3,
+      "loud": 7.9,
+      "motion": 12.1,
+      "sustained": 0.37,
+      "spike": 4.2,
+      "laugh": 0,
+      "static": 0.03,
+      "letterbox": 0.0,
+      "luma": 76.5,
+      "dark": 0.0
+    }
+  },
+  "twitch_GorgeousCleverHawkTwitchRaid-LlGpoZmA_knvK4x9": {
+    "id": "twitch_GorgeousCleverHawkTwitchRaid-LlGpoZmA_knvK4x9",
+    "url": "https://www.twitch.tv/ohnepixel/clip/GorgeousCleverHawkTwitchRaid-LlGpoZmA_knvK4x9",
+    "channel": "ohnepixel",
+    "name": "ohnePixel",
+    "platform": "twitch",
+    "title": "ohne 9/11",
+    "views": 2791,
+    "created": 1795021765,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932275268",
+    "vod_offset": 17639,
+    "added": 1795099032,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_GorgeousCleverHawkTwitchRaid-LlGpoZmA_knvK4x9\\source.mp4",
+    "peak": 7.3500000000000005,
+    "cut": [
+      0.0,
+      8.09
+    ],
+    "dur": 8.09,
+    "tags": [
+      "rage"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.2,
+      "crash": 0.0,
+      "rage": 0.35,
+      "first-reaction": 0.2,
+      "wow": 0.28,
+      "_loud": 1.6,
+      "_motion": 22.6
+    },
+    "quote": "No, no, no, no, no, no, no!",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "proven": [],
+    "evidence": {
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.35,
+    "signals": {
+      "siren": 0.0,
+      "impact": 9.7,
+      "loud": 1.6,
+      "motion": 16.8,
+      "sustained": 0.94,
+      "spike": 2.2,
+      "laugh": 0,
+      "static": 0.03,
+      "letterbox": 0.0,
+      "luma": 83.9,
+      "dark": 0.0
+    }
+  },
+  "twitch_InexpensiveBoxySwordTebowing-yJxmqmLyUEXMUko9": {
+    "id": "twitch_InexpensiveBoxySwordTebowing-yJxmqmLyUEXMUko9",
+    "url": "https://www.twitch.tv/ishowspeed/clip/InexpensiveBoxySwordTebowing-yJxmqmLyUEXMUko9",
+    "channel": "ishowspeed",
+    "name": "IShowSpeed",
+    "platform": "twitch",
+    "title": "Speed's first time playing GTA6",
+    "views": 1152,
+    "created": 1795008791,
+    "category": "Grand Theft Auto VI",
+    "added": 1795097992,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_InexpensiveBoxySwordTebowing-yJxmqmLyUEXMUko9\\source.mp4",
+    "peak": 15.05,
+    "cut": [
+      4.19,
+      16.4
+    ],
+    "dur": 30.02,
+    "tags": [
+      "first-reaction",
+      "rage",
+      "wow"
+    ],
+    "tag_scores": {
+      "funny": 0.16,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.67,
+      "first-reaction": 1.0,
+      "wow": 0.48,
+      "_loud": 8.0,
+      "_motion": 6.5
+    },
+    "quote": "GTA 6 is here!",
+    "cats": {
+      "funny": 0.25,
+      "rage": 0.25,
+      "fail": 0.25,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 1.0,
+      "wow": 0.25
+    },
+    "primary": "first-reaction",
+    "proven": [
+      "first-reaction"
+    ],
+    "evidence": {
+      "funny": [
+        "loud"
+      ],
+      "rage": [
+        "loud"
+      ],
+      "fail": [
+        "loud"
+      ],
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion-spike"
+      ],
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ],
+      "wow": [
+        "loud"
+      ]
+    },
+    "fun": 0.55,
+    "signals": {
+      "siren": 0.0,
+      "impact": 51.4,
+      "loud": 25.6,
+      "motion": 5.7,
+      "sustained": 0.16,
+      "spike": 13.4,
+      "laugh": 0,
+      "static": 0.02,
+      "letterbox": 0.0,
+      "luma": 27.1,
+      "dark": 0.17
+    }
+  },
+  "twitch_ModernNurturingBurritoStinkyCheese-OkJHFHOOrsGfQ6hZ": {
+    "id": "twitch_ModernNurturingBurritoStinkyCheese-OkJHFHOOrsGfQ6hZ",
+    "url": "https://www.twitch.tv/ishowspeed/clip/ModernNurturingBurritoStinkyCheese-OkJHFHOOrsGfQ6hZ",
+    "channel": "ishowspeed",
+    "name": "IShowSpeed",
+    "platform": "twitch",
+    "title": "Speed Early Access to GTA!!!",
+    "views": 941,
+    "created": 1795008780,
+    "category": "Grand Theft Auto VI",
+    "added": 1795098225,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_ModernNurturingBurritoStinkyCheese-OkJHFHOOrsGfQ6hZ\\source.mp4",
+    "peak": 22.05,
+    "cut": [
+      15.65,
+      23.66
+    ],
+    "dur": 30.02,
+    "tags": [
+      "wow",
+      "rage"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.55,
+      "first-reaction": 0.2,
+      "wow": 1.0,
+      "_loud": 7.3,
+      "_motion": 10.2
+    },
+    "quote": "Oh My god, oh my god",
+    "cats": {
+      "funny": 0.25,
+      "rage": 0.25,
+      "fail": 0.25,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.95
+    },
+    "primary": "wow",
+    "proven": [
+      "wow"
+    ],
+    "evidence": {
+      "funny": [
+        "loud"
+      ],
+      "rage": [
+        "loud"
+      ],
+      "fail": [
+        "loud"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "loud",
+        "text"
+      ]
+    },
+    "fun": 0.57,
+    "signals": {
+      "siren": 0.0,
+      "impact": 48.2,
+      "loud": 6.8,
+      "motion": 5.3,
+      "sustained": 0.06,
+      "spike": 3.4,
+      "laugh": 0,
+      "static": 0.13,
+      "letterbox": 0.25,
+      "luma": 35.2,
+      "dark": 0.0
+    }
+  },
+  "twitch_NastyUnsightlyFriseePeanutButterJellyTime-YmWQYH2zemO5_bOX": {
+    "id": "twitch_NastyUnsightlyFriseePeanutButterJellyTime-YmWQYH2zemO5_bOX",
+    "url": "https://www.twitch.tv/ishowspeed/clip/NastyUnsightlyFriseePeanutButterJellyTime-YmWQYH2zemO5_bOX",
+    "channel": "ishowspeed",
+    "name": "IShowSpeed",
+    "platform": "twitch",
+    "title": "DAMN",
+    "views": 900,
+    "created": 1795030391,
+    "category": "Grand Theft Auto VI",
+    "added": 1795105343,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_NastyUnsightlyFriseePeanutButterJellyTime-YmWQYH2zemO5_bOX\\source.mp4",
+    "peak": 16.05,
+    "cut": [
+      1.05,
+      16.53
+    ],
+    "dur": 16.53,
+    "tags": [],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.2,
+      "crash": 0.0,
+      "rage": 0.05,
+      "first-reaction": 0.2,
+      "wow": 0.04,
+      "_loud": 1.9,
+      "_motion": 23.3
+    },
+    "quote": "Highway cleanup Wanna lift?",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "proven": [],
+    "evidence": {
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.35,
+    "signals": {
+      "siren": 0.0,
+      "impact": 53.1,
+      "loud": 1.9,
+      "motion": 16.8,
+      "sustained": 0.61,
+      "spike": 2.6,
+      "laugh": 0,
+      "static": 0.11,
+      "letterbox": 0.0,
+      "luma": 80.7,
+      "dark": 0.0
+    }
+  },
+  "twitch_SullenBombasticBeefANELE-jGMlO-uekM3W3kVo": {
+    "id": "twitch_SullenBombasticBeefANELE-jGMlO-uekM3W3kVo",
+    "url": "https://www.twitch.tv/ishowspeed/clip/SullenBombasticBeefANELE-jGMlO-uekM3W3kVo",
+    "channel": "ishowspeed",
+    "name": "IShowSpeed",
+    "platform": "twitch",
+    "title": "Ggg",
+    "views": 1214,
+    "created": 1795009739,
+    "category": "Grand Theft Auto VI",
+    "added": 1795097936,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_SullenBombasticBeefANELE-jGMlO-uekM3W3kVo\\source.mp4",
+    "peak": 35.45,
+    "cut": [
+      3.05,
+      38.0
+    ],
+    "dur": 59.01,
+    "tags": [
+      "wow",
+      "rage",
+      "first-reaction"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.2,
+      "crash": 0.0,
+      "rage": 0.74,
+      "first-reaction": 0.37,
+      "wow": 1.0,
+      "_loud": 3.0,
+      "_motion": 25.5
+    },
+    "quote": "All of the man politicians, actors, you know, billionaires that...",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.58,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.58
+    },
+    "primary": "rage",
+    "proven": [],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.63,
+    "signals": {
+      "siren": 0.0,
+      "impact": 32.8,
+      "loud": 3.0,
+      "motion": 20.3,
+      "sustained": 0.72,
+      "spike": 4.4,
+      "laugh": 0,
+      "static": 0.11,
+      "letterbox": 0.0,
+      "luma": 102.6,
+      "dark": 0.0
+    }
+  },
+  "twitch_SullenGoldenMeerkatPraiseIt-F6yo76wFvD7eb0DT": {
+    "id": "twitch_SullenGoldenMeerkatPraiseIt-F6yo76wFvD7eb0DT",
+    "url": "https://www.twitch.tv/ishowspeed/clip/SullenGoldenMeerkatPraiseIt-F6yo76wFvD7eb0DT",
+    "channel": "ishowspeed",
+    "name": "IShowSpeed",
+    "platform": "twitch",
+    "title": "SPEED BANANA HEHEHEHE",
+    "views": 1065,
+    "created": 1795038685,
+    "category": "Grand Theft Auto VI",
+    "added": 1795105295,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_SullenGoldenMeerkatPraiseIt-F6yo76wFvD7eb0DT\\source.mp4",
+    "peak": 26.25,
+    "cut": [
+      8.71,
+      27.75
+    ],
+    "dur": 30.02,
+    "tags": [],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 0.2,
+      "wow": 0.0,
+      "_loud": 3.0,
+      "_motion": 13.0
+    },
+    "quote": "Chat, was he eating a bowl of rice?",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "proven": [],
+    "evidence": {
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.33,
+    "signals": {
+      "siren": 0.0,
+      "impact": 7.2,
+      "loud": 3.4,
+      "motion": 8.9,
+      "sustained": 0.19,
+      "spike": 3.3,
+      "laugh": 0,
+      "static": 0.04,
+      "letterbox": 0.05,
+      "luma": 46.2,
+      "dark": 0.11
+    }
+  },
+  "twitch_SuperSlickStrawberryAMPEnergy-iLijF7374bmMsbtk": {
+    "id": "twitch_SuperSlickStrawberryAMPEnergy-iLijF7374bmMsbtk",
+    "url": "https://www.twitch.tv/xqc/clip/SuperSlickStrawberryAMPEnergy-iLijF7374bmMsbtk",
+    "channel": "xqc",
+    "name": "xQc",
+    "platform": "twitch",
+    "title": "xQc compares GTA 6 with modded framegen ON, vs framegen OFF.",
+    "views": 6486,
+    "created": 1795068671,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932113307",
+    "vod_offset": 83326,
+    "added": 1795095234,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_SuperSlickStrawberryAMPEnergy-iLijF7374bmMsbtk\\source.mp4",
+    "peak": 48.550000000000004,
+    "cut": [
+      10.05,
+      57.02
+    ],
+    "dur": 60.01,
+    "tags": [
+      "first-reaction"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.0,
+      "rage": 0.05,
+      "first-reaction": 0.62,
+      "wow": 0.04,
+      "_loud": 2.6,
+      "_motion": 19.7
+    },
+    "quote": "Do you have a PS5 Pro?",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.25,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.81,
+      "wow": 0.0
+    },
+    "primary": "first-reaction",
+    "proven": [
+      "first-reaction"
+    ],
+    "evidence": {
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion",
+        "motion-spike"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ]
+    },
+    "fun": 0.44,
+    "signals": {
+      "siren": 0.0,
+      "impact": 9.1,
+      "loud": 3.1,
+      "motion": 15.7,
+      "sustained": 0.7,
+      "spike": 7.6,
+      "laugh": 0,
+      "static": 0.03,
+      "letterbox": 0.0,
+      "luma": 94.2,
+      "dark": 0.15
+    }
+  },
+  "twitch_SuspiciousSmokyKumquatEagleEye-OfXyB412evujnSrr": {
+    "id": "twitch_SuspiciousSmokyKumquatEagleEye-OfXyB412evujnSrr",
+    "url": "https://www.twitch.tv/ishowspeed/clip/SuspiciousSmokyKumquatEagleEye-OfXyB412evujnSrr",
+    "channel": "ishowspeed",
+    "name": "IShowSpeed",
+    "platform": "twitch",
+    "title": "speed 1st time flying a plane in gta vi",
+    "views": 948,
+    "created": 1795010791,
+    "category": "Grand Theft Auto VI",
+    "added": 1795098137,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_SuspiciousSmokyKumquatEagleEye-OfXyB412evujnSrr\\source.mp4",
+    "peak": 19.85,
+    "cut": [
+      1.12,
+      21.05
+    ],
+    "dur": 30.02,
+    "tags": [
+      "first-reaction",
+      "wow"
+    ],
+    "tag_scores": {
+      "funny": 0.16,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 0.9,
+      "wow": 0.78,
+      "_loud": 2.1,
+      "_motion": 15.3
+    },
+    "quote": "I don't even know how to fly I don't even",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.7,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.95,
+      "wow": 0.35
+    },
+    "primary": "first-reaction",
+    "proven": [
+      "first-reaction"
+    ],
+    "evidence": {
+      "physics": [
+        "text"
+      ],
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.34,
+    "signals": {
+      "siren": 0.0,
+      "impact": 9.9,
+      "loud": 2.1,
+      "motion": 11.9,
+      "sustained": 0.29,
+      "spike": 4.5,
+      "laugh": 0,
+      "static": 0.02,
+      "letterbox": 0.0,
+      "luma": 128.6,
+      "dark": 0.0
+    }
+  },
+  "twitch_SweetAmusedHedgehogAsianGlow-PXTDpttjn4g_v90_": {
+    "id": "twitch_SweetAmusedHedgehogAsianGlow-PXTDpttjn4g_v90_",
+    "url": "https://www.twitch.tv/ishowspeed/clip/SweetAmusedHedgehogAsianGlow-PXTDpttjn4g_v90_",
+    "channel": "ishowspeed",
+    "name": "IShowSpeed",
+    "platform": "twitch",
+    "title": "🔴PLAYING GTA 6 EARLY ACCESS GAMEPLAY GET IN HERE!",
+    "views": 851,
+    "created": 1795008278,
+    "category": "Grand Theft Auto VI",
+    "added": 1795098350,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_SweetAmusedHedgehogAsianGlow-PXTDpttjn4g_v90_\\source.mp4",
+    "peak": 15.05,
+    "cut": [
+      5.62,
+      19.3
+    ],
+    "dur": 30.02,
+    "tags": [
+      "wow",
+      "first-reaction",
+      "rage"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.3,
+      "first-reaction": 0.68,
+      "wow": 0.96,
+      "_loud": 1.8,
+      "_motion": 10.8
+    },
+    "quote": "I love y 'all boys, bro Y 'all ready to play the game.",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.95,
+      "wow": 0.35
+    },
+    "primary": "first-reaction",
+    "proven": [
+      "first-reaction"
+    ],
+    "evidence": {
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.0,
+    "signals": {
+      "siren": 0.0,
+      "impact": 12.1,
+      "loud": 1.8,
+      "motion": 8.6,
+      "sustained": 0.11,
+      "spike": 1.6,
+      "laugh": 0,
+      "static": 0.45,
+      "letterbox": 0.0,
+      "luma": 90.6,
+      "dark": 0.0
+    }
+  },
+  "twitch_TenaciousAttractiveBearSMOrc-UuJCZFqVB-yIqC70": {
+    "id": "twitch_TenaciousAttractiveBearSMOrc-UuJCZFqVB-yIqC70",
+    "url": "https://www.twitch.tv/theburntpeanut/clip/TenaciousAttractiveBearSMOrc-UuJCZFqVB-yIqC70",
+    "channel": "theburntpeanut",
+    "name": "TheBurntPeanut",
+    "platform": "twitch",
+    "title": "WAIT WAIT WAIT WAIT WAIT",
+    "views": 3581,
+    "created": 1795032334,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932226282",
+    "vod_offset": 32484,
+    "added": 1795096208,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_TenaciousAttractiveBearSMOrc-UuJCZFqVB-yIqC70\\source.mp4",
+    "peak": 36.45,
+    "cut": [
+      0.0,
+      37.46
+    ],
+    "dur": 37.46,
+    "tags": [],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.05,
+      "first-reaction": 0.2,
+      "wow": 0.04,
+      "_loud": 1.8,
+      "_motion": 6.5
+    },
+    "quote": "stack no cap on a stack did I you spit",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "proven": [],
+    "evidence": {
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion-spike"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.0,
+    "signals": {
+      "siren": 0.0,
+      "impact": 9.1,
+      "loud": 1.9,
+      "motion": 4.5,
+      "sustained": 0.08,
+      "spike": 45.9,
+      "laugh": 0,
+      "static": 0.0,
+      "letterbox": 0.0,
+      "luma": 23.2,
+      "dark": 0.62
+    }
+  },
+  "twitch_TrappedObliviousSharkMoreCowbell-c8N9-I4Lf-TA13Cv": {
+    "id": "twitch_TrappedObliviousSharkMoreCowbell-c8N9-I4Lf-TA13Cv",
+    "url": "https://www.twitch.tv/ishowspeed/clip/TrappedObliviousSharkMoreCowbell-c8N9-I4Lf-TA13Cv",
+    "channel": "ishowspeed",
+    "name": "IShowSpeed",
+    "platform": "twitch",
+    "title": "speed",
+    "views": 2610,
+    "created": 1795015537,
+    "category": "Grand Theft Auto VI",
+    "added": 1795097340,
+    "source": "C:\\Ales\\Media\\Video\\GTA6-klipy\\out\\_pool\\twitch_TrappedObliviousSharkMoreCowbell-c8N9-I4Lf-TA13Cv\\source.mp4",
+    "peak": 55.85,
+    "cut": [
+      17.51,
+      57.88
+    ],
+    "dur": 60.01,
+    "tags": [
+      "rage",
+      "wow",
+      "chase",
+      "crash"
+    ],
+    "tag_scores": {
+      "funny": 0.22,
+      "glitch": 0.0,
+      "chase": 0.64,
+      "crash": 0.3,
+      "rage": 0.99,
+      "first-reaction": 0.2,
+      "wow": 0.68,
+      "_loud": 9.1,
+      "_motion": 23.0
+    },
+    "quote": "Bro why does he got this apple in my hand bro?",
+    "cats": {
+      "funny": 0.6,
+      "rage": 0.95,
+      "fail": 0.25,
+      "physics": 0.25,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.25,
+      "stunt": 0.6,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.6
+    },
+    "primary": "rage",
+    "proven": [
+      "funny",
+      "rage",
+      "wow"
+    ],
+    "evidence": {
+      "funny": [
+        "loud",
+        "text"
+      ],
+      "rage": [
+        "loud",
+        "text"
+      ],
+      "fail": [
+        "impact",
+        "loud"
+      ],
+      "physics": [
+        "impact"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "crash": [
+        "impact"
+      ],
+      "stunt": [
+        "impact",
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "loud",
+        "text"
+      ]
+    },
+    "fun": 0.89,
+    "signals": {
+      "siren": 0.0,
+      "impact": 83.8,
+      "loud": 11.4,
+      "motion": 20.6,
+      "sustained": 0.8,
+      "spike": 2.4,
+      "laugh": 0,
+      "static": 0.02,
+      "letterbox": 0.0,
+      "luma": 97.2,
+      "dark": 0.0
+    }
   }
 }
