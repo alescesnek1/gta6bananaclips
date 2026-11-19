@@ -15114,5 +15114,19 @@
     "vod_offset": 4755,
     "cluster": 1,
     "added": 1795118310
+  },
+  "twitch_ExpensiveSpinelessEmuSMOrc-8-lZ0qjY13E-hND8": {
+    "id": "twitch_ExpensiveSpinelessEmuSMOrc-8-lZ0qjY13E-hND8",
+    "url": "https://www.twitch.tv/swagg/clip/ExpensiveSpinelessEmuSMOrc-8-lZ0qjY13E-hND8",
+    "channel": "swagg",
+    "platform": "twitch",
+    "title": "cinema",
+    "views": 539,
+    "created": 1795033911,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932231823",
+    "vod_offset": 32502,
+    "cluster": 1,
+    "added": 1795118617
   }
 }
