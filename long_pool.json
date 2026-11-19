@@ -15004,5 +15004,47 @@
     "vod_offset": 4518,
     "cluster": 1,
     "added": 1795115405
+  },
+  "twitch_FastBeautifulTigerBrokeBack-720YxwNhOm5O2f6r": {
+    "id": "twitch_FastBeautifulTigerBrokeBack-720YxwNhOm5O2f6r",
+    "url": "https://www.twitch.tv/jynxzi/clip/FastBeautifulTigerBrokeBack-720YxwNhOm5O2f6r",
+    "channel": "jynxzi",
+    "platform": "twitch",
+    "title": "aligator",
+    "views": 671,
+    "created": 1795031873,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932568279",
+    "vod_offset": 5001,
+    "cluster": 1,
+    "added": 1795116205
+  },
+  "twitch_RacyFreezingWebDuDudu-L5DqegYwxBAaJyMT": {
+    "id": "twitch_RacyFreezingWebDuDudu-L5DqegYwxBAaJyMT",
+    "url": "https://www.twitch.tv/jynxzi/clip/RacyFreezingWebDuDudu-L5DqegYwxBAaJyMT",
+    "channel": "jynxzi",
+    "platform": "twitch",
+    "title": "😂😂",
+    "views": 1263,
+    "created": 1795034770,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932568279",
+    "vod_offset": 7904,
+    "cluster": 2,
+    "added": 1795116205
+  },
+  "twitch_TolerantAmusedSpindleBleedPurple-pIOW52fTrA1JfI_f": {
+    "id": "twitch_TolerantAmusedSpindleBleedPurple-pIOW52fTrA1JfI_f",
+    "url": "https://www.twitch.tv/zerkaa/clip/TolerantAmusedSpindleBleedPurple-pIOW52fTrA1JfI_f",
+    "channel": "zerkaa",
+    "platform": "twitch",
+    "title": "That fully got me",
+    "views": 1173,
+    "created": 1795035604,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932227427",
+    "vod_offset": 18521,
+    "cluster": 1,
+    "added": 1795116205
   }
 }
