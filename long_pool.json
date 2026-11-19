@@ -424,11 +424,94 @@
     "channel": "ispylil",
     "platform": "twitch",
     "title": "Back To Flight School",
-    "views": 511,
+    "views": 1881,
     "created": 1795002227,
     "category": "Grand Theft Auto VI",
     "cluster": 1,
-    "added": 1795005499
+    "added": 1795046874,
+    "video_id": "2932223155",
+    "vod_offset": 2425,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/ispylil/20261118_twitch_CautiousSuperSnoodKappaWealth-3CVX9GlGsGZia1vf/source.mp4",
+    "peak": 22.85,
+    "cut": [
+      1.37,
+      25.87
+    ],
+    "dur": 30.03,
+    "tags": [
+      "crash"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.2,
+      "crash": 0.3,
+      "rage": 0.25,
+      "first-reaction": 0.2,
+      "wow": 0.0,
+      "_loud": 9.7,
+      "_motion": 26.7
+    },
+    "quote": "",
+    "rendered": [
+      "fanpage"
+    ],
+    "cats": {
+      "funny": 0.25,
+      "rage": 0.25,
+      "fail": 0.25,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.25
+    },
+    "proven": [],
+    "evidence": {
+      "funny": [
+        "loud"
+      ],
+      "rage": [
+        "loud"
+      ],
+      "fail": [
+        "loud"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "loud"
+      ]
+    },
+    "fun": 0.72,
+    "signals": {
+      "siren": 0.0,
+      "impact": 25.5,
+      "loud": 8.9,
+      "motion": 17.1,
+      "sustained": 0.65,
+      "spike": 2.8,
+      "laugh": 0,
+      "static": 0.06,
+      "letterbox": 0.0,
+      "luma": 92.3,
+      "dark": 0.0
+    }
   },
   "twitch_RelievedRichRhinocerosPeteZaroll-qOXHVQ3XVK3asCkK": {
     "id": "twitch_RelievedRichRhinocerosPeteZaroll-qOXHVQ3XVK3asCkK",
@@ -2992,13 +3075,77 @@
     "channel": "sashagrey",
     "platform": "twitch",
     "title": "🌴 !DROPS COUNTDOWN TO GTA VI @SASHAGREY",
-    "views": 510,
+    "views": 1524,
     "created": 1795001264,
     "category": "Grand Theft Auto VI",
     "video_id": "2932206166",
     "vod_offset": 3018,
     "cluster": 1,
-    "added": 1795033793
+    "added": 1795046472,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/sashagrey/20261118_twitch_PrettiestRockyFrogNerfBlueBlaster-kXM9Wrv-AmlrT3Jo/source.mp4",
+    "peak": 28.25,
+    "cut": [
+      20.27,
+      30.0
+    ],
+    "dur": 30.01,
+    "tags": [
+      "first-reaction"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 1.0,
+      "wow": 0.0,
+      "_loud": 2.2,
+      "_motion": 18.7
+    },
+    "quote": "",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.95,
+      "wow": 0.0
+    },
+    "primary": "first-reaction",
+    "proven": [
+      "first-reaction"
+    ],
+    "evidence": {
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ]
+    },
+    "fun": 0.26,
+    "signals": {
+      "siren": 0.0,
+      "impact": 15.0,
+      "loud": 1.7,
+      "motion": 10.6,
+      "sustained": 0.26,
+      "spike": 2.6,
+      "laugh": 0,
+      "static": 0.09,
+      "letterbox": 0.0,
+      "luma": 40.0,
+      "dark": 0.0
+    }
   },
   "twitch_SplendidFurryCobraLitty-aRzKqT4E06s7soNa": {
     "id": "twitch_SplendidFurryCobraLitty-aRzKqT4E06s7soNa",
@@ -3347,5 +3494,71 @@
     "vod_offset": 7241,
     "cluster": 1,
     "added": 1795042711
+  },
+  "twitch_CooperativeSeductiveCheesecakeTBTacoRight-tc-OFEtczIvOMmTP": {
+    "id": "twitch_CooperativeSeductiveCheesecakeTBTacoRight-tc-OFEtczIvOMmTP",
+    "url": "https://www.twitch.tv/vanosscrew/clip/CooperativeSeductiveCheesecakeTBTacoRight-tc-OFEtczIvOMmTP",
+    "channel": "vanosscrew",
+    "platform": "twitch",
+    "title": "W GTA 6 STREAM",
+    "views": 836,
+    "created": 1795021460,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932487365",
+    "vod_offset": 74,
+    "cluster": 1,
+    "added": 1795046949
+  },
+  "twitch_ModernClumsyBobaFloof-6H36OkNrTo9oo_Er": {
+    "id": "twitch_ModernClumsyBobaFloof-6H36OkNrTo9oo_Er",
+    "url": "https://www.twitch.tv/jasontheween/clip/ModernClumsyBobaFloof-6H36OkNrTo9oo_Er",
+    "channel": "jasontheween",
+    "platform": "twitch",
+    "title": "moments before disaster",
+    "views": 1049,
+    "created": 1795036962,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932190650",
+    "vod_offset": 40580,
+    "added": 1795046949
+  },
+  "twitch_PeppySlickOwlAliens-6hpIHuZQymeRQ2y9": {
+    "id": "twitch_PeppySlickOwlAliens-6hpIHuZQymeRQ2y9",
+    "url": "https://www.twitch.tv/ohnepixel/clip/PeppySlickOwlAliens-6hpIHuZQymeRQ2y9",
+    "channel": "ohnepixel",
+    "platform": "twitch",
+    "title": "stick drift",
+    "views": 1059,
+    "created": 1795017110,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932275268",
+    "vod_offset": 13136,
+    "cluster": 1,
+    "added": 1795046949
+  },
+  "twitch_SparklyEnchantingKimchiRuleFive-nFwdyisMgC_RJtiB": {
+    "id": "twitch_SparklyEnchantingKimchiRuleFive-nFwdyisMgC_RJtiB",
+    "url": "https://www.twitch.tv/zerkaa/clip/SparklyEnchantingKimchiRuleFive-nFwdyisMgC_RJtiB",
+    "channel": "zerkaa",
+    "platform": "twitch",
+    "title": "Lock in Jason",
+    "views": 560,
+    "created": 1795035515,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932227427",
+    "vod_offset": 5836,
+    "cluster": 1,
+    "added": 1795046949
+  },
+  "twitch_SwissBenevolentRhinocerosRedCoat-_qn39IFUSFPG0nep": {
+    "id": "twitch_SwissBenevolentRhinocerosRedCoat-_qn39IFUSFPG0nep",
+    "url": "https://www.twitch.tv/caseoh_/clip/SwissBenevolentRhinocerosRedCoat-_qn39IFUSFPG0nep",
+    "channel": "caseoh_",
+    "platform": "twitch",
+    "title": "W PLAN 🤣🤣🤣👍",
+    "views": 572,
+    "created": 1795039571,
+    "category": "Grand Theft Auto VI",
+    "added": 1795046949
   }
 }
