@@ -2876,11 +2876,88 @@
     "channel": "oozie",
     "platform": "twitch",
     "title": "absolute maniac",
-    "views": 506,
+    "views": 2013,
     "created": 1795002438,
     "category": "Grand Theft Auto VI",
     "cluster": 1,
-    "added": 1795028039
+    "added": 1795051490,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/oozie/20261118_twitch_AdventurousHonestTapirKeyboardCat-9Eii4tkWb1VjxGqf/source.mp4",
+    "peak": 31.450000000000003,
+    "cut": [
+      25.07,
+      34.47
+    ],
+    "dur": 60.01,
+    "tags": [
+      "rage",
+      "crash"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.65,
+      "rage": 0.8,
+      "first-reaction": 0.2,
+      "wow": 0.12,
+      "_loud": 3.4,
+      "_motion": 17.5
+    },
+    "quote": "Get the F*** out of the way!",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.35,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.35,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "primary": "rage",
+    "proven": [],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "crash": [
+        "text"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.52,
+    "signals": {
+      "siren": 0.0,
+      "impact": 19.7,
+      "loud": 3.5,
+      "motion": 22.7,
+      "sustained": 0.84,
+      "spike": 2.3,
+      "laugh": 0,
+      "static": 0.13,
+      "letterbox": 0.0,
+      "luma": 35.1,
+      "dark": 0.0
+    }
   },
   "twitch_SavageEphemeralSwanPMSTwin-CdV0_Uj1h7SAGkLW": {
     "id": "twitch_SavageEphemeralSwanPMSTwin-CdV0_Uj1h7SAGkLW",
@@ -3119,11 +3196,100 @@
     "channel": "ishowspeed",
     "platform": "twitch",
     "title": "WOAH Jason stepbro",
-    "views": 613,
+    "views": 2040,
     "created": 1795015524,
     "category": "Grand Theft Auto VI",
     "cluster": 1,
-    "added": 1795033220
+    "added": 1795051055,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/ishowspeed/20261118_twitch_ProductiveBraveNikudonDeIlluminati-qNMmyjkr7j_nq38Z/source.mp4",
+    "peak": 46.550000000000004,
+    "cut": [
+      35.27,
+      49.93
+    ],
+    "dur": 56.04,
+    "tags": [
+      "wow"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.1,
+      "first-reaction": 0.2,
+      "wow": 0.68,
+      "_loud": 5.9,
+      "_motion": 8.1
+    },
+    "quote": "Go ta - I don't know about Lucy anymore.",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.25,
+      "rage": 0.25,
+      "fail": 0.25,
+      "physics": 0.6,
+      "glitch": 0.25,
+      "chase": 0.0,
+      "crash": 0.6,
+      "stunt": 0.6,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.25
+    },
+    "primary": "physics",
+    "proven": [],
+    "evidence": {
+      "funny": [
+        "loud"
+      ],
+      "rage": [
+        "loud"
+      ],
+      "fail": [
+        "impact",
+        "loud"
+      ],
+      "physics": [
+        "impact",
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "crash": [
+        "impact",
+        "motion-spike"
+      ],
+      "stunt": [
+        "impact",
+        "motion-spike"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "loud"
+      ]
+    },
+    "fun": 0.54,
+    "signals": {
+      "siren": 0.0,
+      "impact": 60.5,
+      "loud": 7.7,
+      "motion": 5.7,
+      "sustained": 0.17,
+      "spike": 7.6,
+      "laugh": 0,
+      "static": 0.04,
+      "letterbox": 0.0,
+      "luma": 45.3,
+      "dark": 0.0
+    }
   },
   "twitch_TalentedTameManateeFunRun-WUbaZj0B-eSLO4aK": {
     "id": "twitch_TalentedTameManateeFunRun-WUbaZj0B-eSLO4aK",
@@ -3254,7 +3420,7 @@
       "_loud": 2.2,
       "_motion": 18.7
     },
-    "quote": "",
+    "quote": "Noooooo! Come on! Come on!",
     "rendered": [
       "bananas"
     ],
@@ -3980,34 +4146,38 @@
     "channel": "stableronaldo",
     "platform": "twitch",
     "title": "wtf",
-    "views": 1026,
+    "views": 1036,
     "created": 1795022827,
     "category": "Grand Theft Auto VI",
-    "added": 1795050368,
+    "added": 1795051889,
     "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/stableronaldo/20261118_twitch_FrozenFitChinchillaMVGame-imW5YJr2Zq2AOxdZ/source.mp4",
     "peak": 27.05,
     "cut": [
       5.5,
-      30.0
+      30.0,
+      1.47,
+      27.0
     ],
-    "dur": 30.02,
+    "dur": 35.03,
     "tags": [
-      "crash"
+      "crash",
+      "rage"
     ],
     "tag_scores": {
       "funny": 0.0,
       "glitch": 0.0,
       "chase": 0.0,
       "crash": 0.3,
-      "rage": 0.0,
+      "rage": 0.3,
       "first-reaction": 0.2,
-      "wow": 0.0,
-      "_loud": 4.4,
+      "wow": 0.04,
+      "_loud": 6.2,
       "_motion": 12.7
     },
-    "quote": "",
+    "quote": "No!",
     "rendered": [
-      "bananas"
+      "bananas",
+      "fanpage"
     ],
     "cats": {
       "funny": 0.0,
@@ -4045,8 +4215,8 @@
     "fun": 0.3,
     "signals": {
       "siren": 0.0,
-      "impact": 29.6,
-      "loud": 3.3,
+      "impact": 30.0,
+      "loud": 3.4,
       "motion": 7.3,
       "sustained": 0.26,
       "spike": 7.5,
@@ -4055,6 +4225,22 @@
       "letterbox": 0.0,
       "luma": 109.8,
       "dark": 0.0
-    }
+    },
+    "video_id": "2932442046",
+    "vod_offset": 4707
+  },
+  "twitch_ExuberantRelievedMooseSwiftRage-Wz_9N2RSehHAaONA": {
+    "id": "twitch_ExuberantRelievedMooseSwiftRage-Wz_9N2RSehHAaONA",
+    "url": "https://www.twitch.tv/realkatieb/clip/ExuberantRelievedMooseSwiftRage-Wz_9N2RSehHAaONA",
+    "channel": "realkatieb",
+    "platform": "twitch",
+    "title": "she tryna ignore it",
+    "views": 589,
+    "created": 1795040617,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932534214",
+    "vod_offset": 15922,
+    "cluster": 1,
+    "added": 1795051889
   }
 }
