@@ -21807,5 +21807,19 @@
     "vod_offset": 4844,
     "cluster": 1,
     "added": 1795124811
+  },
+  "twitch_BrainyAverageNeanderthalKappaPride-eZEI1NQa629X92WG": {
+    "id": "twitch_BrainyAverageNeanderthalKappaPride-eZEI1NQa629X92WG",
+    "url": "https://www.twitch.tv/4tlazgaming/clip/BrainyAverageNeanderthalKappaPride-eZEI1NQa629X92WG",
+    "channel": "4tlazgaming",
+    "platform": "twitch",
+    "title": "That escalated quickly! 🤣",
+    "views": 614,
+    "created": 1795068463,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933342871",
+    "vod_offset": 1994,
+    "cluster": 1,
+    "added": 1795125028
   }
 }
