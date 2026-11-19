@@ -5774,5 +5774,59 @@
     "vod_offset": 1971,
     "cluster": 1,
     "added": 1795087401
+  },
+  "twitch_BlightedRelatedKathyKeepo-HKuu-b-IkUwSQ39d": {
+    "id": "twitch_BlightedRelatedKathyKeepo-HKuu-b-IkUwSQ39d",
+    "url": "https://www.twitch.tv/kaicenat/clip/BlightedRelatedKathyKeepo-HKuu-b-IkUwSQ39d",
+    "channel": "kaicenat",
+    "platform": "twitch",
+    "title": "kai gets emotional",
+    "views": 1315,
+    "created": 1795004596,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2858049515",
+    "vod_offset": 2410,
+    "cluster": 1,
+    "added": 1795088593
+  },
+  "twitch_BlithePowerfulMooseOneHand-N3QteSWl9GS2nMc3": {
+    "id": "twitch_BlithePowerfulMooseOneHand-N3QteSWl9GS2nMc3",
+    "url": "https://www.twitch.tv/dinah/clip/BlithePowerfulMooseOneHand-N3QteSWl9GS2nMc3",
+    "channel": "dinah",
+    "platform": "twitch",
+    "title": "GTA VI IS CRAZZZZZYYYY",
+    "views": 1320,
+    "created": 1795006971,
+    "category": "Grand Theft Auto VI",
+    "cluster": 1,
+    "added": 1795088593
+  },
+  "twitch_GeniusHappyCookieWholeWheat-ycx2UAFgtgFJxOQ_": {
+    "id": "twitch_GeniusHappyCookieWholeWheat-ycx2UAFgtgFJxOQ_",
+    "url": "https://www.twitch.tv/marlon/clip/GeniusHappyCookieWholeWheat-ycx2UAFgtgFJxOQ_",
+    "channel": "marlon",
+    "platform": "twitch",
+    "title": "WTF",
+    "views": 1472,
+    "created": 1795028624,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932567591",
+    "vod_offset": 1800,
+    "cluster": 1,
+    "added": 1795088593
+  },
+  "twitch_StrongPeacefulSlothOpieOP-mtCWDBAk9aw8xseW": {
+    "id": "twitch_StrongPeacefulSlothOpieOP-mtCWDBAk9aw8xseW",
+    "url": "https://www.twitch.tv/ohnepixel/clip/StrongPeacefulSlothOpieOP-mtCWDBAk9aw8xseW",
+    "channel": "ohnepixel",
+    "platform": "twitch",
+    "title": "🔴[DROPS] GTA 6 EARLY ACCESS🔴",
+    "views": 1315,
+    "created": 1795005710,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932275268",
+    "vod_offset": 1778,
+    "cluster": 1,
+    "added": 1795088593
   }
 }
