@@ -21849,5 +21849,19 @@
     "vod_offset": 202,
     "cluster": 1,
     "added": 1795125222
+  },
+  "twitch_SmoggySpeedyCrocodileSeemsGood-Vs8md1N2Gm4SZUEY": {
+    "id": "twitch_SmoggySpeedyCrocodileSeemsGood-Vs8md1N2Gm4SZUEY",
+    "url": "https://www.twitch.tv/carmen/clip/SmoggySpeedyCrocodileSeemsGood-Vs8md1N2Gm4SZUEY",
+    "channel": "carmen",
+    "platform": "twitch",
+    "title": "shower sim",
+    "views": 500,
+    "created": 1795052444,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932918373",
+    "vod_offset": 5877,
+    "cluster": 1,
+    "added": 1795125515
   }
 }
