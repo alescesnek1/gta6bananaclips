@@ -3177,7 +3177,7 @@
       "_loud": 2.2,
       "_motion": 18.7
     },
-    "quote": "Noooooo! Come on! Come on!",
+    "quote": "",
     "rendered": [
       "bananas"
     ],
@@ -3619,13 +3619,100 @@
     "channel": "zerkaa",
     "platform": "twitch",
     "title": "Lock in Jason",
-    "views": 560,
+    "views": 877,
     "created": 1795035515,
     "category": "Grand Theft Auto VI",
     "video_id": "2932227427",
     "vod_offset": 5836,
     "cluster": 1,
-    "added": 1795046949
+    "added": 1795048956,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/zerkaa/20261118_twitch_SparklyEnchantingKimchiRuleFive-nFwdyisMgC_RJtiB/source.mp4",
+    "peak": 20.75,
+    "cut": [
+      11.5,
+      24.3
+    ],
+    "dur": 31.42,
+    "tags": [],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 0.2,
+      "wow": 0.0,
+      "_loud": 5.5,
+      "_motion": 6.5
+    },
+    "quote": "Lock in, Jason.",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.25,
+      "rage": 0.25,
+      "fail": 0.25,
+      "physics": 0.6,
+      "glitch": 0.25,
+      "chase": 0.0,
+      "crash": 0.6,
+      "stunt": 0.6,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.25
+    },
+    "primary": "physics",
+    "proven": [],
+    "evidence": {
+      "funny": [
+        "loud"
+      ],
+      "rage": [
+        "loud"
+      ],
+      "fail": [
+        "impact",
+        "loud"
+      ],
+      "physics": [
+        "impact",
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "crash": [
+        "impact",
+        "motion-spike"
+      ],
+      "stunt": [
+        "impact",
+        "motion-spike"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "loud"
+      ]
+    },
+    "fun": 0.38,
+    "signals": {
+      "siren": 0.0,
+      "impact": 61.9,
+      "loud": 5.7,
+      "motion": 3.6,
+      "sustained": 0.04,
+      "spike": 8.6,
+      "laugh": 0,
+      "static": 0.04,
+      "letterbox": 0.0,
+      "luma": 53.4,
+      "dark": 0.0
+    }
   },
   "twitch_SwissBenevolentRhinocerosRedCoat-_qn39IFUSFPG0nep": {
     "id": "twitch_SwissBenevolentRhinocerosRedCoat-_qn39IFUSFPG0nep",
@@ -3644,12 +3731,142 @@
     "channel": "brycexd",
     "platform": "twitch",
     "title": "dadsa",
-    "views": 607,
+    "views": 730,
     "created": 1795043347,
     "category": "Grand Theft Auto VI",
     "video_id": "2932205344",
     "vod_offset": 45148,
     "cluster": 1,
-    "added": 1795048325
+    "added": 1795049062
+  },
+  "twitch_ApatheticZealousNarwhalGivePLZ-GRLYnD-EvYUUZmuH": {
+    "id": "twitch_ApatheticZealousNarwhalGivePLZ-GRLYnD-EvYUUZmuH",
+    "url": "https://www.twitch.tv/squeex/clip/ApatheticZealousNarwhalGivePLZ-GRLYnD-EvYUUZmuH",
+    "channel": "squeex",
+    "platform": "twitch",
+    "title": "Streamer Squeex banned for using his phone while driving",
+    "views": 613,
+    "created": 1795045091,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932676275",
+    "vod_offset": 11285,
+    "cluster": 1,
+    "added": 1795049062
+  },
+  "twitch_TiredConfidentPhoneCopyThis-bndkrew-Sq62qYKf": {
+    "id": "twitch_TiredConfidentPhoneCopyThis-bndkrew-Sq62qYKf",
+    "url": "https://www.twitch.tv/marlon/clip/TiredConfidentPhoneCopyThis-bndkrew-Sq62qYKf",
+    "channel": "marlon",
+    "platform": "twitch",
+    "title": "gyattttttt",
+    "views": 828,
+    "created": 1795033893,
+    "category": "Grand Theft Auto VI",
+    "added": 1795049062,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/marlon/20261118_twitch_TiredConfidentPhoneCopyThis-bndkrew-Sq62qYKf/source.mp4",
+    "peak": 15.65,
+    "cut": [
+      1.03,
+      18.67
+    ],
+    "dur": 24.43,
+    "tags": [
+      "wow",
+      "rage"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.3,
+      "first-reaction": 0.2,
+      "wow": 0.4,
+      "_loud": 7.5,
+      "_motion": 8.5
+    },
+    "quote": "Genuinely this is horsey It's just so crazy what you",
+    "rendered": [
+      "fanpage"
+    ],
+    "cats": {
+      "funny": 0.25,
+      "rage": 0.25,
+      "fail": 0.25,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.6
+    },
+    "primary": "wow",
+    "proven": [
+      "wow"
+    ],
+    "evidence": {
+      "funny": [
+        "loud"
+      ],
+      "rage": [
+        "loud"
+      ],
+      "fail": [
+        "loud"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "loud",
+        "text"
+      ]
+    },
+    "fun": 0.52,
+    "signals": {
+      "siren": 0.0,
+      "impact": 23.8,
+      "loud": 6.6,
+      "motion": 6.1,
+      "sustained": 0.1,
+      "spike": 3.9,
+      "laugh": 0,
+      "static": 0.03,
+      "letterbox": 0.0,
+      "luma": 57.0,
+      "dark": 0.0
+    }
+  },
+  "twitch_TubularBashfulHeronShadyLulu-XAm39nSjTyF0Gwcp": {
+    "id": "twitch_TubularBashfulHeronShadyLulu-XAm39nSjTyF0Gwcp",
+    "url": "https://www.twitch.tv/theburntpeanut/clip/TubularBashfulHeronShadyLulu-XAm39nSjTyF0Gwcp",
+    "channel": "theburntpeanut",
+    "platform": "twitch",
+    "title": "oh well",
+    "views": 542,
+    "created": 1795045780,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932226282",
+    "vod_offset": 45896,
+    "cluster": 1,
+    "added": 1795049062
+  },
+  "twitch_WealthyResilientAsparagusTheTarFu-rp1M2oftyXFTLGfW": {
+    "id": "twitch_WealthyResilientAsparagusTheTarFu-rp1M2oftyXFTLGfW",
+    "url": "https://www.twitch.tv/ohnepixel/clip/WealthyResilientAsparagusTheTarFu-rp1M2oftyXFTLGfW",
+    "channel": "ohnepixel",
+    "platform": "twitch",
+    "title": "GTA first impressions",
+    "views": 1130,
+    "created": 1795036720,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932275268",
+    "vod_offset": 32658,
+    "cluster": 1,
+    "added": 1795049062
   }
 }
