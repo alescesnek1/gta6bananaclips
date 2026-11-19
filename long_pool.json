@@ -3381,7 +3381,7 @@
       "_loud": 5.9,
       "_motion": 8.1
     },
-    "quote": "I don't know about Lucy anymore.",
+    "quote": "Go ta - I don't know about Lucy anymore.",
     "rendered": [
       "bananas"
     ],
@@ -3579,7 +3579,7 @@
       "_loud": 2.2,
       "_motion": 18.7
     },
-    "quote": "",
+    "quote": "Noooooo! Come on! Come on!",
     "rendered": [
       "bananas"
     ],
@@ -4333,7 +4333,7 @@
       "_loud": 6.2,
       "_motion": 12.7
     },
-    "quote": "",
+    "quote": "No!",
     "rendered": [
       "bananas",
       "fanpage"
@@ -4779,12 +4779,12 @@
     "channel": "squeex",
     "platform": "twitch",
     "title": "classic",
-    "views": 990,
+    "views": 1050,
     "created": 1795035731,
     "category": "Grand Theft Auto VI",
     "video_id": "2932676275",
     "vod_offset": 1957,
     "cluster": 1,
-    "added": 1795058769
+    "added": 1795059211
   }
 }
