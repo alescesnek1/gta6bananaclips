@@ -14917,11 +14917,11 @@
     "channel": "vinesauce",
     "platform": "twitch",
     "title": "Donnie",
-    "views": 602,
+    "views": 609,
     "created": 1795069211,
     "category": "Grand Theft Auto VI",
     "cluster": 1,
-    "added": 1795115237
+    "added": 1795115405
   },
   "twitch_CloudyWisePieThunBeast-bhRsZq7iff5K7yN8": {
     "id": "twitch_CloudyWisePieThunBeast-bhRsZq7iff5K7yN8",
@@ -14929,11 +14929,11 @@
     "channel": "dinah",
     "platform": "twitch",
     "title": "Automated Twitch Highlight",
-    "views": 608,
+    "views": 616,
     "created": 1795041841,
     "category": "Grand Theft Auto VI",
     "cluster": 1,
-    "added": 1795115237
+    "added": 1795115405
   },
   "twitch_ImpossibleWrongPoxUnSane-KyA5yEzIgxdCpLnS": {
     "id": "twitch_ImpossibleWrongPoxUnSane-KyA5yEzIgxdCpLnS",
@@ -14941,12 +14941,68 @@
     "channel": "missmikkaa",
     "platform": "twitch",
     "title": "s",
-    "views": 602,
+    "views": 606,
     "created": 1795029702,
     "category": "Grand Theft Auto VI",
     "video_id": "2932348658",
     "vod_offset": 19162,
     "cluster": 1,
-    "added": 1795115237
+    "added": 1795115405
+  },
+  "twitch_LitigiousCloudyLorisMau5-UGlTsrxSHpyNKKaY": {
+    "id": "twitch_LitigiousCloudyLorisMau5-UGlTsrxSHpyNKKaY",
+    "url": "https://www.twitch.tv/cinna/clip/LitigiousCloudyLorisMau5-UGlTsrxSHpyNKKaY",
+    "channel": "cinna",
+    "platform": "twitch",
+    "title": "ayoo",
+    "views": 602,
+    "created": 1795069655,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933193462",
+    "vod_offset": 8268,
+    "cluster": 1,
+    "added": 1795115405
+  },
+  "twitch_TangentialFreezingTeaKlappa-3haneQVakbOUV_GJ": {
+    "id": "twitch_TangentialFreezingTeaKlappa-3haneQVakbOUV_GJ",
+    "url": "https://www.twitch.tv/kreekcraft/clip/TangentialFreezingTeaKlappa-3haneQVakbOUV_GJ",
+    "channel": "kreekcraft",
+    "platform": "twitch",
+    "title": "Crocodile",
+    "views": 592,
+    "created": 1795030485,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932147800",
+    "vod_offset": 41330,
+    "cluster": 1,
+    "added": 1795115405
+  },
+  "twitch_TenderMagnificentKathyBabyRage-_KvVmKuh1zqwOQ3R": {
+    "id": "twitch_TenderMagnificentKathyBabyRage-_KvVmKuh1zqwOQ3R",
+    "url": "https://www.twitch.tv/misterarther/clip/TenderMagnificentKathyBabyRage-_KvVmKuh1zqwOQ3R",
+    "channel": "misterarther",
+    "platform": "twitch",
+    "title": "I CAN RUB HER FEET?",
+    "views": 590,
+    "created": 1795049653,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932570827",
+    "vod_offset": 22423,
+    "cluster": 1,
+    "added": 1795115405
+  },
+  "twitch_TenuousDirtySaladPartyTime-WJ3uhsMB-Fvd5Ao9": {
+    "id": "twitch_TenuousDirtySaladPartyTime-WJ3uhsMB-Fvd5Ao9",
+    "url": "https://www.twitch.tv/aishahsofey/clip/TenuousDirtySaladPartyTime-WJ3uhsMB-Fvd5Ao9",
+    "channel": "aishahsofey",
+    "platform": "twitch",
+    "title": "Honestly, girls are probably better at being a criminal than a guy",
+    "views": 581,
+    "created": 1795075465,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933181970",
+    "vod_offset": 4518,
+    "cluster": 1,
+    "added": 1795115405
   }
 }
