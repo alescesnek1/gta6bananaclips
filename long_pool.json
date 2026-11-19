@@ -14686,5 +14686,31 @@
     "vod_offset": 10881,
     "cluster": 1,
     "added": 1795113503
+  },
+  "twitch_ArbitraryHeartlessCarrotJonCarnage-W4KQv4iDJSY3k8RI": {
+    "id": "twitch_ArbitraryHeartlessCarrotJonCarnage-W4KQv4iDJSY3k8RI",
+    "url": "https://www.twitch.tv/thenicolet/clip/ArbitraryHeartlessCarrotJonCarnage-W4KQv4iDJSY3k8RI",
+    "channel": "thenicolet",
+    "platform": "twitch",
+    "title": "Nicole desroys her car",
+    "views": 631,
+    "created": 1795070116,
+    "category": "Grand Theft Auto VI",
+    "cluster": 1,
+    "added": 1795113686
+  },
+  "twitch_SecretiveAmazonianDugongRlyTho-QgFbzYURGLMdaJyw": {
+    "id": "twitch_SecretiveAmazonianDugongRlyTho-QgFbzYURGLMdaJyw",
+    "url": "https://www.twitch.tv/clavicular/clip/SecretiveAmazonianDugongRlyTho-QgFbzYURGLMdaJyw",
+    "channel": "clavicular",
+    "platform": "twitch",
+    "title": "why am i woman",
+    "views": 618,
+    "created": 1795042949,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932822078",
+    "vod_offset": 441,
+    "cluster": 1,
+    "added": 1795113686
   }
 }
