@@ -14697,7 +14697,7 @@
     "created": 1795070116,
     "category": "Grand Theft Auto VI",
     "cluster": 1,
-    "added": 1795113686
+    "added": 1795114061
   },
   "twitch_SecretiveAmazonianDugongRlyTho-QgFbzYURGLMdaJyw": {
     "id": "twitch_SecretiveAmazonianDugongRlyTho-QgFbzYURGLMdaJyw",
@@ -14711,6 +14711,204 @@
     "video_id": "2932822078",
     "vod_offset": 441,
     "cluster": 1,
-    "added": 1795113686
+    "added": 1795114061
+  },
+  "twitch_ExquisiteAstuteBaconPoooound-kLietOJbbGIeMxsP": {
+    "id": "twitch_ExquisiteAstuteBaconPoooound-kLietOJbbGIeMxsP",
+    "url": "https://www.twitch.tv/jerma985/clip/ExquisiteAstuteBaconPoooound-kLietOJbbGIeMxsP",
+    "channel": "jerma985",
+    "platform": "twitch",
+    "title": "The Gator Incident",
+    "views": 869,
+    "created": 1795075169,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933227596",
+    "vod_offset": 11482,
+    "cluster": 1,
+    "added": 1795114061
+  },
+  "twitch_TallCoyWatercressDeIlluminati-oAaCHFuIu9rD0cAm": {
+    "id": "twitch_TallCoyWatercressDeIlluminati-oAaCHFuIu9rD0cAm",
+    "url": "https://www.twitch.tv/marlon/clip/TallCoyWatercressDeIlluminati-oAaCHFuIu9rD0cAm",
+    "channel": "marlon",
+    "platform": "twitch",
+    "title": "Mar",
+    "views": 957,
+    "created": 1795027519,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932567591",
+    "vod_offset": 696,
+    "cluster": 1,
+    "added": 1795114061
+  },
+  "youtube_LMbea5SozeM_19283": {
+    "id": "youtube_LMbea5SozeM_19283",
+    "url": "https://6aff44a5ca9cca9638a8e936--gta6bananaclips-media.netlify.app/yt/youtube_LMbea5SozeM_19283_16x9.mp4",
+    "channel": "mythpat",
+    "platform": "youtube",
+    "title": "Welcome to Vice City!  GTA 6 LIVE with Mythpat",
+    "views": 15167499,
+    "created": 1795036179,
+    "category": "Welcome to Vice City!  GTA 6 LIVE with Mythpat mythpat gta 6 mythpat livestream gta 6 first livestream grand theft auto 6 livestream gta 6 live",
+    "signal_score": 0.64,
+    "added": 1795114223,
+    "peak": 24.85,
+    "cut": [
+      0.0,
+      27.73
+    ],
+    "dur": 27.73,
+    "tags": [
+      "first-reaction"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 1.0,
+      "wow": 0.0,
+      "_loud": 4.7,
+      "_motion": 10.0
+    },
+    "quote": "I think it's fixed I think it's fixed It's fixed I think it's fixed",
+    "rendered": [
+      "fanpage"
+    ],
+    "cats": {
+      "funny": 0.25,
+      "rage": 0.25,
+      "fail": 0.25,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 1.0,
+      "wow": 0.25
+    },
+    "primary": "first-reaction",
+    "proven": [
+      "first-reaction"
+    ],
+    "evidence": {
+      "funny": [
+        "loud"
+      ],
+      "rage": [
+        "loud"
+      ],
+      "fail": [
+        "loud"
+      ],
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ],
+      "wow": [
+        "loud"
+      ]
+    },
+    "fun": 0.48,
+    "signals": {
+      "siren": 0.0,
+      "impact": 17.5,
+      "loud": 5.0,
+      "motion": 7.3,
+      "sustained": 0.16,
+      "spike": 3.8,
+      "laugh": 0,
+      "static": 0.35,
+      "letterbox": 0.0,
+      "luma": 88.8,
+      "dark": 0.0
+    },
+    "seg_from": 0.0,
+    "src_mb": 8.6,
+    "source": "https://6aff44a5ca9cca9638a8e936--gta6bananaclips-media.netlify.app/yt/youtube_LMbea5SozeM_19283_16x9.mp4",
+    "yt_url": "https://www.youtube.com/watch?v=LMbea5SozeM"
+  },
+  "youtube_h3qEwM6k074_383": {
+    "id": "youtube_h3qEwM6k074_383",
+    "url": "https://6aff44a5ca9cca9638a8e936--gta6bananaclips-media.netlify.app/yt/youtube_h3qEwM6k074_383_16x9.mp4",
+    "channel": "gamerfleet",
+    "platform": "youtube",
+    "title": "GTA VI FIRST LIVESTREAM 😎 | GamerFleet",
+    "views": 4028047,
+    "created": 1795006887,
+    "category": "GTA VI FIRST LIVESTREAM 😎 | GamerFleet minecraft live insaan techno gamerz GamerFleet live stream minecraft india minecraft live stream IndiaSMP Main Stream Fleet SMP Live jack lilyville smp join smp PVP god pvp war Gta v Marathon Stream Gta v hindi Gta v india GTA GTA 5 GTA ONLINE PC gta 5 gameplay gta v hindi gameplay gta 5 funny moments gta 5 wins gta 5 lamborghini gta 5 stealing supercar grand theft auto v gta v online gta 5 gta 5 epic moments ujjwal GTA V LIVE Gta vi",
+    "signal_score": 0.52,
+    "added": 1795114223,
+    "peak": 20.45,
+    "cut": [
+      0.0,
+      27.45
+    ],
+    "dur": 27.45,
+    "tags": [
+      "first-reaction"
+    ],
+    "tag_scores": {
+      "funny": 0.08,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.05,
+      "first-reaction": 0.72,
+      "wow": 0.08,
+      "_loud": 2.1,
+      "_motion": 10.0
+    },
+    "quote": "But for now, thank you so much for watching.",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.88,
+      "wow": 0.0
+    },
+    "primary": "first-reaction",
+    "proven": [
+      "first-reaction"
+    ],
+    "evidence": {
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ]
+    },
+    "fun": 0.0,
+    "signals": {
+      "siren": 0.0,
+      "impact": 14.5,
+      "loud": 2.4,
+      "motion": 6.7,
+      "sustained": 0.02,
+      "spike": 1.6,
+      "laugh": 0,
+      "static": 0.48,
+      "letterbox": 0.0,
+      "luma": 75.3,
+      "dark": 0.0
+    },
+    "seg_from": 0.0,
+    "src_mb": 8.8,
+    "source": "https://6aff44a5ca9cca9638a8e936--gta6bananaclips-media.netlify.app/yt/youtube_h3qEwM6k074_383_16x9.mp4",
+    "yt_url": "https://www.youtube.com/watch?v=h3qEwM6k074"
   }
 }
