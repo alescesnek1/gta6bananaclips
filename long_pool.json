@@ -1055,13 +1055,13 @@
     "channel": "xqc",
     "platform": "twitch",
     "title": "XQC First Ever Gameplay Of GTA 6!!!",
-    "views": 1747,
+    "views": 1766,
     "created": 1795000392,
     "category": "Grand Theft Auto VI",
     "video_id": "2932113307",
     "vod_offset": 16908,
     "cluster": 1,
-    "added": 1795054089,
+    "added": 1795055226,
     "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/xqc/20261118_twitch_PiercingSlipperyTortoiseDuDudu-ShespqH5CNlosqhC/source.mp4",
     "peak": 37.45,
     "cut": [
@@ -3300,7 +3300,7 @@
       "_loud": 5.9,
       "_motion": 8.1
     },
-    "quote": "Go ta - I don't know about Lucy anymore.",
+    "quote": "I don't know about Lucy anymore.",
     "rendered": [
       "bananas"
     ],
@@ -3498,7 +3498,7 @@
       "_loud": 2.2,
       "_motion": 18.7
     },
-    "quote": "Noooooo! Come on! Come on!",
+    "quote": "",
     "rendered": [
       "bananas"
     ],
@@ -4252,7 +4252,7 @@
       "_loud": 6.2,
       "_motion": 12.7
     },
-    "quote": "No!",
+    "quote": "",
     "rendered": [
       "bananas",
       "fanpage"
@@ -4397,13 +4397,13 @@
     "channel": "lacy",
     "platform": "twitch",
     "title": "Lacy gets excited and realises he has no more money!",
-    "views": 1419,
+    "views": 1457,
     "created": 1795006369,
     "category": "Grand Theft Auto VI",
     "video_id": "2932194507",
     "vod_offset": 9648,
     "cluster": 1,
-    "added": 1795054089
+    "added": 1795055226
   },
   "twitch_MuddySmellyAlfalfaBrokeBack-2CcHHR8GSpna-nkj": {
     "id": "twitch_MuddySmellyAlfalfaBrokeBack-2CcHHR8GSpna-nkj",
@@ -4411,13 +4411,13 @@
     "channel": "ohnepixel",
     "platform": "twitch",
     "title": "\"No more crashing\"",
-    "views": 1112,
+    "views": 1137,
     "created": 1795040222,
     "category": "Grand Theft Auto VI",
     "video_id": "2932275268",
     "vod_offset": 36222,
     "cluster": 1,
-    "added": 1795054089
+    "added": 1795055226
   },
   "twitch_PuzzledAltruisticKeyboardDendiFace-Cr8-KmLXjfi54ctI": {
     "id": "twitch_PuzzledAltruisticKeyboardDendiFace-Cr8-KmLXjfi54ctI",
@@ -4425,10 +4425,114 @@
     "channel": "ishowspeed",
     "platform": "twitch",
     "title": "i just seen a roadkill",
-    "views": 1074,
+    "views": 1113,
     "created": 1795012361,
     "category": "Grand Theft Auto VI",
     "cluster": 1,
-    "added": 1795054089
+    "added": 1795055226
+  },
+  "twitch_GentleAssiduousChinchillaCmonBruh-Oo-FKE4TJnFa1tBs": {
+    "id": "twitch_GentleAssiduousChinchillaCmonBruh-Oo-FKE4TJnFa1tBs",
+    "url": "https://www.twitch.tv/hutchmf/clip/GentleAssiduousChinchillaCmonBruh-Oo-FKE4TJnFa1tBs",
+    "channel": "hutchmf",
+    "platform": "twitch",
+    "title": "lets go !!",
+    "views": 981,
+    "created": 1795028066,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932152494",
+    "vod_offset": 38159,
+    "cluster": 1,
+    "added": 1795055226
+  },
+  "twitch_InventiveStylishSwanTBCheesePull-bpUxg33iLnxUyEOG": {
+    "id": "twitch_InventiveStylishSwanTBCheesePull-bpUxg33iLnxUyEOG",
+    "url": "https://www.twitch.tv/dinah/clip/InventiveStylishSwanTBCheesePull-bpUxg33iLnxUyEOG",
+    "channel": "dinah",
+    "platform": "twitch",
+    "title": "LMAO",
+    "views": 3008,
+    "created": 1795050476,
+    "category": "Grand Theft Auto VI",
+    "cluster": 1,
+    "added": 1795054318,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/dinah/20261119_twitch_InventiveStylishSwanTBCheesePull-bpUxg33iLnxUyEOG/source.mp4",
+    "peak": 8.05,
+    "cut": [
+      2.03,
+      25.5
+    ],
+    "dur": 25.5,
+    "tags": [
+      "funny",
+      "glitch"
+    ],
+    "tag_scores": {
+      "funny": 0.77,
+      "glitch": 0.38,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 0.2,
+      "wow": 0.0,
+      "_loud": 3.6,
+      "_motion": 10.3
+    },
+    "quote": "Dude, chill out.",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.7,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "primary": "funny",
+    "proven": [],
+    "evidence": {
+      "funny": [
+        "text"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.37,
+    "signals": {
+      "siren": 0.0,
+      "impact": 19.8,
+      "loud": 4.3,
+      "motion": 7.4,
+      "sustained": 0.24,
+      "spike": 2.8,
+      "laugh": 0,
+      "static": 0.0,
+      "letterbox": 0.0,
+      "luma": 31.4,
+      "dark": 0.0
+    }
+  },
+  "twitch_KathishSavoryDugongFutureMan-DWZNl__pV8YNV4qg": {
+    "id": "twitch_KathishSavoryDugongFutureMan-DWZNl__pV8YNV4qg",
+    "url": "https://www.twitch.tv/xqc/clip/KathishSavoryDugongFutureMan-DWZNl__pV8YNV4qg",
+    "channel": "xqc",
+    "platform": "twitch",
+    "title": "whaaaaat",
+    "views": 1291,
+    "created": 1795030930,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932113307",
+    "vod_offset": 47641,
+    "added": 1795055226
   }
 }
