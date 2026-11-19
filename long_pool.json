@@ -21774,11 +21774,11 @@
     "channel": "dahlia",
     "platform": "twitch",
     "title": "HEHE *crashes*",
-    "views": 509,
+    "views": 529,
     "created": 1795104830,
     "category": "Grand Theft Auto VI",
     "cluster": 1,
-    "added": 1795124490
+    "added": 1795124810
   },
   "twitch_PoorPlausibleRatResidentSleeper-ctak8tqciB_IRbgE": {
     "id": "twitch_PoorPlausibleRatResidentSleeper-ctak8tqciB_IRbgE",
@@ -21786,13 +21786,13 @@
     "channel": "nickeh30",
     "platform": "twitch",
     "title": "NicholasEh30",
-    "views": 505,
+    "views": 512,
     "created": 1795066089,
     "category": "Grand Theft Auto VI",
     "video_id": "2932380541",
     "vod_offset": 28815,
     "cluster": 1,
-    "added": 1795124490
+    "added": 1795124811
   },
   "twitch_TangentialPoisedRhinocerosBIRB-2bn874F_golVqsWL": {
     "id": "twitch_TangentialPoisedRhinocerosBIRB-2bn874F_golVqsWL",
@@ -21800,12 +21800,12 @@
     "channel": "snapscube",
     "platform": "twitch",
     "title": "the true texting while driving experience",
-    "views": 501,
+    "views": 510,
     "created": 1795068991,
     "category": "Grand Theft Auto VI",
     "video_id": "2933236610",
     "vod_offset": 4844,
     "cluster": 1,
-    "added": 1795124490
+    "added": 1795124811
   }
 }
