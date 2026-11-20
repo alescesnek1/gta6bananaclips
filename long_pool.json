@@ -22945,5 +22945,47 @@
     "vod_offset": 4628,
     "cluster": 1,
     "added": 1795139400
+  },
+  "twitch_BreakableGlamorousHamburgerPrimeMe-jgWIVjeBE5spIXiU": {
+    "id": "twitch_BreakableGlamorousHamburgerPrimeMe-jgWIVjeBE5spIXiU",
+    "url": "https://www.twitch.tv/lacy/clip/BreakableGlamorousHamburgerPrimeMe-jgWIVjeBE5spIXiU",
+    "channel": "lacy",
+    "platform": "twitch",
+    "title": "THE LUCIA SHOWER",
+    "views": 592,
+    "created": 1795109368,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933767012",
+    "vod_offset": 7914,
+    "cluster": 1,
+    "added": 1795139910
+  },
+  "twitch_ScrumptiousRoundAsteriskPeteZarollTie-3I_9nGCbU4BFgyNZ": {
+    "id": "twitch_ScrumptiousRoundAsteriskPeteZarollTie-3I_9nGCbU4BFgyNZ",
+    "url": "https://www.twitch.tv/tenzinniznet/clip/ScrumptiousRoundAsteriskPeteZarollTie-3I_9nGCbU4BFgyNZ",
+    "channel": "tenzinniznet",
+    "platform": "twitch",
+    "title": "Tenzin struggling with his 24hr GTA 6 stream",
+    "views": 506,
+    "created": 1795131824,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932777883",
+    "vod_offset": 91761,
+    "cluster": 1,
+    "added": 1795139910
+  },
+  "twitch_TiredDeafJuiceUncleNox-CD_q5QQDwhv_jCLj": {
+    "id": "twitch_TiredDeafJuiceUncleNox-CD_q5QQDwhv_jCLj",
+    "url": "https://www.twitch.tv/lacy/clip/TiredDeafJuiceUncleNox-CD_q5QQDwhv_jCLj",
+    "channel": "lacy",
+    "platform": "twitch",
+    "title": "got caught",
+    "views": 1387,
+    "created": 1795105962,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933767012",
+    "vod_offset": 4508,
+    "cluster": 1,
+    "added": 1795139910
   }
 }
