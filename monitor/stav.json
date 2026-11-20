@@ -1,20 +1,20 @@
 {
-  "cas": "2026-11-20T03:12:29+01:00",
+  "cas": "2026-11-20T12:15:39+01:00",
   "chyby": [],
   "zdravi": {
     "workflows": {
       "denne-klipy": {
         "success": 36,
         "failure": 0,
-        "cancelled": 2,
-        "bezi": 1,
+        "cancelled": 0,
+        "bezi": 2,
         "jine": 0
       },
       "live-klipy": {
         "success": 0,
         "failure": 0,
-        "cancelled": 14,
-        "bezi": 2,
+        "cancelled": 17,
+        "bezi": 1,
         "jine": 0
       },
       "long-form": {
@@ -26,100 +26,55 @@
       }
     },
     "posledni_chyba": null,
-    "denne_posledni_uspech": "2026-11-20T02:09:44+00:00",
-    "denne_uspech_pred_min": 3,
+    "denne_posledni_uspech": "2026-11-20T11:09:32+00:00",
+    "denne_uspech_pred_min": 6,
     "live_bezi": true,
-    "live_konec_pred_min": 1
+    "live_konec_pred_min": 4
   },
   "publikace": {
-    "okno": "19.11. 12:00 – 20.11. 12:00",
-    "den": "2026-11-19",
+    "okno": "20.11. 12:00 – 21.11. 12:00",
+    "den": "2026-11-20",
     "znacky": {
       "bananas": {
-        "postu": 8,
-        "navic": 1,
-        "minimum": 10,
-        "maximum": 12,
-        "hot": 2,
-        "star": 7,
-        "live": 1,
-        "drafty": 0,
-        "posledni": "2026-11-20T02:35:00+01:00",
-        "dalsi": "2026-11-20T03:17:00+01:00"
-      },
-      "fanpage": {
-        "postu": 4,
+        "postu": 0,
         "navic": 0,
         "minimum": 10,
         "maximum": 12,
-        "hot": 1,
-        "star": 3,
-        "live": 1,
+        "hot": 0,
+        "star": 0,
+        "live": 0,
         "drafty": 0,
-        "posledni": "2026-11-20T02:25:00+01:00",
+        "posledni": "2026-11-20T10:37:00+01:00",
+        "dalsi": null
+      },
+      "fanpage": {
+        "postu": 0,
+        "navic": 0,
+        "minimum": 10,
+        "maximum": 12,
+        "hot": 0,
+        "star": 0,
+        "live": 0,
+        "drafty": 0,
+        "posledni": "2026-11-20T10:18:00+01:00",
         "dalsi": null
       }
     }
   },
   "vykon": {
-    "zmereno": 108,
+    "zmereno": 125,
     "top5": [
       {
-        "znacka": "bananas",
-        "klip": "twitch_WealthyNimbleHamsterDansGame-yrU7UShZomelh1Ke",
-        "streamer": "xqc",
-        "sit": "facebook",
-        "hot": true,
-        "live": false,
-        "due": "2026-11-18T13:09:00+01:00",
-        "stari_h": 38.1,
-        "views": 1209,
-        "likes": 1,
-        "comments": 0,
-        "shares": 0,
-        "saves": 0
-      },
-      {
-        "znacka": "bananas",
-        "klip": "twitch_DifferentPreciousWaffleHotPokket-wMDh_pqLv3Ve6ZOc",
-        "streamer": "xqc",
-        "sit": "facebook",
-        "hot": true,
-        "live": false,
-        "due": "2026-11-18T14:09:00+01:00",
-        "stari_h": 37.1,
-        "views": 262,
-        "likes": 0,
-        "comments": 0,
-        "shares": 0,
-        "saves": 0
-      },
-      {
-        "znacka": "bananas",
-        "klip": "kick_clip_01M7QB1PQ1JTDEBN7AFG5XVDKX",
-        "streamer": "adinross",
-        "sit": "facebook",
-        "hot": true,
-        "live": false,
-        "due": "2026-11-18T16:46:00+01:00",
-        "stari_h": 34.4,
-        "views": 260,
-        "likes": 0,
-        "comments": 0,
-        "shares": 0,
-        "saves": 0
-      },
-      {
-        "znacka": "bananas",
-        "klip": "twitch_AdventurousHonestTapirKeyboardCat-9Eii4tkWb1VjxGqf",
-        "streamer": "oozie",
+        "znacka": "fanpage",
+        "klip": "twitch_SavoryEagerLlamaLeeroyJenkins-fzfiphCY-mKdwJvr",
+        "streamer": "ishowspeed",
         "sit": "facebook",
         "hot": false,
         "live": false,
-        "due": "2026-11-19T03:34:00+01:00",
-        "stari_h": 23.6,
-        "views": 259,
-        "likes": 1,
+        "due": "2026-11-19T18:42:00+01:00",
+        "stari_h": 17.6,
+        "views": 2293,
+        "likes": 3,
         "comments": 0,
         "shares": 0,
         "saves": 0
@@ -128,47 +83,92 @@
         "znacka": "bananas",
         "klip": "twitch_WealthyNimbleHamsterDansGame-yrU7UShZomelh1Ke",
         "streamer": "xqc",
-        "sit": "instagram",
+        "sit": "facebook",
         "hot": true,
         "live": false,
         "due": "2026-11-18T13:09:00+01:00",
-        "stari_h": 38.1,
-        "views": 239,
-        "likes": 5,
-        "comments": 2,
-        "shares": 5,
+        "stari_h": 47.1,
+        "views": 1223,
+        "likes": 1,
+        "comments": 0,
+        "shares": 0,
+        "saves": 0
+      },
+      {
+        "znacka": "fanpage",
+        "klip": "twitch_PeppyFunGaurPunchTrees-edM6JKBegYQ6zSk-",
+        "streamer": "kaicenat",
+        "sit": "facebook",
+        "hot": false,
+        "live": false,
+        "due": "2026-11-19T19:41:00+01:00",
+        "stari_h": 16.6,
+        "views": 494,
+        "likes": 0,
+        "comments": 0,
+        "shares": 0,
+        "saves": 0
+      },
+      {
+        "znacka": "bananas",
+        "klip": "twitch_MushyAuspiciousThymeCeilingCat-Eirf0WCGpbMk4eIh",
+        "streamer": "ishowspeed",
+        "sit": "facebook",
+        "hot": false,
+        "live": false,
+        "due": "2026-11-19T21:23:00+01:00",
+        "stari_h": 14.9,
+        "views": 440,
+        "likes": 3,
+        "comments": 0,
+        "shares": 0,
+        "saves": 0
+      },
+      {
+        "znacka": "fanpage",
+        "klip": "twitch_RenownedNeighborlyWaffleTwitchRaid-t74SktFrD6SZ0Iu6",
+        "streamer": "dansgaming",
+        "sit": "facebook",
+        "hot": false,
+        "live": false,
+        "due": "2026-11-19T23:01:00+01:00",
+        "stari_h": 13.2,
+        "views": 312,
+        "likes": 0,
+        "comments": 0,
+        "shares": 0,
         "saves": 0
       }
     ],
     "prumer": {
       "bananas": {
         "instagram": {
-          "n": 19,
-          "views": 81,
+          "n": 22,
+          "views": 105,
           "likes": 1
         },
         "twitter": {
-          "n": 9,
+          "n": 8,
           "views": 0,
           "likes": 0
         },
         "youtube": {
-          "n": 6,
+          "n": 5,
           "views": 0,
           "likes": 0
         },
         "facebook": {
-          "n": 19,
-          "views": 118,
+          "n": 22,
+          "views": 161,
           "likes": 0
         },
         "tiktok": {
-          "n": 10,
+          "n": 12,
           "views": 0,
           "likes": 0
         },
         "threads": {
-          "n": 9,
+          "n": 8,
           "views": 1,
           "likes": 0
         }
@@ -180,22 +180,22 @@
           "likes": 0
         },
         "twitter": {
-          "n": 7,
+          "n": 9,
           "views": 0,
           "likes": 0
         },
         "instagram": {
-          "n": 14,
-          "views": 103,
+          "n": 18,
+          "views": 131,
           "likes": 2
         },
         "facebook": {
-          "n": 5,
-          "views": 0,
+          "n": 9,
+          "views": 380,
           "likes": 0
         },
         "tiktok": {
-          "n": 2,
+          "n": 4,
           "views": 0,
           "likes": 0
         }
@@ -204,56 +204,56 @@
     "nejnovejsi": [
       {
         "znacka": "bananas",
-        "klip": "live_xqc_1795137542",
-        "streamer": "xqc",
-        "stari_h": 0.6,
+        "klip": "youtube_lBrGiDG_BVc_8234",
+        "streamer": "lacyhimself",
+        "stari_h": 1.6,
         "views": 0,
         "views_za_h": 0
       },
       {
         "znacka": "fanpage",
-        "klip": "live_hasanabi_1795137527",
-        "streamer": "hasanabi",
-        "stari_h": 0.8,
+        "klip": "twitch_EasyDignifiedTroutCorgiDerp-k60y_FOyVIyCi1Gb",
+        "streamer": "ishowspeed",
+        "stari_h": 2.0,
         "views": 0,
         "views_za_h": 0
       },
       {
         "znacka": "bananas",
-        "klip": "twitch_LuckyBenevolentDotterelOMGScoots-lFgr2IvDbbFYqy0L",
-        "streamer": "caseoh_",
-        "stari_h": 2.5,
+        "klip": "live_kaicenat_1795157992",
+        "streamer": "kaicenat",
+        "stari_h": 4.0,
         "views": 0,
         "views_za_h": 0
       },
       {
-        "znacka": "fanpage",
-        "klip": "twitch_RenownedNeighborlyWaffleTwitchRaid-t74SktFrD6SZ0Iu6",
-        "streamer": "dansgaming",
+        "znacka": "bananas",
+        "klip": "twitch_ClearDifferentGarlicNomNom-Fs_0YNyTuWAtVMSk",
+        "streamer": "2xrakai",
         "stari_h": 4.2,
         "views": 0,
         "views_za_h": 0
       },
       {
-        "znacka": "bananas",
-        "klip": "twitch_ObeseObliqueTildeHassanChop-V71KdClKP_JCqGtj",
-        "streamer": "ishowspeed",
-        "stari_h": 4.6,
-        "views": 0,
-        "views_za_h": 0
+        "znacka": "fanpage",
+        "klip": "live_xqc_1795157947",
+        "streamer": "xqc",
+        "stari_h": 4.2,
+        "views": 185,
+        "views_za_h": 44
       }
     ],
     "chybi_klice": 0,
     "chyby": [],
-    "postu_celkem": 131,
+    "postu_celkem": 151,
     "nenalezeno": 1
   },
   "netlify": {
-    "gb_mesic": 3.6,
+    "gb_mesic": 4.0,
     "gb_soft": 85,
     "gb_hard": 100,
     "gb_rozpocet": 100,
-    "deploye_24h": 45
+    "deploye_24h": 53
   },
   "sit_data": null,
   "alerty": [],
