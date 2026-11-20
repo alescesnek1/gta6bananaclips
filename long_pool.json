@@ -24218,5 +24218,17 @@
     "vod_offset": 5114,
     "cluster": 1,
     "added": 1795165103
+  },
+  "twitch_PrettiestExcitedPandaRickroll-svD15HldkB8-jIm8": {
+    "id": "twitch_PrettiestExcitedPandaRickroll-svD15HldkB8-jIm8",
+    "url": "https://www.twitch.tv/ishowspeed/clip/PrettiestExcitedPandaRickroll-svD15HldkB8-jIm8",
+    "channel": "ishowspeed",
+    "platform": "twitch",
+    "title": "speed lok",
+    "views": 508,
+    "created": 1795099690,
+    "category": "Grand Theft Auto VI",
+    "cluster": 1,
+    "added": 1795165651
   }
 }
