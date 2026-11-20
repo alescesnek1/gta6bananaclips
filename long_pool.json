@@ -33375,12 +33375,26 @@
     "channel": "kreekcraft",
     "platform": "twitch",
     "title": "Oh my god, we got it",
-    "views": 503,
+    "views": 505,
     "created": 1795143186,
     "category": "Grand Theft Auto VI",
     "video_id": "2933758895",
     "vod_offset": 2018,
     "cluster": 1,
-    "added": 1795209978
+    "added": 1795210394
+  },
+  "twitch_RealPatientAnteaterCopyThis-wqMQfT4dsa5vNtqF": {
+    "id": "twitch_RealPatientAnteaterCopyThis-wqMQfT4dsa5vNtqF",
+    "url": "https://www.twitch.tv/ishowspeed/clip/RealPatientAnteaterCopyThis-wqMQfT4dsa5vNtqF",
+    "channel": "ishowspeed",
+    "platform": "twitch",
+    "title": ".",
+    "views": 500,
+    "created": 1795130060,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932319814",
+    "vod_offset": 122144,
+    "cluster": 1,
+    "added": 1795210394
   }
 }
