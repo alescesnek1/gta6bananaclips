@@ -32849,5 +32849,19 @@
     "vod_offset": 37937,
     "cluster": 1,
     "added": 1795204211
+  },
+  "twitch_ViscousWrongOstrichCharlieBitMe-EjpOIrN748sym0bS": {
+    "id": "twitch_ViscousWrongOstrichCharlieBitMe-EjpOIrN748sym0bS",
+    "url": "https://www.twitch.tv/maya/clip/ViscousWrongOstrichCharlieBitMe-EjpOIrN748sym0bS",
+    "channel": "maya",
+    "platform": "twitch",
+    "title": "maya-ohneeaglefelony",
+    "views": 501,
+    "created": 1795197023,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2935062259",
+    "vod_offset": 4437,
+    "cluster": 2,
+    "added": 1795205323
   }
 }
