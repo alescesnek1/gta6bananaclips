@@ -22316,5 +22316,205 @@
     "vod_offset": 12066,
     "cluster": 1,
     "added": 1795134194
+  },
+  "twitch_DirtySmoothCougarGOWSkull-KcmwI3w0cKL2nNaP": {
+    "id": "twitch_DirtySmoothCougarGOWSkull-KcmwI3w0cKL2nNaP",
+    "url": "https://www.twitch.tv/jerma985/clip/DirtySmoothCougarGOWSkull-KcmwI3w0cKL2nNaP",
+    "channel": "jerma985",
+    "platform": "twitch",
+    "title": "J-Man B Slaps ManBaby",
+    "views": 1073,
+    "created": 1795085042,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933227596",
+    "vod_offset": 21321,
+    "cluster": 1,
+    "added": 1795134811
+  },
+  "youtube_UwH_ZrLszBk_6354": {
+    "id": "youtube_UwH_ZrLszBk_6354",
+    "url": "https://6aff9555d84330d8a44f6c2d--gta6bananaclips-media.netlify.app/yt/youtube_UwH_ZrLszBk_6354_16x9.mp4",
+    "channel": "darkviperau",
+    "platform": "youtube",
+    "title": "The BEST GTA VI LAUNCH Of All Time [PS5 Pro] [Part 3]",
+    "views": 807021,
+    "created": 1795129846,
+    "category": "The BEST GTA VI LAUNCH Of All Time [PS5 Pro] [Part 3] GTA 5 GTA V GTA Online Grand Theft Auto 5 Grand Theft Auto V GTA 5 Live GTA Live GTA Online Live GTA 5 Stream GTA Stream GTA Gameplay GTA Online Gameplay GTA 5 Speedrun GTA Speedrun Speedrun Chaos Mod GTA Chaos Mod GTA Challenge GTA 5 Challenge Rockstar Games GTA 6 Grand Theft Auto 6 Funny GTA Live Gaming Gaming Live DarkViperAU Matto Los Santos Cayo Perico Doomsday Heist Diamond Casino Pacifist Challenge Run Open World Gaming",
+    "signal_score": 1.0,
+    "added": 1795134819,
+    "peak": 19.25,
+    "cut": [
+      0.0,
+      22.55
+    ],
+    "dur": 22.55,
+    "tags": [
+      "first-reaction"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 0.76,
+      "wow": 0.0,
+      "_loud": 1.7,
+      "_motion": 15.7
+    },
+    "quote": "Uh, yeah, it's available in many countries.",
+    "rendered": [
+      "fanpage"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.25,
+      "physics": 0.25,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.25,
+      "stunt": 0.6,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.93,
+      "wow": 0.0
+    },
+    "primary": "first-reaction",
+    "proven": [
+      "first-reaction"
+    ],
+    "evidence": {
+      "fail": [
+        "impact"
+      ],
+      "physics": [
+        "impact"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "crash": [
+        "impact"
+      ],
+      "stunt": [
+        "impact",
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ]
+    },
+    "fun": 0.37,
+    "signals": {
+      "siren": 0.0,
+      "impact": 121.0,
+      "loud": 1.8,
+      "motion": 12.9,
+      "sustained": 0.53,
+      "spike": 2.4,
+      "laugh": 0,
+      "static": 0.08,
+      "letterbox": 0.0,
+      "luma": 83.4,
+      "dark": 0.0
+    },
+    "seg_from": 0.0,
+    "src_mb": 7.2,
+    "source": "https://6aff9555d84330d8a44f6c2d--gta6bananaclips-media.netlify.app/yt/youtube_UwH_ZrLszBk_6354_16x9.mp4",
+    "yt_url": "https://www.youtube.com/watch?v=UwH_ZrLszBk"
+  },
+  "youtube_UwH_ZrLszBk_7294": {
+    "id": "youtube_UwH_ZrLszBk_7294",
+    "url": "https://6aff9555d84330d8a44f6c2d--gta6bananaclips-media.netlify.app/yt/youtube_UwH_ZrLszBk_7294_16x9.mp4",
+    "channel": "darkviperau",
+    "platform": "youtube",
+    "title": "The BEST GTA VI LAUNCH Of All Time [PS5 Pro] [Part 3]",
+    "views": 807021,
+    "created": 1795129846,
+    "category": "The BEST GTA VI LAUNCH Of All Time [PS5 Pro] [Part 3] GTA 5 GTA V GTA Online Grand Theft Auto 5 Grand Theft Auto V GTA 5 Live GTA Live GTA Online Live GTA 5 Stream GTA Stream GTA Gameplay GTA Online Gameplay GTA 5 Speedrun GTA Speedrun Speedrun Chaos Mod GTA Chaos Mod GTA Challenge GTA 5 Challenge Rockstar Games GTA 6 Grand Theft Auto 6 Funny GTA Live Gaming Gaming Live DarkViperAU Matto Los Santos Cayo Perico Doomsday Heist Diamond Casino Pacifist Challenge Run Open World Gaming",
+    "signal_score": 0.77,
+    "added": 1795134819,
+    "peak": 17.05,
+    "cut": [
+      0.0,
+      28.35
+    ],
+    "dur": 28.35,
+    "tags": [
+      "first-reaction"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 0.74,
+      "wow": 0.0,
+      "_loud": 2.0,
+      "_motion": 16.5
+    },
+    "quote": "Well, how's Belize in Australia?",
+    "rendered": [
+      "fanpage"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.91,
+      "wow": 0.0
+    },
+    "primary": "first-reaction",
+    "proven": [
+      "first-reaction"
+    ],
+    "evidence": {
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ]
+    },
+    "fun": 0.38,
+    "signals": {
+      "siren": 0.0,
+      "impact": 24.1,
+      "loud": 2.1,
+      "motion": 12.8,
+      "sustained": 0.43,
+      "spike": 2.6,
+      "laugh": 0,
+      "static": 0.02,
+      "letterbox": 0.0,
+      "luma": 82.2,
+      "dark": 0.0
+    },
+    "seg_from": 0.0,
+    "src_mb": 9.9,
+    "source": "https://6aff9555d84330d8a44f6c2d--gta6bananaclips-media.netlify.app/yt/youtube_UwH_ZrLszBk_7294_16x9.mp4",
+    "yt_url": "https://www.youtube.com/watch?v=UwH_ZrLszBk"
   }
 }
