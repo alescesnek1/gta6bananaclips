@@ -34318,5 +34318,47 @@
     "vod_offset": 14133,
     "cluster": 1,
     "added": 1795214012
+  },
+  "twitch_AbrasiveAnnoyingPuppyOhMyDog-0u29vbifabsx_3ww": {
+    "id": "twitch_AbrasiveAnnoyingPuppyOhMyDog-0u29vbifabsx_3ww",
+    "url": "https://www.twitch.tv/marlon/clip/AbrasiveAnnoyingPuppyOhMyDog-0u29vbifabsx_3ww",
+    "channel": "marlon",
+    "platform": "twitch",
+    "title": "LUCIA SHAKING A**",
+    "views": 649,
+    "created": 1795127847,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932567591",
+    "vod_offset": 100982,
+    "cluster": 1,
+    "added": 1795214317
+  },
+  "twitch_AggressiveWildCamelPupper-VvkAPb5IfLVILc_e": {
+    "id": "twitch_AggressiveWildCamelPupper-VvkAPb5IfLVILc_e",
+    "url": "https://www.twitch.tv/ohnepixel/clip/AggressiveWildCamelPupper-VvkAPb5IfLVILc_e",
+    "channel": "ohnepixel",
+    "platform": "twitch",
+    "title": "JIGGLE PHYSICS",
+    "views": 503,
+    "created": 1795180784,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934862154",
+    "vod_offset": 2785,
+    "cluster": 1,
+    "added": 1795214317
+  },
+  "twitch_WealthyLitigiousLapwingOneHand-vnRwYycsOKNQgYVy": {
+    "id": "twitch_WealthyLitigiousLapwingOneHand-vnRwYycsOKNQgYVy",
+    "url": "https://www.twitch.tv/t10nat/clip/WealthyLitigiousLapwingOneHand-vnRwYycsOKNQgYVy",
+    "channel": "t10nat",
+    "platform": "twitch",
+    "title": "ARTHER RAID",
+    "views": 501,
+    "created": 1795139991,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934182996",
+    "vod_offset": 16195,
+    "cluster": 1,
+    "added": 1795214317
   }
 }
