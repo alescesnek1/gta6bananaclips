@@ -22980,13 +22980,84 @@
     "channel": "lacy",
     "platform": "twitch",
     "title": "got caught",
-    "views": 1387,
+    "views": 1530,
     "created": 1795105962,
     "category": "Grand Theft Auto VI",
     "video_id": "2933767012",
     "vod_offset": 4508,
     "cluster": 1,
-    "added": 1795139910
+    "added": 1795142252,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/lacy/20261119_twitch_TiredDeafJuiceUncleNox-CD_q5QQDwhv_jCLj/source.mp4",
+    "peak": 48.550000000000004,
+    "cut": [
+      40.7,
+      56.2
+    ],
+    "dur": 60.01,
+    "tags": [],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.25,
+      "first-reaction": 0.2,
+      "wow": 0.2,
+      "_loud": 4.6,
+      "_motion": 10.1
+    },
+    "quote": "yeah, I swear is part of the mission you had to What What?",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 1.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "primary": "mission",
+    "proven": [],
+    "evidence": {
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "mission": [
+        "text"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.48,
+    "signals": {
+      "siren": 0.0,
+      "impact": 13.2,
+      "loud": 5.0,
+      "motion": 13.1,
+      "sustained": 0.45,
+      "spike": 3.0,
+      "laugh": 0,
+      "static": 0.05,
+      "letterbox": 0.0,
+      "luma": 32.7,
+      "dark": 0.0
+    }
   },
   "twitch_LittleStylishPastaBatChest-i4cAgYxPSHJNxCg5": {
     "id": "twitch_LittleStylishPastaBatChest-i4cAgYxPSHJNxCg5",
