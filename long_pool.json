@@ -22274,5 +22274,33 @@
     "vod_offset": 2847,
     "cluster": 1,
     "added": 1795132437
+  },
+  "twitch_CovertVainNoodleOMGScoots-RIIREObUlkrw-aZz": {
+    "id": "twitch_CovertVainNoodleOMGScoots-RIIREObUlkrw-aZz",
+    "url": "https://www.twitch.tv/theburntpeanut/clip/CovertVainNoodleOMGScoots-RIIREObUlkrw-aZz",
+    "channel": "theburntpeanut",
+    "platform": "twitch",
+    "title": "going for the dog",
+    "views": 524,
+    "created": 1795128668,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934030540",
+    "vod_offset": 13016,
+    "cluster": 1,
+    "added": 1795133609
+  },
+  "twitch_HeartlessStrongAdminKeyboardCat-wubwjmqCYJbpGgNG": {
+    "id": "twitch_HeartlessStrongAdminKeyboardCat-wubwjmqCYJbpGgNG",
+    "url": "https://www.twitch.tv/yourragegaming/clip/HeartlessStrongAdminKeyboardCat-wubwjmqCYJbpGgNG",
+    "channel": "yourragegaming",
+    "platform": "twitch",
+    "title": "gta 6 lunch",
+    "views": 505,
+    "created": 1795066242,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933174196",
+    "vod_offset": 6016,
+    "cluster": 1,
+    "added": 1795133609
   }
 }
