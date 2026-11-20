@@ -29183,5 +29183,19 @@
     "vod_offset": 3087,
     "cluster": 1,
     "added": 1795198115
+  },
+  "twitch_ResoluteBombasticStrawberryPunchTrees-6knbQxrUw66VbLsR": {
+    "id": "twitch_ResoluteBombasticStrawberryPunchTrees-6knbQxrUw66VbLsR",
+    "url": "https://www.twitch.tv/ishowspeed/clip/ResoluteBombasticStrawberryPunchTrees-6knbQxrUw66VbLsR",
+    "channel": "ishowspeed",
+    "platform": "twitch",
+    "title": "😂😂",
+    "views": 511,
+    "created": 1795124276,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932319814",
+    "vod_offset": 116360,
+    "cluster": 1,
+    "added": 1795198583
   }
 }
