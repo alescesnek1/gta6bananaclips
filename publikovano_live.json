@@ -108,5 +108,38 @@
     "live": true,
     "viewers": 35103,
     "spike_z": 56.0
+  },
+  "live_kaicenat_1795157992": {
+    "url": "https://6afff31f26109cece160691f--gta6bananaclips-media.netlify.app/20261119/live_kaicenat_1795157992.mp4",
+    "path": "20261119/live_kaicenat_1795157992.mp4",
+    "due": "2026-11-20T08:15:00+01:00",
+    "draft": false,
+    "posts": {
+      "6af7142262b70b94b01ac608": "6afff323738ce4635f94dec5",
+      "6af7155e62b70b94b01ad06f": "6afff3247b0a126cebb69f23"
+    },
+    "mb": 6.4,
+    "channel": "kaicenat",
+    "platform": "twitch",
+    "score": 0,
+    "hot": true,
+    "rating": 9,
+    "views": 0,
+    "golden": false,
+    "title": "Kai Cenat Did Not See This Coming In GTA 6! 😭",
+    "video_id": null,
+    "vod_offset": null,
+    "created": 1795157992,
+    "payoff": "https://6afff303abd6f54f37c68118--gta6bananaclips-media.netlify.app/yt/live_kaicenat_1795157992_payoff.mp4",
+    "funny": 0.0,
+    "tags": [
+      "rage",
+      "first-reaction",
+      "wow"
+    ],
+    "quote": "These sex toys Initializing.",
+    "live": true,
+    "viewers": 28079,
+    "spike_z": 44.0
   }
 }
