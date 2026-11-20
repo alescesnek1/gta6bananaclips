@@ -23994,5 +23994,19 @@
     "vod_offset": 5298,
     "cluster": 1,
     "added": 1795158825
+  },
+  "twitch_RichSingleSandpiperFreakinStinkin-Vk68XhbU8J7CRqs3": {
+    "id": "twitch_RichSingleSandpiperFreakinStinkin-Vk68XhbU8J7CRqs3",
+    "url": "https://www.twitch.tv/berticuss/clip/RichSingleSandpiperFreakinStinkin-Vk68XhbU8J7CRqs3",
+    "channel": "berticuss",
+    "platform": "twitch",
+    "title": "berticuss - Highlight cb4ff6 Part 01",
+    "views": 500,
+    "created": 1795078053,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933383189",
+    "vod_offset": 9664,
+    "cluster": 1,
+    "added": 1795159423
   }
 }
