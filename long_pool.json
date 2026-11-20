@@ -24423,5 +24423,19 @@
     "vod_offset": 6855,
     "cluster": 1,
     "added": 1795167508
+  },
+  "twitch_BloodyObservantPorcupineImGlitch-AWgXLALIswVQYsbb": {
+    "id": "twitch_BloodyObservantPorcupineImGlitch-AWgXLALIswVQYsbb",
+    "url": "https://www.twitch.tv/jill/clip/BloodyObservantPorcupineImGlitch-AWgXLALIswVQYsbb",
+    "channel": "jill",
+    "platform": "twitch",
+    "title": "Shower CN",
+    "views": 501,
+    "created": 1795140191,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934354478",
+    "vod_offset": 6949,
+    "cluster": 1,
+    "added": 1795167808
   }
 }
