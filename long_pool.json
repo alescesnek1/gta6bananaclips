@@ -23564,5 +23564,19 @@
     "vod_offset": 24932,
     "cluster": 1,
     "added": 1795150706
+  },
+  "twitch_SpineyThankfulYogurtBigBrother-Z7Zw6wUS5WROpSRb": {
+    "id": "twitch_SpineyThankfulYogurtBigBrother-Z7Zw6wUS5WROpSRb",
+    "url": "https://www.twitch.tv/symfuhny/clip/SpineyThankfulYogurtBigBrother-Z7Zw6wUS5WROpSRb",
+    "channel": "symfuhny",
+    "platform": "twitch",
+    "title": "first death",
+    "views": 501,
+    "created": 1795086907,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933551811",
+    "vod_offset": 2224,
+    "cluster": 1,
+    "added": 1795151612
   }
 }
