@@ -22302,5 +22302,19 @@
     "vod_offset": 6016,
     "cluster": 1,
     "added": 1795133609
+  },
+  "twitch_DullPlainLettuceANELE-6U7BefjD0f-FSZrN": {
+    "id": "twitch_DullPlainLettuceANELE-6U7BefjD0f-FSZrN",
+    "url": "https://www.twitch.tv/reemknocks/clip/DullPlainLettuceANELE-6U7BefjD0f-FSZrN",
+    "channel": "reemknocks",
+    "platform": "twitch",
+    "title": "NOT GETTING OFF STREAM UNTIL I BEAT GTA6 🚓 All It Takes Is Dedication To Create A Lifestyle 🚓 !discord !yt !com",
+    "views": 500,
+    "created": 1795058676,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932922286",
+    "vod_offset": 12066,
+    "cluster": 1,
+    "added": 1795134194
   }
 }
