@@ -74,5 +74,39 @@
     "live": true,
     "viewers": 38872,
     "spike_z": 52.0
+  },
+  "live_xqc_1795137542": {
+    "url": "https://6affa3660dc1b8af06efbd66--gta6bananaclips-media.netlify.app/20261119/live_xqc_1795137542.mp4",
+    "path": "20261119/live_xqc_1795137542.mp4",
+    "due": "2026-11-20T02:35:00+01:00",
+    "draft": false,
+    "posts": {
+      "6af7142262b70b94b01ac608": "6affa3697b0a126ceb9a3816",
+      "6af7155e62b70b94b01ad06f": "6affa36aca85ebefb0e784ed"
+    },
+    "mb": 6.4,
+    "channel": "xqc",
+    "platform": "twitch",
+    "score": 0,
+    "hot": true,
+    "rating": 9,
+    "views": 0,
+    "golden": false,
+    "title": "xQc Hits BREAKING POINT In GTA 6! 💀",
+    "video_id": null,
+    "vod_offset": null,
+    "created": 1795137542,
+    "payoff": "https://6affa348c369c2e86d407c3b--gta6bananaclips-media.netlify.app/yt/live_xqc_1795137542_payoff.mp4",
+    "funny": 0.0,
+    "tags": [
+      "rage",
+      "first-reaction",
+      "wow",
+      "glitch"
+    ],
+    "quote": "The F***? Okay.",
+    "live": true,
+    "viewers": 35103,
+    "spike_z": 56.0
   }
 }
