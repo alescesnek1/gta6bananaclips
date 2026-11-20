@@ -24692,5 +24692,19 @@
     "vod_offset": 3272,
     "cluster": 1,
     "added": 1795174348
+  },
+  "twitch_TangibleAttractiveOpossumSSSsss-cJhrmc-JXuEmLWv5": {
+    "id": "twitch_TangibleAttractiveOpossumSSSsss-cJhrmc-JXuEmLWv5",
+    "url": "https://www.twitch.tv/jerma985/clip/TangibleAttractiveOpossumSSSsss-cJhrmc-JXuEmLWv5",
+    "channel": "jerma985",
+    "platform": "twitch",
+    "title": "random guy falls",
+    "views": 683,
+    "created": 1795152159,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933227596",
+    "vod_offset": 21481,
+    "cluster": 1,
+    "added": 1795175159
   }
 }
