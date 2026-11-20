@@ -22523,13 +22523,13 @@
     "channel": "ludwig",
     "platform": "twitch",
     "title": "And they call the game woke",
-    "views": 745,
+    "views": 788,
     "created": 1795127849,
     "category": "Grand Theft Auto VI",
     "video_id": "2934132437",
     "vod_offset": 6845,
     "cluster": 1,
-    "added": 1795138212,
+    "added": 1795138665,
     "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/ludwig/20261119_twitch_BeautifulDaintyMomTwitchRaid-q4op7h8xugMC5r-E/source.mp4",
     "peak": 27.450000000000003,
     "cut": [
@@ -22755,12 +22755,12 @@
     "channel": "penta",
     "platform": "twitch",
     "title": "Penta Channels MoonMoon",
-    "views": 598,
+    "views": 660,
     "created": 1795132298,
     "category": "Grand Theft Auto VI",
     "video_id": "2932677749",
     "vod_offset": 20277,
-    "added": 1795138212
+    "added": 1795138665
   },
   "youtube_UwH_ZrLszBk_5464": {
     "id": "youtube_UwH_ZrLszBk_5464",
@@ -22772,7 +22772,7 @@
     "created": 1795129846,
     "category": "The BEST GTA VI LAUNCH Of All Time [PS5 Pro] [Part 3] GTA 5 GTA V GTA Online Grand Theft Auto 5 Grand Theft Auto V GTA 5 Live GTA Live GTA Online Live GTA 5 Stream GTA Stream GTA Gameplay GTA Online Gameplay GTA 5 Speedrun GTA Speedrun Speedrun Chaos Mod GTA Chaos Mod GTA Challenge GTA 5 Challenge Rockstar Games GTA 6 Grand Theft Auto 6 Funny GTA Live Gaming Gaming Live DarkViperAU Matto Los Santos Cayo Perico Doomsday Heist Diamond Casino Pacifist Challenge Run Open World Gaming",
     "signal_score": 0.96,
-    "added": 1795138217,
+    "added": 1795138670,
     "peak": 30.15,
     "cut": [
       0.0,
@@ -22861,5 +22861,19 @@
     "src_mb": 11.3,
     "source": "https://6affa2265e7686e0b1404eb4--gta6bananaclips-media.netlify.app/yt/youtube_UwH_ZrLszBk_5464_16x9.mp4",
     "yt_url": "https://www.youtube.com/watch?v=UwH_ZrLszBk"
+  },
+  "twitch_IntelligentVibrantDugongThunBeast-UDmDwqAl6rkr7-eg": {
+    "id": "twitch_IntelligentVibrantDugongThunBeast-UDmDwqAl6rkr7-eg",
+    "url": "https://www.twitch.tv/jaymommy0/clip/IntelligentVibrantDugongThunBeast-UDmDwqAl6rkr7-eg",
+    "channel": "jaymommy0",
+    "platform": "twitch",
+    "title": "BABY IM YOUR LUCIA 😍❤️ WE ON GTA6",
+    "views": 505,
+    "created": 1795068064,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933362625",
+    "vod_offset": 577,
+    "cluster": 1,
+    "added": 1795138666
   }
 }
