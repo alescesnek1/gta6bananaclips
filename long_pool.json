@@ -24437,5 +24437,19 @@
     "vod_offset": 6949,
     "cluster": 1,
     "added": 1795167808
+  },
+  "twitch_MoralSpunkyMacaroniGingerPower-W0BEu1H63tbMFOjF": {
+    "id": "twitch_MoralSpunkyMacaroniGingerPower-W0BEu1H63tbMFOjF",
+    "url": "https://www.twitch.tv/dizzykitten/clip/MoralSpunkyMacaroniGingerPower-W0BEu1H63tbMFOjF",
+    "channel": "dizzykitten",
+    "platform": "twitch",
+    "title": "too innocent for GTA",
+    "views": 501,
+    "created": 1795091055,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932805499",
+    "vod_offset": 21240,
+    "cluster": 1,
+    "added": 1795168113
   }
 }
