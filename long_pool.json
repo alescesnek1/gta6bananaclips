@@ -29043,5 +29043,33 @@
     "vod_offset": 31228,
     "cluster": 1,
     "added": 1795193953
+  },
+  "twitch_ExcitedSlipperyKleeSoBayed-8ID5pXReR4_oMeNk": {
+    "id": "twitch_ExcitedSlipperyKleeSoBayed-8ID5pXReR4_oMeNk",
+    "url": "https://www.twitch.tv/vanosscrew/clip/ExcitedSlipperyKleeSoBayed-8ID5pXReR4_oMeNk",
+    "channel": "vanosscrew",
+    "platform": "twitch",
+    "title": "WHAT ARE VANOSS CREW DOING IN GTA6 PART 2",
+    "views": 502,
+    "created": 1795143163,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934462012",
+    "vod_offset": 3162,
+    "cluster": 1,
+    "added": 1795194230
+  },
+  "twitch_PlayfulSpotlessWormHassaanChop-Y-P7-DqisQgLLgZi": {
+    "id": "twitch_PlayfulSpotlessWormHassaanChop-Y-P7-DqisQgLLgZi",
+    "url": "https://www.twitch.tv/gingy/clip/PlayfulSpotlessWormHassaanChop-Y-P7-DqisQgLLgZi",
+    "channel": "gingy",
+    "platform": "twitch",
+    "title": "bomb?!",
+    "views": 506,
+    "created": 1795127655,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934186834",
+    "vod_offset": 3550,
+    "cluster": 1,
+    "added": 1795194230
   }
 }
