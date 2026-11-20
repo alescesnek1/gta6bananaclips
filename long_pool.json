@@ -33410,5 +33410,19 @@
     "vod_offset": 30802,
     "cluster": 1,
     "added": 1795210621
+  },
+  "twitch_WimpyPleasantManateeTTours-SObjtZ-BZazyhmrG": {
+    "id": "twitch_WimpyPleasantManateeTTours-SObjtZ-BZazyhmrG",
+    "url": "https://www.twitch.tv/theburntpeanut/clip/WimpyPleasantManateeTTours-SObjtZ-BZazyhmrG",
+    "channel": "theburntpeanut",
+    "platform": "twitch",
+    "title": "checked map for dealership",
+    "views": 500,
+    "created": 1795153191,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932226282",
+    "vod_offset": 64439,
+    "cluster": 1,
+    "added": 1795210841
   }
 }
