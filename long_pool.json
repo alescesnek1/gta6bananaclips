@@ -24830,5 +24830,19 @@
     "vod_offset": 2414,
     "cluster": 1,
     "added": 1795180403
+  },
+  "twitch_NaiveDreamyChickpeaOhMyDog-swnJJQ0_gODcBYJu": {
+    "id": "twitch_NaiveDreamyChickpeaOhMyDog-swnJJQ0_gODcBYJu",
+    "url": "https://www.twitch.tv/jinnytty/clip/NaiveDreamyChickpeaOhMyDog-swnJJQ0_gODcBYJu",
+    "channel": "jinnytty",
+    "platform": "twitch",
+    "title": "finger",
+    "views": 501,
+    "created": 1795111153,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933786887",
+    "vod_offset": 8386,
+    "cluster": 1,
+    "added": 1795181008
   }
 }
