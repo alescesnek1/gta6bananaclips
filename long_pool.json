@@ -29029,5 +29029,19 @@
     "vod_offset": 1075,
     "cluster": 1,
     "added": 1795193737
+  },
+  "twitch_TransparentArtsyAxeGrammarKing-dnuXIn1aiA3uUpqy": {
+    "id": "twitch_TransparentArtsyAxeGrammarKing-dnuXIn1aiA3uUpqy",
+    "url": "https://www.twitch.tv/stableronaldo/clip/TransparentArtsyAxeGrammarKing-dnuXIn1aiA3uUpqy",
+    "channel": "stableronaldo",
+    "platform": "twitch",
+    "title": "Maya 😭",
+    "views": 500,
+    "created": 1795134648,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933798318",
+    "vod_offset": 31228,
+    "cluster": 1,
+    "added": 1795193953
   }
 }
