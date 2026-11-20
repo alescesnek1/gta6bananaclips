@@ -23377,5 +23377,17 @@
     "vod_offset": 10116,
     "cluster": 1,
     "added": 1795146011
+  },
+  "twitch_LongHeartlessWhaleMau5-B9NBfqUvbpHRrgP4": {
+    "id": "twitch_LongHeartlessWhaleMau5-B9NBfqUvbpHRrgP4",
+    "url": "https://www.twitch.tv/ishowspeed/clip/LongHeartlessWhaleMau5-B9NBfqUvbpHRrgP4",
+    "channel": "ishowspeed",
+    "platform": "twitch",
+    "title": "THIS STREAM GOT WILD!!",
+    "views": 504,
+    "created": 1795106344,
+    "category": "Grand Theft Auto VI",
+    "cluster": 1,
+    "added": 1795147214
   }
 }
