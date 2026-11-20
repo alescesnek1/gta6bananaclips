@@ -23167,7 +23167,7 @@
     "created": 1795108065,
     "category": "🔴PLAYING GTA 6 EARLY ACCESS GAMEPLAY GET IN HERE! ishowspeed",
     "signal_score": 0.22,
-    "added": 1795143332,
+    "added": 1795143622,
     "peak": 23.55,
     "cut": [
       0.0,
@@ -23265,5 +23265,19 @@
     "src_mb": 9.3,
     "source": "https://6affb5836b38d4e037bf0b95--gta6bananaclips-media.netlify.app/yt/youtube_qSyo5d-dVzA_16163_16x9.mp4",
     "yt_url": "https://www.youtube.com/watch?v=qSyo5d-dVzA"
+  },
+  "twitch_GrotesqueIgnorantBarracudaThisIsSparta-yBYM8whs9CgxN84i": {
+    "id": "twitch_GrotesqueIgnorantBarracudaThisIsSparta-yBYM8whs9CgxN84i",
+    "url": "https://www.twitch.tv/maximilian_dood/clip/GrotesqueIgnorantBarracudaThisIsSparta-yBYM8whs9CgxN84i",
+    "channel": "maximilian_dood",
+    "platform": "twitch",
+    "title": "I see where this is going.",
+    "views": 500,
+    "created": 1795072497,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933224962",
+    "vod_offset": 8906,
+    "cluster": 1,
+    "added": 1795143619
   }
 }
