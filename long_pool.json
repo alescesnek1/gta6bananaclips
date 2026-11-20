@@ -34786,5 +34786,17 @@
     "vod_offset": 40115,
     "cluster": 1,
     "added": 1795217104
+  },
+  "twitch_GiftedUninterestedFishCharlietheUnicorn-XJGPUVMfRTYD7VBn": {
+    "id": "twitch_GiftedUninterestedFishCharlietheUnicorn-XJGPUVMfRTYD7VBn",
+    "url": "https://www.twitch.tv/theregulationpod/clip/GiftedUninterestedFishCharlietheUnicorn-XJGPUVMfRTYD7VBn",
+    "channel": "theregulationpod",
+    "platform": "twitch",
+    "title": "Gavin hates polar bears",
+    "views": 523,
+    "created": 1795201176,
+    "category": "Grand Theft Auto VI",
+    "cluster": 1,
+    "added": 1795217599
   }
 }
