@@ -32455,5 +32455,124 @@
     "vod_offset": 19012,
     "cluster": 1,
     "added": 1795200922
+  },
+  "twitch_PrettiestRepleteSwanWTRuck-nIrdp2O2mQZws3bz": {
+    "id": "twitch_PrettiestRepleteSwanWTRuck-nIrdp2O2mQZws3bz",
+    "url": "https://www.twitch.tv/maya/clip/PrettiestRepleteSwanWTRuck-nIrdp2O2mQZws3bz",
+    "channel": "maya",
+    "platform": "twitch",
+    "title": "Maya boo Hasan",
+    "views": 587,
+    "created": 1795199595,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2935062259",
+    "vod_offset": 6924,
+    "cluster": 1,
+    "added": 1795201715
+  },
+  "twitch_RefinedMagnificentOysterBIRB-uFW7JbZr4E6L2vDR": {
+    "id": "twitch_RefinedMagnificentOysterBIRB-uFW7JbZr4E6L2vDR",
+    "url": "https://www.twitch.tv/lirik/clip/RefinedMagnificentOysterBIRB-uFW7JbZr4E6L2vDR",
+    "channel": "lirik",
+    "platform": "twitch",
+    "title": "close your eyes chat",
+    "views": 501,
+    "created": 1795122778,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933880721",
+    "vod_offset": 14840,
+    "cluster": 1,
+    "added": 1795201715
+  },
+  "youtube_169ZzvPxvvM_3863": {
+    "id": "youtube_169ZzvPxvvM_3863",
+    "url": "https://6b009aa7a979e3becbbd55f1--gta6bananaclips-media.netlify.app/yt/youtube_169ZzvPxvvM_3863_16x9.mp4",
+    "channel": "technogamerzofficial",
+    "platform": "youtube",
+    "title": "MY FIRST DAY IN VICE CITY | GTA 6 GAMEPLAY #1",
+    "views": 19600658,
+    "created": 1795095031,
+    "category": "MY FIRST DAY IN VICE CITY | GTA 6 GAMEPLAY #1 GTA 6 GTA ONLINE PC gta 6 gameplay gta vi hindi gameplay gta 6 funny moments gta 6 wins gta 6 lamborghini gta 6 stealing supercar gta 6 stunts gta 6 thug life grand theft auto vi gta vi online gta 6 gta 6 epic moments gta vi funny moments awesome gta 6 stunts best moments techno gamerz ujjwal",
+    "signal_score": 0.42,
+    "added": 1795201718,
+    "peak": 21.75,
+    "cut": [
+      0.0,
+      27.33
+    ],
+    "dur": 27.33,
+    "tags": [
+      "first-reaction"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 1.0,
+      "wow": 0.0,
+      "_loud": 1.9,
+      "_motion": 13.1
+    },
+    "quote": "",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 1.0,
+      "wow": 0.0
+    },
+    "primary": "first-reaction",
+    "proven": [
+      "first-reaction"
+    ],
+    "evidence": {
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion-spike"
+      ],
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ]
+    },
+    "fun": 0.32,
+    "signals": {
+      "siren": 0.0,
+      "impact": 16.9,
+      "loud": 2.0,
+      "motion": 8.8,
+      "sustained": 0.31,
+      "spike": 11.3,
+      "laugh": 0,
+      "static": 0.03,
+      "letterbox": 0.0,
+      "luma": 49.1,
+      "dark": 0.0
+    },
+    "seg_from": 0.0,
+    "src_mb": 8.3,
+    "source": "https://6b009aa7a979e3becbbd55f1--gta6bananaclips-media.netlify.app/yt/youtube_169ZzvPxvvM_3863_16x9.mp4",
+    "yt_url": "https://www.youtube.com/watch?v=169ZzvPxvvM"
   }
 }
