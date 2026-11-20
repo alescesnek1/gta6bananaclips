@@ -24788,5 +24788,19 @@
     "vod_offset": 5210,
     "cluster": 1,
     "added": 1795178306
+  },
+  "twitch_AwkwardEphemeralFriseeCmonBruh-A_PY6vBzFpkpx8BB": {
+    "id": "twitch_AwkwardEphemeralFriseeCmonBruh-A_PY6vBzFpkpx8BB",
+    "url": "https://www.twitch.tv/ohnepixel/clip/AwkwardEphemeralFriseeCmonBruh-A_PY6vBzFpkpx8BB",
+    "channel": "ohnepixel",
+    "platform": "twitch",
+    "title": "GYATTT",
+    "views": 1046,
+    "created": 1795106900,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933599748",
+    "vod_offset": 17365,
+    "cluster": 2,
+    "added": 1795179809
   }
 }
