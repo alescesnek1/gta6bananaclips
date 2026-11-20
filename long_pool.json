@@ -23606,5 +23606,33 @@
     "vod_offset": 4254,
     "cluster": 1,
     "added": 1795152198
+  },
+  "twitch_CarelessTacitVanillaYee-NXlrGy3pw1kG6n_t": {
+    "id": "twitch_CarelessTacitVanillaYee-NXlrGy3pw1kG6n_t",
+    "url": "https://www.twitch.tv/rayasianboy/clip/CarelessTacitVanillaYee-NXlrGy3pw1kG6n_t",
+    "channel": "rayasianboy",
+    "platform": "twitch",
+    "title": "spedjamin",
+    "views": 500,
+    "created": 1795089929,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932386602",
+    "vod_offset": 76059,
+    "cluster": 1,
+    "added": 1795153108
+  },
+  "twitch_ExpensivePeacefulInternPeoplesChamp-YjJBawhMMRkMX0hk": {
+    "id": "twitch_ExpensivePeacefulInternPeoplesChamp-YjJBawhMMRkMX0hk",
+    "url": "https://www.twitch.tv/penta/clip/ExpensivePeacefulInternPeoplesChamp-YjJBawhMMRkMX0hk",
+    "channel": "penta",
+    "platform": "twitch",
+    "title": "Normal GTA 6",
+    "views": 511,
+    "created": 1795070937,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932677749",
+    "vod_offset": 37039,
+    "cluster": 1,
+    "added": 1795153108
   }
 }
