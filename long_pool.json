@@ -23819,5 +23819,19 @@
     "src_mb": 8.6,
     "source": "https://6affe2bc678b284b6ec0e65d--gta6bananaclips-media.netlify.app/yt/youtube_169ZzvPxvvM_23_16x9.mp4",
     "yt_url": "https://www.youtube.com/watch?v=169ZzvPxvvM"
+  },
+  "twitch_TenuousSecretiveCakeCoolCat-xV3dQf6ivvVS3D5M": {
+    "id": "twitch_TenuousSecretiveCakeCoolCat-xV3dQf6ivvVS3D5M",
+    "url": "https://www.twitch.tv/kirabeing/clip/TenuousSecretiveCakeCoolCat-xV3dQf6ivvVS3D5M",
+    "channel": "kirabeing",
+    "platform": "twitch",
+    "title": "It so it begins...",
+    "views": 555,
+    "created": 1795153605,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934529645",
+    "vod_offset": 1833,
+    "cluster": 1,
+    "added": 1795155521
   }
 }
