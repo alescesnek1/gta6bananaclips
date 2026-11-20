@@ -24706,5 +24706,19 @@
     "vod_offset": 21481,
     "cluster": 1,
     "added": 1795175159
+  },
+  "twitch_ShortUglySproutDoubleRainbow-XH0HqpkvRMqcWip6": {
+    "id": "twitch_ShortUglySproutDoubleRainbow-XH0HqpkvRMqcWip6",
+    "url": "https://www.twitch.tv/tfue/clip/ShortUglySproutDoubleRainbow-XH0HqpkvRMqcWip6",
+    "channel": "tfue",
+    "platform": "twitch",
+    "title": "Getting hot over here",
+    "views": 535,
+    "created": 1795115236,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933610550",
+    "vod_offset": 24845,
+    "cluster": 1,
+    "added": 1795175329
   }
 }
