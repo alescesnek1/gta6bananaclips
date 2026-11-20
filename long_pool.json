@@ -32595,13 +32595,13 @@
     "channel": "ishowspeed",
     "platform": "twitch",
     "title": ".",
-    "views": 519,
+    "views": 541,
     "created": 1795118608,
     "category": "Grand Theft Auto VI",
     "video_id": "2932319814",
     "vod_offset": 110619,
     "cluster": 1,
-    "added": 1795202302
+    "added": 1795202851
   },
   "twitch_ObedientInspiringDuckHassanChop-PTTGcFi7UzHl4qFE": {
     "id": "twitch_ObedientInspiringDuckHassanChop-PTTGcFi7UzHl4qFE",
@@ -32609,13 +32609,13 @@
     "channel": "ishowspeed",
     "platform": "twitch",
     "title": "\"Speed tried a bank heist in GTA VI 😭 LIVE reaction\"",
-    "views": 507,
+    "views": 530,
     "created": 1795122030,
     "category": "Grand Theft Auto VI",
     "video_id": "2932319814",
     "vod_offset": 113977,
     "cluster": 1,
-    "added": 1795202302,
+    "added": 1795202851,
     "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/ishowspeed/20261119_twitch_ObedientInspiringDuckHassanChop-PTTGcFi7UzHl4qFE/source.mp4",
     "peak": 16.25,
     "cut": [
@@ -32697,5 +32697,61 @@
       "luma": 46.4,
       "dark": 0.0
     }
+  },
+  "twitch_AntediluvianAmorphousTapirWoofer-9O5aY9MAF0W4IdNu": {
+    "id": "twitch_AntediluvianAmorphousTapirWoofer-9O5aY9MAF0W4IdNu",
+    "url": "https://www.twitch.tv/zoomaa/clip/AntediluvianAmorphousTapirWoofer-9O5aY9MAF0W4IdNu",
+    "channel": "zoomaa",
+    "platform": "twitch",
+    "title": "didnt save",
+    "views": 502,
+    "created": 1795143932,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933973589",
+    "vod_offset": 31112,
+    "cluster": 1,
+    "added": 1795202851
+  },
+  "twitch_MuddyAlluringAardvarkTBTacoRight-vsA4rzpgh_WD7ArG": {
+    "id": "twitch_MuddyAlluringAardvarkTBTacoRight-vsA4rzpgh_WD7ArG",
+    "url": "https://www.twitch.tv/bilzo/clip/MuddyAlluringAardvarkTBTacoRight-vsA4rzpgh_WD7ArG",
+    "channel": "bilzo",
+    "platform": "twitch",
+    "title": "nah jason lmfao",
+    "views": 512,
+    "created": 1795185861,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934628152",
+    "vod_offset": 563,
+    "cluster": 1,
+    "added": 1795202851
+  },
+  "twitch_PerfectKindDogeChocolateRain-01M67AZSfBFnh0dz": {
+    "id": "twitch_PerfectKindDogeChocolateRain-01M67AZSfBFnh0dz",
+    "url": "https://www.twitch.tv/missmikkaa/clip/PerfectKindDogeChocolateRain-01M67AZSfBFnh0dz",
+    "channel": "missmikkaa",
+    "platform": "twitch",
+    "title": "Polar bear didn't like their travel arrangement",
+    "views": 505,
+    "created": 1795120590,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933682633",
+    "vod_offset": 24635,
+    "cluster": 1,
+    "added": 1795202851
+  },
+  "twitch_TrustworthyAgitatedPorcupineUWot-MSgja37RlNvlVEG2": {
+    "id": "twitch_TrustworthyAgitatedPorcupineUWot-MSgja37RlNvlVEG2",
+    "url": "https://www.twitch.tv/dahlia/clip/TrustworthyAgitatedPorcupineUWot-MSgja37RlNvlVEG2",
+    "channel": "dahlia",
+    "platform": "twitch",
+    "title": "for cardio",
+    "views": 510,
+    "created": 1795129110,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933744639",
+    "vod_offset": 28941,
+    "cluster": 1,
+    "added": 1795202851
   }
 }
