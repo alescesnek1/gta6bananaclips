@@ -34793,10 +34793,38 @@
     "channel": "theregulationpod",
     "platform": "twitch",
     "title": "Gavin hates polar bears",
-    "views": 523,
+    "views": 552,
     "created": 1795201176,
     "category": "Grand Theft Auto VI",
     "cluster": 1,
-    "added": 1795217599
+    "added": 1795217761
+  },
+  "twitch_KawaiiAmazingInternYee-OCzVmGQJ99BRNrIF": {
+    "id": "twitch_KawaiiAmazingInternYee-OCzVmGQJ99BRNrIF",
+    "url": "https://www.twitch.tv/vanillamace/clip/KawaiiAmazingInternYee-OCzVmGQJ99BRNrIF",
+    "channel": "vanillamace",
+    "platform": "twitch",
+    "title": "HER REACTION LOL",
+    "views": 502,
+    "created": 1795145479,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934481131",
+    "vod_offset": 5422,
+    "cluster": 1,
+    "added": 1795217761
+  },
+  "twitch_VibrantNeighborlyBanana4Head-cbyX6mgcOlQD0aVa": {
+    "id": "twitch_VibrantNeighborlyBanana4Head-cbyX6mgcOlQD0aVa",
+    "url": "https://www.twitch.tv/vanosscrew/clip/VibrantNeighborlyBanana4Head-cbyX6mgcOlQD0aVa",
+    "channel": "vanosscrew",
+    "platform": "twitch",
+    "title": "CAN YOU PET A DOG IN GTA6?",
+    "views": 503,
+    "created": 1795144018,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934462012",
+    "vod_offset": 4361,
+    "cluster": 1,
+    "added": 1795217761
   }
 }
