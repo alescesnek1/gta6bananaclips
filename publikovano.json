@@ -529,5 +529,35 @@
     ],
     "quote": "yeah, hey man free we just slapped the S*** out",
     "slot": "2026-11-20T03:30:00+01:00"
+  },
+  "twitch_ClearDifferentGarlicNomNom-Fs_0YNyTuWAtVMSk": {
+    "url": "https://6affcac9244ac8be252dfeb0--gta6bananaclips-media.netlify.app/20261119/twitch_ClearDifferentGarlicNomNom-Fs_0YNyTuWAtVMSk.mp4",
+    "path": "20261119/twitch_ClearDifferentGarlicNomNom-Fs_0YNyTuWAtVMSk.mp4",
+    "due": "2026-11-20T08:03:00+01:00",
+    "draft": false,
+    "posts": {
+      "6af7142262b70b94b01ac608": "6affcad07b0a126ceba91539",
+      "6af7155e62b70b94b01ad06f": "6affcad0d5f8acdd0d6ef02c",
+      "6af714e862b70b94b01acc7f": "6affcad1ca85ebefb0f68d10"
+    },
+    "mb": 7.3,
+    "channel": "2xrakai",
+    "platform": "twitch",
+    "score": 603.2,
+    "hot": false,
+    "rating": 5,
+    "views": 2939,
+    "golden": false,
+    "title": "2xrakai: The gators, the gators, the gators in GTA 6! 😭",
+    "video_id": "2932781377",
+    "vod_offset": 4316,
+    "created": 1795066614,
+    "payoff": "https://6affcac9244ac8be252dfeb0--gta6bananaclips-media.netlify.app/20261119/twitch_ClearDifferentGarlicNomNom-Fs_0YNyTuWAtVMSk_payoff.mp4",
+    "funny": 0.0,
+    "tags": [
+      "rage"
+    ],
+    "quote": "Fly back to Brian's, my area!",
+    "slot": "2026-11-20T08:00:00+01:00"
   }
 }
