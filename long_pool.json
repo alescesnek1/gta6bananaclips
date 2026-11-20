@@ -33340,5 +33340,19 @@
     "vod_offset": 757,
     "cluster": 1,
     "added": 1795208311
+  },
+  "twitch_EnthusiasticStrongGrasshopperBabyRage-nr7OU0culZ3iR1CL": {
+    "id": "twitch_EnthusiasticStrongGrasshopperBabyRage-nr7OU0culZ3iR1CL",
+    "url": "https://www.twitch.tv/chiblee/clip/EnthusiasticStrongGrasshopperBabyRage-nr7OU0culZ3iR1CL",
+    "channel": "chiblee",
+    "platform": "twitch",
+    "title": "EBLAN",
+    "views": 501,
+    "created": 1795154518,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934155267",
+    "vod_offset": 32239,
+    "cluster": 1,
+    "added": 1795208611
   }
 }
