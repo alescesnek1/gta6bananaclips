@@ -24409,5 +24409,19 @@
     "src_mb": 9.2,
     "source": "https://6b000e55de7f319115cb445e--gta6bananaclips-media.netlify.app/yt/youtube_lBrGiDG_BVc_8234_16x9.mp4",
     "yt_url": "https://www.youtube.com/watch?v=lBrGiDG_BVc"
+  },
+  "twitch_NastyConfidentOpossumPupper-x1E5ITWpFfmVq4K3": {
+    "id": "twitch_NastyConfidentOpossumPupper-x1E5ITWpFfmVq4K3",
+    "url": "https://www.twitch.tv/extraemily/clip/NastyConfidentOpossumPupper-x1E5ITWpFfmVq4K3",
+    "channel": "extraemily",
+    "platform": "twitch",
+    "title": "Emily reacts to Jason and Lucia in bed",
+    "views": 500,
+    "created": 1795130097,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934173613",
+    "vod_offset": 6855,
+    "cluster": 1,
+    "added": 1795167508
   }
 }
