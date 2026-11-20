@@ -228,5 +228,38 @@
     ],
     "quote": "What am I like to?",
     "slot": "2026-11-19T23:00:00+01:00"
+  },
+  "youtube_qSyo5d-dVzA_16163": {
+    "url": "https://6affb6a7964eca43204ce8d5--gta6bananaclips-media.netlify.app/20261119/youtube_qSyo5d-dVzA_16163.mp4",
+    "path": "20261119/youtube_qSyo5d-dVzA_16163.mp4",
+    "due": "2026-11-20T05:12:00+01:00",
+    "draft": false,
+    "posts": {
+      "6afc433aece6dfde5ff6749b": "6affb6aa4c1afd05dee7fcd9",
+      "6afc42e6ece6dfde5ff66dca": "6affb6ab4c1afd05dee7fd0b",
+      "6afc4429ece6dfde5ff683db": "6affb6abd5f8acdd0d66de18",
+      "6afc4413ece6dfde5ff68286": "6affb6ac4c1afd05dee7fd4c",
+      "6afc43ffece6dfde5ff68162": "6affb6ac738ce4635f7f1b0a"
+    },
+    "mb": 12.8,
+    "channel": "ishowspeed",
+    "platform": "youtube",
+    "score": 39218145.5,
+    "hot": false,
+    "rating": 6,
+    "views": 64432830,
+    "golden": false,
+    "title": "IShowSpeed Can't Get Over GTA 6's Details! 💀",
+    "video_id": null,
+    "vod_offset": null,
+    "created": 1795108065,
+    "payoff": null,
+    "funny": 0.0,
+    "tags": [
+      "first-reaction",
+      "crash"
+    ],
+    "quote": "How do I go all the way back there though?",
+    "slot": "2026-11-20T05:00:00+01:00"
   }
 }
