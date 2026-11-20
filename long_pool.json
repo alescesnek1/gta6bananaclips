@@ -32574,5 +32574,128 @@
     "src_mb": 8.3,
     "source": "https://6b009aa7a979e3becbbd55f1--gta6bananaclips-media.netlify.app/yt/youtube_169ZzvPxvvM_3863_16x9.mp4",
     "yt_url": "https://www.youtube.com/watch?v=169ZzvPxvvM"
+  },
+  "twitch_GlamorousPeppyGiraffeThunBeast-4nzoOandU9fvfsdR": {
+    "id": "twitch_GlamorousPeppyGiraffeThunBeast-4nzoOandU9fvfsdR",
+    "url": "https://www.twitch.tv/silky/clip/GlamorousPeppyGiraffeThunBeast-4nzoOandU9fvfsdR",
+    "channel": "silky",
+    "platform": "twitch",
+    "title": "he unlocked a secret clip",
+    "views": 500,
+    "created": 1795148348,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934535359",
+    "vod_offset": 5082,
+    "cluster": 1,
+    "added": 1795202302
+  },
+  "twitch_IncredulousBlitheOrcaFailFish-_hXzMyI-JF_BZTNV": {
+    "id": "twitch_IncredulousBlitheOrcaFailFish-_hXzMyI-JF_BZTNV",
+    "url": "https://www.twitch.tv/ishowspeed/clip/IncredulousBlitheOrcaFailFish-_hXzMyI-JF_BZTNV",
+    "channel": "ishowspeed",
+    "platform": "twitch",
+    "title": ".",
+    "views": 519,
+    "created": 1795118608,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932319814",
+    "vod_offset": 110619,
+    "cluster": 1,
+    "added": 1795202302
+  },
+  "twitch_ObedientInspiringDuckHassanChop-PTTGcFi7UzHl4qFE": {
+    "id": "twitch_ObedientInspiringDuckHassanChop-PTTGcFi7UzHl4qFE",
+    "url": "https://www.twitch.tv/ishowspeed/clip/ObedientInspiringDuckHassanChop-PTTGcFi7UzHl4qFE",
+    "channel": "ishowspeed",
+    "platform": "twitch",
+    "title": "\"Speed tried a bank heist in GTA VI 😭 LIVE reaction\"",
+    "views": 507,
+    "created": 1795122030,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932319814",
+    "vod_offset": 113977,
+    "cluster": 1,
+    "added": 1795202302,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/ishowspeed/20261119_twitch_ObedientInspiringDuckHassanChop-PTTGcFi7UzHl4qFE/source.mp4",
+    "peak": 16.25,
+    "cut": [
+      6.57,
+      20.17
+    ],
+    "dur": 30.02,
+    "tags": [
+      "first-reaction",
+      "rage",
+      "wow"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.2,
+      "crash": 0.0,
+      "rage": 0.72,
+      "first-reaction": 0.77,
+      "wow": 0.4,
+      "_loud": 1.9,
+      "_motion": 28.1
+    },
+    "quote": "But they always leave us.",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.35,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 1.0,
+      "first-reaction": 0.95,
+      "wow": 0.0
+    },
+    "primary": "mission",
+    "proven": [
+      "first-reaction"
+    ],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "mission": [
+        "text"
+      ],
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ]
+    },
+    "fun": 0.4,
+    "signals": {
+      "siren": 0.0,
+      "impact": 16.3,
+      "loud": 1.9,
+      "motion": 22.9,
+      "sustained": 0.8,
+      "spike": 2.1,
+      "laugh": 0,
+      "static": 0.02,
+      "letterbox": 0.0,
+      "luma": 46.4,
+      "dark": 0.0
+    }
   }
 }
