@@ -32398,6 +32398,20 @@
     "video_id": "2934274188",
     "vod_offset": 6803,
     "cluster": 1,
-    "added": 1795200470
+    "added": 1795200690
+  },
+  "twitch_SleepyHilariousPoxVoteYea-8w7sFcM36xd2g2bP": {
+    "id": "twitch_SleepyHilariousPoxVoteYea-8w7sFcM36xd2g2bP",
+    "url": "https://www.twitch.tv/emiru/clip/SleepyHilariousPoxVoteYea-8w7sFcM36xd2g2bP",
+    "channel": "emiru",
+    "platform": "twitch",
+    "title": "⭐🖤 EMI'S SPECIAL TATTOOS ⭐🖤",
+    "views": 516,
+    "created": 1795121406,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934110897",
+    "vod_offset": 1526,
+    "cluster": 1,
+    "added": 1795200690
   }
 }
