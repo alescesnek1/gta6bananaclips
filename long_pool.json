@@ -24912,5 +24912,33 @@
     "vod_offset": 4784,
     "cluster": 1,
     "added": 1795182548
+  },
+  "twitch_CreativeOilyPoxPipeHype-XzQXLYZJIS1Zl9H9": {
+    "id": "twitch_CreativeOilyPoxPipeHype-XzQXLYZJIS1Zl9H9",
+    "url": "https://www.twitch.tv/2xrakai/clip/CreativeOilyPoxPipeHype-XzQXLYZJIS1Zl9H9",
+    "channel": "2xrakai",
+    "platform": "twitch",
+    "title": "I owe y'all 100 songs",
+    "views": 505,
+    "created": 1795146507,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934375479",
+    "vod_offset": 1801,
+    "cluster": 1,
+    "added": 1795183109
+  },
+  "twitch_DrabHelpfulHamburgerEagleEye-d5DuX91uYoz7wbxH": {
+    "id": "twitch_DrabHelpfulHamburgerEagleEye-d5DuX91uYoz7wbxH",
+    "url": "https://www.twitch.tv/caseoh_/clip/DrabHelpfulHamburgerEagleEye-d5DuX91uYoz7wbxH",
+    "channel": "caseoh_",
+    "platform": "twitch",
+    "title": "HOLT TOLEDO",
+    "views": 524,
+    "created": 1795138365,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934099165",
+    "vod_offset": 19208,
+    "cluster": 1,
+    "added": 1795183109
   }
 }
