@@ -328,5 +328,35 @@
     "live": true,
     "viewers": 30866,
     "spike_z": 87.0
+  },
+  "twitch_EasyDignifiedTroutCorgiDerp-k60y_FOyVIyCi1Gb": {
+    "url": "https://6afffeb1f3a1f0b0ed1c834c--gta6bananaclips-media.netlify.app/20261119/twitch_EasyDignifiedTroutCorgiDerp-k60y_FOyVIyCi1Gb.mp4",
+    "path": "20261119/twitch_EasyDignifiedTroutCorgiDerp-k60y_FOyVIyCi1Gb.mp4",
+    "due": "2026-11-20T10:18:00+01:00",
+    "draft": false,
+    "posts": {
+      "6afc42e6ece6dfde5ff66dca": "6afffeb90f5eda1a57d1d2e5",
+      "6afc4413ece6dfde5ff68286": "6afffebad5f8acdd0d816a43",
+      "6afc43ffece6dfde5ff68162": "6afffebad5f8acdd0d816a84"
+    },
+    "mb": 4.7,
+    "channel": "ishowspeed",
+    "platform": "twitch",
+    "score": 251.8,
+    "hot": false,
+    "rating": 3,
+    "views": 502,
+    "golden": false,
+    "title": "IShowSpeed Did Not See This Coming In GTA 6! 😭",
+    "video_id": null,
+    "vod_offset": null,
+    "created": 1795108159,
+    "payoff": "https://6afffeb1f3a1f0b0ed1c834c--gta6bananaclips-media.netlify.app/20261119/twitch_EasyDignifiedTroutCorgiDerp-k60y_FOyVIyCi1Gb_payoff.mp4",
+    "funny": 0.0,
+    "tags": [
+      "crash"
+    ],
+    "quote": "My dad",
+    "slot": "2026-11-20T10:00:00+01:00"
   }
 }
