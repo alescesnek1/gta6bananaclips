@@ -24858,5 +24858,31 @@
     "vod_offset": 7996,
     "cluster": 1,
     "added": 1795181608
+  },
+  "twitch_BlitheGoodStrawberryDxAbomb-ByJFgV7E00llUIHn": {
+    "id": "twitch_BlitheGoodStrawberryDxAbomb-ByJFgV7E00llUIHn",
+    "url": "https://www.twitch.tv/plaqueboymax/clip/BlitheGoodStrawberryDxAbomb-ByJFgV7E00llUIHn",
+    "channel": "plaqueboymax",
+    "platform": "twitch",
+    "title": "Y to boost",
+    "views": 501,
+    "created": 1795144670,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934476444",
+    "vod_offset": 4799,
+    "cluster": 1,
+    "added": 1795182222
+  },
+  "twitch_SecretiveSmokyLeopardSwiftRage-Vn4fCraIy0taKZHp": {
+    "id": "twitch_SecretiveSmokyLeopardSwiftRage-Vn4fCraIy0taKZHp",
+    "url": "https://www.twitch.tv/ishowspeed/clip/SecretiveSmokyLeopardSwiftRage-Vn4fCraIy0taKZHp",
+    "channel": "ishowspeed",
+    "platform": "twitch",
+    "title": "tf",
+    "views": 500,
+    "created": 1795108252,
+    "category": "Grand Theft Auto VI",
+    "cluster": 1,
+    "added": 1795182222
   }
 }
