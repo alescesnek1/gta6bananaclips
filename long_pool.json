@@ -32385,5 +32385,19 @@
       "luma": 46.8,
       "dark": 0.0
     }
+  },
+  "twitch_RamshackleHedonisticChamoisCoolCat-sETUTSMZ78b5Utt-": {
+    "id": "twitch_RamshackleHedonisticChamoisCoolCat-sETUTSMZ78b5Utt-",
+    "url": "https://www.twitch.tv/typicalgamer/clip/RamshackleHedonisticChamoisCoolCat-sETUTSMZ78b5Utt-",
+    "channel": "typicalgamer",
+    "platform": "twitch",
+    "title": "stadium flyby gone wrong",
+    "views": 502,
+    "created": 1795135766,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934274188",
+    "vod_offset": 6803,
+    "cluster": 1,
+    "added": 1795200470
   }
 }
