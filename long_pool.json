@@ -34276,5 +34276,19 @@
     "vod_offset": 9362,
     "cluster": 1,
     "added": 1795213426
+  },
+  "twitch_JollyBombasticTigerBuddhaBar-B0f_2Jec1NjwnUz5": {
+    "id": "twitch_JollyBombasticTigerBuddhaBar-B0f_2Jec1NjwnUz5",
+    "url": "https://www.twitch.tv/austinshow/clip/JollyBombasticTigerBuddhaBar-B0f_2Jec1NjwnUz5",
+    "channel": "austinshow",
+    "platform": "twitch",
+    "title": "Performative straightness",
+    "views": 504,
+    "created": 1795162053,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934547298",
+    "vod_offset": 17630,
+    "cluster": 1,
+    "added": 1795213748
   }
 }
