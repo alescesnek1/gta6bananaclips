@@ -24802,5 +24802,33 @@
     "vod_offset": 17365,
     "cluster": 2,
     "added": 1795179809
+  },
+  "twitch_FriendlyHealthyAardvarkPeteZaroll-1CPrNahxQinWoFH0": {
+    "id": "twitch_FriendlyHealthyAardvarkPeteZaroll-1CPrNahxQinWoFH0",
+    "url": "https://www.twitch.tv/gingy/clip/FriendlyHealthyAardvarkPeteZaroll-1CPrNahxQinWoFH0",
+    "channel": "gingy",
+    "platform": "twitch",
+    "title": "Gingy's Subtitles are on lol",
+    "views": 503,
+    "created": 1795137713,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934186834",
+    "vod_offset": 13714,
+    "cluster": 1,
+    "added": 1795180403
+  },
+  "twitch_ResourcefulCheerfulLegDAESuppy-BiUzqNqmSBm_E6bO": {
+    "id": "twitch_ResourcefulCheerfulLegDAESuppy-BiUzqNqmSBm_E6bO",
+    "url": "https://www.twitch.tv/swagg/clip/ResourcefulCheerfulLegDAESuppy-BiUzqNqmSBm_E6bO",
+    "channel": "swagg",
+    "platform": "twitch",
+    "title": "LMFAO",
+    "views": 504,
+    "created": 1795114207,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933956250",
+    "vod_offset": 2414,
+    "cluster": 1,
+    "added": 1795180403
   }
 }
