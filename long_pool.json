@@ -29071,5 +29071,19 @@
     "vod_offset": 3550,
     "cluster": 1,
     "added": 1795194230
+  },
+  "twitch_PerfectYummyEndiveFrankerZ-N4SrVnFFo4oq0Qkm": {
+    "id": "twitch_PerfectYummyEndiveFrankerZ-N4SrVnFFo4oq0Qkm",
+    "url": "https://www.twitch.tv/avoidingthepuddle/clip/PerfectYummyEndiveFrankerZ-N4SrVnFFo4oq0Qkm",
+    "channel": "avoidingthepuddle",
+    "platform": "twitch",
+    "title": "Wrestlemania",
+    "views": 521,
+    "created": 1795131949,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934239945",
+    "vod_offset": 5005,
+    "cluster": 1,
+    "added": 1795194526
   }
 }
