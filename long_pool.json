@@ -14176,13 +14176,13 @@
     "channel": "2xrakai",
     "platform": "twitch",
     "title": "the gators, the gators, the gators",
-    "views": 2939,
+    "views": 2962,
     "created": 1795066614,
     "category": "Grand Theft Auto VI",
     "video_id": "2932781377",
     "vod_offset": 4316,
     "cluster": 1,
-    "added": 1795148462,
+    "added": 1795148799,
     "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/2xrakai/20261119_twitch_ClearDifferentGarlicNomNom-Fs_0YNyTuWAtVMSk/source.mp4",
     "peak": 44.150000000000006,
     "cut": [
@@ -23434,5 +23434,19 @@
     "vod_offset": 1634,
     "cluster": 1,
     "added": 1795148484
+  },
+  "twitch_ZealousTrappedLark4Head-mTgpdH4RCj6JkmzZ": {
+    "id": "twitch_ZealousTrappedLark4Head-mTgpdH4RCj6JkmzZ",
+    "url": "https://www.twitch.tv/luality/clip/ZealousTrappedLark4Head-mTgpdH4RCj6JkmzZ",
+    "channel": "luality",
+    "platform": "twitch",
+    "title": "OH SHE GONE",
+    "views": 501,
+    "created": 1795068949,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932606635",
+    "vod_offset": 30773,
+    "cluster": 1,
+    "added": 1795148821
   }
 }
