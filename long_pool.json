@@ -22619,5 +22619,17 @@
     "vod_offset": 23004,
     "cluster": 2,
     "added": 1795136202
+  },
+  "twitch_BelovedDelightfulCroquetteLitty-doDBl6CT9dURtYtd": {
+    "id": "twitch_BelovedDelightfulCroquetteLitty-doDBl6CT9dURtYtd",
+    "url": "https://www.twitch.tv/thenicolet/clip/BelovedDelightfulCroquetteLitty-doDBl6CT9dURtYtd",
+    "channel": "thenicolet",
+    "platform": "twitch",
+    "title": "GTA 6 Launch!",
+    "views": 502,
+    "created": 1795067826,
+    "category": "Grand Theft Auto VI",
+    "cluster": 1,
+    "added": 1795136925
   }
 }
