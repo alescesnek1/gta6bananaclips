@@ -22523,13 +22523,90 @@
     "channel": "ludwig",
     "platform": "twitch",
     "title": "And they call the game woke",
-    "views": 512,
+    "views": 745,
     "created": 1795127849,
     "category": "Grand Theft Auto VI",
     "video_id": "2934132437",
     "vod_offset": 6845,
     "cluster": 1,
-    "added": 1795135114
+    "added": 1795138212,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/ludwig/20261119_twitch_BeautifulDaintyMomTwitchRaid-q4op7h8xugMC5r-E/source.mp4",
+    "peak": 27.450000000000003,
+    "cut": [
+      0.5,
+      30.47
+    ],
+    "dur": 32.21,
+    "tags": [
+      "rage",
+      "wow"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.0,
+      "rage": 0.72,
+      "first-reaction": 0.2,
+      "wow": 0.43,
+      "_loud": 2.3,
+      "_motion": 18.4
+    },
+    "quote": "yeah, hey man free we just slapped the S*** out",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.57,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.28
+    },
+    "primary": "rage",
+    "proven": [],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.51,
+    "signals": {
+      "siren": 0.0,
+      "impact": 7.0,
+      "loud": 2.6,
+      "motion": 15.0,
+      "sustained": 0.71,
+      "spike": 1.7,
+      "laugh": 0,
+      "static": 0.06,
+      "letterbox": 0.0,
+      "luma": 61.8,
+      "dark": 0.0
+    }
   },
   "twitch_RamshackleLaconicLapwingSpicyBoy-vXH5sbEmR5KAzDO7": {
     "id": "twitch_RamshackleLaconicLapwingSpicyBoy-vXH5sbEmR5KAzDO7",
@@ -22671,5 +22748,118 @@
     "vod_offset": 241,
     "cluster": 1,
     "added": 1795137506
+  },
+  "twitch_SuperOilyTeaRickroll-PvI5IXJB_Z1ycM7P": {
+    "id": "twitch_SuperOilyTeaRickroll-PvI5IXJB_Z1ycM7P",
+    "url": "https://www.twitch.tv/penta/clip/SuperOilyTeaRickroll-PvI5IXJB_Z1ycM7P",
+    "channel": "penta",
+    "platform": "twitch",
+    "title": "Penta Channels MoonMoon",
+    "views": 598,
+    "created": 1795132298,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932677749",
+    "vod_offset": 20277,
+    "added": 1795138212
+  },
+  "youtube_UwH_ZrLszBk_5464": {
+    "id": "youtube_UwH_ZrLszBk_5464",
+    "url": "https://6affa2265e7686e0b1404eb4--gta6bananaclips-media.netlify.app/yt/youtube_UwH_ZrLszBk_5464_16x9.mp4",
+    "channel": "darkviperau",
+    "platform": "youtube",
+    "title": "The BEST GTA VI LAUNCH Of All Time [PS5 Pro] [Part 3]",
+    "views": 815488,
+    "created": 1795129846,
+    "category": "The BEST GTA VI LAUNCH Of All Time [PS5 Pro] [Part 3] GTA 5 GTA V GTA Online Grand Theft Auto 5 Grand Theft Auto V GTA 5 Live GTA Live GTA Online Live GTA 5 Stream GTA Stream GTA Gameplay GTA Online Gameplay GTA 5 Speedrun GTA Speedrun Speedrun Chaos Mod GTA Chaos Mod GTA Challenge GTA 5 Challenge Rockstar Games GTA 6 Grand Theft Auto 6 Funny GTA Live Gaming Gaming Live DarkViperAU Matto Los Santos Cayo Perico Doomsday Heist Diamond Casino Pacifist Challenge Run Open World Gaming",
+    "signal_score": 0.96,
+    "added": 1795138217,
+    "peak": 30.15,
+    "cut": [
+      0.0,
+      33.35
+    ],
+    "dur": 33.35,
+    "tags": [
+      "first-reaction"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 0.78,
+      "wow": 0.0,
+      "_loud": 5.4,
+      "_motion": 17.4
+    },
+    "quote": "well link down below you can get it from BP",
+    "rendered": [
+      "fanpage"
+    ],
+    "cats": {
+      "funny": 0.25,
+      "rage": 0.25,
+      "fail": 0.25,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.95,
+      "wow": 0.25
+    },
+    "primary": "first-reaction",
+    "proven": [
+      "first-reaction"
+    ],
+    "evidence": {
+      "funny": [
+        "loud"
+      ],
+      "rage": [
+        "loud"
+      ],
+      "fail": [
+        "loud"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ],
+      "wow": [
+        "loud"
+      ]
+    },
+    "fun": 0.63,
+    "signals": {
+      "siren": 0.0,
+      "impact": 10.5,
+      "loud": 5.9,
+      "motion": 14.4,
+      "sustained": 0.61,
+      "spike": 1.5,
+      "laugh": 0,
+      "static": 0.06,
+      "letterbox": 0.0,
+      "luma": 84.8,
+      "dark": 0.0
+    },
+    "seg_from": 0.0,
+    "src_mb": 11.3,
+    "source": "https://6affa2265e7686e0b1404eb4--gta6bananaclips-media.netlify.app/yt/youtube_UwH_ZrLszBk_5464_16x9.mp4",
+    "yt_url": "https://www.youtube.com/watch?v=UwH_ZrLszBk"
   }
 }
