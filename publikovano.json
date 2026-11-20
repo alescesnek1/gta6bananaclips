@@ -625,5 +625,40 @@
     ],
     "quote": "Did you not get it before, como miepina?",
     "slot": "2026-11-20T17:00:00+01:00"
+  },
+  "twitch_ObedientInspiringDuckHassanChop-PTTGcFi7UzHl4qFE": {
+    "url": "https://6b009d04e43f5d1327d92900--gta6bananaclips-media.netlify.app/20261120/twitch_ObedientInspiringDuckHassanChop-PTTGcFi7UzHl4qFE.mp4",
+    "path": "20261120/twitch_ObedientInspiringDuckHassanChop-PTTGcFi7UzHl4qFE.mp4",
+    "due": "2026-11-20T21:31:00+01:00",
+    "draft": false,
+    "posts": {
+      "6af7142262b70b94b01ac608": "6b009d0dd425f1473a0956d2",
+      "6af713b962b70b94b01ac27e": "6b009d0e44c361911355bffe",
+      "6af7130a62b70b94b01abcc9": "6b009d0f73831df0147f384c",
+      "6af7155e62b70b94b01ad06f": "6b009d10861298c9b147c596",
+      "6af714e862b70b94b01acc7f": "6b009d10e3772ee0cf5e2c7d",
+      "6af714d062b70b94b01acbbc": "6b009d11d425f1473a0958c2"
+    },
+    "mb": 7.3,
+    "channel": "ishowspeed",
+    "platform": "twitch",
+    "score": 210.1,
+    "hot": false,
+    "rating": 3,
+    "views": 507,
+    "golden": false,
+    "title": "IShowSpeed Can't Believe How GTA 6 Looks! 😭",
+    "video_id": "2932319814",
+    "vod_offset": 113977,
+    "created": 1795122030,
+    "payoff": "https://6b009d04e43f5d1327d92900--gta6bananaclips-media.netlify.app/20261120/twitch_ObedientInspiringDuckHassanChop-PTTGcFi7UzHl4qFE_payoff.mp4",
+    "funny": 0.0,
+    "tags": [
+      "first-reaction",
+      "rage",
+      "wow"
+    ],
+    "quote": "But they always leave us.",
+    "slot": "2026-11-20T21:30:00+01:00"
   }
 }
