@@ -22987,5 +22987,19 @@
     "vod_offset": 4508,
     "cluster": 1,
     "added": 1795139910
+  },
+  "twitch_LittleStylishPastaBatChest-i4cAgYxPSHJNxCg5": {
+    "id": "twitch_LittleStylishPastaBatChest-i4cAgYxPSHJNxCg5",
+    "url": "https://www.twitch.tv/avoidingthepuddle/clip/LittleStylishPastaBatChest-i4cAgYxPSHJNxCg5",
+    "channel": "avoidingthepuddle",
+    "platform": "twitch",
+    "title": "Sick sound effects",
+    "views": 504,
+    "created": 1795129509,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934239945",
+    "vod_offset": 2544,
+    "cluster": 1,
+    "added": 1795140206
   }
 }
