@@ -22657,5 +22657,19 @@
     "category": "Grand Theft Auto VI",
     "cluster": 1,
     "added": 1795137234
+  },
+  "twitch_BlatantOptimisticSpaghettiWutFace-gWSQWE-52sxWmxKS": {
+    "id": "twitch_BlatantOptimisticSpaghettiWutFace-gWSQWE-52sxWmxKS",
+    "url": "https://www.twitch.tv/realkatieb/clip/BlatantOptimisticSpaghettiWutFace-gWSQWE-52sxWmxKS",
+    "channel": "realkatieb",
+    "platform": "twitch",
+    "title": "loogiegate",
+    "views": 506,
+    "created": 1795116197,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934036021",
+    "vod_offset": 241,
+    "cluster": 1,
+    "added": 1795137506
   }
 }
