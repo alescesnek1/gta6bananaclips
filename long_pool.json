@@ -23592,5 +23592,19 @@
     "vod_offset": 11080,
     "cluster": 1,
     "added": 1795151978
+  },
+  "twitch_GentleArtsyAlligatorKeepo-aLHHYnxaP44v3Uoc": {
+    "id": "twitch_GentleArtsyAlligatorKeepo-aLHHYnxaP44v3Uoc",
+    "url": "https://www.twitch.tv/jerma985/clip/GentleArtsyAlligatorKeepo-aLHHYnxaP44v3Uoc",
+    "channel": "jerma985",
+    "platform": "twitch",
+    "title": "Jerma HAS to limit-test, drive into cars & stuff",
+    "views": 1113,
+    "created": 1795067967,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933227596",
+    "vod_offset": 4254,
+    "cluster": 1,
+    "added": 1795152198
   }
 }
