@@ -24734,5 +24734,17 @@
     "vod_offset": 13846,
     "cluster": 1,
     "added": 1795176514
+  },
+  "twitch_GleamingSpikyCheesecakeTTours-QqeuMmrOPvqK-K5Q": {
+    "id": "twitch_GleamingSpikyCheesecakeTTours-QqeuMmrOPvqK-K5Q",
+    "url": "https://www.twitch.tv/ishowspeed/clip/GleamingSpikyCheesecakeTTours-QqeuMmrOPvqK-K5Q",
+    "channel": "ishowspeed",
+    "platform": "twitch",
+    "title": "ouuu shi",
+    "views": 503,
+    "created": 1795103331,
+    "category": "Grand Theft Auto VI",
+    "cluster": 1,
+    "added": 1795177445
   }
 }
