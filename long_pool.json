@@ -24477,5 +24477,33 @@
     "vod_offset": 11643,
     "cluster": 1,
     "added": 1795169015
+  },
+  "twitch_BraveHorribleFishNerfBlueBlaster-R4rE_4p77Dypy90F": {
+    "id": "twitch_BraveHorribleFishNerfBlueBlaster-R4rE_4p77Dypy90F",
+    "url": "https://www.twitch.tv/vanillamace/clip/BraveHorribleFishNerfBlueBlaster-R4rE_4p77Dypy90F",
+    "channel": "vanillamace",
+    "platform": "twitch",
+    "title": "vanilla meets local wild life",
+    "views": 502,
+    "created": 1795147528,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934481131",
+    "vod_offset": 7391,
+    "cluster": 1,
+    "added": 1795169320
+  },
+  "twitch_TalentedFancyWaspBCouch-jUHAHnk6acGKeVXY": {
+    "id": "twitch_TalentedFancyWaspBCouch-jUHAHnk6acGKeVXY",
+    "url": "https://www.twitch.tv/wickedd/clip/TalentedFancyWaspBCouch-jUHAHnk6acGKeVXY",
+    "channel": "wickedd",
+    "platform": "twitch",
+    "title": "gangsta",
+    "views": 581,
+    "created": 1795119212,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933248094",
+    "vod_offset": 4160,
+    "cluster": 1,
+    "added": 1795169320
   }
 }
