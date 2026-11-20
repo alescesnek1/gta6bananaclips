@@ -32704,13 +32704,13 @@
     "channel": "zoomaa",
     "platform": "twitch",
     "title": "didnt save",
-    "views": 502,
+    "views": 513,
     "created": 1795143932,
     "category": "Grand Theft Auto VI",
     "video_id": "2933973589",
     "vod_offset": 31112,
     "cluster": 1,
-    "added": 1795202851
+    "added": 1795203157
   },
   "twitch_MuddyAlluringAardvarkTBTacoRight-vsA4rzpgh_WD7ArG": {
     "id": "twitch_MuddyAlluringAardvarkTBTacoRight-vsA4rzpgh_WD7ArG",
@@ -32718,13 +32718,13 @@
     "channel": "bilzo",
     "platform": "twitch",
     "title": "nah jason lmfao",
-    "views": 512,
+    "views": 534,
     "created": 1795185861,
     "category": "Grand Theft Auto VI",
     "video_id": "2934628152",
     "vod_offset": 563,
     "cluster": 1,
-    "added": 1795202851
+    "added": 1795203157
   },
   "twitch_PerfectKindDogeChocolateRain-01M67AZSfBFnh0dz": {
     "id": "twitch_PerfectKindDogeChocolateRain-01M67AZSfBFnh0dz",
@@ -32732,13 +32732,13 @@
     "channel": "missmikkaa",
     "platform": "twitch",
     "title": "Polar bear didn't like their travel arrangement",
-    "views": 505,
+    "views": 507,
     "created": 1795120590,
     "category": "Grand Theft Auto VI",
     "video_id": "2933682633",
     "vod_offset": 24635,
     "cluster": 1,
-    "added": 1795202851
+    "added": 1795203157
   },
   "twitch_TrustworthyAgitatedPorcupineUWot-MSgja37RlNvlVEG2": {
     "id": "twitch_TrustworthyAgitatedPorcupineUWot-MSgja37RlNvlVEG2",
@@ -32746,12 +32746,52 @@
     "channel": "dahlia",
     "platform": "twitch",
     "title": "for cardio",
-    "views": 510,
+    "views": 546,
     "created": 1795129110,
     "category": "Grand Theft Auto VI",
     "video_id": "2933744639",
     "vod_offset": 28941,
     "cluster": 1,
-    "added": 1795202851
+    "added": 1795203157
+  },
+  "twitch_AbstemiousDeafJuiceTheRinger-qBv9zaNh_YxP90Ku": {
+    "id": "twitch_AbstemiousDeafJuiceTheRinger-qBv9zaNh_YxP90Ku",
+    "url": "https://www.twitch.tv/dinah/clip/AbstemiousDeafJuiceTheRinger-qBv9zaNh_YxP90Ku",
+    "channel": "dinah",
+    "platform": "twitch",
+    "title": "[PS5 GIVEAWAY + 3 COPIES OF GTA 6 - !gta6]🔴FINISHING MAIN STORY NOW [24/7]🔴[EN/中文/粤语]🔴WORLD FIRST 100% RUN🔴PS5 PRO 60FPS🔴!tier3 !gta6",
+    "views": 508,
+    "created": 1795129832,
+    "category": "Grand Theft Auto VI",
+    "cluster": 1,
+    "added": 1795203157
+  },
+  "twitch_EntertainingSillyDeerBleedPurple-PZTfsHBXFv6f_vDq": {
+    "id": "twitch_EntertainingSillyDeerBleedPurple-PZTfsHBXFv6f_vDq",
+    "url": "https://www.twitch.tv/caseoh_/clip/EntertainingSillyDeerBleedPurple-PZTfsHBXFv6f_vDq",
+    "channel": "caseoh_",
+    "platform": "twitch",
+    "title": "beef slap",
+    "views": 952,
+    "created": 1795186049,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934099165",
+    "vod_offset": 17225,
+    "cluster": 1,
+    "added": 1795203157
+  },
+  "twitch_FreezingCoyEyeballPupper-ci_dJZzp9iybAyhY": {
+    "id": "twitch_FreezingCoyEyeballPupper-ci_dJZzp9iybAyhY",
+    "url": "https://www.twitch.tv/realkatieb/clip/FreezingCoyEyeballPupper-ci_dJZzp9iybAyhY",
+    "channel": "realkatieb",
+    "platform": "twitch",
+    "title": "lol",
+    "views": 519,
+    "created": 1795121851,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934036021",
+    "vod_offset": 5948,
+    "cluster": 1,
+    "added": 1795203157
   }
 }
