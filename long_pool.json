@@ -23704,5 +23704,17 @@
     "vod_offset": 21259,
     "cluster": 1,
     "added": 1795154009
+  },
+  "twitch_PlausibleCredulousSnailMrDestructoid-i-eoqFUyrTLlJ625": {
+    "id": "twitch_PlausibleCredulousSnailMrDestructoid-i-eoqFUyrTLlJ625",
+    "url": "https://www.twitch.tv/thenicolet/clip/PlausibleCredulousSnailMrDestructoid-i-eoqFUyrTLlJ625",
+    "channel": "thenicolet",
+    "platform": "twitch",
+    "title": "GTA 6 Launch!",
+    "views": 603,
+    "created": 1795073413,
+    "category": "Grand Theft Auto VI",
+    "cluster": 1,
+    "added": 1795154599
   }
 }
