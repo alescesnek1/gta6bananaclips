@@ -24884,5 +24884,33 @@
     "category": "Grand Theft Auto VI",
     "cluster": 1,
     "added": 1795182222
+  },
+  "twitch_FastTardyArtichokePunchTrees-LTb-Drv-wh_ZHD0s": {
+    "id": "twitch_FastTardyArtichokePunchTrees-LTb-Drv-wh_ZHD0s",
+    "url": "https://www.twitch.tv/cohhcarnage/clip/FastTardyArtichokePunchTrees-LTb-Drv-wh_ZHD0s",
+    "channel": "cohhcarnage",
+    "platform": "twitch",
+    "title": "test",
+    "views": 635,
+    "created": 1795095964,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933635259",
+    "vod_offset": 2500,
+    "cluster": 1,
+    "added": 1795182548
+  },
+  "twitch_VictoriousAdventurousSaladJebaited-ZY-lkBoyLmBXpRDN": {
+    "id": "twitch_VictoriousAdventurousSaladJebaited-ZY-lkBoyLmBXpRDN",
+    "url": "https://www.twitch.tv/cohhcarnage/clip/VictoriousAdventurousSaladJebaited-ZY-lkBoyLmBXpRDN",
+    "channel": "cohhcarnage",
+    "platform": "twitch",
+    "title": "Welcome to GTA",
+    "views": 542,
+    "created": 1795097179,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933635259",
+    "vod_offset": 4784,
+    "cluster": 1,
+    "added": 1795182548
   }
 }
