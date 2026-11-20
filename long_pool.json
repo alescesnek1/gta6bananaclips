@@ -25054,5 +25054,19 @@
     "vod_offset": 11765,
     "cluster": 1,
     "added": 1795184626
+  },
+  "twitch_OutstandingVastPassionfruitPMSTwin-So8mKNgwCWCVMN4l": {
+    "id": "twitch_OutstandingVastPassionfruitPMSTwin-So8mKNgwCWCVMN4l",
+    "url": "https://www.twitch.tv/kaicenat/clip/OutstandingVastPassionfruitPMSTwin-So8mKNgwCWCVMN4l",
+    "channel": "kaicenat",
+    "platform": "twitch",
+    "title": "AYOOO WOAH GAME OF THE YEAR LOL",
+    "views": 506,
+    "created": 1795114891,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932305259",
+    "vod_offset": 105963,
+    "cluster": 1,
+    "added": 1795184991
   }
 }
