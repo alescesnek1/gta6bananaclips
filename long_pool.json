@@ -24531,5 +24531,33 @@
     "vod_offset": 21663,
     "cluster": 1,
     "added": 1795170513
+  },
+  "twitch_BombasticTriangularMushroomWow-R9P2XJk0cx4Q0JjV": {
+    "id": "twitch_BombasticTriangularMushroomWow-R9P2XJk0cx4Q0JjV",
+    "url": "https://www.twitch.tv/jill/clip/BombasticTriangularMushroomWow-R9P2XJk0cx4Q0JjV",
+    "channel": "jill",
+    "platform": "twitch",
+    "title": "Jill vs the mosquito",
+    "views": 542,
+    "created": 1795137910,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934354478",
+    "vod_offset": 4616,
+    "cluster": 1,
+    "added": 1795171705
+  },
+  "twitch_ReliableWonderfulDinosaurCeilingCat-EBBtppfsPIZzjD4r": {
+    "id": "twitch_ReliableWonderfulDinosaurCeilingCat-EBBtppfsPIZzjD4r",
+    "url": "https://www.twitch.tv/wickedd/clip/ReliableWonderfulDinosaurCeilingCat-EBBtppfsPIZzjD4r",
+    "channel": "wickedd",
+    "platform": "twitch",
+    "title": "lmfaoo",
+    "views": 581,
+    "created": 1795118960,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933248094",
+    "vod_offset": 6350,
+    "cluster": 1,
+    "added": 1795171705
   }
 }
