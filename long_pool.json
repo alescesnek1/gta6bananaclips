@@ -34388,5 +34388,19 @@
     "vod_offset": 34847,
     "cluster": 1,
     "added": 1795215050
+  },
+  "twitch_PricklyWrongJalapenoSeemsGood-oC3ow3lOJoVqflCk": {
+    "id": "twitch_PricklyWrongJalapenoSeemsGood-oC3ow3lOJoVqflCk",
+    "url": "https://www.twitch.tv/bilzo/clip/PricklyWrongJalapenoSeemsGood-oC3ow3lOJoVqflCk",
+    "channel": "bilzo",
+    "platform": "twitch",
+    "title": "How much time do you need?",
+    "views": 501,
+    "created": 1795159302,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934628152",
+    "vod_offset": 3131,
+    "cluster": 1,
+    "added": 1795215889
   }
 }
