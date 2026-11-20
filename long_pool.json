@@ -24463,5 +24463,19 @@
     "category": "Grand Theft Auto VI",
     "cluster": 1,
     "added": 1795168415
+  },
+  "twitch_StrongFreezingEggGrammarKing-rFO7Oei7zRluL1im": {
+    "id": "twitch_StrongFreezingEggGrammarKing-rFO7Oei7zRluL1im",
+    "url": "https://www.twitch.tv/ronwentlive/clip/StrongFreezingEggGrammarKing-rFO7Oei7zRluL1im",
+    "channel": "ronwentlive",
+    "platform": "twitch",
+    "title": "Jack made it to GTA 6",
+    "views": 501,
+    "created": 1795131747,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934116683",
+    "vod_offset": 11643,
+    "cluster": 1,
+    "added": 1795169015
   }
 }
