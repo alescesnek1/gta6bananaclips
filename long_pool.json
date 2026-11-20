@@ -25941,13 +25941,91 @@
     "channel": "mrsavage",
     "platform": "twitch",
     "title": "oh",
-    "views": 501,
+    "views": 1806,
     "created": 1795118485,
     "category": "Grand Theft Auto VI",
     "video_id": "2933650557",
     "vod_offset": 24932,
     "cluster": 1,
-    "added": 1795150706
+    "added": 1795203826,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/_pool/twitch_AbrasiveSpeedyJackalOptimizePrime--EZk_gdHv7tkm4Mf/source.mp4",
+    "peak": 12.950000000000001,
+    "cut": [
+      1.41,
+      14.22
+    ],
+    "dur": 20.44,
+    "tags": [
+      "crash"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.2,
+      "crash": 0.3,
+      "rage": 0.0,
+      "first-reaction": 0.2,
+      "wow": 0.0,
+      "_loud": 4.4,
+      "_motion": 29.1
+    },
+    "quote": "I was supposed to be even wearing anything at that point.",
+    "cats": {
+      "funny": 0.25,
+      "rage": 0.25,
+      "fail": 0.25,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.25
+    },
+    "proven": [],
+    "evidence": {
+      "funny": [
+        "loud"
+      ],
+      "rage": [
+        "loud"
+      ],
+      "fail": [
+        "loud"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "loud"
+      ]
+    },
+    "fun": 0.62,
+    "signals": {
+      "siren": 0.0,
+      "impact": 35.5,
+      "loud": 6.2,
+      "motion": 23.2,
+      "sustained": 0.86,
+      "spike": 2.1,
+      "laugh": 0,
+      "static": 0.07,
+      "letterbox": 0.0,
+      "luma": 51.7,
+      "dark": 0.0
+    }
   },
   "twitch_SpineyThankfulYogurtBigBrother-Z7Zw6wUS5WROpSRb": {
     "id": "twitch_SpineyThankfulYogurtBigBrother-Z7Zw6wUS5WROpSRb",
@@ -30504,13 +30582,86 @@
     "channel": "maya",
     "platform": "twitch",
     "title": "extremely violent chiblee",
-    "views": 523,
+    "views": 2210,
     "created": 1795195909,
     "category": "Grand Theft Auto VI",
     "video_id": "2935062259",
     "vod_offset": 3087,
     "cluster": 1,
-    "added": 1795198115
+    "added": 1795203569,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/_pool/twitch_WisePlumpAlligatorTriHard-y6MMYwegVo5MdYak/source.mp4",
+    "peak": 20.150000000000002,
+    "cut": [
+      5.52,
+      21.66
+    ],
+    "dur": 30.7,
+    "tags": [
+      "rage"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.35,
+      "first-reaction": 0.2,
+      "wow": 0.04,
+      "_loud": 2.6,
+      "_motion": 13.2
+    },
+    "quote": "Here's what's gonna happen next.",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.35,
+      "fail": 0.0,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "primary": "rage",
+    "proven": [],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion-spike"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.36,
+    "signals": {
+      "siren": 0.0,
+      "impact": 22.9,
+      "loud": 2.6,
+      "motion": 10.3,
+      "sustained": 0.27,
+      "spike": 9.4,
+      "laugh": 0,
+      "static": 0.05,
+      "letterbox": 0.0,
+      "luma": 57.7,
+      "dark": 0.12
+    }
   },
   "twitch_ResoluteBombasticStrawberryPunchTrees-6knbQxrUw66VbLsR": {
     "id": "twitch_ResoluteBombasticStrawberryPunchTrees-6knbQxrUw66VbLsR",
@@ -30524,7 +30675,81 @@
     "video_id": "2932319814",
     "vod_offset": 116360,
     "cluster": 1,
-    "added": 1795198583
+    "added": 1795202841,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/_pool/twitch_ResoluteBombasticStrawberryPunchTrees-6knbQxrUw66VbLsR/source.mp4",
+    "peak": 27.05,
+    "cut": [
+      0.0,
+      30.02
+    ],
+    "dur": 30.02,
+    "tags": [
+      "funny",
+      "rage"
+    ],
+    "tag_scores": {
+      "funny": 1.0,
+      "glitch": 0.0,
+      "chase": 0.2,
+      "crash": 0.0,
+      "rage": 0.69,
+      "first-reaction": 0.2,
+      "wow": 0.08,
+      "_loud": 2.0,
+      "_motion": 27.7
+    },
+    "quote": "use case fuck that you what are you doing thinking",
+    "cats": {
+      "funny": 1.0,
+      "rage": 0.7,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "primary": "funny",
+    "proven": [],
+    "evidence": {
+      "funny": [
+        "text"
+      ],
+      "rage": [
+        "text"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.5,
+    "signals": {
+      "siren": 0.0,
+      "impact": 18.0,
+      "loud": 2.7,
+      "motion": 21.7,
+      "sustained": 0.81,
+      "spike": 2.1,
+      "laugh": 0,
+      "static": 0.02,
+      "letterbox": 0.0,
+      "luma": 52.8,
+      "dark": 0.0
+    }
   },
   "twitch_BlindingWonderfulMeerkatArsonNoSexy-ffQOjHyqkwtL1od3": {
     "id": "twitch_BlindingWonderfulMeerkatArsonNoSexy-ffQOjHyqkwtL1od3",
@@ -32919,5 +33144,159 @@
     "vod_offset": 3095,
     "cluster": 1,
     "added": 1795206038
+  },
+  "twitch_CharmingQuaintLlamaGOWSkull-289YQXog_9iKyMvx": {
+    "id": "twitch_CharmingQuaintLlamaGOWSkull-289YQXog_9iKyMvx",
+    "url": "https://www.twitch.tv/ishowspeed/clip/CharmingQuaintLlamaGOWSkull-289YQXog_9iKyMvx",
+    "channel": "ishowspeed",
+    "name": "IShowSpeed",
+    "platform": "twitch",
+    "title": "w",
+    "views": 1266,
+    "created": 1795084355,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932319814",
+    "vod_offset": 76427,
+    "added": 1795202433,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/_pool/twitch_CharmingQuaintLlamaGOWSkull-289YQXog_9iKyMvx/source.mp4",
+    "peak": 10.950000000000001,
+    "cut": [
+      0.0,
+      30.02
+    ],
+    "dur": 30.02,
+    "tags": [],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 0.2,
+      "wow": 0.0,
+      "_loud": 1.9,
+      "_motion": 19.8
+    },
+    "quote": "Yeah! Morning handsome.",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "proven": [],
+    "evidence": {
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.32,
+    "signals": {
+      "siren": 0.0,
+      "impact": 8.3,
+      "loud": 2.4,
+      "motion": 12.6,
+      "sustained": 0.45,
+      "spike": 5.3,
+      "laugh": 0,
+      "static": 0.01,
+      "letterbox": 0.0,
+      "luma": 67.0,
+      "dark": 0.03
+    }
+  },
+  "twitch_DeadEsteemedSpindleAMPTropPunch-caC8uLOVZCoxvd_o": {
+    "id": "twitch_DeadEsteemedSpindleAMPTropPunch-caC8uLOVZCoxvd_o",
+    "url": "https://www.twitch.tv/robthemaster1/clip/DeadEsteemedSpindleAMPTropPunch-caC8uLOVZCoxvd_o",
+    "channel": "robthemaster1",
+    "name": "RobTheMaster1",
+    "platform": "twitch",
+    "title": "gulp",
+    "views": 3018,
+    "created": 1795005397,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932287926",
+    "vod_offset": 214,
+    "added": 1795206224,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/_pool/twitch_DeadEsteemedSpindleAMPTropPunch-caC8uLOVZCoxvd_o/source.mp4",
+    "peak": 19.950000000000003,
+    "cut": [
+      2.23,
+      21.45
+    ],
+    "dur": 30.0,
+    "tags": [
+      "wow",
+      "rage"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.45,
+      "first-reaction": 0.2,
+      "wow": 0.82,
+      "_loud": 6.8,
+      "_motion": 8.4
+    },
+    "quote": "Dude, how are you feeling?",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.7
+    },
+    "primary": "wow",
+    "proven": [],
+    "evidence": {
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.51,
+    "signals": {
+      "siren": 0.0,
+      "impact": 12.9,
+      "loud": 4.4,
+      "motion": 9.1,
+      "sustained": 0.23,
+      "spike": 2.3,
+      "laugh": 0,
+      "static": 0.03,
+      "letterbox": 0.0,
+      "luma": 14.2,
+      "dark": 0.37
+    }
   }
 }
