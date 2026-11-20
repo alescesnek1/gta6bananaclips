@@ -24089,13 +24089,78 @@
     "channel": "lacy",
     "platform": "twitch",
     "title": "THE LUCIA SHOWER",
-    "views": 592,
+    "views": 2948,
     "created": 1795109368,
     "category": "Grand Theft Auto VI",
     "video_id": "2933767012",
     "vod_offset": 7914,
     "cluster": 1,
-    "added": 1795139910
+    "added": 1795192051,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/lacy/20261119_twitch_BreakableGlamorousHamburgerPrimeMe-jgWIVjeBE5spIXiU/source.mp4",
+    "peak": 22.55,
+    "cut": [
+      13.67,
+      28.43
+    ],
+    "dur": 38.05,
+    "tags": [
+      "wow",
+      "rage"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.4,
+      "first-reaction": 0.2,
+      "wow": 0.51,
+      "_loud": 33.4,
+      "_motion": 4.1
+    },
+    "quote": "We unlocked the Lucia shower after 30 hours.",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.35
+    },
+    "primary": "wow",
+    "proven": [],
+    "evidence": {
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.0,
+    "signals": {
+      "siren": 0.0,
+      "impact": 40.2,
+      "loud": 2.6,
+      "motion": 2.2,
+      "sustained": 0.0,
+      "spike": 1.1,
+      "laugh": 0,
+      "static": 0.84,
+      "letterbox": 0.0,
+      "luma": 39.4,
+      "dark": 0.0
+    }
   },
   "twitch_ScrumptiousRoundAsteriskPeteZarollTie-3I_9nGCbU4BFgyNZ": {
     "id": "twitch_ScrumptiousRoundAsteriskPeteZarollTie-3I_9nGCbU4BFgyNZ",
