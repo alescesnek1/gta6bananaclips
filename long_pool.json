@@ -24190,5 +24190,19 @@
     "vod_offset": 21266,
     "cluster": 1,
     "added": 1795164203
+  },
+  "twitch_WiseSolidJuiceRuleFive-4CitvrkS30C-5KNR": {
+    "id": "twitch_WiseSolidJuiceRuleFive-4CitvrkS30C-5KNR",
+    "url": "https://www.twitch.tv/theburntpeanut/clip/WiseSolidJuiceRuleFive-4CitvrkS30C-5KNR",
+    "channel": "theburntpeanut",
+    "platform": "twitch",
+    "title": "pnut meets a psycho",
+    "views": 505,
+    "created": 1795121297,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934030540",
+    "vod_offset": 5506,
+    "cluster": 1,
+    "added": 1795164831
   }
 }
