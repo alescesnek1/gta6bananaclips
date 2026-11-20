@@ -34360,5 +34360,33 @@
     "vod_offset": 16195,
     "cluster": 1,
     "added": 1795214317
+  },
+  "twitch_BraveHelpfulSwordKappa-qsILVGSorUkWKUS7": {
+    "id": "twitch_BraveHelpfulSwordKappa-qsILVGSorUkWKUS7",
+    "url": "https://www.twitch.tv/theburntpeanut/clip/BraveHelpfulSwordKappa-qsILVGSorUkWKUS7",
+    "channel": "theburntpeanut",
+    "platform": "twitch",
+    "title": "not 100%",
+    "views": 502,
+    "created": 1795159994,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934030540",
+    "vod_offset": 44342,
+    "cluster": 1,
+    "added": 1795215050
+  },
+  "twitch_KnottySpicyAyeayeMVGame-zFkBqQC6rEcnJxz8": {
+    "id": "twitch_KnottySpicyAyeayeMVGame-zFkBqQC6rEcnJxz8",
+    "url": "https://www.twitch.tv/stableronaldo/clip/KnottySpicyAyeayeMVGame-zFkBqQC6rEcnJxz8",
+    "channel": "stableronaldo",
+    "platform": "twitch",
+    "title": "TWITCH CHAT IN DA THE BACKGROUND LOL!",
+    "views": 558,
+    "created": 1795138268,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933798318",
+    "vod_offset": 34847,
+    "cluster": 1,
+    "added": 1795215050
   }
 }
