@@ -24176,5 +24176,19 @@
     "vod_offset": 246,
     "cluster": 1,
     "added": 1795163299
+  },
+  "twitch_AwkwardTenuousAlfalfaPunchTrees-OQDzvDF6chDgfZ7U": {
+    "id": "twitch_AwkwardTenuousAlfalfaPunchTrees-OQDzvDF6chDgfZ7U",
+    "url": "https://www.twitch.tv/hasanabi/clip/AwkwardTenuousAlfalfaPunchTrees-OQDzvDF6chDgfZ7U",
+    "channel": "hasanabi",
+    "platform": "twitch",
+    "title": "Check every room they said....",
+    "views": 577,
+    "created": 1795136654,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934025082",
+    "vod_offset": 21266,
+    "cluster": 1,
+    "added": 1795164203
   }
 }
