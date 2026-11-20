@@ -294,5 +294,39 @@
     ],
     "quote": "Man, believe me, dawg, I wouldn't do you dang like that, man.",
     "slot": "2026-11-20T08:00:00+01:00"
+  },
+  "live_xqc_1795157947": {
+    "url": "https://6afff0c7827110a32444b560--gta6bananaclips-media.netlify.app/20261119/live_xqc_1795157947.mp4",
+    "path": "20261119/live_xqc_1795157947.mp4",
+    "due": "2026-11-20T08:05:00+01:00",
+    "draft": false,
+    "posts": {
+      "6afc42e6ece6dfde5ff66dca": "6afff0cb4c1afd05defcd2c4",
+      "6afc43ffece6dfde5ff68162": "6afff0cb0f5eda1a57cbe9dd"
+    },
+    "mb": 7.5,
+    "channel": "xqc",
+    "platform": "twitch",
+    "score": 0,
+    "hot": true,
+    "rating": 9,
+    "views": 0,
+    "golden": false,
+    "title": "xQc Gets SO MAD In GTA 6! 💀",
+    "video_id": null,
+    "vod_offset": null,
+    "created": 1795157947,
+    "payoff": "https://6afff0a9f636c707822e5b33--gta6bananaclips-media.netlify.app/yt/live_xqc_1795157947_payoff_fanpage.mp4",
+    "funny": 0.0,
+    "tags": [
+      "rage",
+      "first-reaction",
+      "wow",
+      "crash"
+    ],
+    "quote": "Like holy S***, go watch some porn or some S*** man.",
+    "live": true,
+    "viewers": 30866,
+    "spike_z": 87.0
   }
 }
