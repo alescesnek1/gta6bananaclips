@@ -29113,5 +29113,19 @@
     "vod_offset": 12167,
     "cluster": 1,
     "added": 1795195429
+  },
+  "twitch_SmokyFairBillUncleNox-vjUti5yrt1G9SoRD": {
+    "id": "twitch_SmokyFairBillUncleNox-vjUti5yrt1G9SoRD",
+    "url": "https://www.twitch.tv/hasanabi/clip/SmokyFairBillUncleNox-vjUti5yrt1G9SoRD",
+    "channel": "hasanabi",
+    "platform": "twitch",
+    "title": "The clothes were stolen!",
+    "views": 521,
+    "created": 1795114960,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932641914",
+    "vod_offset": 29616,
+    "cluster": 1,
+    "added": 1795195728
   }
 }
