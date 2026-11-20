@@ -29127,5 +29127,19 @@
     "vod_offset": 29616,
     "cluster": 1,
     "added": 1795195728
+  },
+  "twitch_DaintySassySangThisIsSparta-pYLObOjmc1Kqhqu-": {
+    "id": "twitch_DaintySassySangThisIsSparta-pYLObOjmc1Kqhqu-",
+    "url": "https://www.twitch.tv/rdcgaming/clip/DaintySassySangThisIsSparta-pYLObOjmc1Kqhqu-",
+    "channel": "rdcgaming",
+    "platform": "twitch",
+    "title": "GTA I NEED YOU GTA 6 FIRST STREAM",
+    "views": 500,
+    "created": 1795122975,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933991376",
+    "vod_offset": 9318,
+    "cluster": 1,
+    "added": 1795196019
   }
 }
