@@ -32807,5 +32807,47 @@
     "vod_offset": 34048,
     "cluster": 1,
     "added": 1795204061
+  },
+  "twitch_BashfulRelatedJamCopyThis-tIOVRITdhEoyZvUS": {
+    "id": "twitch_BashfulRelatedJamCopyThis-tIOVRITdhEoyZvUS",
+    "url": "https://www.twitch.tv/jasontheween/clip/BashfulRelatedJamCopyThis-tIOVRITdhEoyZvUS",
+    "channel": "jasontheween",
+    "platform": "twitch",
+    "title": "cross fall",
+    "views": 541,
+    "created": 1795127306,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933588799",
+    "vod_offset": 38867,
+    "cluster": 1,
+    "added": 1795204211
+  },
+  "twitch_PrettiestExquisiteDadBudBlast-LATggCGeqt6Th8-H": {
+    "id": "twitch_PrettiestExquisiteDadBudBlast-LATggCGeqt6Th8-H",
+    "url": "https://www.twitch.tv/jerma985/clip/PrettiestExquisiteDadBudBlast-LATggCGeqt6Th8-H",
+    "channel": "jerma985",
+    "platform": "twitch",
+    "title": "Miss?",
+    "views": 1068,
+    "created": 1795175064,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934543908",
+    "vod_offset": 31140,
+    "cluster": 1,
+    "added": 1795204211
+  },
+  "twitch_ShakingZanyArugulaTebowing-NMpGBR7CtrL-lUMX": {
+    "id": "twitch_ShakingZanyArugulaTebowing-NMpGBR7CtrL-lUMX",
+    "url": "https://www.twitch.tv/ohnepixel/clip/ShakingZanyArugulaTebowing-NMpGBR7CtrL-lUMX",
+    "channel": "ohnepixel",
+    "platform": "twitch",
+    "title": "Happy time",
+    "views": 503,
+    "created": 1795127395,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933599748",
+    "vod_offset": 37937,
+    "cluster": 1,
+    "added": 1795204211
   }
 }
