@@ -17,6 +17,12 @@ Set-Location $dir
 $log = Join-Path $dir "out\worker.log"
 New-Item -ItemType Directory -Force (Split-Path $log) | Out-Null
 if ((Test-Path $log) -and (Get-Item $log).Length -gt 5MB) { Move-Item $log "$log.old" -Force }
+# 20. 11.: a log started by PS 5.1 "*>>" has a UTF-16 BOM, then every UTF-8 line reads as garbage ("????" in the
+# report) -> such a log is set aside and a clean UTF-8 one starts
+if (Test-Path $log) {
+    $head = [IO.File]::ReadAllBytes($log) | Select-Object -First 2
+    if ($head.Count -eq 2 -and $head[0] -eq 0xFF -and $head[1] -eq 0xFE) { Move-Item $log "$log.utf16" -Force }
+}
 
 $env:KLIPY_STATE = Join-Path $dir "worker_state.json"   # own memory: the checkout is reset below
 $env:PYTHONUTF8 = "1"
@@ -105,7 +111,11 @@ if (-not (Test-Path $hw)) {
 # long token-like strings are masked, at most 15000 characters.
 if ($token -and (Test-Path $log) -and (Due "hlaseni" 28)) {
     try {
-        $tail = (Get-Content $log -Tail 80 -ErrorAction Stop) -join "`n"
+        # bytes, not Get-Content: a mixed UTF-16 / UTF-8 file decodes wrong as a whole; NULs out, then UTF-8
+        $all = [IO.File]::ReadAllBytes($log)
+        $from = [math]::Max(0, $all.Length - 60000)
+        $chunk = [byte[]]($all[$from..($all.Length - 1)] | Where-Object { $_ -ne 0 -and $_ -ne 0xFF -and $_ -ne 0xFE })
+        $tail = (([Text.Encoding]::UTF8.GetString($chunk) -split "`r?`n") | Select-Object -Last 80) -join "`n"
         # NUL bytes out first: lines written as UTF-16 (PS 5.1 "*>>") read back as text again (19. 11.: "????")
         $tail = $tail -replace "`0", '' -replace '[A-Za-z0-9_\-]{32,}', '***' -replace '[^\x09\x0A\x20-\x7E]', '?'
         if ($tail.Length -gt 15000) { $tail = $tail.Substring($tail.Length - 15000) }

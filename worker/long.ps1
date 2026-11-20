@@ -37,6 +37,9 @@ try {
         foreach ($f in "long_used.json", "long_episodes.json", "long_reserve.json", "long_vision.json", "long_pool.json") {
             if (Test-Path (Join-Path $dir $f)) { Copy-Item (Join-Path $dir $f) (Join-Path $st $f) -Force }
         }
+        # Pillow was missing on the PC (19. 11.: long-form crash "No module named 'PIL'", league chip off)
+        & $py -c "import PIL" 2>$null
+        if ($LASTEXITCODE -ne 0) { & $py -m pip install -q "Pillow==13.0.0" }
         $since = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds() - 5
         foreach ($z in "bananas", "fanpage") {
             $env:LONG_BRANDS_AFTER = $(if ($z -eq "bananas") { 1 } else { 0 })

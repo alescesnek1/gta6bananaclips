@@ -26,6 +26,9 @@ try {
         # always the newest code and publikovano.json from GitHub (local changes to tracked files are dropped)
         git fetch -q origin main
         git reset -q --hard origin/main
+        # Pillow was missing on the PC (19. 11.: long-form crash "No module named 'PIL'", league chip off)
+        & $py -c "import PIL" 2>$null
+        if ($LASTEXITCODE -ne 0) { & $py -m pip install -q "Pillow==13.0.0" }
         # before the launch (19. 11.) trailer reactions up to 7 days old, after it only fresh videos
         $days = if ($now -lt [datetime]"2026-11-19") { 7 } else { 1 }
         & $py klipuj.py --whisper small.en batch --jen-yt --yt 3 --max 3 --days $days
