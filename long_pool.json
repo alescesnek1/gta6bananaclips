@@ -24559,5 +24559,19 @@
     "vod_offset": 6350,
     "cluster": 1,
     "added": 1795171705
+  },
+  "twitch_AbstemiousLazyArugulaPhilosoraptor-PKSkSsjAoCRU-xIf": {
+    "id": "twitch_AbstemiousLazyArugulaPhilosoraptor-PKSkSsjAoCRU-xIf",
+    "url": "https://www.twitch.tv/jasontheween/clip/AbstemiousLazyArugulaPhilosoraptor-PKSkSsjAoCRU-xIf",
+    "channel": "jasontheween",
+    "platform": "twitch",
+    "title": "asta in gta",
+    "views": 501,
+    "created": 1795125400,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933588799",
+    "vod_offset": 36889,
+    "cluster": 1,
+    "added": 1795172007
   }
 }
