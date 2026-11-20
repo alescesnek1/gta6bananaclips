@@ -32891,5 +32891,33 @@
     "vod_offset": 13184,
     "cluster": 1,
     "added": 1795205608
+  },
+  "twitch_ProudNiceSowNomNom-qlTj_bREHEWHrE44": {
+    "id": "twitch_ProudNiceSowNomNom-qlTj_bREHEWHrE44",
+    "url": "https://www.twitch.tv/caseoh_/clip/ProudNiceSowNomNom-qlTj_bREHEWHrE44",
+    "channel": "caseoh_",
+    "platform": "twitch",
+    "title": "keep talking",
+    "views": 816,
+    "created": 1795186109,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934099165",
+    "vod_offset": 17330,
+    "cluster": 1,
+    "added": 1795206038
+  },
+  "twitch_SleepyHyperReubenLitFam-jwApNMkSFQPv262d": {
+    "id": "twitch_SleepyHyperReubenLitFam-jwApNMkSFQPv262d",
+    "url": "https://www.twitch.tv/bilzo/clip/SleepyHyperReubenLitFam-jwApNMkSFQPv262d",
+    "channel": "bilzo",
+    "platform": "twitch",
+    "title": "I've been locked up for nine months",
+    "views": 512,
+    "created": 1795159326,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934628152",
+    "vod_offset": 3095,
+    "cluster": 1,
+    "added": 1795206038
   }
 }
