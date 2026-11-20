@@ -23634,5 +23634,33 @@
     "vod_offset": 37039,
     "cluster": 1,
     "added": 1795153108
+  },
+  "twitch_InexpensiveSilkySandwichSquadGoals-qO9lUXUxznL9iwPl": {
+    "id": "twitch_InexpensiveSilkySandwichSquadGoals-qO9lUXUxznL9iwPl",
+    "url": "https://www.twitch.tv/valkyrae/clip/InexpensiveSilkySandwichSquadGoals-qO9lUXUxznL9iwPl",
+    "channel": "valkyrae",
+    "platform": "twitch",
+    "title": ".",
+    "views": 741,
+    "created": 1795125332,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932982359",
+    "vod_offset": 23030,
+    "cluster": 2,
+    "added": 1795153758
+  },
+  "twitch_WonderfulOriginalClipzPunchTrees-_1at6XnA9uAAFgSh": {
+    "id": "twitch_WonderfulOriginalClipzPunchTrees-_1at6XnA9uAAFgSh",
+    "url": "https://www.twitch.tv/clix/clip/WonderfulOriginalClipzPunchTrees-_1at6XnA9uAAFgSh",
+    "channel": "clix",
+    "platform": "twitch",
+    "title": "naked",
+    "views": 616,
+    "created": 1795110885,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933739024",
+    "vod_offset": 11135,
+    "cluster": 1,
+    "added": 1795153758
   }
 }
