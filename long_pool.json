@@ -22530,5 +22530,80 @@
     "vod_offset": 6845,
     "cluster": 1,
     "added": 1795135114
+  },
+  "twitch_RamshackleLaconicLapwingSpicyBoy-vXH5sbEmR5KAzDO7": {
+    "id": "twitch_RamshackleLaconicLapwingSpicyBoy-vXH5sbEmR5KAzDO7",
+    "url": "https://www.twitch.tv/jynxzi/clip/RamshackleLaconicLapwingSpicyBoy-vXH5sbEmR5KAzDO7",
+    "channel": "jynxzi",
+    "platform": "twitch",
+    "title": "jump scare",
+    "views": 895,
+    "created": 1795111185,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933861646",
+    "vod_offset": 4219,
+    "added": 1795135604,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/jynxzi/20261119_twitch_RamshackleLaconicLapwingSpicyBoy-vXH5sbEmR5KAzDO7/source.mp4",
+    "peak": 24.0,
+    "cut": [
+      12.5,
+      27.0
+    ],
+    "dur": 35.73,
+    "tags": [],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.0,
+      "rage": 0.05,
+      "first-reaction": 0.2,
+      "wow": 0.04,
+      "_loud": 3.3,
+      "_motion": 15.4
+    },
+    "quote": "No, she's drunk like she's just she's on drugs",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.7,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "primary": "stunt",
+    "proven": [],
+    "evidence": {
+      "stunt": [
+        "text"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.3,
+    "signals": {
+      "siren": 0.0,
+      "impact": 11.2,
+      "loud": 2.6,
+      "motion": 10.3,
+      "sustained": 0.22,
+      "spike": 3.4,
+      "laugh": 0,
+      "static": 0.02,
+      "letterbox": 0.0,
+      "luma": 37.0,
+      "dark": 0.0
+    }
   }
 }
