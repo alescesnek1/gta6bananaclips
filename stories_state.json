@@ -242,11 +242,47 @@
           }
         },
         "built": "2026-11-19T12:04+01:00"
+      },
+      "2026-11-20": {
+        "items": {
+          "stories/20261120/bananas_0_pool.jpg": {
+            "kind": "pool",
+            "due": "2026-11-20T17:15:00+01:00",
+            "url": "https://6b002a5d1f442c7533866f45--gta6bananaclips-media.netlify.app/stories/20261120/bananas_0_pool.jpg",
+            "alt": "GTA 6 story",
+            "posts": {
+              "6af7142262b70b94b01ac608": "6b002a643d025b9e58a6d646"
+            },
+            "draft": false
+          },
+          "stories/20261120/bananas_1_guess.jpg": {
+            "kind": "guess",
+            "due": "2026-11-20T21:44:00+01:00",
+            "url": "https://6b002a5d1f442c7533866f45--gta6bananaclips-media.netlify.app/stories/20261120/bananas_1_guess.jpg",
+            "alt": "Guess the banana score xQc's clip from yesterday Reply with your guess, 1 to 10",
+            "posts": {
+              "6af7142262b70b94b01ac608": "6b002a653d025b9e58a6d66f"
+            },
+            "draft": false
+          },
+          "stories/20261120/bananas_2_fact_top.jpg": {
+            "kind": "fact_top",
+            "due": "2026-11-21T09:47:00+01:00",
+            "url": "https://6b002a5d1f442c7533866f45--gta6bananaclips-media.netlify.app/stories/20261120/bananas_2_fact_top.jpg",
+            "alt": "Yesterday's top streamer IShowSpeed Banana score 4/10 from 4 clips Agree? Reply yes or no",
+            "posts": {
+              "6af7142262b70b94b01ac608": "6b002a659dd03fda0b05b967"
+            },
+            "draft": false
+          }
+        },
+        "built": "2026-11-20T12:09+01:00"
       }
     },
     "pool": {
       "bananas_07.jpg": "2026-11-18",
-      "bananas_12.jpg": "2026-11-19"
+      "bananas_12.jpg": "2026-11-19",
+      "bananas_15.jpg": "2026-11-20"
     },
     "long": {
       "funny-day#1@202611181907": {
@@ -450,11 +486,47 @@
           }
         },
         "built": "2026-11-19T12:04+01:00"
+      },
+      "2026-11-20": {
+        "items": {
+          "stories/20261120/fanpage_0_rate.jpg": {
+            "kind": "rate",
+            "due": "2026-11-20T19:12:00+01:00",
+            "url": "https://6b002a5d1f442c7533866f45--gta6bananaclips-media.netlify.app/stories/20261120/fanpage_0_rate.jpg",
+            "alt": "Rate this one xQc, yesterday Send me a number, 1 to 10",
+            "posts": {
+              "6afc42e6ece6dfde5ff66dca": "6b002a653d025b9e58a6d6c5"
+            },
+            "draft": false
+          },
+          "stories/20261120/fanpage_1_pool.jpg": {
+            "kind": "pool",
+            "due": "2026-11-20T23:53:00+01:00",
+            "url": "https://6b002a5d1f442c7533866f45--gta6bananaclips-media.netlify.app/stories/20261120/fanpage_1_pool.jpg",
+            "alt": "GTA 6 story",
+            "posts": {
+              "6afc42e6ece6dfde5ff66dca": "6b002a66c0a7142f84b4086f"
+            },
+            "draft": false
+          },
+          "stories/20261120/fanpage_2_fact_most.jpg": {
+            "kind": "fact_most",
+            "due": "2026-11-21T03:42:00+01:00",
+            "url": "https://6b002a5d1f442c7533866f45--gta6bananaclips-media.netlify.app/stories/20261120/fanpage_2_fact_most.jpg",
+            "alt": "Most clipped yesterday IShowSpeed 3 clips on our page Who's next? Tell me",
+            "posts": {
+              "6afc42e6ece6dfde5ff66dca": "6b002a660c6d6b90527f620e"
+            },
+            "draft": false
+          }
+        },
+        "built": "2026-11-20T12:09+01:00"
       }
     },
     "pool": {
       "fanpage_07.jpg": "2026-11-18",
-      "fanpage_03.jpg": "2026-11-19"
+      "fanpage_03.jpg": "2026-11-19",
+      "fanpage_15.jpg": "2026-11-20"
     },
     "long": {}
   }
