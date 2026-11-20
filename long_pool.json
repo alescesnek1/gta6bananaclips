@@ -24451,5 +24451,17 @@
     "vod_offset": 21240,
     "cluster": 1,
     "added": 1795168113
+  },
+  "twitch_EntertainingSavageWormPartyTime-G58ZIkZMVrwA_5pO": {
+    "id": "twitch_EntertainingSavageWormPartyTime-G58ZIkZMVrwA_5pO",
+    "url": "https://www.twitch.tv/duanedapre/clip/EntertainingSavageWormPartyTime-G58ZIkZMVrwA_5pO",
+    "channel": "duanedapre",
+    "platform": "twitch",
+    "title": "rip paul",
+    "views": 501,
+    "created": 1795148061,
+    "category": "Grand Theft Auto VI",
+    "cluster": 1,
+    "added": 1795168415
   }
 }
