@@ -358,5 +358,34 @@
     ],
     "quote": "My dad",
     "slot": "2026-11-20T10:00:00+01:00"
+  },
+  "top4_2026-11-20_0": {
+    "url": "https://6b009208ba467d5f250cc800--gta6bananaclips-media.netlify.app/20261120/top4_2026-11-20_0.mp4",
+    "path": "20261120/top4_2026-11-20_0.mp4",
+    "due": "2026-11-20T20:15:00+01:00",
+    "draft": false,
+    "posts": {
+      "6afc4355ece6dfde5ff6769a": "6b00920e63ab5fef67470b85",
+      "6afc433aece6dfde5ff6749b": "6b00920f861298c9b142e76e",
+      "6afc42e6ece6dfde5ff66dca": "6b009210e3772ee0cf5941a7",
+      "6afc4429ece6dfde5ff683db": "6b00921063ab5fef67470c28",
+      "6afc4413ece6dfde5ff68286": "6b00921163ab5fef67470ccf",
+      "6afc43ffece6dfde5ff68162": "6b009211861298c9b142e906"
+    },
+    "channel": "top4",
+    "platform": "top4",
+    "items": [
+      "twitch_PeppyFunGaurPunchTrees-edM6JKBegYQ6zSk-",
+      "twitch_SpinelessWisePidgeonHeyGirl-hu10S79MNJZ3qxvT",
+      "twitch_RenownedNeighborlyWaffleTwitchRaid-t74SktFrD6SZ0Iu6",
+      "twitch_SavoryEagerLlamaLeeroyJenkins-fzfiphCY-mKdwJvr"
+    ],
+    "labels": [
+      "CAR WONT OBEY",
+      "NEUTRAL FACE LIES",
+      "RAGE MODE",
+      "MIRROR CHECK FAILS"
+    ],
+    "mb": 14.8
   }
 }
