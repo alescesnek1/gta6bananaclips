@@ -33368,5 +33368,19 @@
     "vod_offset": 37122,
     "cluster": 1,
     "added": 1795208913
+  },
+  "twitch_WonderfulRockyHawkPMSTwin-CRg4X98nNwIS4i1A": {
+    "id": "twitch_WonderfulRockyHawkPMSTwin-CRg4X98nNwIS4i1A",
+    "url": "https://www.twitch.tv/kreekcraft/clip/WonderfulRockyHawkPMSTwin-CRg4X98nNwIS4i1A",
+    "channel": "kreekcraft",
+    "platform": "twitch",
+    "title": "Oh my god, we got it",
+    "views": 503,
+    "created": 1795143186,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933758895",
+    "vod_offset": 2018,
+    "cluster": 1,
+    "added": 1795209978
   }
 }
