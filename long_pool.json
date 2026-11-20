@@ -24940,5 +24940,19 @@
     "vod_offset": 19208,
     "cluster": 1,
     "added": 1795183109
+  },
+  "twitch_DignifiedAmazingRatTheRinger-upfFJV5_t6pIsjr1": {
+    "id": "twitch_DignifiedAmazingRatTheRinger-upfFJV5_t6pIsjr1",
+    "url": "https://www.twitch.tv/lacy/clip/DignifiedAmazingRatTheRinger-upfFJV5_t6pIsjr1",
+    "channel": "lacy",
+    "platform": "twitch",
+    "title": "uuu",
+    "views": 851,
+    "created": 1795112896,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933767012",
+    "vod_offset": 11464,
+    "cluster": 1,
+    "added": 1795183434
   }
 }
