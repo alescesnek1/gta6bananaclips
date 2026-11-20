@@ -123,5 +123,42 @@
     "live": true,
     "viewers": 104329,
     "spike_z": 58.0
+  },
+  "live_hasanabi_1795137527": {
+    "url": "https://6affa10e560d77cb901c89dd--gta6bananaclips-media.netlify.app/20261119/live_hasanabi_1795137527.mp4",
+    "path": "20261119/live_hasanabi_1795137527.mp4",
+    "due": "2026-11-20T02:25:00+01:00",
+    "draft": false,
+    "posts": {
+      "6afc433aece6dfde5ff6749b": "6affa1124c1afd05dee0626e",
+      "6afc42e6ece6dfde5ff66dca": "6affa113d5f8acdd0d5f6fc2",
+      "6afc4429ece6dfde5ff683db": "6affa114738ce4635f777ea4",
+      "6afc4413ece6dfde5ff68286": "6affa1154c1afd05dee0635c",
+      "6afc43ffece6dfde5ff68162": "6affa1154c1afd05dee0638b"
+    },
+    "mb": 9.8,
+    "channel": "hasanabi",
+    "platform": "twitch",
+    "score": 0,
+    "hot": true,
+    "rating": 9,
+    "views": 0,
+    "golden": false,
+    "title": "HasanAbi Is Stunned By GTA 6! 💀",
+    "video_id": null,
+    "vod_offset": null,
+    "created": 1795137527,
+    "payoff": "https://6affa0ddfa7381e8af34c82c--gta6bananaclips-media.netlify.app/yt/live_hasanabi_1795137527_payoff_fanpage.mp4",
+    "funny": 0.16,
+    "tags": [
+      "first-reaction",
+      "wow",
+      "rage",
+      "chase"
+    ],
+    "quote": "Yeah, you act like you got some sense.",
+    "live": true,
+    "viewers": 34165,
+    "spike_z": 121.0
   }
 }
