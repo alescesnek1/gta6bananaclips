@@ -24774,5 +24774,19 @@
     "vod_offset": 5944,
     "cluster": 1,
     "added": 1795177747
+  },
+  "twitch_PricklyImpossibleReindeerKippa-K4GZFY5Z2KqgQNiU": {
+    "id": "twitch_PricklyImpossibleReindeerKippa-K4GZFY5Z2KqgQNiU",
+    "url": "https://www.twitch.tv/avoidingthepuddle/clip/PricklyImpossibleReindeerKippa-K4GZFY5Z2KqgQNiU",
+    "channel": "avoidingthepuddle",
+    "platform": "twitch",
+    "title": "the internet",
+    "views": 566,
+    "created": 1795132215,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934239945",
+    "vod_offset": 5210,
+    "cluster": 1,
+    "added": 1795178306
   }
 }
