@@ -22516,5 +22516,19 @@
     "src_mb": 9.9,
     "source": "https://6aff9555d84330d8a44f6c2d--gta6bananaclips-media.netlify.app/yt/youtube_UwH_ZrLszBk_7294_16x9.mp4",
     "yt_url": "https://www.youtube.com/watch?v=UwH_ZrLszBk"
+  },
+  "twitch_BeautifulDaintyMomTwitchRaid-q4op7h8xugMC5r-E": {
+    "id": "twitch_BeautifulDaintyMomTwitchRaid-q4op7h8xugMC5r-E",
+    "url": "https://www.twitch.tv/ludwig/clip/BeautifulDaintyMomTwitchRaid-q4op7h8xugMC5r-E",
+    "channel": "ludwig",
+    "platform": "twitch",
+    "title": "And they call the game woke",
+    "views": 512,
+    "created": 1795127849,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934132437",
+    "vod_offset": 6845,
+    "cluster": 1,
+    "added": 1795135114
   }
 }
