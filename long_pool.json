@@ -22931,5 +22931,19 @@
     "vod_offset": 41763,
     "cluster": 1,
     "added": 1795139143
+  },
+  "twitch_FantasticBloodyWitchTBCheesePull-waopW9dTXFcFurqq": {
+    "id": "twitch_FantasticBloodyWitchTBCheesePull-waopW9dTXFcFurqq",
+    "url": "https://www.twitch.tv/joe_bartolozzi/clip/FantasticBloodyWitchTBCheesePull-waopW9dTXFcFurqq",
+    "channel": "joe_bartolozzi",
+    "platform": "twitch",
+    "title": "Cheeks",
+    "views": 503,
+    "created": 1795108618,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933806710",
+    "vod_offset": 4628,
+    "cluster": 1,
+    "added": 1795139400
   }
 }
