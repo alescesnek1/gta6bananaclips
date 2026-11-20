@@ -23861,5 +23861,110 @@
     "vod_offset": 17140,
     "cluster": 1,
     "added": 1795157608
+  },
+  "twitch_HotNimbleTofuCopyThis-cU_KS_XUdUCJI8Xq": {
+    "id": "twitch_HotNimbleTofuCopyThis-cU_KS_XUdUCJI8Xq",
+    "url": "https://www.twitch.tv/zerkaa/clip/HotNimbleTofuCopyThis-cU_KS_XUdUCJI8Xq",
+    "channel": "zerkaa",
+    "platform": "twitch",
+    "title": "title",
+    "views": 500,
+    "created": 1795091119,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933561701",
+    "vod_offset": 4900,
+    "cluster": 1,
+    "added": 1795158210
+  },
+  "youtube_LMbea5SozeM_19263": {
+    "id": "youtube_LMbea5SozeM_19263",
+    "url": "https://6afff0664e32b997cec611b4--gta6bananaclips-media.netlify.app/yt/youtube_LMbea5SozeM_19263_16x9.mp4",
+    "channel": "mythpat",
+    "platform": "youtube",
+    "title": "Welcome to Vice City!  GTA 6 LIVE with Mythpat",
+    "views": 15558782,
+    "created": 1795036179,
+    "category": "Welcome to Vice City!  GTA 6 LIVE with Mythpat mythpat gta 6 mythpat livestream gta 6 first livestream grand theft auto 6 livestream gta 6 live",
+    "signal_score": 0.39,
+    "added": 1795158213,
+    "peak": 15.05,
+    "cut": [
+      0.0,
+      16.53
+    ],
+    "dur": 16.53,
+    "tags": [
+      "first-reaction"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 1.0,
+      "wow": 0.0,
+      "_loud": 2.4,
+      "_motion": 20.1
+    },
+    "quote": "",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 1.0,
+      "wow": 0.0
+    },
+    "primary": "first-reaction",
+    "proven": [
+      "first-reaction"
+    ],
+    "evidence": {
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion-spike"
+      ],
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ]
+    },
+    "fun": 0.44,
+    "signals": {
+      "siren": 0.0,
+      "impact": 35.4,
+      "loud": 2.5,
+      "motion": 15.4,
+      "sustained": 0.38,
+      "spike": 6.0,
+      "laugh": 0,
+      "static": 0.0,
+      "letterbox": 0.0,
+      "luma": 80.6,
+      "dark": 0.0
+    },
+    "seg_from": 0.0,
+    "src_mb": 5.9,
+    "source": "https://6afff0664e32b997cec611b4--gta6bananaclips-media.netlify.app/yt/youtube_LMbea5SozeM_19263_16x9.mp4",
+    "yt_url": "https://www.youtube.com/watch?v=LMbea5SozeM"
   }
 }
