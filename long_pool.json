@@ -23278,6 +23278,20 @@
     "video_id": "2933224962",
     "vod_offset": 8906,
     "cluster": 1,
-    "added": 1795143619
+    "added": 1795143965
+  },
+  "twitch_TameLightWombatHumbleLife-VYtN0ReqVqbaLdYr": {
+    "id": "twitch_TameLightWombatHumbleLife-VYtN0ReqVqbaLdYr",
+    "url": "https://www.twitch.tv/squeex/clip/TameLightWombatHumbleLife-VYtN0ReqVqbaLdYr",
+    "channel": "squeex",
+    "platform": "twitch",
+    "title": "Never miss giving a foot massage…",
+    "views": 561,
+    "created": 1795119712,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934098268",
+    "vod_offset": 477,
+    "cluster": 1,
+    "added": 1795143965
   }
 }
