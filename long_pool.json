@@ -25164,5 +25164,19 @@
     "vod_offset": 131517,
     "cluster": 1,
     "added": 1795188553
+  },
+  "twitch_FuriousArtisticLemurCoolStoryBob-1i51GMB_U858vT50": {
+    "id": "twitch_FuriousArtisticLemurCoolStoryBob-1i51GMB_U858vT50",
+    "url": "https://www.twitch.tv/jerma985/clip/FuriousArtisticLemurCoolStoryBob-1i51GMB_U858vT50",
+    "channel": "jerma985",
+    "platform": "twitch",
+    "title": "uuuAAAAHHHHAHAHAHOIE",
+    "views": 557,
+    "created": 1795166481,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934543908",
+    "vod_offset": 22692,
+    "cluster": 1,
+    "added": 1795189705
   }
 }
