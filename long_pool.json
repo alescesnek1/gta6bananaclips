@@ -23349,5 +23349,33 @@
     "vod_offset": 1093,
     "cluster": 1,
     "added": 1795145597
+  },
+  "twitch_RepleteCoySagePJSugar--G1Z6mwWiTS_sPs3": {
+    "id": "twitch_RepleteCoySagePJSugar--G1Z6mwWiTS_sPs3",
+    "url": "https://www.twitch.tv/yourragegaming/clip/RepleteCoySagePJSugar--G1Z6mwWiTS_sPs3",
+    "channel": "yourragegaming",
+    "platform": "twitch",
+    "title": "NPC Reality is insane in GTA 6",
+    "views": 500,
+    "created": 1795071977,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933174196",
+    "vod_offset": 8742,
+    "cluster": 1,
+    "added": 1795146011
+  },
+  "twitch_SweetSpookyTermiteHeyGuys-1jKFHa1rJp-JWPHo": {
+    "id": "twitch_SweetSpookyTermiteHeyGuys-1jKFHa1rJp-JWPHo",
+    "url": "https://www.twitch.tv/elajjaz/clip/SweetSpookyTermiteHeyGuys-1jKFHa1rJp-JWPHo",
+    "channel": "elajjaz",
+    "platform": "twitch",
+    "title": "Literal JAWDROP Ela",
+    "views": 501,
+    "created": 1795106183,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933684347",
+    "vod_offset": 10116,
+    "cluster": 1,
+    "added": 1795146011
   }
 }
