@@ -22631,5 +22631,19 @@
     "category": "Grand Theft Auto VI",
     "cluster": 1,
     "added": 1795136925
+  },
+  "twitch_CourteousFancyPresidentKevinTurtle-1V4igqPmgVLVbT1u": {
+    "id": "twitch_CourteousFancyPresidentKevinTurtle-1V4igqPmgVLVbT1u",
+    "url": "https://www.twitch.tv/nickmercs/clip/CourteousFancyPresidentKevinTurtle-1V4igqPmgVLVbT1u",
+    "channel": "nickmercs",
+    "platform": "twitch",
+    "title": "gta controller settings",
+    "views": 579,
+    "created": 1795096818,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933650141",
+    "vod_offset": 3300,
+    "cluster": 1,
+    "added": 1795137082
   }
 }
