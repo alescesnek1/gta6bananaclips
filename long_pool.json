@@ -34290,5 +34290,33 @@
     "vod_offset": 17630,
     "cluster": 1,
     "added": 1795213748
+  },
+  "twitch_CuriousJollyPandaNononoCat-_KcINJ2JTfCtphSX": {
+    "id": "twitch_CuriousJollyPandaNononoCat-_KcINJ2JTfCtphSX",
+    "url": "https://www.twitch.tv/matimi0/clip/CuriousJollyPandaNononoCat-_KcINJ2JTfCtphSX",
+    "channel": "matimi0",
+    "platform": "twitch",
+    "title": "granny snuffed out EZ",
+    "views": 504,
+    "created": 1795166507,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934481386",
+    "vod_offset": 26388,
+    "cluster": 1,
+    "added": 1795214012
+  },
+  "twitch_SillySweetMoonPJSalt-at4eAAVKUbpnz691": {
+    "id": "twitch_SillySweetMoonPJSalt-at4eAAVKUbpnz691",
+    "url": "https://www.twitch.tv/zoreee/clip/SillySweetMoonPJSalt-at4eAAVKUbpnz691",
+    "channel": "zoreee",
+    "platform": "twitch",
+    "title": "Bro Instingated It Not me!?",
+    "views": 705,
+    "created": 1795208978,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934327274",
+    "vod_offset": 14133,
+    "cluster": 1,
+    "added": 1795214012
   }
 }
