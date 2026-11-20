@@ -33354,5 +33354,19 @@
     "vod_offset": 32239,
     "cluster": 1,
     "added": 1795208611
+  },
+  "twitch_LachrymoseHomelyOcelotCclamChamp-TW3Bk8CZeImRJZvO": {
+    "id": "twitch_LachrymoseHomelyOcelotCclamChamp-TW3Bk8CZeImRJZvO",
+    "url": "https://www.twitch.tv/chiblee/clip/LachrymoseHomelyOcelotCclamChamp-TW3Bk8CZeImRJZvO",
+    "channel": "chiblee",
+    "platform": "twitch",
+    "title": "lucia NOOOOO",
+    "views": 501,
+    "created": 1795159400,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934155267",
+    "vod_offset": 37122,
+    "cluster": 1,
+    "added": 1795208913
   }
 }
