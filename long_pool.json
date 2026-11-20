@@ -33424,5 +33424,33 @@
     "vod_offset": 64439,
     "cluster": 1,
     "added": 1795210841
+  },
+  "twitch_CaringFunnySrirachaOSfrog-CPLxPX0JVwrIruwO": {
+    "id": "twitch_CaringFunnySrirachaOSfrog-CPLxPX0JVwrIruwO",
+    "url": "https://www.twitch.tv/ohnepixel/clip/CaringFunnySrirachaOSfrog-CPLxPX0JVwrIruwO",
+    "channel": "ohnepixel",
+    "platform": "twitch",
+    "title": "RICH STREAMER ENJOYING!!",
+    "views": 513,
+    "created": 1795204829,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934862154",
+    "vod_offset": 26830,
+    "cluster": 1,
+    "added": 1795211090
+  },
+  "twitch_PatientJazzyGarageTriHard-Z1_B3-ucQjsFt9L3": {
+    "id": "twitch_PatientJazzyGarageTriHard-Z1_B3-ucQjsFt9L3",
+    "url": "https://www.twitch.tv/zoreee/clip/PatientJazzyGarageTriHard-Z1_B3-ucQjsFt9L3",
+    "channel": "zoreee",
+    "platform": "twitch",
+    "title": "Refilled my Gas and This Happened",
+    "views": 584,
+    "created": 1795208727,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934327274",
+    "vod_offset": 14007,
+    "cluster": 1,
+    "added": 1795211090
   }
 }
