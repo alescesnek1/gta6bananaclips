@@ -24022,5 +24022,19 @@
     "vod_offset": 5428,
     "cluster": 1,
     "added": 1795159739
+  },
+  "twitch_SpineyFairEggplantDancingBanana-bH0uBbWgNv4K9RfE": {
+    "id": "twitch_SpineyFairEggplantDancingBanana-bH0uBbWgNv4K9RfE",
+    "url": "https://www.twitch.tv/xqc/clip/SpineyFairEggplantDancingBanana-bH0uBbWgNv4K9RfE",
+    "channel": "xqc",
+    "platform": "twitch",
+    "title": "xQc just wanted to put his coffee down",
+    "views": 517,
+    "created": 1795154892,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934155295",
+    "vod_offset": 32179,
+    "cluster": 1,
+    "added": 1795160659
   }
 }
