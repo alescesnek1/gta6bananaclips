@@ -24505,5 +24505,17 @@
     "vod_offset": 4160,
     "cluster": 1,
     "added": 1795169320
+  },
+  "twitch_YummyExuberantManateeTBTacoRight-1fsqLIQGYozFBgVs": {
+    "id": "twitch_YummyExuberantManateeTBTacoRight-1fsqLIQGYozFBgVs",
+    "url": "https://www.twitch.tv/ishowspeed/clip/YummyExuberantManateeTBTacoRight-1fsqLIQGYozFBgVs",
+    "channel": "ishowspeed",
+    "platform": "twitch",
+    "title": "THEY DID IT",
+    "views": 502,
+    "created": 1795123673,
+    "category": "Grand Theft Auto VI",
+    "cluster": 1,
+    "added": 1795169929
   }
 }
