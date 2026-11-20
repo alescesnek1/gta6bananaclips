@@ -25082,5 +25082,33 @@
     "vod_offset": 10671,
     "cluster": 1,
     "added": 1795185641
+  },
+  "twitch_CourageousCredulousSquidShazBotstix-Lqzr5z6ATQjsE2UY": {
+    "id": "twitch_CourageousCredulousSquidShazBotstix-Lqzr5z6ATQjsE2UY",
+    "url": "https://www.twitch.tv/fuslie/clip/CourageousCredulousSquidShazBotstix-Lqzr5z6ATQjsE2UY",
+    "channel": "fuslie",
+    "platform": "twitch",
+    "title": "Mandy",
+    "views": 564,
+    "created": 1795136775,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934243238",
+    "vod_offset": 9647,
+    "cluster": 1,
+    "added": 1795186111
+  },
+  "twitch_OriginalKitschyPlumSwiftRage-69TTvPAFvSy7MVDE": {
+    "id": "twitch_OriginalKitschyPlumSwiftRage-69TTvPAFvSy7MVDE",
+    "url": "https://www.twitch.tv/vanillamace/clip/OriginalKitschyPlumSwiftRage-69TTvPAFvSy7MVDE",
+    "channel": "vanillamace",
+    "platform": "twitch",
+    "title": "gta",
+    "views": 504,
+    "created": 1795141317,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934481131",
+    "vod_offset": 1253,
+    "cluster": 1,
+    "added": 1795186111
   }
 }
