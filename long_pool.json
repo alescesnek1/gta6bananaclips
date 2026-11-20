@@ -23662,5 +23662,47 @@
     "vod_offset": 11135,
     "cluster": 1,
     "added": 1795153758
+  },
+  "twitch_AmorphousSnappyAardvarkWoofer-2SvUTl7cMpY5um59": {
+    "id": "twitch_AmorphousSnappyAardvarkWoofer-2SvUTl7cMpY5um59",
+    "url": "https://www.twitch.tv/stableronaldo/clip/AmorphousSnappyAardvarkWoofer-2SvUTl7cMpY5um59",
+    "channel": "stableronaldo",
+    "platform": "twitch",
+    "title": "wtfff",
+    "views": 511,
+    "created": 1795106539,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933798318",
+    "vod_offset": 3106,
+    "cluster": 1,
+    "added": 1795154009
+  },
+  "twitch_FilthyRefinedSkirretLeeroyJenkins-fIZvW74IyvHXhDQD": {
+    "id": "twitch_FilthyRefinedSkirretLeeroyJenkins-fIZvW74IyvHXhDQD",
+    "url": "https://www.twitch.tv/lacy/clip/FilthyRefinedSkirretLeeroyJenkins-fIZvW74IyvHXhDQD",
+    "channel": "lacy",
+    "platform": "twitch",
+    "title": "Lucy hard",
+    "views": 578,
+    "created": 1795105731,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933767012",
+    "vod_offset": 4260,
+    "cluster": 1,
+    "added": 1795154009
+  },
+  "twitch_TenuousBlindingRhinocerosUnSane-zQbbnAAnYVJkxelK": {
+    "id": "twitch_TenuousBlindingRhinocerosUnSane-zQbbnAAnYVJkxelK",
+    "url": "https://www.twitch.tv/typicalgamer/clip/TenuousBlindingRhinocerosUnSane-zQbbnAAnYVJkxelK",
+    "channel": "typicalgamer",
+    "platform": "twitch",
+    "title": "Whale explodes",
+    "views": 501,
+    "created": 1795072213,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933000873",
+    "vod_offset": 21259,
+    "cluster": 1,
+    "added": 1795154009
   }
 }
