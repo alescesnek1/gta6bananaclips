@@ -24844,5 +24844,19 @@
     "vod_offset": 8386,
     "cluster": 1,
     "added": 1795181008
+  },
+  "twitch_LongImpartialWrenchTTours-8SXfjwoQNnl1u9ub": {
+    "id": "twitch_LongImpartialWrenchTTours-8SXfjwoQNnl1u9ub",
+    "url": "https://www.twitch.tv/insym/clip/LongImpartialWrenchTTours-8SXfjwoQNnl1u9ub",
+    "channel": "insym",
+    "platform": "twitch",
+    "title": "Bro folded so fast",
+    "views": 501,
+    "created": 1795119185,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933939384",
+    "vod_offset": 7996,
+    "cluster": 1,
+    "added": 1795181608
   }
 }
