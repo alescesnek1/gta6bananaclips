@@ -24204,5 +24204,19 @@
     "vod_offset": 5506,
     "cluster": 1,
     "added": 1795164831
+  },
+  "twitch_SilkyScrumptiousPepperNotLikeThis-IlJNCg2mEoL7QTd2": {
+    "id": "twitch_SilkyScrumptiousPepperNotLikeThis-IlJNCg2mEoL7QTd2",
+    "url": "https://www.twitch.tv/lirik/clip/SilkyScrumptiousPepperNotLikeThis-IlJNCg2mEoL7QTd2",
+    "channel": "lirik",
+    "platform": "twitch",
+    "title": "doomscrolling",
+    "views": 503,
+    "created": 1795113001,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933880721",
+    "vod_offset": 5114,
+    "cluster": 1,
+    "added": 1795165103
   }
 }
