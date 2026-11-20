@@ -34840,5 +34840,33 @@
     "vod_offset": 6846,
     "cluster": 1,
     "added": 1795217932
+  },
+  "twitch_HealthyKnottyKimchiDogFace-oL108bjAJUT8HML1": {
+    "id": "twitch_HealthyKnottyKimchiDogFace-oL108bjAJUT8HML1",
+    "url": "https://www.twitch.tv/bilzo/clip/HealthyKnottyKimchiDogFace-oL108bjAJUT8HML1",
+    "channel": "bilzo",
+    "platform": "twitch",
+    "title": "manz went into the bathoom with a guy instead of lucia",
+    "views": 508,
+    "created": 1795196239,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934628152",
+    "vod_offset": 2003,
+    "cluster": 1,
+    "added": 1795218511
+  },
+  "twitch_ObliqueRudeFrogMrDestructoid-wcwSDnmZkJEtyAZN": {
+    "id": "twitch_ObliqueRudeFrogMrDestructoid-wcwSDnmZkJEtyAZN",
+    "url": "https://www.twitch.tv/flats/clip/ObliqueRudeFrogMrDestructoid-wcwSDnmZkJEtyAZN",
+    "channel": "flats",
+    "platform": "twitch",
+    "title": "Slammed while afk",
+    "views": 503,
+    "created": 1795140059,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933826445",
+    "vod_offset": 7908,
+    "cluster": 1,
+    "added": 1795218511
   }
 }
