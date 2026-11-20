@@ -24746,5 +24746,33 @@
     "category": "Grand Theft Auto VI",
     "cluster": 1,
     "added": 1795177445
+  },
+  "twitch_HyperCourteousBeaverMikeHogu-y4FUwpgvjyaFkQkI": {
+    "id": "twitch_HyperCourteousBeaverMikeHogu-y4FUwpgvjyaFkQkI",
+    "url": "https://www.twitch.tv/joe_bartolozzi/clip/HyperCourteousBeaverMikeHogu-y4FUwpgvjyaFkQkI",
+    "channel": "joe_bartolozzi",
+    "platform": "twitch",
+    "title": "mandy",
+    "views": 509,
+    "created": 1795116480,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933806710",
+    "vod_offset": 12410,
+    "cluster": 1,
+    "added": 1795177747
+  },
+  "twitch_OpenChillyDootTwitchRaid-GaIJah0ZeK84DWqC": {
+    "id": "twitch_OpenChillyDootTwitchRaid-GaIJah0ZeK84DWqC",
+    "url": "https://www.twitch.tv/aryssa614/clip/OpenChillyDootTwitchRaid-GaIJah0ZeK84DWqC",
+    "channel": "aryssa614",
+    "platform": "twitch",
+    "title": "rizz gone wrong",
+    "views": 501,
+    "created": 1795100059,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933657444",
+    "vod_offset": 5944,
+    "cluster": 1,
+    "added": 1795177747
   }
 }
