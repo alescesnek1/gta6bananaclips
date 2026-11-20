@@ -25110,5 +25110,31 @@
     "vod_offset": 1253,
     "cluster": 1,
     "added": 1795186111
+  },
+  "twitch_SmokyYawningDunlinShazBotstix-IoRnXdaj6bTiEcqD": {
+    "id": "twitch_SmokyYawningDunlinShazBotstix-IoRnXdaj6bTiEcqD",
+    "url": "https://www.twitch.tv/vinesauce/clip/SmokyYawningDunlinShazBotstix-IoRnXdaj6bTiEcqD",
+    "channel": "vinesauce",
+    "platform": "twitch",
+    "title": "Lore Accurate Waffle House",
+    "views": 503,
+    "created": 1795142839,
+    "category": "Grand Theft Auto VI",
+    "cluster": 1,
+    "added": 1795186777
+  },
+  "twitch_YummyFastTaroAsianGlow-UtCj6V2zRqHXsxmE": {
+    "id": "twitch_YummyFastTaroAsianGlow-UtCj6V2zRqHXsxmE",
+    "url": "https://www.twitch.tv/brycexd/clip/YummyFastTaroAsianGlow-UtCj6V2zRqHXsxmE",
+    "channel": "brycexd",
+    "platform": "twitch",
+    "title": "✅WORLD'S FIRST GTA 6 COMPLETION WORLD RECORD SPEEDRUN✅DAY 1019✅!discord",
+    "views": 501,
+    "created": 1795139407,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932205344",
+    "vod_offset": 141259,
+    "cluster": 1,
+    "added": 1795186777
   }
 }
