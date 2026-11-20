@@ -23550,5 +23550,19 @@
       "luma": 29.2,
       "dark": 0.0
     }
+  },
+  "twitch_AbrasiveSpeedyJackalOptimizePrime--EZk_gdHv7tkm4Mf": {
+    "id": "twitch_AbrasiveSpeedyJackalOptimizePrime--EZk_gdHv7tkm4Mf",
+    "url": "https://www.twitch.tv/mrsavage/clip/AbrasiveSpeedyJackalOptimizePrime--EZk_gdHv7tkm4Mf",
+    "channel": "mrsavage",
+    "platform": "twitch",
+    "title": "oh",
+    "views": 501,
+    "created": 1795118485,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933650557",
+    "vod_offset": 24932,
+    "cluster": 1,
+    "added": 1795150706
   }
 }
