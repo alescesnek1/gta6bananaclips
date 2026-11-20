@@ -261,5 +261,38 @@
     ],
     "quote": "How do I go all the way back there though?",
     "slot": "2026-11-20T05:00:00+01:00"
+  },
+  "twitch_SpinelessWisePidgeonHeyGirl-hu10S79MNJZ3qxvT": {
+    "url": "https://6affcdcb8fef772163606c5d--gta6bananaclips-media.netlify.app/20261119/twitch_SpinelessWisePidgeonHeyGirl-hu10S79MNJZ3qxvT.mp4",
+    "path": "20261119/twitch_SpinelessWisePidgeonHeyGirl-hu10S79MNJZ3qxvT.mp4",
+    "due": "2026-11-20T07:41:00+01:00",
+    "draft": false,
+    "posts": {
+      "6afc433aece6dfde5ff6749b": "6affcdd2ca85ebefb0f76491",
+      "6afc42e6ece6dfde5ff66dca": "6affcdd2d5f8acdd0d6fd03d",
+      "6afc4429ece6dfde5ff683db": "6affcdd34c1afd05def125bf",
+      "6afc4413ece6dfde5ff68286": "6affcdd30f5eda1a57c03f4e",
+      "6afc43ffece6dfde5ff68162": "6affcdd4738ce4635f885081"
+    },
+    "mb": 4.7,
+    "channel": "kaicenat",
+    "platform": "twitch",
+    "score": 271.9,
+    "hot": false,
+    "rating": 3,
+    "views": 503,
+    "golden": false,
+    "title": "Kai Cenat Gets SO MAD In GTA 6! 💀",
+    "video_id": "2932305259",
+    "vod_offset": 96652,
+    "created": 1795103584,
+    "payoff": "https://6affcdcb8fef772163606c5d--gta6bananaclips-media.netlify.app/20261119/twitch_SpinelessWisePidgeonHeyGirl-hu10S79MNJZ3qxvT_payoff.mp4",
+    "funny": 0.0,
+    "tags": [
+      "rage",
+      "first-reaction"
+    ],
+    "quote": "Man, believe me, dawg, I wouldn't do you dang like that, man.",
+    "slot": "2026-11-20T08:00:00+01:00"
   }
 }
