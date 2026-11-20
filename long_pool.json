@@ -24720,5 +24720,19 @@
     "vod_offset": 24845,
     "cluster": 1,
     "added": 1795175329
+  },
+  "twitch_HotAlluringThymePrimeMe-lvbeIBMks2AhH_Ml": {
+    "id": "twitch_HotAlluringThymePrimeMe-lvbeIBMks2AhH_Ml",
+    "url": "https://www.twitch.tv/avoidingthepuddle/clip/HotAlluringThymePrimeMe-lvbeIBMks2AhH_Ml",
+    "channel": "avoidingthepuddle",
+    "platform": "twitch",
+    "title": "Aris is disappointed with the lack of target diversity",
+    "views": 509,
+    "created": 1795170279,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934239945",
+    "vod_offset": 13846,
+    "cluster": 1,
+    "added": 1795176514
   }
 }
