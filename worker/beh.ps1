@@ -61,48 +61,17 @@ if ($token -and (Due "github" $(if ($launch) { 4 } else { 25 }))) {
     }
 }
 
-# --- 1b) long-form every 2 h, BUILT ON THIS PC (owner 19. 11.: GitHub took 2-4 h per episode; "at tam klidne
-# stavi nonstop, ale at se to tam nikde neuklada"): worker\long.ps1 in its own process, one at a time (PID lock).
-# It delivers through GitHub (tools/long_pc.py -> long-pc.yml: release link, e-mail, state) and deletes what it built.
-if (Due "long" 115) {
-    $llock = Join-Path $dir "out\long.lock"
-    $busy = $false
-    if (Test-Path $llock) {
-        $old = (Get-Content $llock -Raw -ErrorAction SilentlyContinue)
-        $age = ($now - (Get-Item $llock).LastWriteTime).TotalHours
-        $busy = $old -and $age -lt 5 -and (Get-Process -Id ([int]$old.Trim()) -ErrorAction SilentlyContinue)
-    }
-    if ($busy) {
-        "$(Get-Date -Format s) long-form still building (pid $($old.Trim())), skipped" | Out-File $log -Append -Encoding utf8
-    } else {
-        $lp = Start-Process -FilePath "powershell.exe" -WindowStyle Hidden -PassThru `
-            -ArgumentList @("-NoProfile", "-ExecutionPolicy", "Bypass", "-File", (Join-Path $PSScriptRoot "long.ps1"))
-        $lp.Id | Set-Content $llock -Encoding ascii
-        "$(Get-Date -Format s) long-form build started on the PC (pid $($lp.Id))" | Out-File $log -Append -Encoding utf8
-    }
-}
-
-# --- 1a) hardware once (owner 19. 11.: GPU + VRAM, CPU, RAM of this PC, read from the report): one line per part
-$hw = Join-Path $dir "out\hw_reported_v2.txt"
-if (-not (Test-Path $hw)) {
+# --- 1b) long-form every 2 h on GITHUB (owner 20. 11.: "ma se to primarne delat na githubu"; GitHub's own cron
+# for long.yml ran hours late). The run decides: cap long_min_gap_h per brand, enough material or a silent skip.
+# (worker\long.ps1 = building on this PC, kept but not started.)
+if ($token -and (Due "long" 115)) {
     try {
-        $cpu = Get-CimInstance Win32_Processor | Select-Object -First 1
-        $ram = [math]::Round((Get-CimInstance Win32_ComputerSystem).TotalPhysicalMemory / 1GB, 1)
-        $lines = @("$(Get-Date -Format s) HW CPU: $($cpu.Name.Trim()) ($($cpu.NumberOfCores) cores / $($cpu.NumberOfLogicalProcessors) threads)",
-                   "$(Get-Date -Format s) HW RAM: $ram GB")
-        $smi = Get-Command nvidia-smi -ErrorAction SilentlyContinue
-        if ($smi) {
-            & nvidia-smi --query-gpu=name,memory.total,driver_version --format=csv,noheader | ForEach-Object { $lines += "$(Get-Date -Format s) HW GPU (nvidia-smi): $_" }
-        }
-        Get-ItemProperty "HKLM:\SYSTEM\ControlSet001\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0*" -ErrorAction SilentlyContinue |
-            Where-Object { $_.DriverDesc } | ForEach-Object {
-                $vram = if ($_."HardwareInformation.qwMemorySize") { [math]::Round([double]$_."HardwareInformation.qwMemorySize" / 1GB, 1) } else { "?" }
-                $lines += "$(Get-Date -Format s) HW GPU: $($_.DriverDesc) VRAM $vram GB"
-            }
-        $lines | Out-File $log -Append -Encoding utf8
-        "done" | Set-Content $hw -Encoding ascii
+        Invoke-RestMethod -Method Post -Uri "https://api.github.com/repos/aleshrani/gta6bananaclips/actions/workflows/long.yml/dispatches" `
+            -Headers @{ Authorization = "Bearer $token"; Accept = "application/vnd.github+json"; "User-Agent" = "gta6-pc" } `
+            -Body '{"ref":"main"}' -ContentType "application/json" | Out-Null
+        "$(Get-Date -Format s) long-form run started (GitHub)" | Out-File $log -Append -Encoding utf8
     } catch {
-        "$(Get-Date -Format s) HW read FAILED: $($_.Exception.Message)" | Out-File $log -Append -Encoding utf8
+        "$(Get-Date -Format s) long-form run FAILED: $($_.Exception.Message)" | Out-File $log -Append -Encoding utf8
     }
 }
 
