@@ -32793,5 +32793,19 @@
     "vod_offset": 5948,
     "cluster": 1,
     "added": 1795203432
+  },
+  "twitch_EmpathicNurturingPotatoDAESuppy-UERahiam0ohgXu4Y": {
+    "id": "twitch_EmpathicNurturingPotatoDAESuppy-UERahiam0ohgXu4Y",
+    "url": "https://www.twitch.tv/stableronaldo/clip/EmpathicNurturingPotatoDAESuppy-UERahiam0ohgXu4Y",
+    "channel": "stableronaldo",
+    "platform": "twitch",
+    "title": "GTA6",
+    "views": 507,
+    "created": 1795117831,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932442046",
+    "vod_offset": 34048,
+    "cluster": 1,
+    "added": 1795204061
   }
 }
