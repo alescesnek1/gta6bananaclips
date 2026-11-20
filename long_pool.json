@@ -25040,5 +25040,19 @@
       "luma": 89.9,
       "dark": 0.0
     }
+  },
+  "twitch_SaltyFreezingTortoiseBibleThump-Did4TVNYr8qy90Ud": {
+    "id": "twitch_SaltyFreezingTortoiseBibleThump-Did4TVNYr8qy90Ud",
+    "url": "https://www.twitch.tv/stormfall33/clip/SaltyFreezingTortoiseBibleThump-Did4TVNYr8qy90Ud",
+    "channel": "stormfall33",
+    "platform": "twitch",
+    "title": "stormfall33 - Highlight d29336 Part 02",
+    "views": 500,
+    "created": 1795130983,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934100871",
+    "vod_offset": 11765,
+    "cluster": 1,
+    "added": 1795184626
   }
 }
