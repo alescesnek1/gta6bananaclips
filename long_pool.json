@@ -23335,5 +23335,19 @@
     "vod_offset": 3290,
     "cluster": 1,
     "added": 1795145130
+  },
+  "twitch_AttractiveBoxyGullKappaPride-ykX3Sl0D_BcARnov": {
+    "id": "twitch_AttractiveBoxyGullKappaPride-ykX3Sl0D_BcARnov",
+    "url": "https://www.twitch.tv/cohhcarnage/clip/AttractiveBoxyGullKappaPride-ykX3Sl0D_BcARnov",
+    "channel": "cohhcarnage",
+    "platform": "twitch",
+    "title": "PSYCH - Music is back",
+    "views": 503,
+    "created": 1795093501,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933635259",
+    "vod_offset": 1093,
+    "cluster": 1,
+    "added": 1795145597
   }
 }
