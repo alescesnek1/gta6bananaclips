@@ -14176,18 +14176,20 @@
     "channel": "2xrakai",
     "platform": "twitch",
     "title": "the gators, the gators, the gators",
-    "views": 849,
+    "views": 2939,
     "created": 1795066614,
     "category": "Grand Theft Auto VI",
     "video_id": "2932781377",
     "vod_offset": 4316,
     "cluster": 1,
-    "added": 1795120048,
-    "source": "C:\\Users\\Public\\gta6-long\\_pool\\twitch_ClearDifferentGarlicNomNom-Fs_0YNyTuWAtVMSk\\source.mp4",
+    "added": 1795148462,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/2xrakai/20261119_twitch_ClearDifferentGarlicNomNom-Fs_0YNyTuWAtVMSk/source.mp4",
     "peak": 44.150000000000006,
     "cut": [
       5.17,
-      45.17
+      45.17,
+      14.63,
+      28.3
     ],
     "dur": 45.17,
     "tags": [
@@ -14202,10 +14204,10 @@
       "rage": 1.0,
       "first-reaction": 0.2,
       "wow": 0.64,
-      "_loud": 3.4,
+      "_loud": 3.7,
       "_motion": 18.6
     },
-    "quote": "Got us paid off.",
+    "quote": "Fly back to Brian's, my area!",
     "cats": {
       "funny": 0.0,
       "rage": 1.0,
@@ -14234,7 +14236,7 @@
     "fun": 0.59,
     "signals": {
       "siren": 0.0,
-      "impact": 18.7,
+      "impact": 19.6,
       "loud": 3.9,
       "motion": 11.9,
       "sustained": 0.27,
@@ -14244,7 +14246,10 @@
       "letterbox": 0.0,
       "luma": 121.8,
       "dark": 0.0
-    }
+    },
+    "rendered": [
+      "bananas"
+    ]
   },
   "twitch_DirtyAnimatedEggnogKevinTurtle-_6fTaisd09flsZ9g": {
     "id": "twitch_DirtyAnimatedEggnogKevinTurtle-_6fTaisd09flsZ9g",
@@ -23415,5 +23420,19 @@
     "category": "Grand Theft Auto VI",
     "cluster": 1,
     "added": 1795147823
+  },
+  "twitch_SpunkyMiniaturePeafowlKappaPride-Z621wxFmmuUiDv32": {
+    "id": "twitch_SpunkyMiniaturePeafowlKappaPride-Z621wxFmmuUiDv32",
+    "url": "https://www.twitch.tv/emiru/clip/SpunkyMiniaturePeafowlKappaPride-Z621wxFmmuUiDv32",
+    "channel": "emiru",
+    "platform": "twitch",
+    "title": "emiru's room for GTA6",
+    "views": 697,
+    "created": 1795121434,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934110897",
+    "vod_offset": 1634,
+    "cluster": 1,
+    "added": 1795148484
   }
 }
