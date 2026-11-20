@@ -23389,5 +23389,19 @@
     "category": "Grand Theft Auto VI",
     "cluster": 1,
     "added": 1795147214
+  },
+  "twitch_FrozenSmilingFoxTBCheesePull-jgs3gSAsgrBsjUyq": {
+    "id": "twitch_FrozenSmilingFoxTBCheesePull-jgs3gSAsgrBsjUyq",
+    "url": "https://www.twitch.tv/realkatieb/clip/FrozenSmilingFoxTBCheesePull-jgs3gSAsgrBsjUyq",
+    "channel": "realkatieb",
+    "platform": "twitch",
+    "title": "Katie's Big Moment",
+    "views": 500,
+    "created": 1795128438,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934036021",
+    "vod_offset": 12373,
+    "cluster": 1,
+    "added": 1795147569
   }
 }
