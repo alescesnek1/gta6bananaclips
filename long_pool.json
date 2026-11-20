@@ -29197,5 +29197,33 @@
     "vod_offset": 116360,
     "cluster": 1,
     "added": 1795198583
+  },
+  "twitch_BlindingWonderfulMeerkatArsonNoSexy-ffQOjHyqkwtL1od3": {
+    "id": "twitch_BlindingWonderfulMeerkatArsonNoSexy-ffQOjHyqkwtL1od3",
+    "url": "https://www.twitch.tv/sommerset/clip/BlindingWonderfulMeerkatArsonNoSexy-ffQOjHyqkwtL1od3",
+    "channel": "sommerset",
+    "platform": "twitch",
+    "title": "say wha",
+    "views": 501,
+    "created": 1795134145,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933929831",
+    "vod_offset": 23495,
+    "cluster": 1,
+    "added": 1795199418
+  },
+  "twitch_DeadTastyBearPMSTwin-a6rJwiobfIIka5Ri": {
+    "id": "twitch_DeadTastyBearPMSTwin-a6rJwiobfIIka5Ri",
+    "url": "https://www.twitch.tv/teosgame/clip/DeadTastyBearPMSTwin-a6rJwiobfIIka5Ri",
+    "channel": "teosgame",
+    "platform": "twitch",
+    "title": "60fps explanation",
+    "views": 511,
+    "created": 1795184473,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934927543",
+    "vod_offset": 1080,
+    "cluster": 1,
+    "added": 1795199418
   }
 }
