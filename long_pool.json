@@ -25136,5 +25136,19 @@
     "vod_offset": 141259,
     "cluster": 1,
     "added": 1795186777
+  },
+  "twitch_BlightedTentativeBobaKappaPride-YJRiCyebNTQ5nYF9": {
+    "id": "twitch_BlightedTentativeBobaKappaPride-YJRiCyebNTQ5nYF9",
+    "url": "https://www.twitch.tv/caseoh_/clip/BlightedTentativeBobaKappaPride-YJRiCyebNTQ5nYF9",
+    "channel": "caseoh_",
+    "platform": "twitch",
+    "title": "lol",
+    "views": 514,
+    "created": 1795138217,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934099165",
+    "vod_offset": 19067,
+    "cluster": 1,
+    "added": 1795187331
   }
 }
