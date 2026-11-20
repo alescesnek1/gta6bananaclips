@@ -24036,5 +24036,19 @@
     "vod_offset": 32179,
     "cluster": 1,
     "added": 1795160659
+  },
+  "twitch_TubularCalmTaroChefFrank-p-itpvsEPpA8i7rE": {
+    "id": "twitch_TubularCalmTaroChefFrank-p-itpvsEPpA8i7rE",
+    "url": "https://www.twitch.tv/caseoh_/clip/TubularCalmTaroChefFrank-p-itpvsEPpA8i7rE",
+    "channel": "caseoh_",
+    "platform": "twitch",
+    "title": "aye yoooo",
+    "views": 520,
+    "created": 1795080664,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932628190",
+    "vod_offset": 49969,
+    "cluster": 1,
+    "added": 1795161069
   }
 }
