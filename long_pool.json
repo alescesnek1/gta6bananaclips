@@ -32413,5 +32413,47 @@
     "vod_offset": 1526,
     "cluster": 1,
     "added": 1795200690
+  },
+  "twitch_AbrasiveTameQuailSquadGoals-tAXBTJhwRYMREnO9": {
+    "id": "twitch_AbrasiveTameQuailSquadGoals-tAXBTJhwRYMREnO9",
+    "url": "https://www.twitch.tv/lacy/clip/AbrasiveTameQuailSquadGoals-tAXBTJhwRYMREnO9",
+    "channel": "lacy",
+    "platform": "twitch",
+    "title": "lacy saying n word",
+    "views": 1186,
+    "created": 1795121428,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933767012",
+    "vod_offset": 19835,
+    "cluster": 1,
+    "added": 1795200922
+  },
+  "twitch_KnottyHorribleMeatloafWoofer-qHCrPk1hx8_Kk1gQ": {
+    "id": "twitch_KnottyHorribleMeatloafWoofer-qHCrPk1hx8_Kk1gQ",
+    "url": "https://www.twitch.tv/lacy/clip/KnottyHorribleMeatloafWoofer-qHCrPk1hx8_Kk1gQ",
+    "channel": "lacy",
+    "platform": "twitch",
+    "title": "hahahahahahahahahahahahaha",
+    "views": 918,
+    "created": 1795124322,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933767012",
+    "vod_offset": 22800,
+    "cluster": 1,
+    "added": 1795200922
+  },
+  "twitch_RoughTiredOkapiPhilosoraptor-hXTDCj8Dd9UNO4pS": {
+    "id": "twitch_RoughTiredOkapiPhilosoraptor-hXTDCj8Dd9UNO4pS",
+    "url": "https://www.twitch.tv/lacy/clip/RoughTiredOkapiPhilosoraptor-hXTDCj8Dd9UNO4pS",
+    "channel": "lacy",
+    "platform": "twitch",
+    "title": "a",
+    "views": 821,
+    "created": 1795120450,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933767012",
+    "vod_offset": 19012,
+    "cluster": 1,
+    "added": 1795200922
   }
 }
