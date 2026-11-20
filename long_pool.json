@@ -34262,5 +34262,19 @@
     "vod_offset": 42385,
     "cluster": 1,
     "added": 1795212533
+  },
+  "twitch_LittleLittleLardMingLee-aI6VoMiZkZmUAEhu": {
+    "id": "twitch_LittleLittleLardMingLee-aI6VoMiZkZmUAEhu",
+    "url": "https://www.twitch.tv/ohnepixel/clip/LittleLittleLardMingLee-aI6VoMiZkZmUAEhu",
+    "channel": "ohnepixel",
+    "platform": "twitch",
+    "title": "new chapter begins",
+    "views": 511,
+    "created": 1795187369,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934862154",
+    "vod_offset": 9362,
+    "cluster": 1,
+    "added": 1795213426
   }
 }
