@@ -33326,5 +33326,19 @@
     "vod_offset": 28974,
     "cluster": 1,
     "added": 1795207432
+  },
+  "twitch_LuckySpineyMarrowBatChest-TplYbmXE0sAtGk90": {
+    "id": "twitch_LuckySpineyMarrowBatChest-TplYbmXE0sAtGk90",
+    "url": "https://www.twitch.tv/2xrakai/clip/LuckySpineyMarrowBatChest-TplYbmXE0sAtGk90",
+    "channel": "2xrakai",
+    "platform": "twitch",
+    "title": "rakia gta",
+    "views": 504,
+    "created": 1795135212,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934375479",
+    "vod_offset": 757,
+    "cluster": 1,
+    "added": 1795208311
   }
 }
