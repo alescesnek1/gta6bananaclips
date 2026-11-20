@@ -25068,5 +25068,19 @@
     "vod_offset": 105963,
     "cluster": 1,
     "added": 1795184991
+  },
+  "twitch_ArtisticRacyAmazonEleGiggle-xgt7l2k5vUwcZ7Dc": {
+    "id": "twitch_ArtisticRacyAmazonEleGiggle-xgt7l2k5vUwcZ7Dc",
+    "url": "https://www.twitch.tv/emiru/clip/ArtisticRacyAmazonEleGiggle-xgt7l2k5vUwcZ7Dc",
+    "channel": "emiru",
+    "platform": "twitch",
+    "title": "apple",
+    "views": 501,
+    "created": 1795130450,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934110897",
+    "vod_offset": 10671,
+    "cluster": 1,
+    "added": 1795185641
   }
 }
