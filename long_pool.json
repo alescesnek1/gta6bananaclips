@@ -22882,12 +22882,54 @@
     "channel": "vinesauce",
     "platform": "twitch",
     "title": "What Was That?",
-    "views": 503,
+    "views": 509,
     "created": 1795069667,
     "category": "Grand Theft Auto VI",
     "video_id": "2933051230",
     "vod_offset": 15848,
     "cluster": 1,
-    "added": 1795138912
+    "added": 1795139143
+  },
+  "twitch_CooperativeLovelyAntMingLee-twVV3G5Mcr76CKAH": {
+    "id": "twitch_CooperativeLovelyAntMingLee-twVV3G5Mcr76CKAH",
+    "url": "https://www.twitch.tv/stableronaldo/clip/CooperativeLovelyAntMingLee-twVV3G5Mcr76CKAH",
+    "channel": "stableronaldo",
+    "platform": "twitch",
+    "title": "gyatt dangggg",
+    "views": 604,
+    "created": 1795057169,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932442046",
+    "vod_offset": 38943,
+    "cluster": 1,
+    "added": 1795139143
+  },
+  "twitch_FunEnergeticWasabiMau5-rJh9ZYciw0JSPm4G": {
+    "id": "twitch_FunEnergeticWasabiMau5-rJh9ZYciw0JSPm4G",
+    "url": "https://www.twitch.tv/stableronaldo/clip/FunEnergeticWasabiMau5-rJh9ZYciw0JSPm4G",
+    "channel": "stableronaldo",
+    "platform": "twitch",
+    "title": "ewwwww",
+    "views": 525,
+    "created": 1795052412,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932442046",
+    "vod_offset": 34301,
+    "cluster": 1,
+    "added": 1795139143
+  },
+  "twitch_SuccessfulKathishFungusBabyRage-W1LWzHH_o7Jc49U0": {
+    "id": "twitch_SuccessfulKathishFungusBabyRage-W1LWzHH_o7Jc49U0",
+    "url": "https://www.twitch.tv/stableronaldo/clip/SuccessfulKathishFungusBabyRage-W1LWzHH_o7Jc49U0",
+    "channel": "stableronaldo",
+    "platform": "twitch",
+    "title": "horny ron",
+    "views": 558,
+    "created": 1795059896,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932442046",
+    "vod_offset": 41763,
+    "cluster": 1,
+    "added": 1795139143
   }
 }
