@@ -23001,5 +23001,19 @@
     "vod_offset": 2544,
     "cluster": 1,
     "added": 1795140206
+  },
+  "twitch_BraveBashfulScallionCoolStoryBro-oNSTNnnOlCim8EVa": {
+    "id": "twitch_BraveBashfulScallionCoolStoryBro-oNSTNnnOlCim8EVa",
+    "url": "https://www.twitch.tv/timthetatman/clip/BraveBashfulScallionCoolStoryBro-oNSTNnnOlCim8EVa",
+    "channel": "timthetatman",
+    "platform": "twitch",
+    "title": "im quick",
+    "views": 517,
+    "created": 1795116887,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933741083",
+    "vod_offset": 17022,
+    "cluster": 1,
+    "added": 1795140569
   }
 }
