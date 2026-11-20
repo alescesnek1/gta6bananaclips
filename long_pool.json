@@ -23578,5 +23578,19 @@
     "vod_offset": 2224,
     "cluster": 1,
     "added": 1795151612
+  },
+  "twitch_StupidToughNarwhalDatBoi-TRlbHL1v-z3EElRn": {
+    "id": "twitch_StupidToughNarwhalDatBoi-TRlbHL1v-z3EElRn",
+    "url": "https://www.twitch.tv/sashagrey/clip/StupidToughNarwhalDatBoi-TRlbHL1v-z3EElRn",
+    "channel": "sashagrey",
+    "platform": "twitch",
+    "title": "🌴 !DROPS GTA VI DAY 2 @SASHAGREY @SASHAGREY",
+    "views": 500,
+    "created": 1795081062,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933408245",
+    "vod_offset": 11080,
+    "cluster": 1,
+    "added": 1795151978
   }
 }
