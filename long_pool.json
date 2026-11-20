@@ -26224,13 +26224,80 @@
     "channel": "stableronaldo",
     "platform": "twitch",
     "title": "wtfff",
-    "views": 511,
+    "views": 2208,
     "created": 1795106539,
     "category": "Grand Theft Auto VI",
     "video_id": "2933798318",
     "vod_offset": 3106,
     "cluster": 1,
-    "added": 1795154009
+    "added": 1795214107,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/_pool/twitch_AmorphousSnappyAardvarkWoofer-2SvUTl7cMpY5um59/source.mp4",
+    "peak": 9.05,
+    "cut": [
+      0.0,
+      11.52
+    ],
+    "dur": 12.29,
+    "tags": [],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 0.2,
+      "wow": 0.0,
+      "_loud": 2.6,
+      "_motion": 3.8
+    },
+    "quote": "Oh, look at those pretty little things.",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.25,
+      "physics": 0.25,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "proven": [],
+    "evidence": {
+      "fail": [
+        "impact"
+      ],
+      "physics": [
+        "impact"
+      ],
+      "crash": [
+        "impact"
+      ],
+      "stunt": [
+        "impact"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.0,
+    "signals": {
+      "siren": 0.0,
+      "impact": 139.2,
+      "loud": 3.7,
+      "motion": 2.6,
+      "sustained": 0.02,
+      "spike": 4.4,
+      "laugh": 0,
+      "static": 0.54,
+      "letterbox": 0.0,
+      "luma": 31.2,
+      "dark": 0.0
+    }
   },
   "twitch_FilthyRefinedSkirretLeeroyJenkins-fIZvW74IyvHXhDQD": {
     "id": "twitch_FilthyRefinedSkirretLeeroyJenkins-fIZvW74IyvHXhDQD",
@@ -27355,13 +27422,98 @@
     "channel": "vanillamace",
     "platform": "twitch",
     "title": "vanilla meets local wild life",
-    "views": 502,
+    "views": 2181,
     "created": 1795147528,
     "category": "Grand Theft Auto VI",
     "video_id": "2934481131",
     "vod_offset": 7391,
     "cluster": 1,
-    "added": 1795169320
+    "added": 1795214148,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/_pool/twitch_BraveHorribleFishNerfBlueBlaster-R4rE_4p77Dypy90F/source.mp4",
+    "peak": 6.25,
+    "cut": [
+      0.0,
+      8.09
+    ],
+    "dur": 8.09,
+    "tags": [],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.0,
+      "rage": 0.25,
+      "first-reaction": 0.2,
+      "wow": 0.0,
+      "_loud": 22.3,
+      "_motion": 20.2
+    },
+    "quote": "Hi Suki! Suki! Woooo!",
+    "cats": {
+      "funny": 0.25,
+      "rage": 0.25,
+      "fail": 0.25,
+      "physics": 0.25,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.25,
+      "stunt": 0.6,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.25
+    },
+    "primary": "stunt",
+    "proven": [],
+    "evidence": {
+      "funny": [
+        "loud"
+      ],
+      "rage": [
+        "loud"
+      ],
+      "fail": [
+        "impact",
+        "loud"
+      ],
+      "physics": [
+        "impact"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "crash": [
+        "impact"
+      ],
+      "stunt": [
+        "impact",
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "loud"
+      ]
+    },
+    "fun": 0.69,
+    "signals": {
+      "siren": 0.0,
+      "impact": 162.2,
+      "loud": 23.5,
+      "motion": 15.2,
+      "sustained": 0.65,
+      "spike": 2.0,
+      "laugh": 0,
+      "static": 0.03,
+      "letterbox": 0.0,
+      "luma": 69.9,
+      "dark": 0.0
+    }
   },
   "twitch_TalentedFancyWaspBCouch-jUHAHnk6acGKeVXY": {
     "id": "twitch_TalentedFancyWaspBCouch-jUHAHnk6acGKeVXY",
@@ -30601,13 +30753,78 @@
     "channel": "ohnepixel",
     "platform": "twitch",
     "title": "ohnePixel says GTA 6 gets him more bricked up than porn",
-    "views": 1057,
+    "views": 2336,
     "created": 1795179231,
     "category": "Grand Theft Auto VI",
     "video_id": "2934862154",
     "vod_offset": 1075,
     "cluster": 1,
-    "added": 1795193737
+    "added": 1795213996,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/_pool/twitch_MoldyRespectfulOstrichPartyTime-xKoKzoNh9OvfuiNS/source.mp4",
+    "peak": 21.75,
+    "cut": [
+      9.0,
+      22.17
+    ],
+    "dur": 22.17,
+    "tags": [
+      "first-reaction",
+      "funny"
+    ],
+    "tag_scores": {
+      "funny": 0.76,
+      "glitch": 0.25,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.1,
+      "first-reaction": 0.96,
+      "wow": 0.08,
+      "_loud": 1.8,
+      "_motion": 1.5
+    },
+    "quote": "All right, all right",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.35,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 1.0,
+      "wow": 0.0
+    },
+    "primary": "first-reaction",
+    "proven": [
+      "first-reaction"
+    ],
+    "evidence": {
+      "physics": [
+        "text"
+      ],
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ]
+    },
+    "fun": 0.0,
+    "signals": {
+      "siren": 0.0,
+      "impact": 19.0,
+      "loud": 1.7,
+      "motion": 0.5,
+      "sustained": 0.0,
+      "spike": 4.0,
+      "laugh": 0,
+      "static": 0.93,
+      "letterbox": 0.0,
+      "luma": 45.3,
+      "dark": 0.0
+    }
   },
   "twitch_TransparentArtsyAxeGrammarKing-dnuXIn1aiA3uUpqy": {
     "id": "twitch_TransparentArtsyAxeGrammarKing-dnuXIn1aiA3uUpqy",
@@ -33734,7 +33951,76 @@
     "video_id": "2932319814",
     "vod_offset": 122144,
     "cluster": 1,
-    "added": 1795210621
+    "added": 1795213315,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/_pool/twitch_RealPatientAnteaterCopyThis-wqMQfT4dsa5vNtqF/source.mp4",
+    "peak": 29.150000000000002,
+    "cut": [
+      1.36,
+      30.02
+    ],
+    "dur": 30.02,
+    "tags": [
+      "funny"
+    ],
+    "tag_scores": {
+      "funny": 0.31,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 0.2,
+      "wow": 0.0,
+      "_loud": 5.8,
+      "_motion": 11.0
+    },
+    "quote": "Come in Jay",
+    "cats": {
+      "funny": 0.25,
+      "rage": 0.25,
+      "fail": 0.25,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.25
+    },
+    "proven": [],
+    "evidence": {
+      "funny": [
+        "loud"
+      ],
+      "rage": [
+        "loud"
+      ],
+      "fail": [
+        "loud"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "loud"
+      ]
+    },
+    "fun": 0.46,
+    "signals": {
+      "siren": 0.0,
+      "impact": 17.1,
+      "loud": 6.1,
+      "motion": 7.8,
+      "sustained": 0.15,
+      "spike": 4.9,
+      "laugh": 0,
+      "static": 0.0,
+      "letterbox": 0.03,
+      "luma": 26.9,
+      "dark": 0.07
+    }
   },
   "twitch_EnticingSpotlessLapwingKAPOW-jMsODv6T1mV_rFxc": {
     "id": "twitch_EnticingSpotlessLapwingKAPOW-jMsODv6T1mV_rFxc",
@@ -33784,13 +34070,83 @@
     "channel": "zoreee",
     "platform": "twitch",
     "title": "Refilled my Gas and This Happened",
-    "views": 584,
+    "views": 2354,
     "created": 1795208727,
     "category": "Grand Theft Auto VI",
     "video_id": "2934327274",
     "vod_offset": 14007,
     "cluster": 1,
-    "added": 1795211090
+    "added": 1795213965,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/_pool/twitch_PatientJazzyGarageTriHard-Z1_B3-ucQjsFt9L3/source.mp4",
+    "peak": 8.65,
+    "cut": [
+      0.0,
+      9.85
+    ],
+    "dur": 14.8,
+    "tags": [
+      "wow"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.2,
+      "crash": 0.0,
+      "rage": 0.05,
+      "first-reaction": 0.2,
+      "wow": 0.47,
+      "_loud": 2.3,
+      "_motion": 31.6
+    },
+    "quote": "Holy moly My car",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.35
+    },
+    "primary": "wow",
+    "proven": [],
+    "evidence": {
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.55,
+    "signals": {
+      "siren": 0.0,
+      "impact": 28.0,
+      "loud": 3.9,
+      "motion": 28.7,
+      "sustained": 0.9,
+      "spike": 2.4,
+      "laugh": 0,
+      "static": 0.0,
+      "letterbox": 0.0,
+      "luma": 49.0,
+      "dark": 0.0
+    }
   },
   "twitch_HumbleBlazingCobraOneHand-FdwoVqSa8gsjhcyT": {
     "id": "twitch_HumbleBlazingCobraOneHand-FdwoVqSa8gsjhcyT",
