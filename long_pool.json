@@ -28803,13 +28803,13 @@
     "channel": "brycexd",
     "platform": "twitch",
     "title": "✅WORLD'S FIRST GTA 6 COMPLETION WORLD RECORD SPEEDRUN✅DAY 1019✅!discord",
-    "views": 1067,
+    "views": 1074,
     "created": 1795139407,
     "category": "Grand Theft Auto VI",
     "video_id": "2932205344",
     "vod_offset": 141259,
     "cluster": 1,
-    "added": 1795224026
+    "added": 1795224561
   },
   "twitch_BlightedTentativeBobaKappaPride-YJRiCyebNTQ5nYF9": {
     "id": "twitch_BlightedTentativeBobaKappaPride-YJRiCyebNTQ5nYF9",
@@ -33698,13 +33698,13 @@
     "channel": "maya",
     "platform": "twitch",
     "title": "maya-ohneeaglefelony",
-    "views": 736,
+    "views": 746,
     "created": 1795197023,
     "category": "Grand Theft Auto VI",
     "video_id": "2935062259",
     "vod_offset": 4437,
     "cluster": 2,
-    "added": 1795224026
+    "added": 1795224561
   },
   "twitch_AnnoyingMoldySnakeLitty-z2--ohdLoMbPnZFA": {
     "id": "twitch_AnnoyingMoldySnakeLitty-z2--ohdLoMbPnZFA",
@@ -34672,13 +34672,13 @@
     "channel": "lvndmark",
     "platform": "twitch",
     "title": "Fix driving settings",
-    "views": 1062,
+    "views": 1072,
     "created": 1795147792,
     "category": "Grand Theft Auto VI",
     "video_id": "2933833244",
     "vod_offset": 42385,
     "cluster": 1,
-    "added": 1795224026
+    "added": 1795224561
   },
   "twitch_LittleLittleLardMingLee-aI6VoMiZkZmUAEhu": {
     "id": "twitch_LittleLittleLardMingLee-aI6VoMiZkZmUAEhu",
@@ -34840,13 +34840,13 @@
     "channel": "t10nat",
     "platform": "twitch",
     "title": "ARTHER RAID",
-    "views": 634,
+    "views": 646,
     "created": 1795139991,
     "category": "Grand Theft Auto VI",
     "video_id": "2934182996",
     "vod_offset": 16195,
     "cluster": 1,
-    "added": 1795224026
+    "added": 1795224561
   },
   "twitch_BraveHelpfulSwordKappa-qsILVGSorUkWKUS7": {
     "id": "twitch_BraveHelpfulSwordKappa-qsILVGSorUkWKUS7",
@@ -35494,10 +35494,10 @@
     "channel": "xqc",
     "platform": "kick",
     "title": "3 Star Helicopter Getaway, turns into Face Plant!!",
-    "views": 704,
+    "views": 715,
     "created": 1795221773,
     "category": "Grand Theft Auto VI (GTA)",
-    "added": 1795223934,
+    "added": 1795224438,
     "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/xqc/20261121_kick_clip_01M7XRSJ2ZSJY4HAQHF3M4EY55/source.mp4",
     "peak": 27.05,
     "cut": [
@@ -35578,10 +35578,10 @@
     "channel": "caseoh_",
     "platform": "twitch",
     "title": "omg haha",
-    "views": 2649,
+    "views": 2672,
     "created": 1795221263,
     "category": "Grand Theft Auto VI",
-    "added": 1795224026
+    "added": 1795224561
   },
   "twitch_InspiringGorgeousInternNerfRedBlaster-4-vk1jUQmzu3F_E4": {
     "id": "twitch_InspiringGorgeousInternNerfRedBlaster-4-vk1jUQmzu3F_E4",
@@ -35589,12 +35589,26 @@
     "channel": "maya",
     "platform": "twitch",
     "title": "Maya reaction to Lirik",
-    "views": 502,
+    "views": 509,
     "created": 1795196760,
     "category": "Grand Theft Auto VI",
     "video_id": "2935062259",
     "vod_offset": 4187,
     "cluster": 1,
-    "added": 1795224026
+    "added": 1795224561
+  },
+  "twitch_SparklyTacitSquirrelGrammarKing-8bL24bi2h7oCrG3g": {
+    "id": "twitch_SparklyTacitSquirrelGrammarKing-8bL24bi2h7oCrG3g",
+    "url": "https://www.twitch.tv/hutchmf/clip/SparklyTacitSquirrelGrammarKing-8bL24bi2h7oCrG3g",
+    "channel": "hutchmf",
+    "platform": "twitch",
+    "title": "Nick loves feet confirmed",
+    "views": 503,
+    "created": 1795206151,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934897780",
+    "vod_offset": 25020,
+    "cluster": 1,
+    "added": 1795224561
   }
 }
