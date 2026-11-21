@@ -313,12 +313,38 @@
           }
         },
         "built": "2026-11-20T12:09+01:00"
+      },
+      "2026-11-21": {
+        "items": {
+          "stories/20261121/bananas_0_fact_most.jpg": {
+            "kind": "fact_most",
+            "due": "2026-11-21T17:08:00+01:00",
+            "url": "https://6b017acdbf9624b7029fb9d2--gta6bananaclips-media.netlify.app/stories/20261121/bananas_0_fact_most.jpg",
+            "alt": "Most clipped yesterday IShowSpeed 3 clips on our page Who beats them today? Reply with a name",
+            "posts": {
+              "6af7142262b70b94b01ac608": "6b017ad5d5eabfb8cc242347"
+            },
+            "draft": false
+          },
+          "stories/20261121/bananas_1_pool.jpg": {
+            "kind": "pool",
+            "due": "2026-11-22T04:02:00+01:00",
+            "url": "https://6b017acdbf9624b7029fb9d2--gta6bananaclips-media.netlify.app/stories/20261121/bananas_1_pool.jpg",
+            "alt": "GTA 6 story",
+            "posts": {
+              "6af7142262b70b94b01ac608": "6b017ad50247969092c618a5"
+            },
+            "draft": false
+          }
+        },
+        "built": "2026-11-21T12:04+01:00"
       }
     },
     "pool": {
       "bananas_07.jpg": "2026-11-18",
       "bananas_12.jpg": "2026-11-19",
-      "bananas_15.jpg": "2026-11-20"
+      "bananas_15.jpg": "2026-11-20",
+      "bananas_11.jpg": "2026-11-21"
     },
     "long": {
       "funny-day#1@202611181907": {
@@ -566,12 +592,28 @@
           }
         },
         "built": "2026-11-20T12:09+01:00"
+      },
+      "2026-11-21": {
+        "items": {
+          "stories/20261121/fanpage_0_pool.jpg": {
+            "kind": "pool",
+            "due": "2026-11-21T22:47:00+01:00",
+            "url": "https://6b017acdbf9624b7029fb9d2--gta6bananaclips-media.netlify.app/stories/20261121/fanpage_0_pool.jpg",
+            "alt": "GTA 6 story",
+            "posts": {
+              "6afc42e6ece6dfde5ff66dca": "6b017ad60247969092c618d1"
+            },
+            "draft": false
+          }
+        },
+        "built": "2026-11-21T12:04+01:00"
       }
     },
     "pool": {
       "fanpage_07.jpg": "2026-11-18",
       "fanpage_03.jpg": "2026-11-19",
-      "fanpage_15.jpg": "2026-11-20"
+      "fanpage_15.jpg": "2026-11-20",
+      "fanpage_17.jpg": "2026-11-21"
     },
     "long": {}
   }
