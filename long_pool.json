@@ -36998,5 +36998,97 @@
     "vod_offset": 64835,
     "cluster": 1,
     "added": 1795239835
+  },
+  "twitch_FurryWealthyTurnipUWot-4BiO3HaSvEy0_4uV": {
+    "id": "twitch_FurryWealthyTurnipUWot-4BiO3HaSvEy0_4uV",
+    "url": "https://www.twitch.tv/kaicenat/clip/FurryWealthyTurnipUWot-4BiO3HaSvEy0_4uV",
+    "channel": "kaicenat",
+    "name": "KaiCenat",
+    "platform": "twitch",
+    "title": "his reaction",
+    "views": 2803,
+    "created": 1795151940,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932305259",
+    "vod_offset": 145109,
+    "added": 1795238603,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/_pool/twitch_FurryWealthyTurnipUWot-4BiO3HaSvEy0_4uV/source.mp4",
+    "peak": 22.85,
+    "cut": [
+      6.01,
+      30.36
+    ],
+    "dur": 53.01,
+    "tags": [
+      "rage"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.27,
+      "rage": 0.37,
+      "first-reaction": 0.2,
+      "wow": 0.08,
+      "_loud": 5.9,
+      "_motion": 16.2
+    },
+    "quote": "Boom bro, bro, bro, bro that motherfucker just out Fucking highly inappropriate My apologi",
+    "cats": {
+      "funny": 0.25,
+      "rage": 0.25,
+      "fail": 0.25,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.25
+    },
+    "proven": [],
+    "evidence": {
+      "funny": [
+        "loud"
+      ],
+      "rage": [
+        "loud"
+      ],
+      "fail": [
+        "loud"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "loud"
+      ]
+    },
+    "fun": 0.66,
+    "signals": {
+      "siren": 0.0,
+      "impact": 37.8,
+      "loud": 7.9,
+      "motion": 12.5,
+      "sustained": 0.45,
+      "spike": 2.0,
+      "laugh": 0,
+      "static": 0.03,
+      "letterbox": 0.0,
+      "luma": 42.9,
+      "dark": 0.0
+    }
   }
 }
