@@ -33345,13 +33345,13 @@
     "channel": "silky",
     "platform": "twitch",
     "title": "he unlocked a secret clip",
-    "views": 500,
+    "views": 713,
     "created": 1795148348,
     "category": "Grand Theft Auto VI",
     "video_id": "2934535359",
     "vod_offset": 5082,
     "cluster": 1,
-    "added": 1795202302
+    "added": 1795220521
   },
   "twitch_IncredulousBlitheOrcaFailFish-_hXzMyI-JF_BZTNV": {
     "id": "twitch_IncredulousBlitheOrcaFailFish-_hXzMyI-JF_BZTNV",
@@ -35353,5 +35353,19 @@
       "luma": 36.2,
       "dark": 0.0
     }
+  },
+  "twitch_OptimisticHelplessLatteShazBotstix-MILSX9hERJ7Gw2Tl": {
+    "id": "twitch_OptimisticHelplessLatteShazBotstix-MILSX9hERJ7Gw2Tl",
+    "url": "https://www.twitch.tv/emiru/clip/OptimisticHelplessLatteShazBotstix-MILSX9hERJ7Gw2Tl",
+    "channel": "emiru",
+    "platform": "twitch",
+    "title": "Cop cosplay",
+    "views": 501,
+    "created": 1795208776,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2935325464",
+    "vod_offset": 1539,
+    "cluster": 2,
+    "added": 1795220521
   }
 }
