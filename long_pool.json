@@ -37710,5 +37710,33 @@
     "vod_offset": 22982,
     "cluster": 1,
     "added": 1795258105
+  },
+  "twitch_ArtisticResilientBeaverPupper-i-qYjnvkpICZRF3y": {
+    "id": "twitch_ArtisticResilientBeaverPupper-i-qYjnvkpICZRF3y",
+    "url": "https://www.twitch.tv/atrioc/clip/ArtisticResilientBeaverPupper-i-qYjnvkpICZRF3y",
+    "channel": "atrioc",
+    "platform": "twitch",
+    "title": "cat lul",
+    "views": 512,
+    "created": 1795242440,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2935648632",
+    "vod_offset": 16528,
+    "cluster": 1,
+    "added": 1795259074
+  },
+  "twitch_RudeResilientWheelFailFish-c3lrFBO1UdE991pW": {
+    "id": "twitch_RudeResilientWheelFailFish-c3lrFBO1UdE991pW",
+    "url": "https://www.twitch.tv/nickmercs/clip/RudeResilientWheelFailFish-c3lrFBO1UdE991pW",
+    "channel": "nickmercs",
+    "platform": "twitch",
+    "title": ".....",
+    "views": 509,
+    "created": 1795189251,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934876295",
+    "vod_offset": 9470,
+    "cluster": 1,
+    "added": 1795259074
   }
 }
