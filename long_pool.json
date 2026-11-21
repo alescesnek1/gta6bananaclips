@@ -36643,13 +36643,13 @@
     "channel": "extesyy",
     "platform": "twitch",
     "title": "(60FPS DLSS5 1440P 54% THROUGH) GTA 6 BUT I ONLY DO CRIMES I HAVE DONE IRL",
-    "views": 504,
+    "views": 718,
     "created": 1795161014,
     "category": "Grand Theft Auto VI",
     "video_id": "2934692713",
     "vod_offset": 4442,
     "cluster": 1,
-    "added": 1795233498
+    "added": 1795244924
   },
   "twitch_ExcitedPlumpMomNerfBlueBlaster-kcrH6JTKxuAS5S1u": {
     "id": "twitch_ExcitedPlumpMomNerfBlueBlaster-kcrH6JTKxuAS5S1u",
@@ -37174,5 +37174,19 @@
     "vod_offset": 9626,
     "cluster": 1,
     "added": 1795242802
+  },
+  "twitch_ResourcefulLachrymoseCormorantAMPEnergyCherry-Nvb9kX4kl7UpGntI": {
+    "id": "twitch_ResourcefulLachrymoseCormorantAMPEnergyCherry-Nvb9kX4kl7UpGntI",
+    "url": "https://www.twitch.tv/hasanabi/clip/ResourcefulLachrymoseCormorantAMPEnergyCherry-Nvb9kX4kl7UpGntI",
+    "channel": "hasanabi",
+    "platform": "twitch",
+    "title": "10k dono?",
+    "views": 569,
+    "created": 1795218223,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2935213810",
+    "vod_offset": 16911,
+    "cluster": 1,
+    "added": 1795244924
   }
 }
