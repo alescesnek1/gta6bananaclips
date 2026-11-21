@@ -36678,5 +36678,19 @@
     "vod_offset": 5059,
     "cluster": 1,
     "added": 1795234157
+  },
+  "twitch_ObeseEphemeralCrabsUWot-6wkYGYkoQ35lQ11P": {
+    "id": "twitch_ObeseEphemeralCrabsUWot-6wkYGYkoQ35lQ11P",
+    "url": "https://www.twitch.tv/theburntpeanut/clip/ObeseEphemeralCrabsUWot-6wkYGYkoQ35lQ11P",
+    "channel": "theburntpeanut",
+    "platform": "twitch",
+    "title": "Look in the background P",
+    "views": 506,
+    "created": 1795152777,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934030540",
+    "vod_offset": 36638,
+    "cluster": 1,
+    "added": 1795235322
   }
 }
