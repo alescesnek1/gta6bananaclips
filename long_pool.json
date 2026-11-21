@@ -34858,13 +34858,13 @@
     "channel": "matimi0",
     "platform": "twitch",
     "title": "granny snuffed out EZ",
-    "views": 504,
+    "views": 1074,
     "created": 1795166507,
     "category": "Grand Theft Auto VI",
     "video_id": "2934481386",
     "vod_offset": 26388,
     "cluster": 1,
-    "added": 1795214012
+    "added": 1795250002
   },
   "twitch_SillySweetMoonPJSalt-at4eAAVKUbpnz691": {
     "id": "twitch_SillySweetMoonPJSalt-at4eAAVKUbpnz691",
@@ -37361,5 +37361,33 @@
       "luma": 14.9,
       "dark": 0.4
     }
+  },
+  "twitch_CheerfulPiliableWombatVoHiYo-7VZVLnoW2E5QYf_9": {
+    "id": "twitch_CheerfulPiliableWombatVoHiYo-7VZVLnoW2E5QYf_9",
+    "url": "https://www.twitch.tv/cohhcarnage/clip/CheerfulPiliableWombatVoHiYo-7VZVLnoW2E5QYf_9",
+    "channel": "cohhcarnage",
+    "platform": "twitch",
+    "title": "The GTA Ambient Environment",
+    "views": 516,
+    "created": 1795181635,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934872080",
+    "vod_offset": 2693,
+    "cluster": 1,
+    "added": 1795250003
+  },
+  "twitch_HonorableFriendlyDolphinWutFace-BYrgqZ2J3N9MfDxh": {
+    "id": "twitch_HonorableFriendlyDolphinWutFace-BYrgqZ2J3N9MfDxh",
+    "url": "https://www.twitch.tv/chiblee/clip/HonorableFriendlyDolphinWutFace-BYrgqZ2J3N9MfDxh",
+    "channel": "chiblee",
+    "platform": "twitch",
+    "title": "I think the game is working",
+    "views": 515,
+    "created": 1795245757,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2935316352",
+    "vod_offset": 39040,
+    "cluster": 1,
+    "added": 1795250002
   }
 }
