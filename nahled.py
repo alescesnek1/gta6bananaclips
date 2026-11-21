@@ -358,13 +358,7 @@ def brand_ref(znacka, out):
 
 def scene_text(frame_path, tags):
     """(scene sentence, key object, source): Workers AI vision on the frame, else from the tags."""
-    try:
-        import nahled_ai
-        r = nahled_ai.describe_scene(frame_path)
-        if r:
-            return r[0], r[1], "vision"
-    except Exception as e:
-        K.log(f"  scene description: {str(e)[-150:]}")
+    # 21. 11. (owner: "seber Cloudflare co nejvic prace"): no vision description - the scene comes from the tags
     tag = next((t for t in tags or [] if t in SCENE_FALLBACK), "wow")
     return SCENE_FALLBACK[tag][0], SCENE_FALLBACK[tag][1], "tags"
 

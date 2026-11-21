@@ -405,18 +405,46 @@ AI_VIDEOS = int(os.environ.get("KLIPY_AI_VIDEOS", "2"))   # transcripts read by 
 AI_MAX_S = 5400                                           # longer videos: too much to download and transcribe
 AI_MIN_VIEWS = 30000
 
+HYPE_RE = re.compile(r"(oh my god|omg|no way|what the|wtf|holy|bro+|yo+|let'?s go+|bruh|run+|cops?|police|"
+                     r"crash(ed)?|dead|died|insane|crazy|nah+|stop|help|why|hahaha+|lmao+|lol+|ayo+|what+)", re.I)
+
+def transcript_highlights(segs, audio, max_n=3):
+    """The shareable moments of a long video without AI (21. 11., replaces the Cloudflare text model): every
+    Whisper segment scored by how loud the streamer gets there against the video's own median (robust z) and by
+    hype words / exclamations / stretched words ("noooo"). The top max_n peaks, >= 60 s apart, that are both
+    clearly louder (z >= 2.5) and hyped -> [(seconds, score 0..1)]."""
+    ts, rms = rms_curve(audio)
+    if not len(rms) or not segs:
+        return []
+    db = 20 * np.log10(rms + 1.0)
+    med = float(np.median(db))
+    mad = float(np.median(np.abs(db - med))) + 0.5
+    scored = []
+    for seg in segs:
+        i0, i1 = np.searchsorted(ts, seg["start"]), np.searchsorted(ts, seg["end"])
+        if i1 <= i0:
+            continue
+        loud = (float(np.percentile(db[i0:i1], 90)) - med) / mad
+        text = seg.get("text") or ""
+        hype = len(HYPE_RE.findall(text)) + text.count("!") + len(re.findall(r"([a-z]){3,}", text, re.I))
+        if loud >= 2.5 and hype >= 1:
+            peak = float(ts[i0 + int(np.argmax(db[i0:i1]))])
+            scored.append((min(1.0, 0.12 * loud + 0.08 * hype), peak))
+    out = []
+    for sc, t in sorted(scored, reverse=True):
+        if all(abs(t - u) >= 60 for u, _ in out):
+            out.append((t, round(sc, 2)))
+        if len(out) >= max_n:
+            break
+    return sorted(out)
+
 def ai_signals(url, vid, info, label):
-    """19. 11. (owner approved, the virality prompt of SamurAIGPT/AI-Youtube-Shorts-Generator): no audience
-    signal yet -> download the audio, Whisper it, the Cloudflare text model names the shareable moments (score
-    >= 80). Only AI_VIDEOS big videos per run (download + Whisper cost); every moment still goes through all
+    """19. 11. (owner approved): no audience signal yet -> download the audio, Whisper it, find the shareable
+    moments (21. 11.: transcript_highlights, a program - the Cloudflare text model used up the daily allowance). Only AI_VIDEOS big videos per run (download + Whisper cost); every moment still goes through all
     the gates (gameplay, facecam, action, boredom, QA). [] when unavailable."""
     global AI_VIDEOS
     dur = float(info.get("duration") or 0)
     if AI_VIDEOS <= 0 or not 120 <= dur <= AI_MAX_S or (info.get("view_count") or 0) < AI_MIN_VIEWS:
-        return []
-    import nahled_ai
-    nahled_ai.load_env()                                # the 24/7 PC keeps the Cloudflare keys in its .env
-    if not (os.environ.get("CF_ACCOUNT_ID") and os.environ.get("CF_API_TOKEN")):
         return []
     AI_VIDEOS -= 1
     tmp = OUT / "_ai_audio"
@@ -431,18 +459,9 @@ def ai_signals(url, vid, info, label):
             _whisper = whisper.load_model(WHISPER_MODEL, download_root=str(WHISPER_DIR))
         res = _whisper.transcribe(str(audio), condition_on_previous_text=False,
                                   fp16=_whisper.device.type == "cuda", verbose=None)
-        lines, cur, t0 = [], [], None
-        for seg in res.get("segments", []):            # one line per ~20 s
-            t0 = seg["start"] if t0 is None else t0
-            cur.append(seg["text"].strip())
-            if seg["end"] - t0 >= 20:
-                lines.append(f"[{int(t0 // 60):02d}:{int(t0 % 60):02d}] " + " ".join(cur))
-                cur, t0 = [], None
-        if cur:
-            lines.append(f"[{int(t0 // 60):02d}:{int(t0 % 60):02d}] " + " ".join(cur))
-        import nahled_ai
-        cands = nahled_ai.stream_highlights(lines)
-        log(f"  {label}: {vid} AI read {len(lines)} transcript lines -> {len(cands)} moments")
+        segs = res.get("segments", [])
+        cands = transcript_highlights(segs, audio)      # 21. 11.: a program, no Cloudflare (its daily allowance ran out)
+        log(f"  {label}: {vid} transcript + loudness read {len(segs)} segments -> {len(cands)} moments")
         return norm(cands)
     except Exception as e:
         log(f"  {label}: {vid} AI transcript failed ({str(e)[-100:]})")

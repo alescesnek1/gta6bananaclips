@@ -64,7 +64,7 @@ if ($token -and (Due "github" $(if ($launch) { 4 } else { 25 }))) {
 # --- 1b) long-form every 2 h on GITHUB (owner 20. 11.: "ma se to primarne delat na githubu"; GitHub's own cron
 # for long.yml ran hours late). The run decides: cap long_min_gap_h per brand, enough material or a silent skip.
 # (worker\long.ps1 = building on this PC, kept but not started.)
-if ($token -and (Due "long" 115)) {
+if ($token -and (Due "long" 235)) {
     try {
         Invoke-RestMethod -Method Post -Uri "https://api.github.com/repos/aleshrani/gta6bananaclips/actions/workflows/long.yml/dispatches" `
             -Headers @{ Authorization = "Bearer $token"; Accept = "application/vnd.github+json"; "User-Agent" = "gta6-pc" } `

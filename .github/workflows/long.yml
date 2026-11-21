@@ -20,7 +20,7 @@ name: long-form
 
 on:
   schedule:
-    - cron: "25 */2 * * *"         # every 2 h (fallback; the PC dispatches every 2 h too)
+    - cron: "25 */4 * * *"         # every 4 h (21. 11.: fewer runs = less Cloudflare; the PC dispatches every 4 h too)
   # 20. 11. (owner): the long-form is built HERE again, primarily on GitHub; the PC only dispatches this run
   workflow_dispatch:
     inputs:

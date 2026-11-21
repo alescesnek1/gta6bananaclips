@@ -2023,6 +2023,12 @@ def main():
             note_failure(a.znacka, now)
         return 1
 
+def long_verify(a):
+    """Vision check of every picked moment (Cloudflare): off since 21. 11. (owner: save the daily AI allowance -
+    it ran out by midday and took the shorts' checks with it). The program checks stay: static screen, face
+    filling the frame, darkness, boredom, sentence-safe cuts, action. LONG_VISION_VERIFY=1 turns it back on."""
+    return not a.bez_overeni and os.environ.get("LONG_VISION_VERIFY") == "1"
+
 def calendar_run(a):
     """The regular run (long.yml every 2 h: cron + the 24/7 PC dispatch): no forced series, no test category."""
     return not (a.serie or a.hra or getattr(a, "znovu", False))
@@ -2048,7 +2054,7 @@ def make(a, now):
         print(f"\n{z}: next {a.kalendar} episodes from now, moments {a.od or 'since the series'}..{a.do or 'now'}")
         print(f"{'due':<17} {'series':<17} {'#':>3} {'len':>6} {'mom':>4}  note")
         for i in range(a.kalendar):
-            plan = plan_run(a, z, now, used, eps, res, vis, not a.bez_overeni)
+            plan = plan_run(a, z, now, used, eps, res, vis, long_verify(a))
             if not plan.get("serie"):
                 print(f"{plan['planned'] or '-':<17} {'-':<17} {'-':>3} {'-':>6} {'-':>4}  {plan['note']}")
                 break
@@ -2056,7 +2062,7 @@ def make(a, now):
             print(f"{plan['planned'] or '-':<17} {plan['serie']:<17} {plan['episode']:>3} "
                   f"{plan['length'] // 60:>3}:{plan['length'] % 60:02d} {len(plan['picked']):>4}  {plan['note']}")
         return 0
-    plan = plan_run(a, z, now, used, eps, res, vis, not a.bez_overeni)
+    plan = plan_run(a, z, now, used, eps, res, vis, long_verify(a))
     if vis and not a.zkouska and not a.hra:
         vision_save(vis)
     if plan.get("cursor") is not None and not a.zkouska and not a.hra:   # the theme list walks on every run
@@ -2166,6 +2172,8 @@ def make(a, now):
             log(f"  thumbnail inputs: {str(e)[-200:]}")
         try:
             import nahled_ai
+            if os.environ.get("LONG_AI_THUMB") != "1":   # 21. 11.: off - Aleš makes the thumbnail from the e-mail prompt
+                raise RuntimeError("AI thumbnail off (Cloudflare budget), LONG_AI_THUMB=1 turns it on")
             meta = json.loads(mp.read_text(encoding="utf-8"))
             left = nahled_ai.budget_left()[0]
             n = thumb_variants(left, int(os.environ.get("LONG_BRANDS_AFTER") or 0))
