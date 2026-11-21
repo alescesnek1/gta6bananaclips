@@ -28803,13 +28803,13 @@
     "channel": "brycexd",
     "platform": "twitch",
     "title": "✅WORLD'S FIRST GTA 6 COMPLETION WORLD RECORD SPEEDRUN✅DAY 1019✅!discord",
-    "views": 501,
+    "views": 1067,
     "created": 1795139407,
     "category": "Grand Theft Auto VI",
     "video_id": "2932205344",
     "vod_offset": 141259,
     "cluster": 1,
-    "added": 1795186777
+    "added": 1795224026
   },
   "twitch_BlightedTentativeBobaKappaPride-YJRiCyebNTQ5nYF9": {
     "id": "twitch_BlightedTentativeBobaKappaPride-YJRiCyebNTQ5nYF9",
@@ -33698,13 +33698,13 @@
     "channel": "maya",
     "platform": "twitch",
     "title": "maya-ohneeaglefelony",
-    "views": 501,
+    "views": 736,
     "created": 1795197023,
     "category": "Grand Theft Auto VI",
     "video_id": "2935062259",
     "vod_offset": 4437,
     "cluster": 2,
-    "added": 1795205323
+    "added": 1795224026
   },
   "twitch_AnnoyingMoldySnakeLitty-z2--ohdLoMbPnZFA": {
     "id": "twitch_AnnoyingMoldySnakeLitty-z2--ohdLoMbPnZFA",
@@ -34672,13 +34672,13 @@
     "channel": "lvndmark",
     "platform": "twitch",
     "title": "Fix driving settings",
-    "views": 501,
+    "views": 1062,
     "created": 1795147792,
     "category": "Grand Theft Auto VI",
     "video_id": "2933833244",
     "vod_offset": 42385,
     "cluster": 1,
-    "added": 1795212533
+    "added": 1795224026
   },
   "twitch_LittleLittleLardMingLee-aI6VoMiZkZmUAEhu": {
     "id": "twitch_LittleLittleLardMingLee-aI6VoMiZkZmUAEhu",
@@ -34840,13 +34840,13 @@
     "channel": "t10nat",
     "platform": "twitch",
     "title": "ARTHER RAID",
-    "views": 501,
+    "views": 634,
     "created": 1795139991,
     "category": "Grand Theft Auto VI",
     "video_id": "2934182996",
     "vod_offset": 16195,
     "cluster": 1,
-    "added": 1795214317
+    "added": 1795224026
   },
   "twitch_BraveHelpfulSwordKappa-qsILVGSorUkWKUS7": {
     "id": "twitch_BraveHelpfulSwordKappa-qsILVGSorUkWKUS7",
@@ -35487,5 +35487,114 @@
     "vod_offset": 40518,
     "cluster": 1,
     "added": 1795223321
+  },
+  "kick_clip_01M7XRSJ2ZSJY4HAQHF3M4EY55": {
+    "id": "kick_clip_01M7XRSJ2ZSJY4HAQHF3M4EY55",
+    "url": "https://kick.com/xqc/clips/clip_01M7XRSJ2ZSJY4HAQHF3M4EY55",
+    "channel": "xqc",
+    "platform": "kick",
+    "title": "3 Star Helicopter Getaway, turns into Face Plant!!",
+    "views": 704,
+    "created": 1795221773,
+    "category": "Grand Theft Auto VI (GTA)",
+    "added": 1795223934,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/xqc/20261121_kick_clip_01M7XRSJ2ZSJY4HAQHF3M4EY55/source.mp4",
+    "peak": 27.05,
+    "cut": [
+      20.67,
+      31.07
+    ],
+    "dur": 42.02,
+    "tags": [
+      "chase"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 1.0,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 0.0,
+      "wow": 0.0,
+      "_loud": 1.7,
+      "_motion": 16.9
+    },
+    "quote": "",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 1.0,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "primary": "chase",
+    "proven": [
+      "chase"
+    ],
+    "evidence": {
+      "chase": [
+        "motion",
+        "text"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.34,
+    "signals": {
+      "siren": 0.0,
+      "impact": 16.1,
+      "loud": 1.8,
+      "motion": 17.4,
+      "sustained": 0.64,
+      "spike": 2.7,
+      "laugh": 0,
+      "static": 0.05,
+      "letterbox": 0.0,
+      "luma": 31.2,
+      "dark": 0.0
+    }
+  },
+  "twitch_ClumsyVivaciousDotterelBrokeBack-wxQt-rqtGLWo29wm": {
+    "id": "twitch_ClumsyVivaciousDotterelBrokeBack-wxQt-rqtGLWo29wm",
+    "url": "https://www.twitch.tv/caseoh_/clip/ClumsyVivaciousDotterelBrokeBack-wxQt-rqtGLWo29wm",
+    "channel": "caseoh_",
+    "platform": "twitch",
+    "title": "omg haha",
+    "views": 2649,
+    "created": 1795221263,
+    "category": "Grand Theft Auto VI",
+    "added": 1795224026
+  },
+  "twitch_InspiringGorgeousInternNerfRedBlaster-4-vk1jUQmzu3F_E4": {
+    "id": "twitch_InspiringGorgeousInternNerfRedBlaster-4-vk1jUQmzu3F_E4",
+    "url": "https://www.twitch.tv/maya/clip/InspiringGorgeousInternNerfRedBlaster-4-vk1jUQmzu3F_E4",
+    "channel": "maya",
+    "platform": "twitch",
+    "title": "Maya reaction to Lirik",
+    "views": 502,
+    "created": 1795196760,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2935062259",
+    "vod_offset": 4187,
+    "cluster": 1,
+    "added": 1795224026
   }
 }
