@@ -37043,13 +37043,79 @@
     "channel": "stableronaldo",
     "platform": "twitch",
     "title": "CAUGHT",
-    "views": 841,
+    "views": 3606,
     "created": 1795197317,
     "category": "Grand Theft Auto VI",
     "video_id": "2935093413",
     "vod_offset": 2923,
     "cluster": 1,
-    "added": 1795237324
+    "added": 1795269703,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/_pool/twitch_IgnorantDeliciousClamVoHiYo-uGGhZngq_sR2PCqo/source.mp4",
+    "peak": 17.25,
+    "cut": [
+      0.0,
+      18.98
+    ],
+    "dur": 25.66,
+    "tags": [
+      "crash"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.2,
+      "crash": 0.3,
+      "rage": 0.25,
+      "first-reaction": 0.2,
+      "wow": 0.0,
+      "_loud": 9.9,
+      "_motion": 30.7
+    },
+    "quote": "I have to I have to get my anger out.",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "proven": [],
+    "evidence": {
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.48,
+    "signals": {
+      "siren": 0.0,
+      "impact": 48.1,
+      "loud": 3.5,
+      "motion": 24.0,
+      "sustained": 0.61,
+      "spike": 4.1,
+      "laugh": 0,
+      "static": 0.02,
+      "letterbox": 0.0,
+      "luma": 48.8,
+      "dark": 0.0
+    }
   },
   "twitch_UgliestLazyPicklesWTRuck-qZu5ppqb0OrfrsYB": {
     "id": "twitch_UgliestLazyPicklesWTRuck-qZu5ppqb0OrfrsYB",
@@ -38410,7 +38476,97 @@
     "views": 514,
     "created": 1795215257,
     "category": "Grand Theft Auto VI",
-    "added": 1795268188
+    "added": 1795270093,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/_pool/twitch_PoorOddSoybeanSoonerLater-r11i8-nRU3oOEnW8/source.mp4",
+    "peak": 13.25,
+    "cut": [
+      6.85,
+      40.0
+    ],
+    "dur": 40.0,
+    "tags": [
+      "first-reaction",
+      "wow",
+      "crash",
+      "rage"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.3,
+      "rage": 0.3,
+      "first-reaction": 0.8,
+      "wow": 0.34,
+      "_loud": 6.0,
+      "_motion": 17.3
+    },
+    "quote": "You gotta act like you don't care.",
+    "cats": {
+      "funny": 0.25,
+      "rage": 0.25,
+      "fail": 0.25,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.95,
+      "wow": 0.6
+    },
+    "primary": "first-reaction",
+    "proven": [
+      "first-reaction",
+      "wow"
+    ],
+    "evidence": {
+      "funny": [
+        "loud"
+      ],
+      "rage": [
+        "loud"
+      ],
+      "fail": [
+        "loud"
+      ],
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion-spike"
+      ],
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ],
+      "wow": [
+        "loud",
+        "text"
+      ]
+    },
+    "fun": 0.68,
+    "signals": {
+      "siren": 0.0,
+      "impact": 11.6,
+      "loud": 8.9,
+      "motion": 12.2,
+      "sustained": 0.31,
+      "spike": 11.9,
+      "laugh": 0,
+      "static": 0.02,
+      "letterbox": 0.18,
+      "luma": 39.1,
+      "dark": 0.0
+    }
   },
   "twitch_SoftCuteRatArgieB8-bYsxgtxlwHkwkFih": {
     "id": "twitch_SoftCuteRatArgieB8-bYsxgtxlwHkwkFih",
