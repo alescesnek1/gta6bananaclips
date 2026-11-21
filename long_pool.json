@@ -35473,5 +35473,19 @@
     "vod_offset": 38170,
     "cluster": 2,
     "added": 1795222409
+  },
+  "twitch_VastSassyNigiriRickroll-zIgRBWYk9FyX15xp": {
+    "id": "twitch_VastSassyNigiriRickroll-zIgRBWYk9FyX15xp",
+    "url": "https://www.twitch.tv/kreekcraft/clip/VastSassyNigiriRickroll-zIgRBWYk9FyX15xp",
+    "channel": "kreekcraft",
+    "platform": "twitch",
+    "title": "They don't have those on the Roblox",
+    "views": 505,
+    "created": 1795143055,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933758895",
+    "vod_offset": 40518,
+    "cluster": 1,
+    "added": 1795223321
   }
 }
