@@ -37202,5 +37202,164 @@
     "vod_offset": 5526,
     "cluster": 1,
     "added": 1795246742
+  },
+  "twitch_DarlingPreciousKoupreyPrimeMe-m1DN36ODehi9lEZX": {
+    "id": "twitch_DarlingPreciousKoupreyPrimeMe-m1DN36ODehi9lEZX",
+    "url": "https://www.twitch.tv/kaicenat/clip/DarlingPreciousKoupreyPrimeMe-m1DN36ODehi9lEZX",
+    "channel": "kaicenat",
+    "name": "KaiCenat",
+    "platform": "twitch",
+    "title": "Sneaky pic",
+    "views": 2824,
+    "created": 1795037125,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932305259",
+    "vod_offset": 30268,
+    "added": 1795245816,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/_pool/twitch_DarlingPreciousKoupreyPrimeMe-m1DN36ODehi9lEZX/source.mp4",
+    "peak": 14.850000000000001,
+    "cut": [
+      8.45,
+      17.73
+    ],
+    "dur": 17.73,
+    "tags": [],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.2,
+      "crash": 0.0,
+      "rage": 0.05,
+      "first-reaction": 0.2,
+      "wow": 0.04,
+      "_loud": 1.5,
+      "_motion": 26.7
+    },
+    "quote": "No",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "proven": [],
+    "evidence": {
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion-spike"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.29,
+    "signals": {
+      "siren": 0.0,
+      "impact": 6.6,
+      "loud": 1.2,
+      "motion": 14.1,
+      "sustained": 0.35,
+      "spike": 12.9,
+      "laugh": 0,
+      "static": 0.03,
+      "letterbox": 0.0,
+      "luma": 74.6,
+      "dark": 0.0
+    }
+  },
+  "twitch_PoorBlitheBubbleteaPupper-mXhN-xLRd7GCex8f": {
+    "id": "twitch_PoorBlitheBubbleteaPupper-mXhN-xLRd7GCex8f",
+    "url": "https://www.twitch.tv/clix/clip/PoorBlitheBubbleteaPupper-mXhN-xLRd7GCex8f",
+    "channel": "clix",
+    "name": "Clix",
+    "platform": "twitch",
+    "title": "her face looks so realistic",
+    "views": 4528,
+    "created": 1795009029,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932204601",
+    "vod_offset": 10913,
+    "added": 1795247190,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/_pool/twitch_PoorBlitheBubbleteaPupper-mXhN-xLRd7GCex8f/source.mp4",
+    "peak": 4.65,
+    "cut": [
+      0.0,
+      5.03
+    ],
+    "dur": 5.03,
+    "tags": [],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 0.2,
+      "wow": 0.0,
+      "_loud": 1.3,
+      "_motion": 16.6
+    },
+    "quote": "We ain't trying to party with you, okay?",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "proven": [],
+    "evidence": {
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.3,
+    "signals": {
+      "siren": 0.0,
+      "impact": 8.0,
+      "loud": 1.3,
+      "motion": 14.3,
+      "sustained": 0.63,
+      "spike": 2.3,
+      "laugh": 0,
+      "static": 0.3,
+      "letterbox": 0.0,
+      "luma": 14.9,
+      "dark": 0.4
+    }
   }
 }
