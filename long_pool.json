@@ -37668,5 +37668,19 @@
     "vod_offset": 24052,
     "cluster": 1,
     "added": 1795253890
+  },
+  "twitch_AbrasiveBrightCroissantTebowing-S8ymtyBNApBWnNxx": {
+    "id": "twitch_AbrasiveBrightCroissantTebowing-S8ymtyBNApBWnNxx",
+    "url": "https://www.twitch.tv/maya/clip/AbrasiveBrightCroissantTebowing-S8ymtyBNApBWnNxx",
+    "channel": "maya",
+    "platform": "twitch",
+    "title": "Maya reacts to Emily checking out the rooms during the party",
+    "views": 648,
+    "created": 1795201308,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2935062259",
+    "vod_offset": 8704,
+    "cluster": 1,
+    "added": 1795256606
   }
 }
