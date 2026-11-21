@@ -36174,5 +36174,19 @@
     "vod_offset": 27395,
     "cluster": 1,
     "added": 1795232002
+  },
+  "twitch_AggressiveJazzyVampirePeanutButterJellyTime-x5Os2fBRGnW68JOW": {
+    "id": "twitch_AggressiveJazzyVampirePeanutButterJellyTime-x5Os2fBRGnW68JOW",
+    "url": "https://www.twitch.tv/lacy/clip/AggressiveJazzyVampirePeanutButterJellyTime-x5Os2fBRGnW68JOW",
+    "channel": "lacy",
+    "platform": "twitch",
+    "title": "a",
+    "views": 580,
+    "created": 1795194819,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2935059680",
+    "vod_offset": 2395,
+    "cluster": 1,
+    "added": 1795232685
   }
 }
