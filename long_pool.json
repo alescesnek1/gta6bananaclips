@@ -37992,13 +37992,13 @@
     "channel": "hutchmf",
     "platform": "twitch",
     "title": "gav's W phonecall",
-    "views": 512,
+    "views": 516,
     "created": 1795187940,
     "category": "Grand Theft Auto VI",
     "video_id": "2934897780",
     "vod_offset": 6920,
     "cluster": 1,
-    "added": 1795264347
+    "added": 1795264506
   },
   "twitch_TrustworthyTransparentFoxPraiseIt-S9UEolun9fj386LC": {
     "id": "twitch_TrustworthyTransparentFoxPraiseIt-S9UEolun9fj386LC",
@@ -38006,12 +38006,12 @@
     "channel": "swagg",
     "platform": "twitch",
     "title": "RIP PAUL WALKER",
-    "views": 512,
+    "views": 514,
     "created": 1795205542,
     "category": "Grand Theft Auto VI",
     "video_id": "2935199086",
     "vod_offset": 5136,
     "cluster": 1,
-    "added": 1795264347
+    "added": 1795264506
   }
 }
