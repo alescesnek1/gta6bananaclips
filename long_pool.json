@@ -33964,13 +33964,13 @@
     "channel": "chiblee",
     "platform": "twitch",
     "title": "EBLAN",
-    "views": 501,
+    "views": 687,
     "created": 1795154518,
     "category": "Grand Theft Auto VI",
     "video_id": "2934155267",
     "vod_offset": 32239,
     "cluster": 1,
-    "added": 1795208611
+    "added": 1795224939
   },
   "twitch_LachrymoseHomelyOcelotCclamChamp-TW3Bk8CZeImRJZvO": {
     "id": "twitch_LachrymoseHomelyOcelotCclamChamp-TW3Bk8CZeImRJZvO",
@@ -33978,13 +33978,13 @@
     "channel": "chiblee",
     "platform": "twitch",
     "title": "lucia NOOOOO",
-    "views": 501,
+    "views": 631,
     "created": 1795159400,
     "category": "Grand Theft Auto VI",
     "video_id": "2934155267",
     "vod_offset": 37122,
     "cluster": 1,
-    "added": 1795208913
+    "added": 1795224939
   },
   "twitch_WonderfulRockyHawkPMSTwin-CRg4X98nNwIS4i1A": {
     "id": "twitch_WonderfulRockyHawkPMSTwin-CRg4X98nNwIS4i1A",
@@ -34215,13 +34215,13 @@
     "channel": "madi2hottyy",
     "platform": "twitch",
     "title": "He getting me tight, son",
-    "views": 501,
+    "views": 688,
     "created": 1795149926,
     "category": "Grand Theft Auto VI",
     "video_id": "2934019871",
     "vod_offset": 824,
     "cluster": 1,
-    "added": 1795211608
+    "added": 1795224939
   },
   "twitch_AlertExuberantLardFrankerZ-jX9o5ABvufzMPZdb": {
     "id": "twitch_AlertExuberantLardFrankerZ-jX9o5ABvufzMPZdb",
@@ -35603,12 +35603,52 @@
     "channel": "hutchmf",
     "platform": "twitch",
     "title": "Nick loves feet confirmed",
-    "views": 503,
+    "views": 526,
     "created": 1795206151,
     "category": "Grand Theft Auto VI",
     "video_id": "2934897780",
     "vod_offset": 25020,
     "cluster": 1,
-    "added": 1795224561
+    "added": 1795224939
+  },
+  "twitch_BumblingNiceShieldOhMyDog-0mF9nBdouZv8wYGG": {
+    "id": "twitch_BumblingNiceShieldOhMyDog-0mF9nBdouZv8wYGG",
+    "url": "https://www.twitch.tv/omarjoshgaming96/clip/BumblingNiceShieldOhMyDog-0mF9nBdouZv8wYGG",
+    "channel": "omarjoshgaming96",
+    "platform": "twitch",
+    "title": "GOT THE BAG!",
+    "views": 509,
+    "created": 1795212370,
+    "category": "Grand Theft Auto VI",
+    "cluster": 1,
+    "added": 1795224939
+  },
+  "twitch_ClearObedientDoveOMGScoots-3px9kJPxfwI4z0w_": {
+    "id": "twitch_ClearObedientDoveOMGScoots-3px9kJPxfwI4z0w_",
+    "url": "https://www.twitch.tv/kreekcraft/clip/ClearObedientDoveOMGScoots-3px9kJPxfwI4z0w_",
+    "channel": "kreekcraft",
+    "platform": "twitch",
+    "title": "A dog on a jet ski just came and picked me up",
+    "views": 506,
+    "created": 1795143208,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933758895",
+    "vod_offset": 14888,
+    "cluster": 1,
+    "added": 1795224939
+  },
+  "twitch_KathishUgliestStinkbugOpieOP-uwKA97k_9TxEKLtb": {
+    "id": "twitch_KathishUgliestStinkbugOpieOP-uwKA97k_9TxEKLtb",
+    "url": "https://www.twitch.tv/stableronaldo/clip/KathishUgliestStinkbugOpieOP-uwKA97k_9TxEKLtb",
+    "channel": "stableronaldo",
+    "platform": "twitch",
+    "title": "crazy",
+    "views": 504,
+    "created": 1795141502,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933798318",
+    "vod_offset": 38095,
+    "cluster": 1,
+    "added": 1795224939
   }
 }
