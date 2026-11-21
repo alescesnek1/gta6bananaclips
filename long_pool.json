@@ -37654,5 +37654,19 @@
       "luma": 61.7,
       "dark": 0.0
     }
+  },
+  "twitch_GleamingSmokyAlbatrossStoneLightning-pyfYndY4-BilJw1_": {
+    "id": "twitch_GleamingSmokyAlbatrossStoneLightning-pyfYndY4-BilJw1_",
+    "url": "https://www.twitch.tv/sashagrey/clip/GleamingSmokyAlbatrossStoneLightning-pyfYndY4-BilJw1_",
+    "channel": "sashagrey",
+    "platform": "twitch",
+    "title": "Sudden IRL earthquake during stream",
+    "views": 507,
+    "created": 1795174017,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934627438",
+    "vod_offset": 24052,
+    "cluster": 1,
+    "added": 1795253890
   }
 }
