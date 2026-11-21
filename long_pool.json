@@ -36037,5 +36037,19 @@
     "vod_offset": 24707,
     "cluster": 1,
     "added": 1795229318
+  },
+  "twitch_TalentedAntediluvianSwordDAESuppy-gaC_-B94yQjbKL1s": {
+    "id": "twitch_TalentedAntediluvianSwordDAESuppy-gaC_-B94yQjbKL1s",
+    "url": "https://www.twitch.tv/stableronaldo/clip/TalentedAntediluvianSwordDAESuppy-gaC_-B94yQjbKL1s",
+    "channel": "stableronaldo",
+    "platform": "twitch",
+    "title": "Ron says GTA 6 is better than GTA 5",
+    "views": 528,
+    "created": 1795143203,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933798318",
+    "vod_offset": 38157,
+    "cluster": 1,
+    "added": 1795229916
   }
 }
