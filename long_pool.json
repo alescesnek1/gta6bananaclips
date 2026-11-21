@@ -38027,5 +38027,19 @@
     "vod_offset": 1820,
     "cluster": 1,
     "added": 1795265327
+  },
+  "twitch_VainArtsyIntern4Head-SfJa5L9doWe2L2EX": {
+    "id": "twitch_VainArtsyIntern4Head-SfJa5L9doWe2L2EX",
+    "url": "https://www.twitch.tv/saruei/clip/VainArtsyIntern4Head-SfJa5L9doWe2L2EX",
+    "channel": "saruei",
+    "platform": "twitch",
+    "title": "Mommy sorry Mandy sorry",
+    "views": 508,
+    "created": 1795193133,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934926031",
+    "vod_offset": 9850,
+    "cluster": 1,
+    "added": 1795266498
   }
 }
