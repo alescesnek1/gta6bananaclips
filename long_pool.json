@@ -37403,5 +37403,19 @@
     "vod_offset": 119725,
     "cluster": 1,
     "added": 1795250598
+  },
+  "twitch_BenevolentSpinelessRaccoonTBCheesePull-UYnYo-vpn0BjWJIM": {
+    "id": "twitch_BenevolentSpinelessRaccoonTBCheesePull-UYnYo-vpn0BjWJIM",
+    "url": "https://www.twitch.tv/theburntpeanut/clip/BenevolentSpinelessRaccoonTBCheesePull-UYnYo-vpn0BjWJIM",
+    "channel": "theburntpeanut",
+    "platform": "twitch",
+    "title": "Now we need to find a new Wife",
+    "views": 508,
+    "created": 1795218155,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2935449800",
+    "vod_offset": 3490,
+    "cluster": 1,
+    "added": 1795250931
   }
 }
