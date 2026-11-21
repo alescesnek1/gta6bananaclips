@@ -37417,5 +37417,19 @@
     "vod_offset": 3490,
     "cluster": 1,
     "added": 1795250931
+  },
+  "twitch_MoistGenerousMilkSMOrc-0_h_4c2_tpa0H4iL": {
+    "id": "twitch_MoistGenerousMilkSMOrc-0_h_4c2_tpa0H4iL",
+    "url": "https://www.twitch.tv/lirik/clip/MoistGenerousMilkSMOrc-0_h_4c2_tpa0H4iL",
+    "channel": "lirik",
+    "platform": "twitch",
+    "title": "he found first person mode",
+    "views": 511,
+    "created": 1795195478,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2935090050",
+    "vod_offset": 1234,
+    "cluster": 1,
+    "added": 1795251792
   }
 }
