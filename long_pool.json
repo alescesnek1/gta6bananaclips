@@ -34998,13 +34998,13 @@
     "channel": "theburntpeanut",
     "platform": "twitch",
     "title": "not 100%",
-    "views": 502,
+    "views": 1164,
     "created": 1795159994,
     "category": "Grand Theft Auto VI",
     "video_id": "2934030540",
     "vod_offset": 44342,
     "cluster": 1,
-    "added": 1795215050
+    "added": 1795234157
   },
   "twitch_KnottySpicyAyeayeMVGame-zFkBqQC6rEcnJxz8": {
     "id": "twitch_KnottySpicyAyeayeMVGame-zFkBqQC6rEcnJxz8",
@@ -35628,11 +35628,11 @@
     "channel": "yololaryy",
     "platform": "twitch",
     "title": "GTA 6 (95%) BIKINI STREAM👙🌶️ !cam2 !s !gooner",
-    "views": 502,
+    "views": 847,
     "created": 1795202436,
     "category": "Grand Theft Auto VI",
     "cluster": 1,
-    "added": 1795221502
+    "added": 1795234157
   },
   "twitch_RamshackleBlindingAsparagusPogChamp-CxBDmuWXZciFuIoD": {
     "id": "twitch_RamshackleBlindingAsparagusPogChamp-CxBDmuWXZciFuIoD",
@@ -36153,13 +36153,117 @@
     "channel": "joe_bartolozzi",
     "platform": "twitch",
     "title": "W GOON GAME!",
-    "views": 677,
+    "views": 1312,
     "created": 1795198644,
     "category": "Grand Theft Auto VI",
     "video_id": "2935101396",
     "vod_offset": 3724,
     "cluster": 1,
-    "added": 1795227824
+    "added": 1795234157,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/joe_bartolozzi/20261120_twitch_AcceptableKindChinchillaCurseLit-7ypQY1ylfv-1xE8k/source.mp4",
+    "peak": 8.85,
+    "cut": [
+      2.43,
+      18.27
+    ],
+    "dur": 20.18,
+    "tags": [
+      "wow",
+      "rage",
+      "glitch",
+      "crash"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.71,
+      "chase": 0.2,
+      "crash": 0.3,
+      "rage": 0.96,
+      "first-reaction": 0.2,
+      "wow": 1.0,
+      "_loud": 4.9,
+      "_motion": 32.9
+    },
+    "quote": "Oh my God, we're hitting a F*** golf ball into his nuts.",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.25,
+      "rage": 0.95,
+      "fail": 0.25,
+      "physics": 0.6,
+      "glitch": 0.25,
+      "chase": 0.25,
+      "crash": 0.6,
+      "stunt": 0.6,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 1.0
+    },
+    "primary": "wow",
+    "proven": [
+      "rage",
+      "wow"
+    ],
+    "evidence": {
+      "funny": [
+        "loud"
+      ],
+      "rage": [
+        "loud",
+        "text"
+      ],
+      "fail": [
+        "impact",
+        "loud"
+      ],
+      "physics": [
+        "impact",
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "crash": [
+        "impact",
+        "motion-spike"
+      ],
+      "stunt": [
+        "impact",
+        "motion",
+        "motion-spike"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "loud",
+        "text"
+      ]
+    },
+    "fun": 0.92,
+    "signals": {
+      "siren": 0.0,
+      "impact": 153.8,
+      "loud": 31.3,
+      "motion": 28.6,
+      "sustained": 0.77,
+      "spike": 8.5,
+      "laugh": 0,
+      "static": 0.05,
+      "letterbox": 0.0,
+      "luma": 52.6,
+      "dark": 0.06
+    }
   },
   "twitch_MagnificentHilariousMonitorCclamChamp-u_WBK66Y7rsqXeUD": {
     "id": "twitch_MagnificentHilariousMonitorCclamChamp-u_WBK66Y7rsqXeUD",
@@ -36546,5 +36650,33 @@
     "vod_offset": 4442,
     "cluster": 1,
     "added": 1795233498
+  },
+  "twitch_ExcitedPlumpMomNerfBlueBlaster-kcrH6JTKxuAS5S1u": {
+    "id": "twitch_ExcitedPlumpMomNerfBlueBlaster-kcrH6JTKxuAS5S1u",
+    "url": "https://www.twitch.tv/ohnepixel/clip/ExcitedPlumpMomNerfBlueBlaster-kcrH6JTKxuAS5S1u",
+    "channel": "ohnepixel",
+    "platform": "twitch",
+    "title": "gta-6-mandy-irl-voice-actor",
+    "views": 786,
+    "created": 1795183076,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934862154",
+    "vod_offset": 549,
+    "cluster": 1,
+    "added": 1795234157
+  },
+  "twitch_InventiveDepressedKaleDansGame-Bq7nvHQwkSOiZz9D": {
+    "id": "twitch_InventiveDepressedKaleDansGame-Bq7nvHQwkSOiZz9D",
+    "url": "https://www.twitch.tv/maya/clip/InventiveDepressedKaleDansGame-Bq7nvHQwkSOiZz9D",
+    "channel": "maya",
+    "platform": "twitch",
+    "title": "Maya reacts to Emily meeting BigFoot in GTA",
+    "views": 506,
+    "created": 1795197655,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2935062259",
+    "vod_offset": 5059,
+    "cluster": 1,
+    "added": 1795234157
   }
 }
