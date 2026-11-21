@@ -36023,5 +36023,19 @@
     "vod_offset": 30629,
     "cluster": 1,
     "added": 1795228109
+  },
+  "twitch_BenevolentCautiousElkBCWarrior-Bp4e6M0Eb2iDEkx7": {
+    "id": "twitch_BenevolentCautiousElkBCWarrior-Bp4e6M0Eb2iDEkx7",
+    "url": "https://www.twitch.tv/atrioc/clip/BenevolentCautiousElkBCWarrior-Bp4e6M0Eb2iDEkx7",
+    "channel": "atrioc",
+    "platform": "twitch",
+    "title": "So can I get VIP?",
+    "views": 503,
+    "created": 1795161347,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934266144",
+    "vod_offset": 24707,
+    "cluster": 1,
+    "added": 1795229318
   }
 }
