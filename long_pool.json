@@ -28057,13 +28057,87 @@
     "channel": "jerma985",
     "platform": "twitch",
     "title": "random guy falls",
-    "views": 683,
+    "views": 2530,
     "created": 1795152159,
     "category": "Grand Theft Auto VI",
     "video_id": "2933227596",
     "vod_offset": 21481,
     "cluster": 1,
-    "added": 1795175159
+    "added": 1795224297,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/_pool/twitch_TangibleAttractiveOpossumSSSsss-cJhrmc-JXuEmLWv5/source.mp4",
+    "peak": 37.550000000000004,
+    "cut": [
+      0.0,
+      38.66
+    ],
+    "dur": 38.66,
+    "tags": [
+      "rage",
+      "wow"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.2,
+      "crash": 0.0,
+      "rage": 0.43,
+      "first-reaction": 0.2,
+      "wow": 0.41,
+      "_loud": 2.8,
+      "_motion": 34.7
+    },
+    "quote": "Yeah, I need this We're gonna get out of here!",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.35,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.35
+    },
+    "primary": "rage",
+    "proven": [],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.54,
+    "signals": {
+      "siren": 0.0,
+      "impact": 15.3,
+      "loud": 3.0,
+      "motion": 28.0,
+      "sustained": 0.84,
+      "spike": 2.0,
+      "laugh": 0,
+      "static": 0.0,
+      "letterbox": 0.0,
+      "luma": 95.6,
+      "dark": 0.0
+    }
   },
   "twitch_ShortUglySproutDoubleRainbow-XH0HqpkvRMqcWip6": {
     "id": "twitch_ShortUglySproutDoubleRainbow-XH0HqpkvRMqcWip6",
@@ -35006,12 +35080,82 @@
     "channel": "ludwig",
     "platform": "twitch",
     "title": "one of the better drivers",
-    "views": 818,
+    "views": 3515,
     "created": 1795217767,
     "category": "Grand Theft Auto VI",
     "video_id": "2934132437",
     "vod_offset": 96395,
-    "added": 1795219490
+    "added": 1795224043,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/_pool/twitch_SassyWiseRingFeelsBadMan-KWr9lkKEN2ayfe1P/source.mp4",
+    "peak": 8.35,
+    "cut": [
+      0.0,
+      9.75
+    ],
+    "dur": 9.75,
+    "tags": [
+      "rage"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.0,
+      "rage": 0.45,
+      "first-reaction": 0.2,
+      "wow": 0.04,
+      "_loud": 1.7,
+      "_motion": 20.6
+    },
+    "quote": "I'm literally one of the better drivers on like",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.35,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "primary": "rage",
+    "proven": [],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.41,
+    "signals": {
+      "siren": 0.0,
+      "impact": 12.9,
+      "loud": 1.8,
+      "motion": 16.5,
+      "sustained": 0.63,
+      "spike": 3.0,
+      "laugh": 0,
+      "static": 0.04,
+      "letterbox": 0.0,
+      "luma": 77.0,
+      "dark": 0.0
+    }
   },
   "twitch_ObeseCrypticGarlicVoteYea-j6KGDIo3-1pUEZEx": {
     "id": "twitch_ObeseCrypticGarlicVoteYea-j6KGDIo3-1pUEZEx",
@@ -35760,6 +35904,81 @@
       "static": 0.94,
       "letterbox": 0.0,
       "luma": 19.6,
+      "dark": 0.0
+    }
+  },
+  "twitch_BashfulLongStapleCoolStoryBob-V5OcXqmlfNIoptdl": {
+    "id": "twitch_BashfulLongStapleCoolStoryBob-V5OcXqmlfNIoptdl",
+    "url": "https://www.twitch.tv/ohnepixel/clip/BashfulLongStapleCoolStoryBob-V5OcXqmlfNIoptdl",
+    "channel": "ohnepixel",
+    "name": "ohnePixel",
+    "platform": "twitch",
+    "title": "for yall freaks",
+    "views": 2517,
+    "created": 1795106876,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933599748",
+    "vod_offset": 17361,
+    "added": 1795224329,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/_pool/twitch_BashfulLongStapleCoolStoryBob-V5OcXqmlfNIoptdl/source.mp4",
+    "peak": 8.35,
+    "cut": [
+      0.0,
+      8.64
+    ],
+    "dur": 8.64,
+    "tags": [
+      "rage"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.0,
+      "rage": 0.52,
+      "first-reaction": 0.2,
+      "wow": 0.04,
+      "_loud": 2.8,
+      "_motion": 15.2
+    },
+    "quote": "Oh, oh shit.",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.35,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "primary": "rage",
+    "proven": [],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.37,
+    "signals": {
+      "siren": 0.0,
+      "impact": 19.1,
+      "loud": 2.9,
+      "motion": 9.3,
+      "sustained": 0.15,
+      "spike": 3.8,
+      "laugh": 0,
+      "static": 0.1,
+      "letterbox": 0.0,
+      "luma": 56.8,
       "dark": 0.0
     }
   }
