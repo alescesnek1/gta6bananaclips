@@ -1,30 +1,29 @@
-# Monitor GTA6 klipy – 21.11. 02:19 (Praha)
+# Monitor GTA6 klipy – 21.11. 10:32 (Praha)
 
 ## Problémy
-- bananas: nic nepublikováno 4+ h (poslední post 20.11. 21:31)
-- fanpage: nic nepublikováno 4+ h (poslední post 20.11. 20:15)
+- žádné
 
 ## Běhy (3 h)
-- denne-klipy: ✔ 35  ✖ 0  ⊘ 1  běží 2
-- live-klipy: ✔ 0  ✖ 0  ⊘ 7  běží 2
+- denne-klipy: ✔ 37  ✖ 0  ⊘ 0  běží 1
+- live-klipy: ✔ 0  ✖ 0  ⊘ 25  běží 1
 - long-form: ✔ 1  ✖ 0  ⊘ 0  běží 1
-- denne: poslední úspěch před 10 min; live hlídač běží
+- denne: poslední úspěch před 3 min; live hlídač běží
 
 ## Publikace (okno 20.11. 12:00 – 21.11. 12:00)
-- bananas: 2/10–12 (+0 navíc), hot 0, hvězdy 2, live 0; poslední 20.11. 21:31, další –
+- bananas: 6/10–12 (+0 navíc), hot 1, hvězdy 5, live 0; poslední 21.11. 08:06, další –
 - fanpage: 0/10–12 (+1 navíc), hot 0, hvězdy 0, live 0; poslední 20.11. 20:15, další –
 
 ## Výkon (Buffer, 48 h)
-- změřeno 111 z 119 postů
+- změřeno 114 z 122 postů
 - top 5:
-  - 14 040 zhl. · ishowspeed · youtube · fanpage · 31.6 h · twitch_SavoryEagerLlamaLeeroyJenkins-fzfiphCY-mKdwJvr
-  - 2 978 zhl. · kaicenat · youtube · fanpage · 30.6 h · twitch_PeppyFunGaurPunchTrees-edM6JKBegYQ6zSk-
-  - 2 293 zhl. · ishowspeed · facebook · fanpage · 31.6 h · twitch_SavoryEagerLlamaLeeroyJenkins-fzfiphCY-mKdwJvr
-  - 494 zhl. · kaicenat · facebook · fanpage · 30.6 h · twitch_PeppyFunGaurPunchTrees-edM6JKBegYQ6zSk-
-  - 440 zhl. · ishowspeed · facebook · bananas · 28.9 h · twitch_MushyAuspiciousThymeCeilingCat-Eirf0WCGpbMk4eIh
-- průměr bananas: facebook 92 (19), instagram 81 (19), threads 0 (8), tiktok 0 (11), twitter 0 (8), youtube 0 (4)
-- průměr fanpage: facebook 278 (13), instagram 118 (13), tiktok 0 (6), twitter 0 (7), youtube 5 673 (3)
-- nejnovější (zhl./h): ishowspeed 0/h (4.8 h), top4 0/h (6.1 h), ishowspeed 0/h (9.2 h), lacyhimself 0/h (15.7 h), ishowspeed 0/h (16.0 h)
+  - 14 040 zhl. · ishowspeed · youtube · fanpage · 39.8 h · twitch_SavoryEagerLlamaLeeroyJenkins-fzfiphCY-mKdwJvr
+  - 2 978 zhl. · kaicenat · youtube · fanpage · 38.9 h · twitch_PeppyFunGaurPunchTrees-edM6JKBegYQ6zSk-
+  - 2 484 zhl. · ishowspeed · facebook · fanpage · 39.8 h · twitch_SavoryEagerLlamaLeeroyJenkins-fzfiphCY-mKdwJvr
+  - 771 zhl. · lacyhimself · facebook · bananas · 23.9 h · youtube_lBrGiDG_BVc_8234
+  - 668 zhl. · ishowspeed · facebook · bananas · 37.2 h · twitch_MushyAuspiciousThymeCeilingCat-Eirf0WCGpbMk4eIh
+- průměr bananas: facebook 200 (19), instagram 59 (19), threads 6 (12), tiktok 0 (14), twitter 0 (12), youtube 0 (4)
+- průměr fanpage: facebook 523 (9), instagram 115 (9), tiktok 0 (6), twitter 0 (7), youtube 5 673 (3)
+- nejnovější (zhl./h): joe_bartolozzi 0/h (2.4 h), ishowspeed 72/h (5.7 h), kaicenat 43/h (7.3 h), xqc 30/h (8.2 h), ishowspeed 26/h (13.0 h)
 
 ## Netlify
-- deploye 24 h: 36; měsíc 4.3 GB (soft 85, hard 100, rozpočet 100)
+- deploye 24 h: 20; měsíc 4.4 GB (soft 85, hard 100, rozpočet 100)
