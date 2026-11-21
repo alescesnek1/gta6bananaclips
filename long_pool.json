@@ -33884,13 +33884,84 @@
     "channel": "caseoh_",
     "platform": "twitch",
     "title": "keep talking",
-    "views": 816,
+    "views": 3642,
     "created": 1795186109,
     "category": "Grand Theft Auto VI",
     "video_id": "2934099165",
     "vod_offset": 17330,
     "cluster": 1,
-    "added": 1795206038
+    "added": 1795266336,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/_pool/twitch_ProudNiceSowNomNom-qlTj_bREHEWHrE44/source.mp4",
+    "peak": 55.85,
+    "cut": [
+      32.06,
+      57.05
+    ],
+    "dur": 60.03,
+    "tags": [
+      "rage",
+      "chase"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.41,
+      "crash": 0.0,
+      "rage": 0.77,
+      "first-reaction": 0.2,
+      "wow": 0.12,
+      "_loud": 2.0,
+      "_motion": 16.0
+    },
+    "quote": "I'll pop my balls where your mouth is.",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.7,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "primary": "rage",
+    "proven": [],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.56,
+    "signals": {
+      "siren": 0.0,
+      "impact": 11.5,
+      "loud": 3.3,
+      "motion": 17.0,
+      "sustained": 0.87,
+      "spike": 1.5,
+      "laugh": 0,
+      "static": 0.03,
+      "letterbox": 0.0,
+      "luma": 37.4,
+      "dark": 0.0
+    }
   },
   "twitch_SleepyHyperReubenLitFam-jwApNMkSFQPv262d": {
     "id": "twitch_SleepyHyperReubenLitFam-jwApNMkSFQPv262d",
@@ -35068,11 +35139,90 @@
     "channel": "theregulationpod",
     "platform": "twitch",
     "title": "Gavin hates polar bears",
-    "views": 552,
+    "views": 3569,
     "created": 1795201176,
     "category": "Grand Theft Auto VI",
     "cluster": 1,
-    "added": 1795217761
+    "added": 1795266434,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/_pool/twitch_GiftedUninterestedFishCharlietheUnicorn-XJGPUVMfRTYD7VBn/source.mp4",
+    "peak": 12.65,
+    "cut": [
+      3.69,
+      14.15
+    ],
+    "dur": 25.0,
+    "tags": [
+      "glitch",
+      "crash"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.37,
+      "chase": 0.1,
+      "crash": 0.3,
+      "rage": 0.25,
+      "first-reaction": 0.2,
+      "wow": 0.0,
+      "_loud": 8.6,
+      "_motion": 15.4
+    },
+    "quote": "She's a guy Right",
+    "cats": {
+      "funny": 0.25,
+      "rage": 0.25,
+      "fail": 0.25,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.25
+    },
+    "proven": [],
+    "evidence": {
+      "funny": [
+        "loud"
+      ],
+      "rage": [
+        "loud"
+      ],
+      "fail": [
+        "loud"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "loud"
+      ]
+    },
+    "fun": 0.67,
+    "signals": {
+      "siren": 0.0,
+      "impact": 39.5,
+      "loud": 9.8,
+      "motion": 12.6,
+      "sustained": 0.43,
+      "spike": 2.8,
+      "laugh": 0,
+      "static": 0.04,
+      "letterbox": 0.0,
+      "luma": 93.4,
+      "dark": 0.0
+    }
   },
   "twitch_KawaiiAmazingInternYee-OCzVmGQJ99BRNrIF": {
     "id": "twitch_KawaiiAmazingInternYee-OCzVmGQJ99BRNrIF",
@@ -37751,7 +37901,74 @@
     "video_id": "2932319814",
     "vod_offset": 170686,
     "cluster": 1,
-    "added": 1795259438
+    "added": 1795266051,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/_pool/twitch_ArborealBovineCourgetteSeemsGood-T1A9kMYfMy35JSWl/source.mp4",
+    "peak": 4.45,
+    "cut": [
+      0.0,
+      8.65
+    ],
+    "dur": 8.65,
+    "tags": [],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 0.2,
+      "wow": 0.0,
+      "_loud": 3.4,
+      "_motion": 21.5
+    },
+    "quote": "I'm 90 % bro.",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "proven": [],
+    "evidence": {
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion-spike"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.37,
+    "signals": {
+      "siren": 0.0,
+      "impact": 11.8,
+      "loud": 3.5,
+      "motion": 12.1,
+      "sustained": 0.35,
+      "spike": 9.4,
+      "laugh": 0,
+      "static": 0.02,
+      "letterbox": 0.0,
+      "luma": 117.9,
+      "dark": 0.0
+    }
   },
   "youtube_C6ONk76TNYo_16303": {
     "id": "youtube_C6ONk76TNYo_16303",
@@ -38208,5 +38425,182 @@
     "vod_offset": 15910,
     "cluster": 1,
     "added": 1795268188
+  },
+  "twitch_EnjoyableSeductiveHamburgerHassanChop-AejktYTVNQGHKGmG": {
+    "id": "twitch_EnjoyableSeductiveHamburgerHassanChop-AejktYTVNQGHKGmG",
+    "url": "https://www.twitch.tv/dinah/clip/EnjoyableSeductiveHamburgerHassanChop-AejktYTVNQGHKGmG",
+    "channel": "dinah",
+    "name": "Dinah",
+    "platform": "twitch",
+    "title": "[PS5 GIVEAWAY + 3 COPIES OF GTA 6 - !gta6]🔴6 DAYS STRAIGHT OF GTA 6 [24/7]🔴[EN/中文/粤语]🔴WORLD FIRST 100% RUN🔴PS5 PRO 60FPS🔴!tier3 !gta6",
+    "views": 5019,
+    "created": 1795024498,
+    "category": "Grand Theft Auto VI",
+    "added": 1795268270,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/_pool/twitch_EnjoyableSeductiveHamburgerHassanChop-AejktYTVNQGHKGmG/source.mp4",
+    "peak": 17.150000000000002,
+    "cut": [
+      7.73,
+      18.35
+    ],
+    "dur": 30.0,
+    "tags": [
+      "first-reaction",
+      "chase",
+      "crash",
+      "rage"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.88,
+      "crash": 0.3,
+      "rage": 0.3,
+      "first-reaction": 1.0,
+      "wow": 0.04,
+      "_loud": 8.6,
+      "_motion": 15.8
+    },
+    "quote": "I'm gonna smoke it Damn Woah!",
+    "cats": {
+      "funny": 0.25,
+      "rage": 0.25,
+      "fail": 0.25,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 1.0,
+      "wow": 0.25
+    },
+    "primary": "first-reaction",
+    "proven": [
+      "first-reaction"
+    ],
+    "evidence": {
+      "funny": [
+        "loud"
+      ],
+      "rage": [
+        "loud"
+      ],
+      "fail": [
+        "loud"
+      ],
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ],
+      "wow": [
+        "loud"
+      ]
+    },
+    "fun": 0.63,
+    "signals": {
+      "siren": 0.0,
+      "impact": 21.7,
+      "loud": 10.1,
+      "motion": 9.8,
+      "sustained": 0.19,
+      "spike": 4.9,
+      "laugh": 0,
+      "static": 0.1,
+      "letterbox": 0.0,
+      "luma": 40.2,
+      "dark": 0.0
+    }
+  },
+  "twitch_FragileTardySquidAMPEnergyCherry-sWGYVnxAPuBi_y1v": {
+    "id": "twitch_FragileTardySquidAMPEnergyCherry-sWGYVnxAPuBi_y1v",
+    "url": "https://www.twitch.tv/ohnepixel/clip/FragileTardySquidAMPEnergyCherry-sWGYVnxAPuBi_y1v",
+    "channel": "ohnepixel",
+    "name": "ohnePixel",
+    "platform": "twitch",
+    "title": "Ohne Bricked Up!!",
+    "views": 3680,
+    "created": 1795210889,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934862154",
+    "vod_offset": 32896,
+    "added": 1795266223,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/_pool/twitch_FragileTardySquidAMPEnergyCherry-sWGYVnxAPuBi_y1v/source.mp4",
+    "peak": 48.25,
+    "cut": [
+      9.45,
+      50.17
+    ],
+    "dur": 60.01,
+    "tags": [
+      "glitch",
+      "rage",
+      "wow"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.47,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.43,
+      "first-reaction": 0.2,
+      "wow": 0.39,
+      "_loud": 3.3,
+      "_motion": 8.2
+    },
+    "quote": "Why does this happen?",
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.31,
+      "fail": 0.0,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.0
+    },
+    "primary": "rage",
+    "proven": [],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion-spike"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ]
+    },
+    "fun": 0.38,
+    "signals": {
+      "siren": 0.0,
+      "impact": 21.3,
+      "loud": 3.7,
+      "motion": 6.1,
+      "sustained": 0.13,
+      "spike": 6.1,
+      "laugh": 0,
+      "static": 0.0,
+      "letterbox": 0.0,
+      "luma": 29.6,
+      "dark": 0.0
+    }
   }
 }
