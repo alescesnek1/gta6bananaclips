@@ -37682,5 +37682,19 @@
     "vod_offset": 8704,
     "cluster": 1,
     "added": 1795256606
+  },
+  "twitch_MiniatureFaithfulLadiesHassaanChop-BuAKnhSx78KLDG1z": {
+    "id": "twitch_MiniatureFaithfulLadiesHassaanChop-BuAKnhSx78KLDG1z",
+    "url": "https://www.twitch.tv/jerma985/clip/MiniatureFaithfulLadiesHassaanChop-BuAKnhSx78KLDG1z",
+    "channel": "jerma985",
+    "platform": "twitch",
+    "title": "Bearing Witness",
+    "views": 506,
+    "created": 1795173360,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934543908",
+    "vod_offset": 29441,
+    "cluster": 1,
+    "added": 1795257507
   }
 }
