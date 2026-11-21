@@ -36532,5 +36532,19 @@
       "luma": 33.7,
       "dark": 0.0
     }
+  },
+  "twitch_FunnyCleanIguanaDBstyle-k6uzUMqFz8JbLWHu": {
+    "id": "twitch_FunnyCleanIguanaDBstyle-k6uzUMqFz8JbLWHu",
+    "url": "https://www.twitch.tv/extesyy/clip/FunnyCleanIguanaDBstyle-k6uzUMqFz8JbLWHu",
+    "channel": "extesyy",
+    "platform": "twitch",
+    "title": "(60FPS DLSS5 1440P 54% THROUGH) GTA 6 BUT I ONLY DO CRIMES I HAVE DONE IRL",
+    "views": 504,
+    "created": 1795161014,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934692713",
+    "vod_offset": 4442,
+    "cluster": 1,
+    "added": 1795233498
   }
 }
