@@ -38013,5 +38013,19 @@
     "vod_offset": 5136,
     "cluster": 1,
     "added": 1795264506
+  },
+  "twitch_HedonisticSmokyFalconRaccAttack-6doYX-ESBGorLu_W": {
+    "id": "twitch_HedonisticSmokyFalconRaccAttack-6doYX-ESBGorLu_W",
+    "url": "https://www.twitch.tv/max_fewtrell/clip/HedonisticSmokyFalconRaccAttack-6doYX-ESBGorLu_W",
+    "channel": "max_fewtrell",
+    "platform": "twitch",
+    "title": "had to run it back for revenge",
+    "views": 508,
+    "created": 1795200402,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2935167338",
+    "vod_offset": 1820,
+    "cluster": 1,
+    "added": 1795265327
   }
 }
