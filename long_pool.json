@@ -37090,5 +37090,19 @@
       "luma": 42.9,
       "dark": 0.0
     }
+  },
+  "twitch_MagnificentCoweringKuduOSsloth-LgoBmw0BksPP7mz2": {
+    "id": "twitch_MagnificentCoweringKuduOSsloth-LgoBmw0BksPP7mz2",
+    "url": "https://www.twitch.tv/fuslie/clip/MagnificentCoweringKuduOSsloth-LgoBmw0BksPP7mz2",
+    "channel": "fuslie",
+    "platform": "twitch",
+    "title": "GTA VI IS HERE!!!!!!!!!!!!!!!",
+    "views": 586,
+    "created": 1795171275,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934243238",
+    "vod_offset": 5594,
+    "cluster": 1,
+    "added": 1795240404
   }
 }
