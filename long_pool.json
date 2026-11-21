@@ -38616,5 +38616,19 @@
     "vod_offset": 20399,
     "cluster": 1,
     "added": 1795269507
+  },
+  "twitch_GoldenPlainPineappleSquadGoals-bEgcVWNsl1IKXT1m": {
+    "id": "twitch_GoldenPlainPineappleSquadGoals-bEgcVWNsl1IKXT1m",
+    "url": "https://www.twitch.tv/lvndmark/clip/GoldenPlainPineappleSquadGoals-bEgcVWNsl1IKXT1m",
+    "channel": "lvndmark",
+    "platform": "twitch",
+    "title": "Lvndmark gets the Declasse Randy mission",
+    "views": 510,
+    "created": 1795240947,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2935148162",
+    "vod_offset": 30290,
+    "cluster": 1,
+    "added": 1795270486
   }
 }
