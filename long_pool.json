@@ -37445,5 +37445,33 @@
     "vod_offset": 41966,
     "cluster": 1,
     "added": 1795252405
+  },
+  "twitch_CoyHedonisticCurlewCoolStoryBro-xN2E9E31h4FN4hpt": {
+    "id": "twitch_CoyHedonisticCurlewCoolStoryBro-xN2E9E31h4FN4hpt",
+    "url": "https://www.twitch.tv/pokelawls/clip/CoyHedonisticCurlewCoolStoryBro-xN2E9E31h4FN4hpt",
+    "channel": "pokelawls",
+    "platform": "twitch",
+    "title": "Poke Gets Jumped",
+    "views": 557,
+    "created": 1795207573,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2935029880",
+    "vod_offset": 17011,
+    "cluster": 1,
+    "added": 1795252700
+  },
+  "twitch_SuperExuberantMilkFreakinStinkin-7trg3TxFMolpqhzw": {
+    "id": "twitch_SuperExuberantMilkFreakinStinkin-7trg3TxFMolpqhzw",
+    "url": "https://www.twitch.tv/zackrawrr/clip/SuperExuberantMilkFreakinStinkin-7trg3TxFMolpqhzw",
+    "channel": "zackrawrr",
+    "platform": "twitch",
+    "title": "Asmongold Reacts to Male Stripping in GTA VI!",
+    "views": 561,
+    "created": 1795214404,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2935185818",
+    "vod_offset": 14760,
+    "cluster": 1,
+    "added": 1795252700
   }
 }
