@@ -1,19 +1,19 @@
 {
-  "cas": "2026-11-20T20:55:01+01:00",
+  "cas": "2026-11-21T02:19:21+01:00",
   "chyby": [],
   "zdravi": {
     "workflows": {
       "denne-klipy": {
-        "success": 34,
+        "success": 35,
         "failure": 0,
-        "cancelled": 2,
-        "bezi": 1,
+        "cancelled": 1,
+        "bezi": 2,
         "jine": 0
       },
       "live-klipy": {
         "success": 0,
         "failure": 0,
-        "cancelled": 14,
+        "cancelled": 7,
         "bezi": 2,
         "jine": 0
       },
@@ -26,10 +26,10 @@
       }
     },
     "posledni_chyba": null,
-    "denne_posledni_uspech": "2026-11-20T19:50:26+00:00",
-    "denne_uspech_pred_min": 5,
+    "denne_posledni_uspech": "2026-11-21T01:09:02+00:00",
+    "denne_uspech_pred_min": 10,
     "live_bezi": true,
-    "live_konec_pred_min": 29
+    "live_konec_pred_min": 3
   },
   "publikace": {
     "okno": "20.11. 12:00 – 21.11. 12:00",
@@ -44,8 +44,8 @@
         "star": 2,
         "live": 0,
         "drafty": 0,
-        "posledni": "2026-11-20T17:05:00+01:00",
-        "dalsi": "2026-11-20T21:31:00+01:00"
+        "posledni": "2026-11-20T21:31:00+01:00",
+        "dalsi": null
       },
       "fanpage": {
         "postu": 0,
@@ -62,7 +62,7 @@
     }
   },
   "vykon": {
-    "zmereno": 105,
+    "zmereno": 111,
     "top5": [
       {
         "znacka": "fanpage",
@@ -72,7 +72,7 @@
         "hot": false,
         "live": false,
         "due": "2026-11-19T18:42:00+01:00",
-        "stari_h": 26.2,
+        "stari_h": 31.6,
         "views": 14040,
         "likes": 219,
         "comments": 0,
@@ -87,7 +87,7 @@
         "hot": false,
         "live": false,
         "due": "2026-11-19T19:41:00+01:00",
-        "stari_h": 25.2,
+        "stari_h": 30.6,
         "views": 2978,
         "likes": 17,
         "comments": 0,
@@ -102,7 +102,7 @@
         "hot": false,
         "live": false,
         "due": "2026-11-19T18:42:00+01:00",
-        "stari_h": 26.2,
+        "stari_h": 31.6,
         "views": 2293,
         "likes": 3,
         "comments": 0,
@@ -117,7 +117,7 @@
         "hot": false,
         "live": false,
         "due": "2026-11-19T19:41:00+01:00",
-        "stari_h": 25.2,
+        "stari_h": 30.6,
         "views": 494,
         "likes": 0,
         "comments": 0,
@@ -132,7 +132,7 @@
         "hot": false,
         "live": false,
         "due": "2026-11-19T21:23:00+01:00",
-        "stari_h": 23.5,
+        "stari_h": 28.9,
         "views": 440,
         "likes": 3,
         "comments": 0,
@@ -143,32 +143,32 @@
     "prumer": {
       "bananas": {
         "instagram": {
-          "n": 18,
-          "views": 86,
+          "n": 19,
+          "views": 81,
           "likes": 0
         },
         "twitter": {
-          "n": 7,
+          "n": 8,
           "views": 0,
           "likes": 0
         },
         "youtube": {
-          "n": 3,
-          "views": 1,
+          "n": 4,
+          "views": 0,
           "likes": 0
         },
         "facebook": {
-          "n": 18,
-          "views": 97,
+          "n": 19,
+          "views": 92,
           "likes": 0
         },
         "tiktok": {
-          "n": 10,
+          "n": 11,
           "views": 0,
           "likes": 0
         },
         "threads": {
-          "n": 7,
+          "n": 8,
           "views": 0,
           "likes": 0
         }
@@ -203,10 +203,18 @@
     },
     "nejnovejsi": [
       {
+        "znacka": "bananas",
+        "klip": "twitch_ObedientInspiringDuckHassanChop-PTTGcFi7UzHl4qFE",
+        "streamer": "ishowspeed",
+        "stari_h": 4.8,
+        "views": 0,
+        "views_za_h": 0
+      },
+      {
         "znacka": "fanpage",
         "klip": "top4_2026-11-20_0",
         "streamer": "top4",
-        "stari_h": 0.7,
+        "stari_h": 6.1,
         "views": 0,
         "views_za_h": 0
       },
@@ -214,7 +222,7 @@
         "znacka": "bananas",
         "klip": "twitch_IgnorantColdCoyoteResidentSleeper-2IVMn9oxpox_c82y",
         "streamer": "ishowspeed",
-        "stari_h": 3.8,
+        "stari_h": 9.2,
         "views": 0,
         "views_za_h": 0
       },
@@ -222,7 +230,7 @@
         "znacka": "bananas",
         "klip": "youtube_lBrGiDG_BVc_8234",
         "streamer": "lacyhimself",
-        "stari_h": 10.3,
+        "stari_h": 15.7,
         "views": 1,
         "views_za_h": 0
       },
@@ -230,22 +238,14 @@
         "znacka": "fanpage",
         "klip": "twitch_EasyDignifiedTroutCorgiDerp-k60y_FOyVIyCi1Gb",
         "streamer": "ishowspeed",
-        "stari_h": 10.6,
+        "stari_h": 16.0,
         "views": 0,
-        "views_za_h": 0
-      },
-      {
-        "znacka": "bananas",
-        "klip": "live_kaicenat_1795157992",
-        "streamer": "kaicenat",
-        "stari_h": 12.7,
-        "views": 2,
         "views_za_h": 0
       }
     ],
     "chybi_klice": 0,
     "chyby": [],
-    "postu_celkem": 113,
+    "postu_celkem": 119,
     "nenalezeno": 0
   },
   "netlify": {
@@ -253,11 +253,29 @@
     "gb_soft": 85,
     "gb_hard": 100,
     "gb_rozpocet": 100,
-    "deploye_24h": 45
+    "deploye_24h": 36
   },
   "sit_data": null,
-  "alerty": [],
+  "alerty": [
+    {
+      "klic": "ticho:bananas",
+      "text": "bananas: nic nepublikováno 4+ h (poslední post 20.11. 21:31)"
+    },
+    {
+      "klic": "ticho:fanpage",
+      "text": "fanpage: nic nepublikováno 4+ h (poslední post 20.11. 20:15)"
+    }
+  ],
   "denni_odeslano": null,
-  "alerty_stav": {},
-  "podpis": ""
+  "alerty_stav": {
+    "ticho:bananas": {
+      "od": "2026-11-21T02:19:21.328948+01:00",
+      "poslano": "2026-11-21T02:19:21+01:00"
+    },
+    "ticho:fanpage": {
+      "od": "2026-11-21T02:19:21.328948+01:00",
+      "poslano": "2026-11-21T02:19:21+01:00"
+    }
+  },
+  "podpis": "ticho:bananas|ticho:fanpage"
 }
