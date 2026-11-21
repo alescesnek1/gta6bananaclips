@@ -27457,11 +27457,11 @@
     "channel": "duanedapre",
     "platform": "twitch",
     "title": "rip paul",
-    "views": 501,
+    "views": 1258,
     "created": 1795148061,
     "category": "Grand Theft Auto VI",
     "cluster": 1,
-    "added": 1795168415
+    "added": 1795228109
   },
   "twitch_StrongFreezingEggGrammarKing-rFO7Oei7zRluL1im": {
     "id": "twitch_StrongFreezingEggGrammarKing-rFO7Oei7zRluL1im",
@@ -35995,5 +35995,33 @@
     "vod_offset": 3724,
     "cluster": 1,
     "added": 1795227824
+  },
+  "twitch_MagnificentHilariousMonitorCclamChamp-u_WBK66Y7rsqXeUD": {
+    "id": "twitch_MagnificentHilariousMonitorCclamChamp-u_WBK66Y7rsqXeUD",
+    "url": "https://www.twitch.tv/caseoh_/clip/MagnificentHilariousMonitorCclamChamp-u_WBK66Y7rsqXeUD",
+    "channel": "caseoh_",
+    "platform": "twitch",
+    "title": "fail",
+    "views": 1256,
+    "created": 1795189655,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934099165",
+    "vod_offset": 30582,
+    "cluster": 1,
+    "added": 1795228109
+  },
+  "twitch_ReliableAverageWebFUNgineer-m8rTD--hodMm-JVH": {
+    "id": "twitch_ReliableAverageWebFUNgineer-m8rTD--hodMm-JVH",
+    "url": "https://www.twitch.tv/caseoh_/clip/ReliableAverageWebFUNgineer-m8rTD--hodMm-JVH",
+    "channel": "caseoh_",
+    "platform": "twitch",
+    "title": "jason ok?",
+    "views": 1036,
+    "created": 1795189708,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934099165",
+    "vod_offset": 30629,
+    "cluster": 1,
+    "added": 1795228109
   }
 }
