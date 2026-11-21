@@ -37738,5 +37738,19 @@
     "vod_offset": 9470,
     "cluster": 1,
     "added": 1795259074
+  },
+  "twitch_ArborealBovineCourgetteSeemsGood-T1A9kMYfMy35JSWl": {
+    "id": "twitch_ArborealBovineCourgetteSeemsGood-T1A9kMYfMy35JSWl",
+    "url": "https://www.twitch.tv/ishowspeed/clip/ArborealBovineCourgetteSeemsGood-T1A9kMYfMy35JSWl",
+    "channel": "ishowspeed",
+    "platform": "twitch",
+    "title": "90% bro",
+    "views": 510,
+    "created": 1795178702,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932319814",
+    "vod_offset": 170686,
+    "cluster": 1,
+    "added": 1795259438
   }
 }
