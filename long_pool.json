@@ -36299,13 +36299,13 @@
     "channel": "atrioc",
     "platform": "twitch",
     "title": "So can I get VIP?",
-    "views": 503,
+    "views": 543,
     "created": 1795161347,
     "category": "Grand Theft Auto VI",
     "video_id": "2934266144",
     "vod_offset": 24707,
     "cluster": 1,
-    "added": 1795229318
+    "added": 1795237866
   },
   "twitch_TalentedAntediluvianSwordDAESuppy-gaC_-B94yQjbKL1s": {
     "id": "twitch_TalentedAntediluvianSwordDAESuppy-gaC_-B94yQjbKL1s",
@@ -36914,5 +36914,33 @@
     "vod_offset": 9059,
     "cluster": 1,
     "added": 1795237663
+  },
+  "twitch_ColdViscousHyenaPogChamp-6BXJGO41OvBSxlxI": {
+    "id": "twitch_ColdViscousHyenaPogChamp-6BXJGO41OvBSxlxI",
+    "url": "https://www.twitch.tv/symfuhny/clip/ColdViscousHyenaPogChamp-6BXJGO41OvBSxlxI",
+    "channel": "symfuhny",
+    "platform": "twitch",
+    "title": "o7 lucia",
+    "views": 506,
+    "created": 1795194173,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934812331",
+    "vod_offset": 21472,
+    "cluster": 1,
+    "added": 1795237866
+  },
+  "twitch_PlacidBlightedPeachVoteYea-kQnNj5vvGsdGO33S": {
+    "id": "twitch_PlacidBlightedPeachVoteYea-kQnNj5vvGsdGO33S",
+    "url": "https://www.twitch.tv/lacy/clip/PlacidBlightedPeachVoteYea-kQnNj5vvGsdGO33S",
+    "channel": "lacy",
+    "platform": "twitch",
+    "title": "Lacy got impressed",
+    "views": 505,
+    "created": 1795193005,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2935059680",
+    "vod_offset": 553,
+    "cluster": 2,
+    "added": 1795237866
   }
 }
