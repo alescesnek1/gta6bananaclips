@@ -35981,5 +35981,19 @@
       "luma": 56.8,
       "dark": 0.0
     }
+  },
+  "twitch_AcceptableKindChinchillaCurseLit-7ypQY1ylfv-1xE8k": {
+    "id": "twitch_AcceptableKindChinchillaCurseLit-7ypQY1ylfv-1xE8k",
+    "url": "https://www.twitch.tv/joe_bartolozzi/clip/AcceptableKindChinchillaCurseLit-7ypQY1ylfv-1xE8k",
+    "channel": "joe_bartolozzi",
+    "platform": "twitch",
+    "title": "W GOON GAME!",
+    "views": 677,
+    "created": 1795198644,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2935101396",
+    "vod_offset": 3724,
+    "cluster": 1,
+    "added": 1795227824
   }
 }
