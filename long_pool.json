@@ -36970,5 +36970,33 @@
     "vod_offset": 21592,
     "cluster": 1,
     "added": 1795239512
+  },
+  "twitch_QuaintAbnegateGnatFailFish-v0xBkFBoEeE_iFfL": {
+    "id": "twitch_QuaintAbnegateGnatFailFish-v0xBkFBoEeE_iFfL",
+    "url": "https://www.twitch.tv/caseoh_/clip/QuaintAbnegateGnatFailFish-v0xBkFBoEeE_iFfL",
+    "channel": "caseoh_",
+    "platform": "twitch",
+    "title": "broken",
+    "views": 1261,
+    "created": 1795188187,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932628190",
+    "vod_offset": 28787,
+    "cluster": 1,
+    "added": 1795239835
+  },
+  "twitch_TsundereExquisiteFennelDuDudu-uHAPNvlm8vS6_r1w": {
+    "id": "twitch_TsundereExquisiteFennelDuDudu-uHAPNvlm8vS6_r1w",
+    "url": "https://www.twitch.tv/jasontheween/clip/TsundereExquisiteFennelDuDudu-uHAPNvlm8vS6_r1w",
+    "channel": "jasontheween",
+    "platform": "twitch",
+    "title": "all friends alike",
+    "views": 513,
+    "created": 1795153348,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933588799",
+    "vod_offset": 64835,
+    "cluster": 1,
+    "added": 1795239835
   }
 }
