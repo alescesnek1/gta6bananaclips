@@ -35445,5 +35445,33 @@
     "category": "Grand Theft Auto VI",
     "cluster": 1,
     "added": 1795221502
+  },
+  "twitch_AmorphousDeafZucchiniSpicyBoy-IdVR1IqHfRWD57LN": {
+    "id": "twitch_AmorphousDeafZucchiniSpicyBoy-IdVR1IqHfRWD57LN",
+    "url": "https://www.twitch.tv/jerma985/clip/AmorphousDeafZucchiniSpicyBoy-IdVR1IqHfRWD57LN",
+    "channel": "jerma985",
+    "platform": "twitch",
+    "title": "omegalul",
+    "views": 575,
+    "created": 1795175997,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934543908",
+    "vod_offset": 32200,
+    "cluster": 1,
+    "added": 1795222409
+  },
+  "twitch_SmoothTenderClamTwitchRaid-4KuqLVvavD_UocO5": {
+    "id": "twitch_SmoothTenderClamTwitchRaid-4KuqLVvavD_UocO5",
+    "url": "https://www.twitch.tv/stableronaldo/clip/SmoothTenderClamTwitchRaid-4KuqLVvavD_UocO5",
+    "channel": "stableronaldo",
+    "platform": "twitch",
+    "title": "WAHT WAS THAT IN DA DRAWER WITH THE REMOTE???",
+    "views": 570,
+    "created": 1795141599,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2933798318",
+    "vod_offset": 38170,
+    "cluster": 2,
+    "added": 1795222409
   }
 }
