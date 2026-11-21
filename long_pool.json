@@ -37696,5 +37696,19 @@
     "vod_offset": 29441,
     "cluster": 1,
     "added": 1795257507
+  },
+  "twitch_FlirtyCallousBananaFUNgineer-FCb4vOMOii9SFi3C": {
+    "id": "twitch_FlirtyCallousBananaFUNgineer-FCb4vOMOii9SFi3C",
+    "url": "https://www.twitch.tv/mrsavage/clip/FlirtyCallousBananaFUNgineer-FCb4vOMOii9SFi3C",
+    "channel": "mrsavage",
+    "platform": "twitch",
+    "title": "erm",
+    "views": 509,
+    "created": 1795216578,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934970600",
+    "vod_offset": 22982,
+    "cluster": 1,
+    "added": 1795258105
   }
 }
