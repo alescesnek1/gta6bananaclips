@@ -387,5 +387,37 @@
       "MIRROR CHECK FAILS"
     ],
     "mb": 14.8
+  },
+  "twitch_BloodyOilyWasabiVoteNay-iA3QTvyzrlB0a4qv": {
+    "url": "https://6b018de6f3b246a17cbc4aab--gta6bananaclips-media.netlify.app/20261121/twitch_BloodyOilyWasabiVoteNay-iA3QTvyzrlB0a4qv.mp4",
+    "path": "20261121/twitch_BloodyOilyWasabiVoteNay-iA3QTvyzrlB0a4qv.mp4",
+    "due": "2026-11-21T13:49:00+01:00",
+    "draft": false,
+    "posts": {
+      "6afc433aece6dfde5ff6749b": "6b018def8bd84d5966e87fe6",
+      "6afc42e6ece6dfde5ff66dca": "6b018df00247969092ce7c7b",
+      "6afc4429ece6dfde5ff683db": "6b018df0d5eabfb8cc2c7577",
+      "6afc4413ece6dfde5ff68286": "6b018df1943aa0abf4577305",
+      "6afc43ffece6dfde5ff68162": "6b018df18bd84d5966e88058"
+    },
+    "mb": 6.4,
+    "channel": "xqc",
+    "platform": "twitch",
+    "score": 388.1,
+    "hot": false,
+    "rating": 3,
+    "views": 517,
+    "golden": false,
+    "title": "xQc Reacts To This GTA 6 Moment! 😭",
+    "video_id": "2935383720",
+    "vod_offset": 31406,
+    "created": 1795242018,
+    "payoff": "https://6b018de6f3b246a17cbc4aab--gta6bananaclips-media.netlify.app/20261121/twitch_BloodyOilyWasabiVoteNay-iA3QTvyzrlB0a4qv_payoff.mp4",
+    "funny": 0.99,
+    "tags": [
+      "funny"
+    ],
+    "quote": "",
+    "slot": "2026-11-21T14:00:00+01:00"
   }
 }
