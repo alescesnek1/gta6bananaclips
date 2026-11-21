@@ -37892,11 +37892,11 @@
     "channel": "drdonutttttt",
     "platform": "twitch",
     "title": "Why is everyone saying end stream on YouTube?",
-    "views": 509,
+    "views": 513,
     "created": 1795230120,
     "category": "Grand Theft Auto VI",
     "cluster": 1,
-    "added": 1795263967
+    "added": 1795264347
   },
   "twitch_BloodyOilyWasabiVoteNay-iA3QTvyzrlB0a4qv": {
     "id": "twitch_BloodyOilyWasabiVoteNay-iA3QTvyzrlB0a4qv",
@@ -37904,18 +37904,19 @@
     "channel": "xqc",
     "platform": "twitch",
     "title": "13 years moment LOL",
-    "views": 517,
+    "views": 521,
     "created": 1795242018,
     "category": "Grand Theft Auto VI",
     "video_id": "2935383720",
     "vod_offset": 31406,
     "cluster": 1,
-    "added": 1795263967,
+    "added": 1795264347,
     "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/xqc/20261121_twitch_BloodyOilyWasabiVoteNay-iA3QTvyzrlB0a4qv/source.mp4",
     "peak": 10.65,
     "cut": [
       2.67,
-      14.67
+      14.67,
+      4.27
     ],
     "dur": 19.98,
     "tags": [
@@ -37975,14 +37976,42 @@
       "siren": 0.0,
       "impact": 9.4,
       "loud": 1.5,
-      "motion": 18.6,
+      "motion": 18.8,
       "sustained": 0.73,
-      "spike": 2.6,
+      "spike": 2.7,
       "laugh": 0,
       "static": 0.03,
       "letterbox": 0.0,
       "luma": 47.7,
       "dark": 0.0
     }
+  },
+  "twitch_CallousCaringAntOpieOP-vnj-7PUJg9uxZTww": {
+    "id": "twitch_CallousCaringAntOpieOP-vnj-7PUJg9uxZTww",
+    "url": "https://www.twitch.tv/hutchmf/clip/CallousCaringAntOpieOP-vnj-7PUJg9uxZTww",
+    "channel": "hutchmf",
+    "platform": "twitch",
+    "title": "gav's W phonecall",
+    "views": 512,
+    "created": 1795187940,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934897780",
+    "vod_offset": 6920,
+    "cluster": 1,
+    "added": 1795264347
+  },
+  "twitch_TrustworthyTransparentFoxPraiseIt-S9UEolun9fj386LC": {
+    "id": "twitch_TrustworthyTransparentFoxPraiseIt-S9UEolun9fj386LC",
+    "url": "https://www.twitch.tv/swagg/clip/TrustworthyTransparentFoxPraiseIt-S9UEolun9fj386LC",
+    "channel": "swagg",
+    "platform": "twitch",
+    "title": "RIP PAUL WALKER",
+    "views": 512,
+    "created": 1795205542,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2935199086",
+    "vod_offset": 5136,
+    "cluster": 1,
+    "added": 1795264347
   }
 }
