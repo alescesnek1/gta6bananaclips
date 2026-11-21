@@ -37132,5 +37132,19 @@
     "vod_offset": 5980,
     "cluster": 1,
     "added": 1795240724
+  },
+  "twitch_MildLachrymoseLlamaMau5-ax7vPwwbEIss-Qg5": {
+    "id": "twitch_MildLachrymoseLlamaMau5-ax7vPwwbEIss-Qg5",
+    "url": "https://www.twitch.tv/yourragegaming/clip/MildLachrymoseLlamaMau5-ax7vPwwbEIss-Qg5",
+    "channel": "yourragegaming",
+    "platform": "twitch",
+    "title": ".",
+    "views": 504,
+    "created": 1795157935,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934505601",
+    "vod_offset": 16423,
+    "cluster": 1,
+    "added": 1795241309
   }
 }
