@@ -36051,5 +36051,114 @@
     "vod_offset": 38157,
     "cluster": 1,
     "added": 1795229916
+  },
+  "twitch_LazyFurtiveDonkeyCeilingCat-s59NHe2T4UThUu_h": {
+    "id": "twitch_LazyFurtiveDonkeyCeilingCat-s59NHe2T4UThUu_h",
+    "url": "https://www.twitch.tv/ishowspeed/clip/LazyFurtiveDonkeyCeilingCat-s59NHe2T4UThUu_h",
+    "channel": "ishowspeed",
+    "platform": "twitch",
+    "title": "Aggressive player GTA VI",
+    "views": 500,
+    "created": 1795175952,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2932319814",
+    "vod_offset": 167936,
+    "cluster": 1,
+    "added": 1795231801,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/ishowspeed/20261120_twitch_LazyFurtiveDonkeyCeilingCat-s59NHe2T4UThUu_h/source.mp4",
+    "peak": 18.05,
+    "cut": [
+      8.53,
+      20.05
+    ],
+    "dur": 20.05,
+    "tags": [
+      "first-reaction",
+      "funny",
+      "rage"
+    ],
+    "tag_scores": {
+      "funny": 0.82,
+      "glitch": 0.0,
+      "chase": 0.2,
+      "crash": 0.0,
+      "rage": 0.81,
+      "first-reaction": 0.86,
+      "wow": 0.2,
+      "_loud": 1.6,
+      "_motion": 23.2
+    },
+    "quote": "Yes you are, you trolling!",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.35,
+      "rage": 0.7,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.95,
+      "wow": 0.0
+    },
+    "primary": "first-reaction",
+    "proven": [
+      "first-reaction"
+    ],
+    "evidence": {
+      "funny": [
+        "text"
+      ],
+      "rage": [
+        "text"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "launch-days",
+        "text"
+      ]
+    },
+    "fun": 0.43,
+    "signals": {
+      "siren": 0.0,
+      "impact": 8.2,
+      "loud": 1.6,
+      "motion": 17.9,
+      "sustained": 0.71,
+      "spike": 2.3,
+      "laugh": 0,
+      "static": 0.01,
+      "letterbox": 0.0,
+      "luma": 88.7,
+      "dark": 0.0
+    }
+  },
+  "twitch_SnappyWealthyPigDancingBaby-qiVQtbTS-g19QmNV": {
+    "id": "twitch_SnappyWealthyPigDancingBaby-qiVQtbTS-g19QmNV",
+    "url": "https://www.twitch.tv/missmikkaa/clip/SnappyWealthyPigDancingBaby-qiVQtbTS-g19QmNV",
+    "channel": "missmikkaa",
+    "platform": "twitch",
+    "title": "really good lighting",
+    "views": 505,
+    "created": 1795208678,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934939585",
+    "vod_offset": 21487,
+    "cluster": 1,
+    "added": 1795231802
   }
 }
