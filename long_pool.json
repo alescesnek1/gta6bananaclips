@@ -38176,12 +38176,23 @@
     "channel": "ohnepixel",
     "platform": "twitch",
     "title": "?????",
-    "views": 1044,
+    "views": 1051,
     "created": 1795189692,
     "category": "Grand Theft Auto VI",
     "video_id": "2934862154",
     "vod_offset": 11680,
     "cluster": 1,
-    "added": 1795267817
+    "added": 1795268006
+  },
+  "twitch_PoorOddSoybeanSoonerLater-r11i8-nRU3oOEnW8": {
+    "id": "twitch_PoorOddSoybeanSoonerLater-r11i8-nRU3oOEnW8",
+    "url": "https://www.twitch.tv/kaicenat/clip/PoorOddSoybeanSoonerLater-r11i8-nRU3oOEnW8",
+    "channel": "kaicenat",
+    "platform": "twitch",
+    "title": "Kai was NOT ready for this GTA 6 scene",
+    "views": 514,
+    "created": 1795215257,
+    "category": "Grand Theft Auto VI",
+    "added": 1795268006
   }
 }
