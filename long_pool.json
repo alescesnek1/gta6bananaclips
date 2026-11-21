@@ -36160,5 +36160,19 @@
     "vod_offset": 21487,
     "cluster": 1,
     "added": 1795231802
+  },
+  "twitch_SneakyFragileDragonflyOptimizePrime-e4jAe1esiLD7oi9X": {
+    "id": "twitch_SneakyFragileDragonflyOptimizePrime-e4jAe1esiLD7oi9X",
+    "url": "https://www.twitch.tv/ludwig/clip/SneakyFragileDragonflyOptimizePrime-e4jAe1esiLD7oi9X",
+    "channel": "ludwig",
+    "platform": "twitch",
+    "title": "Ong I Need this Laptop",
+    "views": 530,
+    "created": 1795148358,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934132437",
+    "vod_offset": 27395,
+    "cluster": 1,
+    "added": 1795232002
   }
 }
