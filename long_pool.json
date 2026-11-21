@@ -34881,5 +34881,19 @@
     "video_id": "2934132437",
     "vod_offset": 96395,
     "added": 1795219490
+  },
+  "twitch_ObeseCrypticGarlicVoteYea-j6KGDIo3-1pUEZEx": {
+    "id": "twitch_ObeseCrypticGarlicVoteYea-j6KGDIo3-1pUEZEx",
+    "url": "https://www.twitch.tv/ohnepixel/clip/ObeseCrypticGarlicVoteYea-j6KGDIo3-1pUEZEx",
+    "channel": "ohnepixel",
+    "platform": "twitch",
+    "title": "XD",
+    "views": 583,
+    "created": 1795209862,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934862154",
+    "vod_offset": 31869,
+    "cluster": 2,
+    "added": 1795220090
   }
 }
