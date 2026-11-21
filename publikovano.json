@@ -660,5 +660,36 @@
     ],
     "quote": "But they always leave us.",
     "slot": "2026-11-20T21:30:00+01:00"
+  },
+  "kick_clip_01M7XRSJ2ZSJY4HAQHF3M4EY55": {
+    "url": "https://6b00f1e015c915e60e8c337a--gta6bananaclips-media.netlify.app/20261120/kick_clip_01M7XRSJ2ZSJY4HAQHF3M4EY55.mp4",
+    "path": "20261120/kick_clip_01M7XRSJ2ZSJY4HAQHF3M4EY55.mp4",
+    "due": "2026-11-21T02:22:00+01:00",
+    "draft": false,
+    "posts": {
+      "6af7142262b70b94b01ac608": "6b00f1eadd205ed779ad6617",
+      "6af713b962b70b94b01ac27e": "6b00f1ea5e993799d84161e0",
+      "6af7155e62b70b94b01ad06f": "6b00f1eb9ffbc8503cebe973",
+      "6af714e862b70b94b01acc7f": "6b00f1f45e993799d841667b",
+      "6af714d062b70b94b01acbbc": "6b00f1f59ffbc8503cebee1e"
+    },
+    "mb": 5.7,
+    "channel": "xqc",
+    "platform": "kick",
+    "score": 1103.9,
+    "hot": true,
+    "rating": 4,
+    "views": 704,
+    "golden": false,
+    "title": "xQc Goes ON THE RUN In GTA 6! 💀",
+    "video_id": null,
+    "vod_offset": null,
+    "created": 1795221773,
+    "payoff": "https://6b00f1e015c915e60e8c337a--gta6bananaclips-media.netlify.app/20261120/kick_clip_01M7XRSJ2ZSJY4HAQHF3M4EY55_payoff.mp4",
+    "funny": 0.0,
+    "tags": [
+      "chase"
+    ],
+    "quote": ""
   }
 }
