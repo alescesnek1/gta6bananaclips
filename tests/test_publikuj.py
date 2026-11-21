@@ -730,7 +730,7 @@ class Top4(unittest.TestCase):
     def test_pick_order_and_no_repeat(self):
         now = datetime(2026, 11, 19, 20, 0, tzinfo=P.TZ)
         recs = {f"c{i}": self.rec(now - timedelta(hours=i + 1), i / 10) for i in range(6)}
-        recs["old"] = self.rec(now - timedelta(hours=40), 0.99)           # outside the window
+        recs["old"] = self.rec(now - timedelta(hours=80), 0.99)           # outside the window
         recs["future"] = self.rec(now + timedelta(hours=1), 0.98)         # not out yet: never spoiled
         recs["nopay"] = self.rec(now - timedelta(hours=1), 0.97, payoff=False)
         recs["top4_x"] = {"due": now.isoformat(), "items": ["c5"]}        # already in a Top 4

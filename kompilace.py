@@ -588,6 +588,11 @@ def plan_run(a, z, now, used, eps, res, vis_cache=None, verify=True):
             tries = ([(special, None)] if special else []) + [(rot_s, slot)]
     if not themes and all(s != main_series(z) for s, _ in tries) and tries != [(special, None)]:
         tries.append((main_series(z), None))
+    # 21. 11. (no long-form for 2 days: every themed try ended at 4-6 min, 'off-theme' cut most moments): the
+    # last try of every run is the week's best moments - no topic filter, the same quality / action checks
+    best = cal.get("fallback_any", "top-week")
+    if themes and not a.serie and best in SERIES and all(s != best for s, _ in tries):
+        tries.append((best, None))
     tried = []
     for s, sl in tries:
         od, do, t0, t1 = window_for(s, now, a, eps, z)

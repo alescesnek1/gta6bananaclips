@@ -1694,7 +1694,7 @@ def cmd_den(a):
                "video_id": m.get("video_id"), "vod_offset": m.get("vod_offset"), "created": m.get("created"),
                "payoff": f"{base}/{m['_payoff_rel']}" if m.get("_payoff_rel") else m.get("_payoff_url"),
                "funny": (m.get("tag_scores") or {}).get("funny"), "tags": m.get("tags"),
-               "quote": (m.get("quote") or "")[:160]}
+               "quote": (m.get("quote") or "")[:160], "nudity": m.get("nudity")}
         if is_live(m):                                     # live: the stream's audience is not clip views
             rec.update(live=True, viewers=m.get("viewers"), spike_z=m.get("spike_z"))
         if slot_of.get(m["id"]):
@@ -1904,7 +1904,14 @@ def top4_pick(recs, now, others=None):
     Top 4 of either account and none that belongs to the other account's Top 4 (top4_owner), best first: [(key, rec)] (top4_post takes
     the first 4 that pass the nudity check). others = {brand: its records} of the other accounts."""
     others = others or {}
-    used = {i for rr in [recs, *others.values()] for k, r in rr.items() if k.startswith("top4_")
+    # owner 19. 11. "klidne at je recykluje ale jen ty nejlepsi": a clip may come back in a Top 4 after 24 h
+    # (21. 11.: one use only starved it - 2 Top 4 of 8 went out in two days), never twice within 24 h
+    def recent(r):
+        try:
+            return now - datetime.fromisoformat(r.get("due") or "") < timedelta(hours=24)
+        except ValueError:
+            return True
+    used = {i for rr in [recs, *others.values()] for k, r in rr.items() if k.startswith("top4_") and recent(r)
             for i in (r.get("items") or [])}
     shared = {k: [ZNACKA] + [z for z, rr in others.items() if k in rr] for k in recs}
     used |= {k for k, zs in shared.items() if len(zs) > 1 and top4_owner(k, zs) != ZNACKA}
@@ -1925,7 +1932,8 @@ def top4_pick(recs, now, others=None):
     cand.sort(key=lambda x: -x[0])
     return [(k, r) for _, k, r in cand]
 
-TOP4_WINDOW_H = 36                                    # recycling is fine (owner 19. 11.), but only the best
+TOP4_BAD = set()                                      # payoff URLs that answered 404 in this process
+TOP4_WINDOW_H = 72                                    # recycling is fine (owner 19. 11.), but only the best
 
 def top4_strength(r, src):
     """Owner 19. 11.: 'klidne at je recykluje ale jen ty nejlepsi': only a star's clip (star_tier1, e.g.
@@ -1941,8 +1949,8 @@ TOP4_NUDE_Q = "A frame from a video game. Is there nudity (bare breasts, nipples
 
 def top4_nudity(mp4):
     """True = nudity stays on screen in the payoff (both of 2 game-band frames, = klipuj.nudity_explicit; owner
-    19. 11.: GTA 6 has nudity, not too strict - a glimpse or a silhouette passes) -> never in a Top 4. None (no
-    vision) counts as not checked = not allowed either."""
+    19. 11.: GTA 6 has nudity, not too strict - a glimpse or a silhouette passes) -> never in a Top 4. None = no
+    vision answer (top4_post then trusts the render's own check, else lets it through)."""
     import nahled_ai
     try:
         dur = float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0",
@@ -2013,7 +2021,7 @@ def make_top4(items, out, znacka=None):
     else:
         flt += "[v]"
     cmd += ["-filter_complex", flt, "-map", "[v]", "-map", "[a]", "-t", f"{total:.3f}", "-c:v", "libx264",
-            "-preset", "veryfast", "-crf", "21", "-maxrate", "4M", "-bufsize", "8M", "-c:a", "aac", "-b:a", "160k",
+            "-preset", "medium", "-crf", "19", "-maxrate", "7M", "-bufsize", "14M", "-c:a", "aac", "-b:a", "160k",
             "-movflags", "+faststart", str(out)]
     r = subprocess.run(cmd, capture_output=True, text=True, timeout=900)
     ass.unlink(missing_ok=True)
@@ -2100,16 +2108,23 @@ def top4_post(a, day, now):
         for k, r in top4_pick(top4_sources(ZNACKA, recs), now, others):
             if len(chosen) == TOP4_N:
                 break
+            if k in TOP4_BAD:
+                continue
             local = stage / f"{key}_{len(chosen)}.mp4"
             try:
                 local.write_bytes(http(r["payoff"], timeout=300)[1])
             except Exception as e:
                 log(f"top4: {k} payoff unavailable ({str(e)[-80:]})")
+                TOP4_BAD.add(k)
                 continue
-            nude = top4_nudity(local)
-            if nude is not False:
-                log(f"top4: {k} skipped ({'nudity' if nude else 'nudity not checked'})")
+            nude = r.get("nudity")                   # the render's own check (21. 11.: Cloudflare's daily AI
+            if nude is None:                         # allowance ran out and every clip was "nudity not checked")
+                nude = top4_nudity(local)
+            if nude:
+                log(f"top4: {k} skipped (nudity)")
                 continue
+            if nude is None:
+                log(f"top4: {k} nudity not checkable now (AI limit), used - the owner wants it lenient")
             chosen.append((k, r))
             files[k] = local
         if len(chosen) < TOP4_N:

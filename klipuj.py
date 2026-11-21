@@ -156,6 +156,9 @@ def ff_path(p):
     return str(p).replace("\\", "/").replace(":", "\\:")
 
 NORM = f"scale={SW}:{SH}:force_original_aspect_ratio=increase,crop={SW}:{SH},setsar=1"
+# 21. 11. (owner: the picture got soft): the game band is an UPSCALED crop of the 1080p source (~1.2x, more on
+# the zooms) - lanczos + a light unsharp on luma keep edges and text readable, no halo at this strength
+SHARPEN = "unsharp=5:5:0.6:5:5:0"
 
 _norm_cache = {}
 
@@ -1973,7 +1976,7 @@ def build_filter(cam, cmds_file, x0, crop_w, game_h, crop_h=SH, y0=0, ass_file=N
     zoom = (f",zoompan=z='{'*'.join(zs)}':d=1:x='iw/2-iw/zoom/2':y='ih/2-ih/zoom/2':s={W}x{game_h}:fps={FPS}"
             if zs else "")
     grade = f",{grade}" if mark_file and grade else ""
-    f += f"[b]sendcmd=f='{cmds_file}',crop@g={crop_w}:{crop_h}:{x0}:{y0},scale={W}:{game_h}{grade}{zoom}[game];"
+    f += f"[b]sendcmd=f='{cmds_file}',crop@g={crop_w}:{crop_h}:{x0}:{y0},scale={W}:{game_h}:flags=lanczos,{SHARPEN}{grade}{zoom}[game];"
     if cam:
         x, y, w, h = [round(v / 100 * d) for v, d in zip(cam, (SW, SH, SW, SH))]
         cz = ""
@@ -1985,7 +1988,7 @@ def build_filter(cam, cmds_file, x0, crop_w, game_h, crop_h=SH, y0=0, ass_file=N
             e0 = min(a0 + 0.9, T - 0.3)
             cz = (f",zoompan=z='1+0.15*clip((it-{a0:.3f})/0.08\\,0\\,1)*clip(({e0 + 0.25:.3f}-it)/0.25\\,0\\,1)'"
                   f":d=1:x='iw/2-iw/zoom/2':y='ih/2-ih/zoom/2':s={W}x{cam_h}:fps={FPS}")
-        f += f"[a]crop={w}:{h}:{x}:{y},scale={W}:{cam_h}:force_original_aspect_ratio=increase,crop={W}:{cam_h}{cz}[cam];"
+        f += f"[a]crop={w}:{h}:{x}:{y},scale={W}:{cam_h}:force_original_aspect_ratio=increase:flags=lanczos,crop={W}:{cam_h},{SHARPEN}{cz}[cam];"
         f += "[cam][game]vstack=inputs=2[base];"
     else:
         f += "[a]nullsink;[game]null[base];"
@@ -3191,14 +3194,16 @@ def reaction_overlay(f, reactions, cam):
 def encode(cmd_base, out_path):
     """Try NVIDIA NVENC first, fall back to CPU x264."""
     # capped at 6 Mb/s: plenty for phones, and every MB is fetched 5x from Netlify by Buffer
-    cap = ["-maxrate", "4M", "-bufsize", "8M"]     # 4 Mb/s: the networks re-encode to ~2-3 anyway; keeps Netlify < 1000 credits
+    # 21. 11. (owner: "kvalita videi jde dolu, zkvalitnit obraz"): 4 -> 7 Mb/s and slower presets - the platforms
+    # re-encode anyway, but from a clean upload; a soft, blocky 4 Mb/s file came out worse after their pass
+    cap = ["-maxrate", "7M", "-bufsize", "14M"]
     if os.environ.get("KLIPY_DEBUG"):
         (Path(os.environ["KLIPY_DEBUG"]) / f"cmd_{Path(out_path).stem}_{int(time.time())}.txt").write_text(
             "\n".join(map(str, cmd_base)), encoding="utf-8")
     # -cutoff 18000: ffmpeg's AAC at 128k with its default low-pass overshot a -3 dB limited mix to
     # +0.3 dBTP (measured 17. 11.); with the cutoff it stays at -2.4 dBTP (qa_short wants <= -1)
-    for venc in (["-c:v", "h264_nvenc", "-preset", "p5", "-rc", "vbr", "-cq", "23", "-b:v", "0"] + cap,
-                 ["-c:v", "libx264", "-preset", "veryfast", "-crf", "22"] + cap):
+    for venc in (["-c:v", "h264_nvenc", "-preset", "p6", "-tune", "hq", "-rc", "vbr", "-cq", "20", "-b:v", "0"] + cap,
+                 ["-c:v", "libx264", "-preset", "medium", "-crf", "19", "-profile:v", "high"] + cap):
         try:
             run(cmd_base + venc + ["-c:a", "aac", "-b:a", "128k", "-cutoff", "18000", "-movflags", "+faststart", str(out_path)], timeout=900)
             return venc[1]
@@ -4392,6 +4397,7 @@ def render(clip, src=None, clean=False):
     cuts, bore, mtags = {}, None, {}
     mouth_cache, mouth_log = {}, []                    # facecam mouth activity per cut (who speaks)
     payoffs = {}                                       # brand -> clean payoff mp4 (the daily Top 4)
+    nude = None                                        # render-time nudity answer (kept in meta for the Top 4)
     for v2 in looks:
         if not todo:
             break
@@ -4928,6 +4934,7 @@ def render(clip, src=None, clean=False):
         "base": str(base) if clean else None,
         "source": str(src),
         "quote": pick_quote(words, peak),    # publikuj.py builds a different post text per platform from it
+        "nudity": nude,                      # nudity_explicit at render (True / False / None = not checked)
         "peak": peak,                        # payoff (s): thumbnail frame, banana, zoom
         "peaks": {k: v.get("peak") for k, v in qa_log.items() if v.get("ok")},   # per brand (the hook differs)
         "card_at": round(card_at, 2),        # where the banana score card starts
