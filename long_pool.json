@@ -37431,5 +37431,19 @@
     "vod_offset": 1234,
     "cluster": 1,
     "added": 1795251792
+  },
+  "twitch_ShinySpunkyCrowGrammarKing-pfkKEggFVAgEqWVp": {
+    "id": "twitch_ShinySpunkyCrowGrammarKing-pfkKEggFVAgEqWVp",
+    "url": "https://www.twitch.tv/penta/clip/ShinySpunkyCrowGrammarKing-pfkKEggFVAgEqWVp",
+    "channel": "penta",
+    "platform": "twitch",
+    "title": "Bike Escapes Nerfed",
+    "views": 554,
+    "created": 1795170178,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934188629",
+    "vod_offset": 41966,
+    "cluster": 1,
+    "added": 1795252405
   }
 }
