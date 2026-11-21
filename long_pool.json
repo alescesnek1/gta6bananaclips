@@ -33964,13 +33964,13 @@
     "channel": "chiblee",
     "platform": "twitch",
     "title": "EBLAN",
-    "views": 687,
+    "views": 693,
     "created": 1795154518,
     "category": "Grand Theft Auto VI",
     "video_id": "2934155267",
     "vod_offset": 32239,
     "cluster": 1,
-    "added": 1795224939
+    "added": 1795225290
   },
   "twitch_LachrymoseHomelyOcelotCclamChamp-TW3Bk8CZeImRJZvO": {
     "id": "twitch_LachrymoseHomelyOcelotCclamChamp-TW3Bk8CZeImRJZvO",
@@ -33978,13 +33978,13 @@
     "channel": "chiblee",
     "platform": "twitch",
     "title": "lucia NOOOOO",
-    "views": 631,
+    "views": 633,
     "created": 1795159400,
     "category": "Grand Theft Auto VI",
     "video_id": "2934155267",
     "vod_offset": 37122,
     "cluster": 1,
-    "added": 1795224939
+    "added": 1795225290
   },
   "twitch_WonderfulRockyHawkPMSTwin-CRg4X98nNwIS4i1A": {
     "id": "twitch_WonderfulRockyHawkPMSTwin-CRg4X98nNwIS4i1A",
@@ -34215,13 +34215,13 @@
     "channel": "madi2hottyy",
     "platform": "twitch",
     "title": "He getting me tight, son",
-    "views": 688,
+    "views": 692,
     "created": 1795149926,
     "category": "Grand Theft Auto VI",
     "video_id": "2934019871",
     "vod_offset": 824,
     "cluster": 1,
-    "added": 1795224939
+    "added": 1795225290
   },
   "twitch_AlertExuberantLardFrankerZ-jX9o5ABvufzMPZdb": {
     "id": "twitch_AlertExuberantLardFrankerZ-jX9o5ABvufzMPZdb",
@@ -35617,11 +35617,11 @@
     "channel": "omarjoshgaming96",
     "platform": "twitch",
     "title": "GOT THE BAG!",
-    "views": 509,
+    "views": 512,
     "created": 1795212370,
     "category": "Grand Theft Auto VI",
     "cluster": 1,
-    "added": 1795224939
+    "added": 1795225290
   },
   "twitch_ClearObedientDoveOMGScoots-3px9kJPxfwI4z0w_": {
     "id": "twitch_ClearObedientDoveOMGScoots-3px9kJPxfwI4z0w_",
@@ -35629,13 +35629,13 @@
     "channel": "kreekcraft",
     "platform": "twitch",
     "title": "A dog on a jet ski just came and picked me up",
-    "views": 506,
+    "views": 509,
     "created": 1795143208,
     "category": "Grand Theft Auto VI",
     "video_id": "2933758895",
     "vod_offset": 14888,
     "cluster": 1,
-    "added": 1795224939
+    "added": 1795225290
   },
   "twitch_KathishUgliestStinkbugOpieOP-uwKA97k_9TxEKLtb": {
     "id": "twitch_KathishUgliestStinkbugOpieOP-uwKA97k_9TxEKLtb",
@@ -35650,5 +35650,117 @@
     "vod_offset": 38095,
     "cluster": 1,
     "added": 1795224939
+  },
+  "twitch_ObservantGorgeousFlyBlargNaut-Z8vTyd8y5nj7N3eb": {
+    "id": "twitch_ObservantGorgeousFlyBlargNaut-Z8vTyd8y5nj7N3eb",
+    "url": "https://www.twitch.tv/yourragegaming/clip/ObservantGorgeousFlyBlargNaut-Z8vTyd8y5nj7N3eb",
+    "channel": "yourragegaming",
+    "platform": "twitch",
+    "title": "dropped his dil do",
+    "views": 502,
+    "created": 1795145378,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2934505601",
+    "vod_offset": 3695,
+    "cluster": 1,
+    "added": 1795225290
+  },
+  "twitch_TangentialCooperativeScorpionUnSane-hanvH0vSTd8zj83g": {
+    "id": "twitch_TangentialCooperativeScorpionUnSane-hanvH0vSTd8zj83g",
+    "url": "https://www.twitch.tv/kaicenat/clip/TangentialCooperativeScorpionUnSane-hanvH0vSTd8zj83g",
+    "channel": "kaicenat",
+    "platform": "twitch",
+    "title": "Kia Gooned Out, da way he looks down dere too🤣🤣🤣",
+    "views": 502,
+    "created": 1795139120,
+    "category": "Grand Theft Auto VI",
+    "added": 1795225290,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/kaicenat/20261120_twitch_TangentialCooperativeScorpionUnSane-hanvH0vSTd8zj83g/source.mp4",
+    "peak": 22.85,
+    "cut": [
+      14.87,
+      26.17
+    ],
+    "dur": 30.02,
+    "tags": [
+      "funny",
+      "wow"
+    ],
+    "tag_scores": {
+      "funny": 1.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.25,
+      "first-reaction": 0.2,
+      "wow": 0.37,
+      "_loud": 30.1,
+      "_motion": 6.4
+    },
+    "quote": "Shay y 'all are so money.",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 1.0,
+      "rage": 0.25,
+      "fail": 0.25,
+      "physics": 0.25,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.25,
+      "wow": 0.25
+    },
+    "primary": "funny",
+    "proven": [
+      "funny"
+    ],
+    "evidence": {
+      "funny": [
+        "loud",
+        "text"
+      ],
+      "rage": [
+        "loud"
+      ],
+      "fail": [
+        "impact",
+        "loud"
+      ],
+      "physics": [
+        "impact"
+      ],
+      "crash": [
+        "impact"
+      ],
+      "stunt": [
+        "impact"
+      ],
+      "first-reaction": [
+        "launch-days"
+      ],
+      "wow": [
+        "loud"
+      ]
+    },
+    "fun": 0.0,
+    "signals": {
+      "siren": 0.0,
+      "impact": 259.8,
+      "loud": 11.2,
+      "motion": 1.0,
+      "sustained": 0.0,
+      "spike": 1.0,
+      "laugh": 0,
+      "static": 0.94,
+      "letterbox": 0.0,
+      "luma": 19.6,
+      "dark": 0.0
+    }
   }
 }
