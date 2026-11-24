@@ -314,16 +314,1643 @@
           "reposts": 0
         }
       }
+    },
+    "bananas:twitch_BeautifulModernTermiteYouWHY-nEB5VffTKnvTR2UD": {
+      "brand": "bananas",
+      "concept": "classic",
+      "due": "2026-11-19T05:22:00+01:00",
+      "due_ts": 1795062120.0,
+      "age_h": 130.9,
+      "views": 160.0,
+      "eng": 0.0,
+      "nets": {
+        "instagram": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 145,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 12.72,
+          "averageTimeWatched": 5.96,
+          "reach": 126
+        },
+        "facebook": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "impressions": 15,
+          "reach": 13,
+          "shares": 0,
+          "clicks": 0
+        }
+      }
+    },
+    "bananas:twitch_CooperativeAthleticMarjoramPeoplesChamp-ED9p6JnfM5HqbI2l": {
+      "brand": "bananas",
+      "concept": "classic",
+      "due": "2026-11-19T09:36:00+01:00",
+      "due_ts": 1795077360.0,
+      "age_h": 126.7,
+      "views": 323.0,
+      "eng": 2.0,
+      "nets": {
+        "instagram": {
+          "reactions": 1,
+          "comments": 0,
+          "engagementRate": 1.5,
+          "views": 158,
+          "shares": 1,
+          "saves": 0,
+          "totalTimeWatched": 21.53,
+          "averageTimeWatched": 9.57,
+          "reach": 133
+        },
+        "facebook": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0.61,
+          "impressions": 165,
+          "reach": 113,
+          "shares": 0,
+          "clicks": 1
+        }
+      }
+    },
+    "bananas:top3_2026-11-18": {
+      "brand": "bananas",
+      "concept": "top3",
+      "due": "2026-11-19T10:51:00+01:00",
+      "due_ts": 1795081860.0,
+      "age_h": 125.5,
+      "views": 143.0,
+      "eng": 0.0,
+      "nets": {
+        "instagram": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 0,
+          "averageTimeWatched": 0,
+          "reach": 0
+        },
+        "facebook": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "impressions": 143,
+          "reach": 134,
+          "shares": 0,
+          "clicks": 0
+        }
+      }
+    },
+    "bananas:twitch_HumbleGeniusStrawberryBleedPurple-CYhEi_LZY9mbAQxo": {
+      "brand": "bananas",
+      "concept": "classic",
+      "due": "2026-11-19T16:54:00+01:00",
+      "due_ts": 1795103640.0,
+      "age_h": 119.4,
+      "views": 391.0,
+      "eng": 1.0,
+      "nets": {
+        "instagram": {
+          "reactions": 1,
+          "comments": 0,
+          "engagementRate": 0.92,
+          "views": 167,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 15.97,
+          "averageTimeWatched": 9.04,
+          "reach": 109
+        },
+        "twitter": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "reposts": 0,
+          "impressions": 0,
+          "clicks": 0
+        },
+        "youtube": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 1
+        },
+        "facebook": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0.47,
+          "impressions": 215,
+          "reach": 133,
+          "shares": 0,
+          "clicks": 1
+        },
+        "tiktok": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "shares": 0,
+          "reach": 0,
+          "totalTimeWatched": 0,
+          "averageTimeWatched": 0
+        },
+        "threads": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 8,
+          "quotes": 0,
+          "reposts": 0
+        }
+      }
+    },
+    "bananas:twitch_DelightfulLachrymoseMelonVoteYea-JeFCNhZHEyTfoOMJ": {
+      "brand": "bananas",
+      "concept": "classic",
+      "due": "2026-11-19T18:13:00+01:00",
+      "due_ts": 1795108380.0,
+      "age_h": 118.1,
+      "views": 367.0,
+      "eng": 1.0,
+      "nets": {
+        "instagram": {
+          "reactions": 1,
+          "comments": 0,
+          "engagementRate": 0.88,
+          "views": 125,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 13.25,
+          "averageTimeWatched": 7.1,
+          "reach": 114
+        },
+        "twitter": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "reposts": 0,
+          "impressions": 0,
+          "clicks": 0
+        },
+        "youtube": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 1
+        },
+        "facebook": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "impressions": 239,
+          "reach": 200,
+          "shares": 0,
+          "clicks": 0
+        },
+        "tiktok": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "shares": 0,
+          "reach": 0,
+          "totalTimeWatched": 0,
+          "averageTimeWatched": 0
+        },
+        "threads": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 2,
+          "quotes": 0,
+          "reposts": 0
+        }
+      }
+    },
+    "bananas:twitch_PrettyProudAlmondCoolStoryBob-RlujLmotC5b4HU78": {
+      "brand": "bananas",
+      "concept": "classic",
+      "due": "2026-11-19T20:08:00+01:00",
+      "due_ts": 1795115280.0,
+      "age_h": 116.2,
+      "views": 390.0,
+      "eng": 1.0,
+      "nets": {
+        "instagram": {
+          "reactions": 1,
+          "comments": 0,
+          "engagementRate": 1.09,
+          "views": 126,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 12.33,
+          "averageTimeWatched": 8.04,
+          "reach": 92
+        },
+        "twitter": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "reposts": 0,
+          "impressions": 0,
+          "clicks": 0
+        },
+        "facebook": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "impressions": 261,
+          "reach": 203,
+          "shares": 0,
+          "clicks": 0
+        },
+        "tiktok": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "shares": 0,
+          "reach": 0,
+          "totalTimeWatched": 0,
+          "averageTimeWatched": 0
+        },
+        "threads": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 3,
+          "quotes": 0,
+          "reposts": 0
+        }
+      }
+    },
+    "bananas:twitch_MushyAuspiciousThymeCeilingCat-Eirf0WCGpbMk4eIh": {
+      "brand": "bananas",
+      "concept": "classic",
+      "due": "2026-11-19T21:23:00+01:00",
+      "due_ts": 1795119780.0,
+      "age_h": 114.9,
+      "views": 860.0,
+      "eng": 3.0,
+      "nets": {
+        "instagram": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 138,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 20.74,
+          "averageTimeWatched": 12.08,
+          "reach": 102
+        },
+        "twitter": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "reposts": 0,
+          "impressions": 0,
+          "clicks": 0
+        },
+        "facebook": {
+          "reactions": 3,
+          "comments": 0,
+          "engagementRate": 0.45,
+          "impressions": 668,
+          "reach": 529,
+          "shares": 0,
+          "clicks": 0
+        },
+        "tiktok": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "shares": 0,
+          "reach": 0,
+          "totalTimeWatched": 0,
+          "averageTimeWatched": 0
+        },
+        "threads": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 54,
+          "quotes": 0,
+          "reposts": 0
+        }
+      }
+    },
+    "bananas:twitch_ObeseObliqueTildeHassanChop-V71KdClKP_JCqGtj": {
+      "brand": "bananas",
+      "concept": "classic",
+      "due": "2026-11-19T22:37:00+01:00",
+      "due_ts": 1795124220.0,
+      "age_h": 113.7,
+      "views": 165.0,
+      "eng": 4.0,
+      "nets": {
+        "instagram": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 3.7,
+          "views": 155,
+          "shares": 3,
+          "saves": 1,
+          "totalTimeWatched": 24.83,
+          "averageTimeWatched": 14.05,
+          "reach": 108
+        },
+        "twitter": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "reposts": 0,
+          "impressions": 0,
+          "clicks": 0
+        },
+        "facebook": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "impressions": 5,
+          "reach": 5,
+          "shares": 0,
+          "clicks": 0
+        },
+        "threads": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 5,
+          "quotes": 0,
+          "reposts": 0
+        }
+      }
+    },
+    "bananas:top4_2026-11-19_0": {
+      "brand": "bananas",
+      "concept": "classic",
+      "due": "2026-11-19T22:26:00+01:00",
+      "due_ts": 1795123560.0,
+      "age_h": 113.9,
+      "views": 147.0,
+      "eng": 0.0,
+      "nets": {
+        "instagram": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 142,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 30.43,
+          "averageTimeWatched": 17.73,
+          "reach": 106
+        },
+        "twitter": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "reposts": 0,
+          "impressions": 0,
+          "clicks": 0
+        },
+        "facebook": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "impressions": 3,
+          "reach": 3,
+          "shares": 0,
+          "clicks": 0
+        },
+        "tiktok": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "shares": 0,
+          "reach": 0,
+          "totalTimeWatched": 0,
+          "averageTimeWatched": 0
+        },
+        "threads": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 2,
+          "quotes": 0,
+          "reposts": 0
+        }
+      }
+    },
+    "bananas:twitch_LuckyBenevolentDotterelOMGScoots-lFgr2IvDbbFYqy0L": {
+      "brand": "bananas",
+      "concept": "classic",
+      "due": "2026-11-20T00:40:00+01:00",
+      "due_ts": 1795131600.0,
+      "age_h": 111.6,
+      "views": 111.0,
+      "eng": 1.0,
+      "nets": {
+        "instagram": {
+          "reactions": 1,
+          "comments": 0,
+          "engagementRate": 1.1,
+          "views": 104,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 10.41,
+          "averageTimeWatched": 6.79,
+          "reach": 91
+        },
+        "facebook": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "impressions": 7,
+          "reach": 6,
+          "shares": 0,
+          "clicks": 0
+        },
+        "tiktok": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "shares": 0,
+          "reach": 0,
+          "totalTimeWatched": 0,
+          "averageTimeWatched": 0
+        }
+      }
+    },
+    "bananas:twitch_BeautifulDaintyMomTwitchRaid-q4op7h8xugMC5r-E": {
+      "brand": "bananas",
+      "concept": "classic",
+      "due": "2026-11-20T03:17:00+01:00",
+      "due_ts": 1795141020.0,
+      "age_h": 109.0,
+      "views": 9.0,
+      "eng": 0.0,
+      "nets": {
+        "instagram": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 1,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 0.11,
+          "averageTimeWatched": 6.61,
+          "reach": 1
+        },
+        "facebook": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "impressions": 8,
+          "reach": 7,
+          "shares": 0,
+          "clicks": 0
+        },
+        "tiktok": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "shares": 0,
+          "reach": 0,
+          "totalTimeWatched": 0,
+          "averageTimeWatched": 0
+        }
+      }
+    },
+    "bananas:twitch_ClearDifferentGarlicNomNom-Fs_0YNyTuWAtVMSk": {
+      "brand": "bananas",
+      "concept": "classic",
+      "due": "2026-11-20T08:03:00+01:00",
+      "due_ts": 1795158180.0,
+      "age_h": 104.3,
+      "views": 15.0,
+      "eng": 0.0,
+      "nets": {
+        "instagram": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 1,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 0.06,
+          "averageTimeWatched": 3.81,
+          "reach": 1
+        },
+        "facebook": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "impressions": 14,
+          "reach": 12,
+          "shares": 0,
+          "clicks": 0
+        },
+        "tiktok": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "shares": 0,
+          "reach": 0,
+          "totalTimeWatched": 0,
+          "averageTimeWatched": 0
+        }
+      }
+    },
+    "bananas:youtube_lBrGiDG_BVc_8234": {
+      "brand": "bananas",
+      "concept": "classic",
+      "due": "2026-11-20T10:37:00+01:00",
+      "due_ts": 1795167420.0,
+      "age_h": 101.7,
+      "views": 783.0,
+      "eng": 3.0,
+      "nets": {
+        "instagram": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 1,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 0.06,
+          "averageTimeWatched": 3.49,
+          "reach": 1
+        },
+        "facebook": {
+          "reactions": 3,
+          "comments": 0,
+          "engagementRate": 0.51,
+          "impressions": 782,
+          "reach": 689,
+          "shares": 0,
+          "clicks": 1
+        },
+        "tiktok": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "shares": 0,
+          "reach": 0,
+          "totalTimeWatched": 0,
+          "averageTimeWatched": 0
+        }
+      }
+    },
+    "bananas:twitch_IgnorantColdCoyoteResidentSleeper-2IVMn9oxpox_c82y": {
+      "brand": "bananas",
+      "concept": "classic",
+      "due": "2026-11-20T17:05:00+01:00",
+      "due_ts": 1795190700.0,
+      "age_h": 95.2,
+      "views": 614.0,
+      "eng": 1.0,
+      "nets": {
+        "instagram": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 1,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 0.01,
+          "averageTimeWatched": 0.61,
+          "reach": 1
+        },
+        "twitter": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "reposts": 0,
+          "impressions": 0,
+          "clicks": 0
+        },
+        "youtube": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 4
+        },
+        "facebook": {
+          "reactions": 1,
+          "comments": 0,
+          "engagementRate": 0.17,
+          "impressions": 604,
+          "reach": 470,
+          "shares": 0,
+          "clicks": 0
+        },
+        "tiktok": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "shares": 0,
+          "reach": 0,
+          "totalTimeWatched": 0,
+          "averageTimeWatched": 0
+        },
+        "threads": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 5,
+          "quotes": 0,
+          "reposts": 0
+        }
+      }
+    },
+    "bananas:twitch_ObedientInspiringDuckHassanChop-PTTGcFi7UzHl4qFE": {
+      "brand": "bananas",
+      "concept": "classic",
+      "due": "2026-11-20T21:31:00+01:00",
+      "due_ts": 1795206660.0,
+      "age_h": 90.8,
+      "views": 436.0,
+      "eng": 0.0,
+      "nets": {
+        "instagram": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 2,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 0.18,
+          "averageTimeWatched": 5.52,
+          "reach": 1
+        },
+        "twitter": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "reposts": 0,
+          "impressions": 0,
+          "clicks": 0
+        },
+        "youtube": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 1
+        },
+        "facebook": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "impressions": 430,
+          "reach": 357,
+          "shares": 0,
+          "clicks": 0
+        },
+        "tiktok": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "shares": 0,
+          "reach": 0,
+          "totalTimeWatched": 0,
+          "averageTimeWatched": 0
+        },
+        "threads": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 3,
+          "quotes": 0,
+          "reposts": 0
+        }
+      }
+    },
+    "bananas:kick_clip_01M7XRSJ2ZSJY4HAQHF3M4EY55": {
+      "brand": "bananas",
+      "concept": "classic",
+      "due": "2026-11-21T02:22:00+01:00",
+      "due_ts": 1795224120.0,
+      "age_h": 85.9,
+      "views": 300.0,
+      "eng": 0.0,
+      "nets": {
+        "instagram": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 23,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 1.51,
+          "averageTimeWatched": 4.3,
+          "reach": 20
+        },
+        "twitter": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "reposts": 0,
+          "impressions": 0,
+          "clicks": 0
+        },
+        "facebook": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "impressions": 268,
+          "reach": 226,
+          "shares": 0,
+          "clicks": 0
+        },
+        "tiktok": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "shares": 0,
+          "reach": 0,
+          "totalTimeWatched": 0,
+          "averageTimeWatched": 0
+        },
+        "threads": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 9,
+          "quotes": 0,
+          "reposts": 0
+        }
+      }
+    },
+    "bananas:twitch_TangentialCooperativeScorpionUnSane-hanvH0vSTd8zj83g": {
+      "brand": "bananas",
+      "concept": "classic",
+      "due": "2026-11-21T03:16:00+01:00",
+      "due_ts": 1795227360.0,
+      "age_h": 85.0,
+      "views": 377.0,
+      "eng": 0.0,
+      "nets": {
+        "instagram": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 62,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 4.78,
+          "averageTimeWatched": 6.67,
+          "reach": 42
+        },
+        "twitter": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "reposts": 0,
+          "impressions": 0,
+          "clicks": 0
+        },
+        "facebook": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "impressions": 314,
+          "reach": 222,
+          "shares": 0,
+          "clicks": 0
+        },
+        "threads": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 1,
+          "quotes": 0,
+          "reposts": 0
+        }
+      }
+    },
+    "bananas:twitch_LazyFurtiveDonkeyCeilingCat-s59NHe2T4UThUu_h": {
+      "brand": "bananas",
+      "concept": "classic",
+      "due": "2026-11-21T04:51:00+01:00",
+      "due_ts": 1795233060.0,
+      "age_h": 83.5,
+      "views": 672.0,
+      "eng": 32.0,
+      "nets": {
+        "instagram": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 152,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 14.57,
+          "averageTimeWatched": 7.95,
+          "reach": 109
+        },
+        "twitter": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "reposts": 0,
+          "impressions": 0,
+          "clicks": 0
+        },
+        "facebook": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 6.55,
+          "impressions": 519,
+          "reach": 393,
+          "shares": 32,
+          "clicks": 2
+        },
+        "tiktok": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "shares": 0,
+          "reach": 0,
+          "totalTimeWatched": 0,
+          "averageTimeWatched": 0
+        },
+        "threads": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 1,
+          "quotes": 0,
+          "reposts": 0
+        }
+      }
+    },
+    "bananas:twitch_AcceptableKindChinchillaCurseLit-7ypQY1ylfv-1xE8k": {
+      "brand": "bananas",
+      "concept": "classic",
+      "due": "2026-11-21T08:06:00+01:00",
+      "due_ts": 1795244760.0,
+      "age_h": 80.2,
+      "views": 164.0,
+      "eng": 1.0,
+      "nets": {
+        "instagram": {
+          "reactions": 1,
+          "comments": 0,
+          "engagementRate": 0.86,
+          "views": 149,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 16.92,
+          "averageTimeWatched": 8.75,
+          "reach": 116
+        },
+        "twitter": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "reposts": 0,
+          "impressions": 0,
+          "clicks": 0
+        },
+        "facebook": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "impressions": 12,
+          "reach": 6,
+          "shares": 0,
+          "clicks": 0
+        },
+        "tiktok": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "shares": 0,
+          "reach": 0,
+          "totalTimeWatched": 0,
+          "averageTimeWatched": 0
+        },
+        "threads": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 3,
+          "quotes": 0,
+          "reposts": 0
+        }
+      }
+    },
+    "bananas:youtube_C6ONk76TNYo_16303": {
+      "brand": "bananas",
+      "concept": "classic",
+      "due": "2026-11-21T14:15:00+01:00",
+      "due_ts": 1795266900.0,
+      "age_h": 74.1,
+      "views": 482.0,
+      "eng": 3.0,
+      "nets": {
+        "instagram": {
+          "reactions": 1,
+          "comments": 0,
+          "engagementRate": 0.89,
+          "views": 152,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 22.34,
+          "averageTimeWatched": 11.66,
+          "reach": 112
+        },
+        "twitter": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "reposts": 0,
+          "impressions": 0,
+          "clicks": 0
+        },
+        "facebook": {
+          "reactions": 2,
+          "comments": 0,
+          "engagementRate": 0.91,
+          "impressions": 329,
+          "reach": 223,
+          "shares": 0,
+          "clicks": 1
+        },
+        "tiktok": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "shares": 0,
+          "reach": 0,
+          "totalTimeWatched": 0,
+          "averageTimeWatched": 0
+        },
+        "threads": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 1,
+          "quotes": 0,
+          "reposts": 0
+        }
+      }
+    },
+    "bananas:twitch_SoftWiseWalrusUnSane-axfl7lDmcLtkn2Ke": {
+      "brand": "bananas",
+      "concept": "classic",
+      "due": "2026-11-21T16:38:00+01:00",
+      "due_ts": 1795275480.0,
+      "age_h": 71.7,
+      "views": 576.0,
+      "eng": 34.0,
+      "nets": {
+        "instagram": {
+          "reactions": 1,
+          "comments": 0,
+          "engagementRate": 0.85,
+          "views": 139,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 23.86,
+          "averageTimeWatched": 12.13,
+          "reach": 118
+        },
+        "twitter": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "reposts": 0,
+          "impressions": 0,
+          "clicks": 0
+        },
+        "youtube": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0
+        },
+        "facebook": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 7.57,
+          "impressions": 436,
+          "reach": 361,
+          "shares": 33,
+          "clicks": 0
+        },
+        "tiktok": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "shares": 0,
+          "reach": 0,
+          "totalTimeWatched": 0,
+          "averageTimeWatched": 0
+        },
+        "threads": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 1,
+          "quotes": 0,
+          "reposts": 0
+        }
+      }
+    },
+    "fanpage:twitch_TenuousFunWaspBigBrother-pWNf2GWhFy6gEUad": {
+      "brand": "fanpage",
+      "concept": "classic",
+      "due": "2026-11-19T03:10:00+01:00",
+      "due_ts": 1795054200.0,
+      "age_h": 133.1,
+      "views": 175.0,
+      "eng": 2.0,
+      "nets": {
+        "instagram": {
+          "reactions": 2,
+          "comments": 0,
+          "engagementRate": 1.65,
+          "views": 156,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 14.65,
+          "averageTimeWatched": 7.14,
+          "reach": 121
+        },
+        "facebook": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "impressions": 19,
+          "reach": 14,
+          "shares": 0,
+          "clicks": 0
+        }
+      }
+    },
+    "fanpage:twitch_CuriousBadEchidnaCoolStoryBro-g66TfyHbfF_r5vxZ": {
+      "brand": "fanpage",
+      "concept": "classic",
+      "due": "2026-11-19T04:11:00+01:00",
+      "due_ts": 1795057860.0,
+      "age_h": 132.1,
+      "views": 198.0,
+      "eng": 1.0,
+      "nets": {
+        "instagram": {
+          "reactions": 1,
+          "comments": 0,
+          "engagementRate": 0.81,
+          "views": 178,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 16.67,
+          "averageTimeWatched": 8.07,
+          "reach": 123
+        },
+        "facebook": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "impressions": 20,
+          "reach": 16,
+          "shares": 0,
+          "clicks": 0
+        }
+      }
+    },
+    "fanpage:kick_clip_01M7QF79EME6M21QZ4PP9XQNGQ": {
+      "brand": "fanpage",
+      "concept": "classic",
+      "due": "2026-11-19T07:39:00+01:00",
+      "due_ts": 1795070340.0,
+      "age_h": 128.7,
+      "views": 181.0,
+      "eng": 3.0,
+      "nets": {
+        "instagram": {
+          "reactions": 2,
+          "comments": 0,
+          "engagementRate": 2.65,
+          "views": 157,
+          "shares": 1,
+          "saves": 0,
+          "totalTimeWatched": 14.36,
+          "averageTimeWatched": 7.56,
+          "reach": 113
+        },
+        "facebook": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "impressions": 24,
+          "reach": 19,
+          "shares": 0,
+          "clicks": 0
+        }
+      }
+    },
+    "fanpage:twitch_BetterBoxyPhoneKappaPride-dj6XJ97C0t6ZaTrX": {
+      "brand": "fanpage",
+      "concept": "classic",
+      "due": "2026-11-19T10:13:00+01:00",
+      "due_ts": 1795079580.0,
+      "age_h": 126.1,
+      "views": 222.0,
+      "eng": 2.0,
+      "nets": {
+        "instagram": {
+          "reactions": 2,
+          "comments": 0,
+          "engagementRate": 1.61,
+          "views": 191,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 22.41,
+          "averageTimeWatched": 10.59,
+          "reach": 124
+        },
+        "facebook": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "impressions": 31,
+          "reach": 16,
+          "shares": 0,
+          "clicks": 0
+        }
+      }
+    },
+    "fanpage:twitch_SavoryEagerLlamaLeeroyJenkins-fzfiphCY-mKdwJvr": {
+      "brand": "fanpage",
+      "concept": "classic",
+      "due": "2026-11-19T18:42:00+01:00",
+      "due_ts": 1795110120.0,
+      "age_h": 117.6,
+      "views": 29119.0,
+      "eng": 355.0,
+      "nets": {
+        "youtube": {
+          "reactions": 351,
+          "comments": 1,
+          "engagementRate": 1.33,
+          "views": 26470
+        },
+        "twitter": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "reposts": 0,
+          "impressions": 0,
+          "clicks": 0
+        },
+        "instagram": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 154,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 18.07,
+          "averageTimeWatched": 9.95,
+          "reach": 112
+        },
+        "threads": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "quotes": 0,
+          "reposts": 0
+        },
+        "tiktok": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "shares": 0,
+          "reach": 0,
+          "totalTimeWatched": 0,
+          "averageTimeWatched": 0
+        },
+        "facebook": {
+          "reactions": 3,
+          "comments": 0,
+          "engagementRate": 0.28,
+          "impressions": 2495,
+          "reach": 1820,
+          "shares": 0,
+          "clicks": 4
+        }
+      }
+    },
+    "fanpage:twitch_PeppyFunGaurPunchTrees-edM6JKBegYQ6zSk-": {
+      "brand": "fanpage",
+      "concept": "classic",
+      "due": "2026-11-19T19:41:00+01:00",
+      "due_ts": 1795113660.0,
+      "age_h": 116.6,
+      "views": 3641.0,
+      "eng": 18.0,
+      "nets": {
+        "youtube": {
+          "reactions": 18,
+          "comments": 0,
+          "engagementRate": 0.6,
+          "views": 3001
+        },
+        "twitter": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "reposts": 0,
+          "impressions": 0,
+          "clicks": 0
+        },
+        "instagram": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 129,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 12.02,
+          "averageTimeWatched": 6.56,
+          "reach": 111
+        },
+        "threads": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "quotes": 0,
+          "reposts": 0
+        },
+        "facebook": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0.39,
+          "impressions": 511,
+          "reach": 407,
+          "shares": 0,
+          "clicks": 2
+        }
+      }
+    },
+    "fanpage:twitch_RenownedNeighborlyWaffleTwitchRaid-t74SktFrD6SZ0Iu6": {
+      "brand": "fanpage",
+      "concept": "classic",
+      "due": "2026-11-19T23:01:00+01:00",
+      "due_ts": 1795125660.0,
+      "age_h": 113.3,
+      "views": 446.0,
+      "eng": 0.0,
+      "nets": {
+        "twitter": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "reposts": 0,
+          "impressions": 0,
+          "clicks": 0
+        },
+        "instagram": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 115,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 9.87,
+          "averageTimeWatched": 5.86,
+          "reach": 102
+        },
+        "threads": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "quotes": 0,
+          "reposts": 0
+        },
+        "tiktok": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "shares": 0,
+          "reach": 0,
+          "totalTimeWatched": 0,
+          "averageTimeWatched": 0
+        },
+        "facebook": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0.3,
+          "impressions": 331,
+          "reach": 260,
+          "shares": 0,
+          "clicks": 1
+        }
+      }
+    },
+    "fanpage:youtube_qSyo5d-dVzA_16163": {
+      "brand": "fanpage",
+      "concept": "classic",
+      "due": "2026-11-20T05:12:00+01:00",
+      "due_ts": 1795147920.0,
+      "age_h": 107.1,
+      "views": 344.0,
+      "eng": 0.0,
+      "nets": {
+        "twitter": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "reposts": 0,
+          "impressions": 0,
+          "clicks": 0
+        },
+        "instagram": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 5,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 0.63,
+          "averageTimeWatched": 7.6,
+          "reach": 4
+        },
+        "threads": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "quotes": 0,
+          "reposts": 0
+        },
+        "tiktok": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "shares": 0,
+          "reach": 0,
+          "totalTimeWatched": 0,
+          "averageTimeWatched": 0
+        },
+        "facebook": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0.29,
+          "impressions": 339,
+          "reach": 291,
+          "shares": 0,
+          "clicks": 1
+        }
+      }
+    },
+    "fanpage:twitch_SpinelessWisePidgeonHeyGirl-hu10S79MNJZ3qxvT": {
+      "brand": "fanpage",
+      "concept": "classic",
+      "due": "2026-11-20T07:41:00+01:00",
+      "due_ts": 1795156860.0,
+      "age_h": 104.6,
+      "views": 174.0,
+      "eng": 1.0,
+      "nets": {
+        "twitter": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "reposts": 0,
+          "impressions": 0,
+          "clicks": 0
+        },
+        "instagram": {
+          "reactions": 1,
+          "comments": 0,
+          "engagementRate": 0.9,
+          "views": 150,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 14.55,
+          "averageTimeWatched": 7.86,
+          "reach": 111
+        },
+        "threads": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "quotes": 0,
+          "reposts": 0
+        },
+        "tiktok": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "shares": 0,
+          "reach": 0,
+          "totalTimeWatched": 0,
+          "averageTimeWatched": 0
+        },
+        "facebook": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "impressions": 24,
+          "reach": 20,
+          "shares": 0,
+          "clicks": 0
+        }
+      }
+    },
+    "fanpage:live_xqc_1795157947": {
+      "brand": "fanpage",
+      "concept": "classic",
+      "due": "2026-11-20T08:05:00+01:00",
+      "due_ts": 1795158300.0,
+      "age_h": 104.2,
+      "views": 220.0,
+      "eng": 0.0,
+      "nets": {
+        "instagram": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 191,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 23.56,
+          "averageTimeWatched": 10.87,
+          "reach": 128
+        },
+        "facebook": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "impressions": 29,
+          "reach": 22,
+          "shares": 0,
+          "clicks": 0
+        }
+      }
+    },
+    "fanpage:top4_2026-11-20_0": {
+      "brand": "fanpage",
+      "concept": "classic",
+      "due": "2026-11-20T20:15:00+01:00",
+      "due_ts": 1795202100.0,
+      "age_h": 92.1,
+      "views": 1870.0,
+      "eng": 35.0,
+      "nets": {
+        "youtube": {
+          "reactions": 18,
+          "comments": 0,
+          "engagementRate": 1.32,
+          "views": 1368
+        },
+        "twitter": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "reposts": 0,
+          "impressions": 0,
+          "clicks": 0
+        },
+        "instagram": {
+          "reactions": 1,
+          "comments": 0,
+          "engagementRate": 1.61,
+          "views": 152,
+          "shares": 0,
+          "saves": 1,
+          "totalTimeWatched": 25.68,
+          "averageTimeWatched": 12.74,
+          "reach": 124
+        },
+        "threads": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "quotes": 0,
+          "reposts": 0
+        },
+        "tiktok": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "shares": 0,
+          "reach": 0,
+          "totalTimeWatched": 0,
+          "averageTimeWatched": 0
+        },
+        "facebook": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 4.29,
+          "impressions": 350,
+          "reach": 301,
+          "shares": 15,
+          "clicks": 0
+        }
+      }
+    },
+    "fanpage:twitch_BloodyOilyWasabiVoteNay-iA3QTvyzrlB0a4qv": {
+      "brand": "fanpage",
+      "concept": "classic",
+      "due": "2026-11-21T13:49:00+01:00",
+      "due_ts": 1795265340.0,
+      "age_h": 74.5,
+      "views": 704.0,
+      "eng": 0.0,
+      "nets": {
+        "twitter": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "reposts": 0,
+          "impressions": 0,
+          "clicks": 0
+        },
+        "instagram": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 142,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 15.4,
+          "averageTimeWatched": 8.25,
+          "reach": 111
+        },
+        "threads": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "quotes": 0,
+          "reposts": 0
+        },
+        "tiktok": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "shares": 0,
+          "reach": 0,
+          "totalTimeWatched": 0,
+          "averageTimeWatched": 0
+        },
+        "facebook": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0.53,
+          "impressions": 562,
+          "reach": 450,
+          "shares": 0,
+          "clicks": 3
+        }
+      }
     }
   },
   "concepts": {},
   "tries": {
     "fanpage": {
-      "day": "2026-11-20",
+      "day": "2026-11-24",
       "n": 4,
-      "last": 1795191475.1326048
+      "last": 1795533340.272068
     }
   },
-  "measured_ts": 1795232333.9599996,
-  "measured_at": "2026-11-21T03:38:53+00:00"
+  "measured_ts": 1795533524.3416538,
+  "measured_at": "2026-11-24T15:18:44+00:00"
 }
