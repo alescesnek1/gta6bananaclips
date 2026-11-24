@@ -8,7 +8,7 @@
 $ErrorActionPreference = "Stop"
 $usb = $PSScriptRoot
 $dir = Join-Path $env:USERPROFILE "gta6-yt"
-$repo = "https://github.com/aleshrani/gta6bananaclips.git"
+$repo = "https://github.com/alescesnek1/gta6bananaclips.git"
 
 function Refresh-Path {
     $env:Path = [Environment]::GetEnvironmentVariable("Path", "Machine") + ";" +

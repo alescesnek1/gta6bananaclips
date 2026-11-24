@@ -32,6 +32,11 @@ $py = Join-Path $dir ".venv\Scripts\python.exe"
 try {
     & {
         "=== long-form $(Get-Date -Format s)"
+        # 24. 11.: the repo moved (old one disabled by GitHub) - origin follows GITHUB_REPO in .env
+        $repo = (Get-Content (Join-Path $dir ".env") -ErrorAction SilentlyContinue |
+                 Where-Object { $_ -match '^GITHUB_REPO=(.+)$' } | ForEach-Object { $Matches[1].Trim() }) | Select-Object -First 1
+        if (-not $repo) { $repo = "alescesnek1/gta6bananaclips" }
+        git remote set-url origin "https://github.com/$repo.git"
         git fetch -q origin main
         git reset -q --hard origin/main
         foreach ($f in "long_used.json", "long_episodes.json", "long_reserve.json", "long_vision.json", "long_pool.json") {

@@ -5908,7 +5908,7 @@ def hand_over_live():
     if r.returncode:                                  # the live-inbox could not be updated: no publish run
         log("live: live-inbox not updated, publish run not started")
         return
-    tok, repo = os.environ.get("GITHUB_TOKEN"), os.environ.get("GITHUB_REPOSITORY", "aleshrani/gta6bananaclips")
+    tok, repo = os.environ.get("GITHUB_TOKEN"), os.environ.get("GITHUB_REPOSITORY", "alescesnek1/gta6bananaclips")
     if not tok:
         return
     req = urllib.request.Request(f"https://api.github.com/repos/{repo}/actions/workflows/denne.yml/dispatches",

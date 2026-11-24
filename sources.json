@@ -243,8 +243,9 @@
     "ishowspeed"
   ],
   "youtube_primary_x": 8,
-  "min_viral": 600,
+  "min_viral": 300,
   "action_min": 0.6,
+  "_min_viral_2411": "Ales 24. 11.: klipovaci ucet primarne na GTA 6 i kdyz hvezdy nehraji -> min. skore 300 (hvezdy maji dal prednost nasobkem skore, akcni brana a nuda plati).",
   "_min_viral": "Ales 19. 11.: shorty nejsou dost viralni ani akcni -> kazdy short (i dohaneni minima) min. skore 600 (krome Kai/Speed/xQc), akcni stitek >= 0,6.",
   "net_hours": {
     "youtube": [

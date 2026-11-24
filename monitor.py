@@ -47,7 +47,7 @@ OUT_DIR = HERE / "monitor"
 TZ = P.TZ
 NOW = None                                         # tests: fixed "now" (aware datetime)
 
-REPO_DEFAULT = "aleshrani/gta6bananaclips"
+REPO_DEFAULT = "alescesnek1/gta6bananaclips"
 WORKFLOWS = {"denne-klipy": "denne.yml", "live-klipy": "live.yml", "long-form": "long.yml"}
 LAUNCH_DAYS = (date(2026, 11, 18), date(2026, 11, 21))    # denne must succeed every 30 min (else 90)
 STALE_MIN_LAUNCH, STALE_MIN = 30, 90

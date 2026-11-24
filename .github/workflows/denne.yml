@@ -14,11 +14,10 @@
 name: denne-klipy
 
 on:
-  schedule:                        # every 30 min (public repo = free minutes); all runs share one daily quota
-    - cron: "*/30 * * * *"
-    # launch of GTA 6 (19. 11.) and the day after: a conveyor belt every 5 min (UTC days 19-21 cover
-    # the whole Prague publishing day). Runs queue in the 'denne' group, so they go back to back.
-    - cron: "5-55/5 * 18-21 11 *"
+  # 24. 11.: GitHub disabled the old repo for running too often (their limit: at most once an hour). Every 2 h,
+  # GitHub's own clock only (the PC no longer dispatches it); all workflows together stay at ~1 run an hour
+  schedule:
+    - cron: "17 */2 * * *"
   workflow_dispatch:
     inputs:
       max:

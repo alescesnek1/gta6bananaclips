@@ -44,41 +44,17 @@ function Due($name, $minutes) {
 $token = (Get-Content (Join-Path $dir ".env") -ErrorAction SilentlyContinue |
           Where-Object { $_ -match '^GITHUB_TOKEN=(.+)$' } | ForEach-Object { $Matches[1].Trim() }) | Select-Object -First 1
 if (-not $token) { "$(Get-Date -Format s) no GITHUB_TOKEN in .env - clock off" | Out-File $log -Append -Encoding utf8 }
-if ($token -and (Due "github" $(if ($launch) { 4 } else { 25 }))) {
-    try {
-        Invoke-RestMethod -Method Post -Uri "https://api.github.com/repos/aleshrani/gta6bananaclips/actions/workflows/denne.yml/dispatches" `
-            -Headers @{ Authorization = "Bearer $token"; Accept = "application/vnd.github+json"; "User-Agent" = "gta6-pc" } `
-            -Body '{"ref":"main"}' -ContentType "application/json" | Out-Null
-        "$(Get-Date -Format s) github run started" | Out-File $log -Append -Encoding utf8
-        # the live chat watcher (from 18. 11. 00:00): queued in its group, so it runs back to back
-        if ($now -ge [datetime]"2026-11-18T00:00:00") {
-            Invoke-RestMethod -Method Post -Uri "https://api.github.com/repos/aleshrani/gta6bananaclips/actions/workflows/live.yml/dispatches" `
-                -Headers @{ Authorization = "Bearer $token"; Accept = "application/vnd.github+json"; "User-Agent" = "gta6-pc" } `
-                -Body '{"ref":"main"}' -ContentType "application/json" | Out-Null
-        }
-    } catch {
-        "$(Get-Date -Format s) github run FAILED: $($_.Exception.Message)" | Out-File $log -Append -Encoding utf8
-    }
-}
+# 24. 11.: GitHub disabled the old repo for running workflows too often (their limit: at most once an hour). The
+# PC no longer starts the daily run, the live watcher or the long-form: their own GitHub schedules do (every 2 h /
+# every 6 h). Only the report below is dispatched, every 6 h. Repo: GITHUB_REPO in .env (default the new one).
+$repo = (Get-Content (Join-Path $dir ".env") -ErrorAction SilentlyContinue |
+         Where-Object { $_ -match '^GITHUB_REPO=(.+)$' } | ForEach-Object { $Matches[1].Trim() }) | Select-Object -First 1
+if (-not $repo) { $repo = "alescesnek1/gta6bananaclips" }
 
-# --- 1b) long-form every 2 h on GITHUB (owner 20. 11.: "ma se to primarne delat na githubu"; GitHub's own cron
-# for long.yml ran hours late). The run decides: cap long_min_gap_h per brand, enough material or a silent skip.
-# (worker\long.ps1 = building on this PC, kept but not started.)
-if ($token -and (Due "long" 235)) {
-    try {
-        Invoke-RestMethod -Method Post -Uri "https://api.github.com/repos/aleshrani/gta6bananaclips/actions/workflows/long.yml/dispatches" `
-            -Headers @{ Authorization = "Bearer $token"; Accept = "application/vnd.github+json"; "User-Agent" = "gta6-pc" } `
-            -Body '{"ref":"main"}' -ContentType "application/json" | Out-Null
-        "$(Get-Date -Format s) long-form run started (GitHub)" | Out-File $log -Append -Encoding utf8
-    } catch {
-        "$(Get-Date -Format s) long-form run FAILED: $($_.Exception.Message)" | Out-File $log -Append -Encoding utf8
-    }
-}
-
-# --- 1c) report in every 30 min (18. 11.: nobody could see what the PC does without going to it): the tail
+# --- 1c) report every 6 h (18. 11.: nobody could see what the PC does without going to it; 24. 11.: was 30 min): the tail
 # of worker.log as a dispatch input of pc-hlaseni.yml (the token can start workflows, not push). Public repo:
 # long token-like strings are masked, at most 15000 characters.
-if ($token -and (Test-Path $log) -and (Due "hlaseni" 28)) {
+if ($token -and (Test-Path $log) -and (Due "hlaseni" 355)) {
     try {
         # bytes, not Get-Content: a mixed UTF-16 / UTF-8 file decodes wrong as a whole; NULs out, then UTF-8
         $all = [IO.File]::ReadAllBytes($log)
@@ -89,7 +65,7 @@ if ($token -and (Test-Path $log) -and (Due "hlaseni" 28)) {
         $tail = $tail -replace "`0", '' -replace '[A-Za-z0-9_\-]{32,}', '***' -replace '[^\x09\x0A\x20-\x7E]', '?'
         if ($tail.Length -gt 15000) { $tail = $tail.Substring($tail.Length - 15000) }
         $body = @{ ref = "main"; inputs = @{ log = "$(Get-Date -Format s) $env:COMPUTERNAME`n$tail" } } | ConvertTo-Json -Compress
-        Invoke-RestMethod -Method Post -Uri "https://api.github.com/repos/aleshrani/gta6bananaclips/actions/workflows/pc-hlaseni.yml/dispatches" `
+        Invoke-RestMethod -Method Post -Uri "https://api.github.com/repos/$repo/actions/workflows/pc-hlaseni.yml/dispatches" `
             -Headers @{ Authorization = "Bearer $token"; Accept = "application/vnd.github+json"; "User-Agent" = "gta6-pc" } `
             -Body $body -ContentType "application/json" | Out-Null
     } catch {

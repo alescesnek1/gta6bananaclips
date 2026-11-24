@@ -69,7 +69,7 @@ def dispatch(base):
             if line.startswith("GITHUB_TOKEN="):
                 token = line.split("=", 1)[1].strip()
     req = urllib.request.Request(
-        "https://api.github.com/repos/aleshrani/gta6bananaclips/actions/workflows/long-pc.yml/dispatches",
+        "https://api.github.com/repos/alescesnek1/gta6bananaclips/actions/workflows/long-pc.yml/dispatches",
         data=json.dumps({"ref": "main", "inputs": {"base": base}}).encode(), method="POST",
         headers={"Authorization": f"Bearer {token}", "Accept": "application/vnd.github+json", "User-Agent": "gta6-pc"})
     urllib.request.urlopen(req, timeout=60).read()

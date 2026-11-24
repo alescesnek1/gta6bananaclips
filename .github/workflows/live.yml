@@ -8,8 +8,7 @@
 name: live-klipy
 
 on:
-  schedule:
-    - cron: "0 */6 * * *"         # backup if the PC is off (GitHub's schedule is unreliable)
+  # 24. 11.: no schedule - the live chat watcher needs runs every few minutes, which got the old repo disabled
   workflow_dispatch:
     inputs:
       hra:

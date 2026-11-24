@@ -24,6 +24,11 @@ try {
     & {
         "=== youtube $(Get-Date -Format s)"
         # always the newest code and publikovano.json from GitHub (local changes to tracked files are dropped)
+        # 24. 11.: the repo moved (old one disabled by GitHub) - origin follows GITHUB_REPO in .env
+        $repo = (Get-Content (Join-Path $dir ".env") -ErrorAction SilentlyContinue |
+                 Where-Object { $_ -match '^GITHUB_REPO=(.+)$' } | ForEach-Object { $Matches[1].Trim() }) | Select-Object -First 1
+        if (-not $repo) { $repo = "alescesnek1/gta6bananaclips" }
+        git remote set-url origin "https://github.com/$repo.git"
         git fetch -q origin main
         git reset -q --hard origin/main
         # Pillow was missing on the PC (19. 11.: long-form crash "No module named 'PIL'", league chip off)

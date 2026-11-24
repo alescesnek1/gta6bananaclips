@@ -9,7 +9,7 @@ name: monitor
 
 on:
   schedule:
-    - cron: "7 * * * *"
+    - cron: "37 1-23/6 * * *"      # every 6 h (24. 11.: was hourly; all workflows together ~1 run an hour)
   workflow_dispatch:
 
 permissions:
