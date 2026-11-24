@@ -4828,7 +4828,7 @@ def render(clip, src=None, clean=False):
                     except Exception as e:
                         log(f"  {b['key']}: loudness fix failed ({str(e)[-120:]})")
                     seam_info = None
-                    if LOOP and not outro and not loop:           # (the loop edit is continuous at its seam already)
+                    if LOOP and not outro:                        # 24. 11.: the loop edit too - the fanpage ending (Follow card, music dip) jumped 8-10 dB at the seam and QA dropped the short
                         try:
                             seam_info = loop_seam(out)
                             if seam_info:
