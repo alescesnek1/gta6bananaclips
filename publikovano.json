@@ -892,5 +892,41 @@
     "quote": "Who said that?",
     "nudity": false,
     "slot": "2026-11-24T17:00:00+01:00"
+  },
+  "live_hasanabi_1795321278": {
+    "url": "https://6b05aa92b37b77ffb0807a96--gta6bananaclips-media.netlify.app/20261124/live_hasanabi_1795321278.mp4",
+    "path": "20261124/live_hasanabi_1795321278.mp4",
+    "due": "2026-11-24T18:09:00+01:00",
+    "draft": false,
+    "posts": {
+      "6af7142262b70b94b01ac608": "6b05aabb931bd5779e87a13e",
+      "6af713b962b70b94b01ac27e": "6b05aabbe86dabb983d8c736",
+      "6af7155e62b70b94b01ad06f": "6b05aabce8a9240946b01f09",
+      "6af714d062b70b94b01acbbc": "6b05aabce86dabb983d8c784"
+    },
+    "mb": 10.9,
+    "channel": "hasanabi",
+    "platform": "twitch",
+    "score": 0,
+    "hot": false,
+    "rating": 9,
+    "views": 0,
+    "golden": false,
+    "title": "HasanAbi Gets A First Look At GTA 6! 😭",
+    "video_id": null,
+    "vod_offset": null,
+    "created": 1795321278,
+    "payoff": "https://6b026f46b12832cf7f8c34b7--gta6bananaclips-media.netlify.app/yt/live_hasanabi_1795321278_payoff.mp4",
+    "funny": 0.0,
+    "tags": [
+      "first-reaction",
+      "rage"
+    ],
+    "quote": "Don't you want to thank me for not pistol whipping your ass?",
+    "nudity": null,
+    "live": true,
+    "viewers": 21273,
+    "spike_z": 49.0,
+    "slot": "2026-11-24T18:30:00+01:00"
   }
 }
