@@ -180,7 +180,9 @@ jobs:
           if [ "$bes" -gt 0 ] && [ "$bes" -lt "$es" ]; then es=$bes; fi
           echo "plan: bananas need $an (catch-up $ao, good $ag) hot room $ah | fanpage need $bn (catch-up $bo, good $bg) hot room $bh"
           if [ "$n" -gt 0 ] || [ "$hot" -gt 0 ]; then
-            python klipuj.py --whisper small.en batch --max "$n" --owed "$owed" --good-n "$goodn" \
+            # 25. 11.: --days 3 - a week after launch the GTA VI category gives ~130 clips a day and most were tried
+            # already; the strong ones of the last 3 days are still good clip-account content (ranked by virality / age)
+            python klipuj.py --whisper small.en batch --days 3 --max "$n" --owed "$owed" --good-n "$goodn" \
               --min-score "$gs" --extra-score "$es" --hot "$hot" --hot-score "$hs" --yt "$yt" \
               --brand-need "bananas=$ao/$(( an - ao ))/$ah,fanpage=$bo/$(( bn - bo ))/$bh"
           fi

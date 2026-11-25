@@ -5214,7 +5214,7 @@ def cmd_batch(a):
             seen, per = {c["id"] for c in live}, {}
             for c in live:
                 per[c["channel"]] = per.get(c["channel"], 0) + 1
-            for c in cluster(list_twitch_game(max(a.days, 1))):
+            for c in cluster(list_twitch_game(max(a.days, 1), pages=3 if a.days <= 1 else 6)):
                 if (c["id"] in seen or c["channel"] in blocked or c["views"] < a.min_views
                         or per.get(c["channel"], 0) >= a.n or skip(c["id"]) or moment_done(c)):
                     continue
