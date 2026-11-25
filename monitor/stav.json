@@ -1,10 +1,10 @@
 {
-  "cas": "2026-11-25T04:09:49+01:00",
+  "cas": "2026-11-25T19:10:46+01:00",
   "chyby": [],
   "zdravi": {
     "workflows": {
       "denne-klipy": {
-        "success": 1,
+        "success": 0,
         "failure": 0,
         "cancelled": 0,
         "bezi": 0,
@@ -26,28 +26,16 @@
       }
     },
     "posledni_chyba": null,
-    "denne_posledni_uspech": "2026-11-25T01:13:00+00:00",
-    "denne_uspech_pred_min": 117,
+    "denne_posledni_uspech": "2026-11-25T11:39:21+00:00",
+    "denne_uspech_pred_min": 391,
     "live_bezi": false,
     "live_konec_pred_min": null
   },
   "publikace": {
-    "okno": "24.11. 12:00 – 25.11. 12:00",
-    "den": "2026-11-24",
+    "okno": "25.11. 12:00 – 26.11. 12:00",
+    "den": "2026-11-25",
     "znacky": {
       "bananas": {
-        "postu": 3,
-        "navic": 0,
-        "minimum": 10,
-        "maximum": 12,
-        "hot": 0,
-        "star": 3,
-        "live": 1,
-        "drafty": 0,
-        "posledni": "2026-11-24T20:25:00+01:00",
-        "dalsi": null
-      },
-      "fanpage": {
         "postu": 1,
         "navic": 0,
         "minimum": 10,
@@ -56,14 +44,41 @@
         "star": 1,
         "live": 0,
         "drafty": 0,
+        "posledni": "2026-11-25T14:02:00+01:00",
+        "dalsi": null
+      },
+      "fanpage": {
+        "postu": 0,
+        "navic": 0,
+        "minimum": 10,
+        "maximum": 12,
+        "hot": 0,
+        "star": 0,
+        "live": 0,
+        "drafty": 0,
         "posledni": "2026-11-25T03:41:00+01:00",
         "dalsi": null
       }
     }
   },
   "vykon": {
-    "zmereno": 19,
+    "zmereno": 24,
     "top5": [
+      {
+        "znacka": "fanpage",
+        "klip": "twitch_PrettiestFastHamJebaited-dmfYeM9YNFLNsFxB",
+        "streamer": "caseoh_",
+        "sit": "facebook",
+        "hot": false,
+        "live": false,
+        "due": "2026-11-25T03:41:00+01:00",
+        "stari_h": 15.5,
+        "views": 287,
+        "likes": 1,
+        "comments": 0,
+        "shares": 0,
+        "saves": 0
+      },
       {
         "znacka": "bananas",
         "klip": "live_hasanabi_1795321278",
@@ -72,7 +87,7 @@
         "hot": false,
         "live": true,
         "due": "2026-11-24T18:09:00+01:00",
-        "stari_h": 10.0,
+        "stari_h": 25.0,
         "views": 270,
         "likes": 0,
         "comments": 0,
@@ -87,7 +102,7 @@
         "hot": false,
         "live": false,
         "due": "2026-11-24T17:23:00+01:00",
-        "stari_h": 10.8,
+        "stari_h": 25.8,
         "views": 253,
         "likes": 0,
         "comments": 0,
@@ -102,38 +117,23 @@
         "hot": false,
         "live": false,
         "due": "2026-11-24T17:23:00+01:00",
-        "stari_h": 10.8,
-        "views": 75,
+        "stari_h": 25.8,
+        "views": 85,
         "likes": 0,
         "comments": 0,
         "shares": 0,
         "saves": 0
       },
       {
-        "znacka": "bananas",
-        "klip": "youtube_izXcd-bU72k_4603",
-        "streamer": "ishowspeed",
+        "znacka": "fanpage",
+        "klip": "twitch_PrettiestFastHamJebaited-dmfYeM9YNFLNsFxB",
+        "streamer": "caseoh_",
         "sit": "instagram",
         "hot": false,
         "live": false,
-        "due": "2026-11-24T20:25:00+01:00",
-        "stari_h": 7.7,
-        "views": 35,
-        "likes": 0,
-        "comments": 0,
-        "shares": 0,
-        "saves": 0
-      },
-      {
-        "znacka": "bananas",
-        "klip": "twitch_PlainDiligentOstrichPartyTime-PnISl-0Z9sTNCexW",
-        "streamer": "lirik",
-        "sit": "threads",
-        "hot": false,
-        "live": false,
-        "due": "2026-11-24T17:23:00+01:00",
-        "stari_h": 10.8,
-        "views": 2,
+        "due": "2026-11-25T03:41:00+01:00",
+        "stari_h": 15.5,
+        "views": 83,
         "likes": 0,
         "comments": 0,
         "shares": 0,
@@ -143,27 +143,27 @@
     "prumer": {
       "bananas": {
         "instagram": {
-          "n": 3,
-          "views": 37,
+          "n": 4,
+          "views": 36,
           "likes": 0
         },
         "twitter": {
-          "n": 3,
+          "n": 4,
           "views": 0,
           "likes": 0
         },
         "facebook": {
-          "n": 3,
-          "views": 175,
+          "n": 4,
+          "views": 131,
           "likes": 0
         },
         "tiktok": {
-          "n": 2,
+          "n": 3,
           "views": 0,
           "likes": 0
         },
         "threads": {
-          "n": 3,
+          "n": 4,
           "views": 1,
           "likes": 0
         }
@@ -176,7 +176,7 @@
         },
         "instagram": {
           "n": 1,
-          "views": 0,
+          "views": 83,
           "likes": 0
         },
         "threads": {
@@ -191,62 +191,70 @@
         },
         "facebook": {
           "n": 1,
-          "views": 0,
-          "likes": 0
+          "views": 287,
+          "likes": 1
         }
       }
     },
     "nejnovejsi": [
       {
+        "znacka": "bananas",
+        "klip": "youtube_91c96JtcIFg_13794",
+        "streamer": "ishowspeed",
+        "stari_h": 5.1,
+        "views": 0,
+        "views_za_h": 0
+      },
+      {
         "znacka": "fanpage",
         "klip": "twitch_PrettiestFastHamJebaited-dmfYeM9YNFLNsFxB",
         "streamer": "caseoh_",
-        "stari_h": 0.5,
-        "views": 0,
-        "views_za_h": 0
+        "stari_h": 15.5,
+        "views": 370,
+        "views_za_h": 24
       },
       {
         "znacka": "bananas",
         "klip": "youtube_izXcd-bU72k_4603",
         "streamer": "ishowspeed",
-        "stari_h": 7.7,
-        "views": 38,
-        "views_za_h": 5
+        "stari_h": 22.8,
+        "views": 62,
+        "views_za_h": 3
       },
       {
         "znacka": "bananas",
         "klip": "live_hasanabi_1795321278",
         "streamer": "hasanabi",
-        "stari_h": 10.0,
+        "stari_h": 25.0,
         "views": 271,
-        "views_za_h": 27
+        "views_za_h": 11
       },
       {
         "znacka": "bananas",
         "klip": "twitch_PlainDiligentOstrichPartyTime-PnISl-0Z9sTNCexW",
         "streamer": "lirik",
-        "stari_h": 10.8,
-        "views": 330,
-        "views_za_h": 31
+        "stari_h": 25.8,
+        "views": 340,
+        "views_za_h": 13
       }
     ],
     "chybi_klice": 0,
     "chyby": [],
-    "postu_celkem": 19,
+    "postu_celkem": 24,
     "nenalezeno": 0
   },
   "netlify": {
-    "gb_mesic": 5.2,
+    "gb_mesic": 5.3,
     "gb_soft": 85,
     "gb_hard": 100,
     "gb_rozpocet": 100,
-    "deploye_24h": 6
+    "deploye_24h": 7
   },
   "sit_data": null,
   "alerty": [
     {
       "klic": "denne_stary",
-      "text": "denne-klipy: poslední úspěšný běh před 117 min (limit 90 min)"
+      "text": "denne-klipy: poslední úspěšný běh před 391 min (limit 90 min)"
     },
     {
       "klic": "live_nebezi",
@@ -254,23 +262,31 @@
     },
     {
       "klic": "ticho:bananas",
-      "text": "bananas: nic nepublikováno 4+ h (poslední post 24.11. 20:25)"
+      "text": "bananas: nic nepublikováno 4+ h (poslední post 25.11. 14:02)"
+    },
+    {
+      "klic": "ticho:fanpage",
+      "text": "fanpage: nic nepublikováno 4+ h (poslední post 25.11. 03:41)"
     }
   ],
   "denni_odeslano": "2026-11-21",
   "alerty_stav": {
     "denne_stary": {
       "od": "2026-11-25T04:09:49.833284+01:00",
-      "poslano": "2026-11-25T04:09:49+01:00"
+      "poslano": "2026-11-25T19:10:46+01:00"
     },
     "live_nebezi": {
       "od": "2026-11-25T04:09:49.833284+01:00",
-      "poslano": "2026-11-25T04:09:49+01:00"
+      "poslano": "2026-11-25T19:10:46+01:00"
     },
     "ticho:bananas": {
       "od": "2026-11-25T04:09:49.833284+01:00",
-      "poslano": "2026-11-25T04:09:49+01:00"
+      "poslano": "2026-11-25T19:10:46+01:00"
+    },
+    "ticho:fanpage": {
+      "od": "2026-11-25T19:10:46.422328+01:00",
+      "poslano": "2026-11-25T19:10:46+01:00"
     }
   },
-  "podpis": "denne_stary|live_nebezi|ticho:bananas"
+  "podpis": "denne_stary|live_nebezi|ticho:bananas|ticho:fanpage"
 }
