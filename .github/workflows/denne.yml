@@ -16,8 +16,12 @@ name: denne-klipy
 on:
   # 24. 11.: GitHub disabled the old repo for running too often (their limit: at most once an hour). Every 2 h,
   # GitHub's own clock only (the PC no longer dispatches it); all workflows together stay at ~1 run an hour
+  # 25. 11.: GitHub's scheduler skipped most runs of the new repo (3 runs in 31 h). Two schedules, never more than
+  # one start an hour (:17 even hours, :47 odd hours); the 'gate' job below ends a start in seconds when the last
+  # real run began < 100 min ago -> the real work runs about every 2 h even when GitHub drops half the starts
   schedule:
     - cron: "17 */2 * * *"
+    - cron: "47 1-23/2 * * *"
   workflow_dispatch:
     inputs:
       max:
@@ -48,7 +52,32 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  gate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      actions: read
+    outputs:
+      go: ${{ steps.g.outputs.go }}
+    steps:
+      - id: g
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # manual starts always run; a scheduled start only when no real run began in the last 100 min
+          if [ "${{ github.event_name }}" != "schedule" ]; then echo "go=true" >> "$GITHUB_OUTPUT"; exit 0; fi
+          # a REAL run = still going, or took > 3 min (a gate-only start ends in seconds, a replaced one too)
+          last=$(gh run list -R "${{ github.repository }}" --workflow denne.yml -L 15 --json databaseId,createdAt,updatedAt,status                  -q '[.[] | select(.databaseId != ${{ github.run_id }}) | select(.status != "completed" or
+                     (((.updatedAt | fromdateiso8601) - (.createdAt | fromdateiso8601)) > 180))][0].createdAt')
+          if [ -n "$last" ] && [ $(( $(date +%s) - $(date -d "$last" +%s) )) -lt 6000 ]; then
+            echo "last real run started at $last (< 100 min ago): nothing to do"; echo "go=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "go=true" >> "$GITHUB_OUTPUT"
+          fi
+
   run:
+    needs: gate
+    if: needs.gate.outputs.go == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 150
     env:

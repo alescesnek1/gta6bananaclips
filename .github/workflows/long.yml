@@ -19,8 +19,7 @@
 name: long-form
 
 on:
-  schedule:
-    - cron: "47 3-23/6 * * *"      # every 6 h (24. 11.: all workflows together ~1 run an hour; the PC does not dispatch it)
+  # 25. 11. (owner: "na long form kašleme"): no schedule - manual only (Actions -> Run workflow)
   # 20. 11. (owner): the long-form is built HERE again, primarily on GitHub; the PC only dispatches this run
   workflow_dispatch:
     inputs:
