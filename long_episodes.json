@@ -2,27 +2,27 @@
   "_last": {
     "bananas": {
       "serie": "top-week",
-      "at": "2026-11-25T01:08:55+01:00",
+      "at": "2026-11-25T14:32:01+01:00",
       "next": 0
     },
     "fanpage": {
       "serie": "top-week",
-      "at": "2026-11-25T02:34:45+01:00",
+      "at": "2026-11-25T17:31:58+01:00",
       "next": 0
     }
   },
   "_series_at": {
     "bananas": {
       "funny-day": "2026-11-18T19:07:44+01:00",
-      "top-week": "2026-11-25T01:08:55+01:00"
+      "top-week": "2026-11-25T14:32:01+01:00"
     },
     "fanpage": {
-      "top-week": "2026-11-25T02:34:45+01:00"
+      "top-week": "2026-11-25T17:31:58+01:00"
     }
   },
   "bananas": {
     "funny-day": 1,
-    "top-week": 1
+    "top-week": 2
   },
   "_fail": {
     "fanpage": "2026-11-19T14:08:14+01:00",
@@ -33,6 +33,6 @@
     "fanpage": 16
   },
   "fanpage": {
-    "top-week": 1
+    "top-week": 2
   }
 }
