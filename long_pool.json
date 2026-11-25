@@ -56681,5 +56681,100 @@
       "luma": 22.5,
       "dark": 0.1
     }
+  },
+  "youtube_88TNr9C8oEE_603": {
+    "id": "youtube_88TNr9C8oEE_603",
+    "url": "https://6b06f2dbf45b9d7ff0758193--gta6bananaclips-media.netlify.app/yt/youtube_88TNr9C8oEE_603_16x9.mp4",
+    "channel": "hasanabi",
+    "platform": "youtube",
+    "title": "MANDY FROM GTA 6 IS WOKE",
+    "views": 199301,
+    "created": 1795572049,
+    "category": "MANDY FROM GTA 6 IS WOKE hasanabi hasan piker politics news twitch highlights hasanabi highlights hasanabi clips gta vi gta mandy lexie shoaibi grand theft auto gaming",
+    "signal_score": 0.3,
+    "added": 1795640241,
+    "peak": 24.25,
+    "cut": [
+      0.0,
+      27.82
+    ],
+    "dur": 27.82,
+    "tags": [
+      "first-reaction",
+      "rage"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.33,
+      "first-reaction": 0.47,
+      "wow": 0.08,
+      "_loud": 2.0,
+      "_motion": 10.7
+    },
+    "quote": "There's a job I want to take Bank big bank whole different F*** game.",
+    "rendered": [
+      "fanpage"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.28,
+      "fail": 0.0,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.85,
+      "first-reaction": 0.57,
+      "wow": 0.0
+    },
+    "primary": "mission",
+    "proven": [],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion-spike"
+      ],
+      "mission": [
+        "text"
+      ],
+      "first-reaction": [
+        "text"
+      ]
+    },
+    "fun": 0.35,
+    "signals": {
+      "siren": 0.0,
+      "impact": 21.0,
+      "loud": 2.1,
+      "motion": 7.1,
+      "sustained": 0.13,
+      "spike": 6.2,
+      "laugh": 0,
+      "static": 0.01,
+      "letterbox": 0.0,
+      "luma": 43.2,
+      "dark": 0.0
+    },
+    "seg_from": 0.0,
+    "src_mb": 8.4,
+    "source": "https://6b06f2dbf45b9d7ff0758193--gta6bananaclips-media.netlify.app/yt/youtube_88TNr9C8oEE_603_16x9.mp4",
+    "yt_url": "https://www.youtube.com/watch?v=88TNr9C8oEE"
   }
 }

@@ -272,7 +272,9 @@
     "twitch_SolidPrettySwordOSfrog-2PRQOLx6FLoffjlQ": 3,
     "twitch_RelievedTolerantMetalPunchTrees-1SrUQSJUwg6PKugm": 3,
     "twitch_RelatedExpensiveEelBleedPurple-EER18eheN5qmhA_W": 1,
-    "twitch_FunnyAverageDiamond4Head-rUU4lEnhtbjGMkPr": 3
+    "twitch_FunnyAverageDiamond4Head-rUU4lEnhtbjGMkPr": 3,
+    "twitch_LittleBombasticPangolinDoubleRainbow-85e1yrxtRC0l2Gra": 1,
+    "twitch_VivaciousTriumphantCheetahTBTacoLeft-osslbJRdiUFXJ3SL": 3
   },
   "other_game": {
     "twitch_3007922283": "World of Warcraft",
@@ -522,7 +524,11 @@
     "twitch_FantasticAthleticClamKappaClaus-Tu0_XClPa4HrYBQP": "Just Chatting",
     "twitch_UgliestBombasticLyrebirdGrammarKing-dnKxm2XupKOuVp3Z": "not gameplay: 100% of the clip is static screen; not viral enough without gameplay (score 358)",
     "twitch_FineHelplessSwordFloof-ZljlVQd7GopiyUDf": "not gameplay: 83% of the clip is static screen; not viral enough without gameplay (score 323)",
-    "twitch_DreamyIncredulousButterMVGame-wWdh6s_4x5SiQXTq": "Just Chatting"
+    "twitch_DreamyIncredulousButterMVGame-wWdh6s_4x5SiQXTq": "Just Chatting",
+    "twitch_ProudAbnegatePandaDxAbomb-G6a4OqB58Z2_a779": "Just Chatting",
+    "twitch_SplendidBlazingDotterelRickroll-SDFFhTpfu5fv-hrX": "Just Chatting",
+    "twitch_AbnegatePuzzledVelociraptorLitty-2y3OGd2JIlxxVqJ6": "not gameplay: 60% of the clip is face, no motion, static screen; not viral enough without gameplay (score 457)",
+    "twitch_ColorfulAttractiveFrogItsBoshyTime-CvxKVWanFWEkUOm4": "ROB RUN"
   },
   "views": {
     "twitch_TenderResoluteMartenRickroll-MMEYpSBXgiOpCFd8": [
@@ -83085,7 +83091,9 @@
     ],
     "twitch_LittleBombasticPangolinDoubleRainbow-85e1yrxtRC0l2Gra": [
       1795605610,
-      1040
+      1040,
+      1795639950,
+      1918
     ],
     "twitch_RelatedExpensiveEelBleedPurple-EER18eheN5qmhA_W": [
       1795605610,
@@ -83101,7 +83109,9 @@
     ],
     "twitch_SplendidBlazingDotterelRickroll-SDFFhTpfu5fv-hrX": [
       1795605610,
-      1022
+      1022,
+      1795639950,
+      2804
     ],
     "twitch_HyperEnchantingBubbleteaWTRuck-1gWddqvIijy9Qpxg": [
       1795605610,
@@ -83113,19 +83123,27 @@
     ],
     "twitch_EasySuperKoalaDxAbomb-SavdsJwXON8Sw3DR": [
       1795605610,
-      779
+      779,
+      1795639950,
+      959
     ],
     "twitch_AnimatedTsundereWaterBCouch-YIhp8EPXRxWgomZt": [
       1795605610,
-      925
+      925,
+      1795639950,
+      1296
     ],
     "twitch_UglyHonorableTapirPanicVis-Og1XA4PcID0rHj0v": [
       1795605610,
-      591
+      591,
+      1795639950,
+      910
     ],
     "twitch_ObliviousRoughDelicataFutureMan-CS3ZEl3poE2C9fMP": [
       1795605610,
-      644
+      644,
+      1795639950,
+      1047
     ],
     "twitch_RelievedTolerantMetalPunchTrees-1SrUQSJUwg6PKugm": [
       1795605610,
@@ -83169,7 +83187,89 @@
     ],
     "twitch_GloriousShortRamenANELE-1Bn-506RuvLm-UJb": [
       1795605610,
-      500
+      500,
+      1795639950,
+      755
+    ],
+    "twitch_ProudAbnegatePandaDxAbomb-G6a4OqB58Z2_a779": [
+      1795639950,
+      2038
+    ],
+    "twitch_RespectfulConcernedHamPanicBasket-PyFPNHUMMgYQvigd": [
+      1795639950,
+      954
+    ],
+    "twitch_ExquisiteArborealCasetteDoggo-fISiQt5GfETiyEEG": [
+      1795639950,
+      561
+    ],
+    "twitch_GoldenPoisedKeyboardRedCoat-HO3GxS3GCBEqzXcR": [
+      1795639950,
+      823
+    ],
+    "twitch_PlayfulGrossSeahorseTF2John-EZbhjfzq3pFbPBYy": [
+      1795639950,
+      1068
+    ],
+    "twitch_TrustworthyBenevolentReindeerMikeHogu-YPbJj_4DH8VCRAH8": [
+      1795639950,
+      807
+    ],
+    "twitch_ColorfulAttractiveFrogItsBoshyTime-CvxKVWanFWEkUOm4": [
+      1795639950,
+      641
+    ],
+    "twitch_InspiringAuspiciousReubenPogChamp-la0DJeAbFibNplBm": [
+      1795639950,
+      633
+    ],
+    "twitch_AthleticApatheticHamBigBrother-t2Jec1TsJHZKGhf3": [
+      1795639950,
+      808
+    ],
+    "twitch_SpookyProductiveMeatloafRlyTho-nhFrMHTCBslopiCZ": [
+      1795639950,
+      726
+    ],
+    "twitch_AbnegatePuzzledVelociraptorLitty-2y3OGd2JIlxxVqJ6": [
+      1795639950,
+      1267
+    ],
+    "twitch_FitBlitheDonkeyBrokeBack-lrhv-en2MLsbUAQc": [
+      1795639950,
+      1198
+    ],
+    "twitch_PeppyPeacefulStarlingShadyLulu-FbkcX75x7KrIFXKR": [
+      1795639950,
+      849
+    ],
+    "twitch_VivaciousTriumphantCheetahTBTacoLeft-osslbJRdiUFXJ3SL": [
+      1795639950,
+      843
+    ],
+    "twitch_ScrumptiousScrumptiousTermiteOneHand-Xwoh07RAjNVlEb9H": [
+      1795639950,
+      649
+    ],
+    "twitch_HeartlessCreativePizzaPhilosoraptor-yCzQjO64c1vj_twP": [
+      1795639950,
+      615
+    ],
+    "twitch_DistinctAcceptableTildeDendiFace-QZ4Dl82xC99BLwpI": [
+      1795639950,
+      593
+    ],
+    "twitch_StrongCourageousBubbleteaBCWarrior-CrFjNT7DUToHg7yl": [
+      1795639950,
+      543
+    ],
+    "twitch_LuckyPoliteGullHoneyBadger-Sa0aukYe2KCGDfNQ": [
+      1795639950,
+      521
+    ],
+    "twitch_SlipperyFriendlyDragonflyBIRB-IeWtY4kYjFTFx4v8": [
+      1795639950,
+      506
     ]
   },
   "rr": "bananas",
@@ -84099,7 +84199,9 @@
     "twitch_SolidPrettySwordOSfrog-2PRQOLx6FLoffjlQ": "no action (best action tag 0.00 < 0.6) - not rendered",
     "twitch_RelievedTolerantMetalPunchTrees-1SrUQSJUwg6PKugm": "no action (best action tag 0.44 < 0.6) - not rendered",
     "twitch_RelatedExpensiveEelBleedPurple-EER18eheN5qmhA_W": "boring: flat payoff (hook 0.75: loudness +4.5 dB, motion x0.3, reaction no)",
-    "twitch_FunnyAverageDiamond4Head-rUU4lEnhtbjGMkPr": "no action (best action tag 0.48 < 0.6) - not rendered"
+    "twitch_FunnyAverageDiamond4Head-rUU4lEnhtbjGMkPr": "no action (best action tag 0.48 < 0.6) - not rendered",
+    "twitch_LittleBombasticPangolinDoubleRainbow-85e1yrxtRC0l2Gra": "no loop edit possible (payoff / setup / sentence edges) - skipped, not cut the old way",
+    "twitch_VivaciousTriumphantCheetahTBTacoLeft-osslbJRdiUFXJ3SL": "no action (best action tag 0.53 < 0.6) - not rendered"
   },
   "moments": {
     "2932194507": [
