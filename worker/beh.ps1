@@ -51,6 +51,25 @@ $repo = (Get-Content (Join-Path $dir ".env") -ErrorAction SilentlyContinue |
          Where-Object { $_ -match '^GITHUB_REPO=(.+)$' } | ForEach-Object { $Matches[1].Trim() }) | Select-Object -First 1
 if (-not $repo) { $repo = "alescesnek1/gta6bananaclips" }
 
+# --- 1b) BACKUP CLOCK (25. 11.: GitHub's schedule ran denne only 3x in 31 h instead of every 2 h - 1 short that day).
+# Every 30 min the PC asks when the last denne run started; only when that is > 130 min ago it starts one. So denne
+# never runs more often than every ~2 h (GitHub's limit: at most once an hour), with or without GitHub's cron.
+if ($token -and (Due "clock" 25)) {
+    try {
+        $h = @{ Authorization = "Bearer $token"; Accept = "application/vnd.github+json"; "User-Agent" = "gta6-pc" }
+        $runs = Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/actions/workflows/denne.yml/runs?per_page=1" -Headers $h
+        $last = if ($runs.workflow_runs.Count) { [datetime]::Parse($runs.workflow_runs[0].created_at).ToUniversalTime() } else { [datetime]::MinValue }
+        $ago = ([datetime]::UtcNow - $last).TotalMinutes
+        if ($ago -gt 130) {
+            Invoke-RestMethod -Method Post -Uri "https://api.github.com/repos/$repo/actions/workflows/denne.yml/dispatches" -Headers $h `
+                -Body '{"ref":"main"}' -ContentType "application/json" | Out-Null
+            "$(Get-Date -Format s) denne started by the PC (last run $([math]::Round($ago)) min ago)" | Out-File $log -Append -Encoding utf8
+        }
+    } catch {
+        "$(Get-Date -Format s) clock FAILED: $($_.Exception.Message)" | Out-File $log -Append -Encoding utf8
+    }
+}
+
 # --- 1c) report every 6 h (18. 11.: nobody could see what the PC does without going to it; 24. 11.: was 30 min): the tail
 # of worker.log as a dispatch input of pc-hlaseni.yml (the token can start workflows, not push). Public repo:
 # long token-like strings are masked, at most 15000 characters.

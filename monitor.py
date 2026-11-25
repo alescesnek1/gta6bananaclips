@@ -50,7 +50,8 @@ NOW = None                                         # tests: fixed "now" (aware d
 REPO_DEFAULT = "alescesnek1/gta6bananaclips"
 WORKFLOWS = {"denne-klipy": "denne.yml", "live-klipy": "live.yml", "long-form": "long.yml"}
 LAUNCH_DAYS = (date(2026, 11, 18), date(2026, 11, 21))    # denne must succeed every 30 min (else 90)
-STALE_MIN_LAUNCH, STALE_MIN = 30, 90
+STALE_MIN_LAUNCH, STALE_MIN = 30, 150                    # 24. 11.: denne every 2 h (GitHub's limit) -> 150 min
+LIVE_WATCH = False                                     # 24. 11.: the live chat watcher is off (it needed runs every few min)
 GAMEPLAY_FROM = datetime(2026, 11, 18, 12, 0, tzinfo=TZ)   # from here a silent brand is a problem
 SILENCE_H = 4
 LIVE_GAP_MIN = 40                                  # live watcher: runs back to back, a gap > 40 min = down
@@ -217,7 +218,7 @@ def health_alerts(h, now, live_from):
         if c["failure"]:
             al.append((f"selhani:{name}", f"{name}: {c['failure']}× selhal za 3 h"))
     gap = h.get("live_konec_pred_min")
-    if now >= live_from and not h.get("live_bezi") and (gap is None or gap > LIVE_GAP_MIN):
+    if LIVE_WATCH and now >= live_from and not h.get("live_bezi") and (gap is None or gap > LIVE_GAP_MIN):
         al.append(("live_nebezi", f"live-klipy neběží (poslední skončil před {gap if gap is not None else '?'} min)"))
     return al
 
