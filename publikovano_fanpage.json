@@ -419,5 +419,40 @@
     ],
     "quote": "",
     "slot": "2026-11-21T14:00:00+01:00"
+  },
+  "twitch_PrettiestFastHamJebaited-dmfYeM9YNFLNsFxB": {
+    "url": "https://6b0635e341b5a05c87fb39ce--gta6bananaclips-media.netlify.app/20261124/twitch_PrettiestFastHamJebaited-dmfYeM9YNFLNsFxB.mp4",
+    "path": "20261124/twitch_PrettiestFastHamJebaited-dmfYeM9YNFLNsFxB.mp4",
+    "due": "2026-11-25T03:41:00+01:00",
+    "draft": false,
+    "posts": {
+      "6afc433aece6dfde5ff6749b": "6b0635f691929194132cdbb6",
+      "6afc42e6ece6dfde5ff66dca": "6b0635f7a8becebb774d078c",
+      "6afc4429ece6dfde5ff683db": "6b0635f791929194132cdc26",
+      "6afc4413ece6dfde5ff68286": "6b0635f8c4ff71faa8236223",
+      "6afc43ffece6dfde5ff68162": "6b0635f9a2fd17422e760358"
+    },
+    "mb": 11.1,
+    "channel": "caseoh_",
+    "platform": "twitch",
+    "score": 799.4,
+    "hot": false,
+    "rating": 5,
+    "views": 1818,
+    "golden": false,
+    "title": "CaseOh Goes ON THE RUN In GTA 6! 💀",
+    "video_id": null,
+    "vod_offset": null,
+    "created": 1795530831,
+    "payoff": "https://6b0635e341b5a05c87fb39ce--gta6bananaclips-media.netlify.app/20261124/twitch_PrettiestFastHamJebaited-dmfYeM9YNFLNsFxB_payoff.mp4",
+    "funny": 0.0,
+    "tags": [
+      "chase",
+      "wow",
+      "rage"
+    ],
+    "quote": "in this game?",
+    "nudity": false,
+    "slot": "2026-11-25T03:30:00+01:00"
   }
 }
