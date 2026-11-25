@@ -267,9 +267,12 @@
     "twitch_HonestLachrymoseVampireGivePLZ-MoSkwm7cqX2mpf_l": 2,
     "twitch_AuspiciousBrainyOrcaPupper-5eiY5qb-FEoyrOU4": 2,
     "twitch_SullenHelplessSamosaHoneyBadger-XW_jQIP7duPMxTvL": 3,
-    "twitch_LitigiousNaiveHorseradishPeteZaroll-8_k23aP-Jtri0HQd": 1,
-    "twitch_MistyFastChickpeaBatChest-1l50Cnz_nbghKxmh": 1,
-    "twitch_SolidPrettySwordOSfrog-2PRQOLx6FLoffjlQ": 3
+    "twitch_LitigiousNaiveHorseradishPeteZaroll-8_k23aP-Jtri0HQd": 2,
+    "twitch_MistyFastChickpeaBatChest-1l50Cnz_nbghKxmh": 2,
+    "twitch_SolidPrettySwordOSfrog-2PRQOLx6FLoffjlQ": 3,
+    "twitch_RelievedTolerantMetalPunchTrees-1SrUQSJUwg6PKugm": 3,
+    "twitch_RelatedExpensiveEelBleedPurple-EER18eheN5qmhA_W": 1,
+    "twitch_FunnyAverageDiamond4Head-rUU4lEnhtbjGMkPr": 3
   },
   "other_game": {
     "twitch_3007922283": "World of Warcraft",
@@ -513,7 +516,13 @@
     "twitch_YummyRoundShieldPastaThat-x1JY4NjFTyCeJdAz": "Just Chatting",
     "twitch_TangibleBumblingDogeNomNom-EUJ2XEuUn3_fltsp": "not gameplay: a big face on 92% of the frames (a camera, not the game); not gameplay: 100% of the clip is face, no motion, static screen; not viral enough without gameplay (score 348)",
     "twitch_TrustworthyIntelligentToothTheThing-057j_Zto1Cc0LSZw": "Just Chatting",
-    "twitch_CulturedRichOctopusMingLee-e7d6JW91XyuiGkcZ": "not gameplay: streamer's face fills the frame; not viral enough without gameplay (score 298)"
+    "twitch_CulturedRichOctopusMingLee-e7d6JW91XyuiGkcZ": "not gameplay: streamer's face fills the frame; not viral enough without gameplay (score 298)",
+    "twitch_HyperEnchantingBubbleteaWTRuck-1gWddqvIijy9Qpxg": "World of Warcraft",
+    "twitch_VibrantFuriousPeafowlYouWHY-CoHmLyrFXizUA77c": "Just Chatting",
+    "twitch_FantasticAthleticClamKappaClaus-Tu0_XClPa4HrYBQP": "Just Chatting",
+    "twitch_UgliestBombasticLyrebirdGrammarKing-dnKxm2XupKOuVp3Z": "not gameplay: 100% of the clip is static screen; not viral enough without gameplay (score 358)",
+    "twitch_FineHelplessSwordFloof-ZljlVQd7GopiyUDf": "not gameplay: 83% of the clip is static screen; not viral enough without gameplay (score 323)",
+    "twitch_DreamyIncredulousButterMVGame-wWdh6s_4x5SiQXTq": "Just Chatting"
   },
   "views": {
     "twitch_TenderResoluteMartenRickroll-MMEYpSBXgiOpCFd8": [
@@ -83014,11 +83023,15 @@
     ],
     "twitch_MistyFastChickpeaBatChest-1l50Cnz_nbghKxmh": [
       1795567601,
-      1489
+      1489,
+      1795605610,
+      9694
     ],
     "twitch_LitigiousNaiveHorseradishPeteZaroll-8_k23aP-Jtri0HQd": [
       1795567601,
-      4418
+      4418,
+      1795605610,
+      8481
     ],
     "twitch_PrettiestFastHamJebaited-dmfYeM9YNFLNsFxB": [
       1795567601,
@@ -83046,11 +83059,15 @@
     ],
     "twitch_FineHelplessSwordFloof-ZljlVQd7GopiyUDf": [
       1795567601,
-      1015
+      1015,
+      1795605610,
+      1600
     ],
     "twitch_VictoriousFineMochaPipeHype-CLBGE7MJJVbPRXRI": [
       1795567601,
-      802
+      802,
+      1795605610,
+      989
     ],
     "twitch_TangibleBumblingDogeNomNom-EUJ2XEuUn3_fltsp": [
       1795567601,
@@ -83062,7 +83079,97 @@
     ],
     "twitch_ChillyDreamyAnteaterCoolStoryBro-hUeFPkSGJVRl01Z-": [
       1795567601,
-      651
+      651,
+      1795605610,
+      793
+    ],
+    "twitch_LittleBombasticPangolinDoubleRainbow-85e1yrxtRC0l2Gra": [
+      1795605610,
+      1040
+    ],
+    "twitch_RelatedExpensiveEelBleedPurple-EER18eheN5qmhA_W": [
+      1795605610,
+      2289
+    ],
+    "twitch_VibrantFuriousPeafowlYouWHY-CoHmLyrFXizUA77c": [
+      1795605610,
+      2253
+    ],
+    "twitch_FantasticAthleticClamKappaClaus-Tu0_XClPa4HrYBQP": [
+      1795605610,
+      1396
+    ],
+    "twitch_SplendidBlazingDotterelRickroll-SDFFhTpfu5fv-hrX": [
+      1795605610,
+      1022
+    ],
+    "twitch_HyperEnchantingBubbleteaWTRuck-1gWddqvIijy9Qpxg": [
+      1795605610,
+      4022
+    ],
+    "twitch_DreamyIncredulousButterMVGame-wWdh6s_4x5SiQXTq": [
+      1795605610,
+      1010
+    ],
+    "twitch_EasySuperKoalaDxAbomb-SavdsJwXON8Sw3DR": [
+      1795605610,
+      779
+    ],
+    "twitch_AnimatedTsundereWaterBCouch-YIhp8EPXRxWgomZt": [
+      1795605610,
+      925
+    ],
+    "twitch_UglyHonorableTapirPanicVis-Og1XA4PcID0rHj0v": [
+      1795605610,
+      591
+    ],
+    "twitch_ObliviousRoughDelicataFutureMan-CS3ZEl3poE2C9fMP": [
+      1795605610,
+      644
+    ],
+    "twitch_RelievedTolerantMetalPunchTrees-1SrUQSJUwg6PKugm": [
+      1795605610,
+      6615
+    ],
+    "twitch_UgliestBombasticLyrebirdGrammarKing-dnKxm2XupKOuVp3Z": [
+      1795605610,
+      1718
+    ],
+    "twitch_FunnyAverageDiamond4Head-rUU4lEnhtbjGMkPr": [
+      1795605610,
+      1223
+    ],
+    "twitch_TrustworthyWrongSkirretHeyGuys-DMt2o7edaEgPSvMx": [
+      1795605610,
+      901
+    ],
+    "twitch_ModernPrettySalmonFloof-NOA94s2iCBKUu7Kb": [
+      1795605610,
+      899
+    ],
+    "twitch_GoodDoubtfulEchidnaRiPepperonis-UgSmJQBGeUFobRRo": [
+      1795605610,
+      756
+    ],
+    "twitch_SuccessfulWrongPlumagePipeHype-g0bVcSzpxN4YC6m9": [
+      1795605610,
+      714
+    ],
+    "twitch_BlindingNeighborlyOxChocolateRain-ALweatmVZn5Z-rVQ": [
+      1795605610,
+      687
+    ],
+    "twitch_DeliciousPlayfulTrollYouWHY-WbmZTC6YKNepJHhB": [
+      1795605610,
+      589
+    ],
+    "twitch_CharmingBigTruffleDAESuppy-MkEOwDTNuKcfN2Xo": [
+      1795605610,
+      519
+    ],
+    "twitch_GloriousShortRamenANELE-1Bn-506RuvLm-UJb": [
+      1795605610,
+      500
     ]
   },
   "rr": "bananas",
@@ -83987,9 +84094,12 @@
     "twitch_HonestLachrymoseVampireGivePLZ-MoSkwm7cqX2mpf_l": "QA failed: {'fanpage': {'ok': False, 'look': 'old', 'problems': ['true peak 0.1 dBTP (> -1)', 'loudness -16.1 LUFS (target -14)'], 'cuts': {'start': 30.27, 'end': 42.27, 'jumps': 1, 'fixed': [], 'problems': [], 'first': 'Oh,', 'last': 'not be calling the fucking cops.'}, 'mix': {'speech_db': -27.3, ",
     "twitch_AuspiciousBrainyOrcaPupper-5eiY5qb-FEoyrOU4": "no facecam - every short needs the streamer's face on top",
     "twitch_SullenHelplessSamosaHoneyBadger-XW_jQIP7duPMxTvL": "no action (best action tag 0.25 < 0.6) - not rendered",
-    "twitch_LitigiousNaiveHorseradishPeteZaroll-8_k23aP-Jtri0HQd": "quality check failed after repairs: face in the top band missing or cut (2/10 frames)",
+    "twitch_LitigiousNaiveHorseradishPeteZaroll-8_k23aP-Jtri0HQd": "QA failed: {'bananas': {'ok': False, 'look': 'old', 'problems': ['true peak 2.5 dBTP (> -1)'], 'cuts': {'start': 42.87, 'end': 54.87, 'jumps': 1, 'fixed': [], 'problems': [], 'first': 'Shortcut!', 'last': ''}, 'mix': {'speech_db': -24.4, 'voice_gain': 4.4, 'spans': 1, 'music_gap_db': -19.0, 'mix_spe",
     "twitch_MistyFastChickpeaBatChest-1l50Cnz_nbghKxmh": "no loop edit possible (payoff / setup / sentence edges) - skipped, not cut the old way",
-    "twitch_SolidPrettySwordOSfrog-2PRQOLx6FLoffjlQ": "no action (best action tag 0.00 < 0.6) - not rendered"
+    "twitch_SolidPrettySwordOSfrog-2PRQOLx6FLoffjlQ": "no action (best action tag 0.00 < 0.6) - not rendered",
+    "twitch_RelievedTolerantMetalPunchTrees-1SrUQSJUwg6PKugm": "no action (best action tag 0.44 < 0.6) - not rendered",
+    "twitch_RelatedExpensiveEelBleedPurple-EER18eheN5qmhA_W": "boring: flat payoff (hook 0.75: loudness +4.5 dB, motion x0.3, reaction no)",
+    "twitch_FunnyAverageDiamond4Head-rUU4lEnhtbjGMkPr": "no action (best action tag 0.48 < 0.6) - not rendered"
   },
   "moments": {
     "2932194507": [
