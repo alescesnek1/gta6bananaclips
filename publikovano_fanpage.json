@@ -524,5 +524,40 @@
     "nudity": false,
     "category": "Grand Theft Auto VI",
     "slot": "2026-11-26T18:30:00+01:00"
+  },
+  "twitch_CloudyBeautifulSageAliens-lPvnP92e3db1_lR1": {
+    "url": "https://6b08bfad2e0076742522d3c1--gta6bananaclips-media.netlify.app/20261126/twitch_CloudyBeautifulSageAliens-lPvnP92e3db1_lR1.mp4",
+    "path": "20261126/twitch_CloudyBeautifulSageAliens-lPvnP92e3db1_lR1.mp4",
+    "due": "2026-11-27T00:49:00+01:00",
+    "draft": false,
+    "posts": {
+      "6afc433aece6dfde5ff6749b": "6b08bfbf548b6e180d3fdd78",
+      "6afc42e6ece6dfde5ff66dca": "6b08bfc08899c4e779f9317b",
+      "6afc4429ece6dfde5ff683db": "6b08bfc08899c4e779f931b3",
+      "6afc4413ece6dfde5ff68286": "6b08bfc170e2a88e2cda4e4d",
+      "6afc43ffece6dfde5ff68162": "6b08bfc2548b6e180d3fde40"
+    },
+    "mb": 8.4,
+    "channel": "joe_bartolozzi",
+    "platform": "twitch",
+    "score": 835.0,
+    "hot": false,
+    "rating": 4,
+    "views": 781,
+    "golden": false,
+    "title": "Joe_bartolozzi Hits BREAKING POINT In GTA 6! 💀",
+    "video_id": "2941461420",
+    "vod_offset": 10127,
+    "created": 1795723124,
+    "payoff": "https://6b08bfad2e0076742522d3c1--gta6bananaclips-media.netlify.app/20261126/twitch_CloudyBeautifulSageAliens-lPvnP92e3db1_lR1_payoff.mp4",
+    "funny": 0.29,
+    "tags": [
+      "rage",
+      "crash"
+    ],
+    "quote": "F*** your stupid ass sneakers.",
+    "nudity": false,
+    "category": "Grand Theft Auto VI",
+    "slot": "2026-11-27T00:30:00+01:00"
   }
 }
