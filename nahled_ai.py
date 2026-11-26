@@ -487,13 +487,13 @@ HOOK_SYSTEM = ("You are an elite short-form video editor who has studied thousan
                "clips. You write the on-screen text of the first 2 seconds: one question that makes a viewer stop "
                "scrolling and watch to the end.")
 
-def hook_question(name, tags, transcript):
+def hook_question(name, tags, transcript, game="GTA 6"):
     """A 3-8 word question in capitals from the streamer's real words + the moment's tags, or None. Only facts from
     the input; validated (length, letters, no swear/sexual word, no number the input does not have)."""
     import re as _re
     words = " ".join(transcript.split()[:80])
     ans = ask_text(HOOK_SYSTEM,
-                   f"GTA 6 Twitch clip. Streamer: {name}. Detected moment type: {', '.join(tags) or 'reaction'}.\n"
+                   f"{game} Twitch clip. Streamer: {name}. Detected moment type: {', '.join(tags) or 'reaction'}.\n"
                    f"What the streamer says: \"{words}\"\n"
                    "Write ONE question, 3 to 8 words, in capital letters, that teases this exact moment. Use only what "
                    "the transcript and the moment type say - never invent events, people, places or numbers. You may "

@@ -552,7 +552,7 @@ def candidates(znacka=None):
             continue                                 # from the launch on: gameplay, no trailer reactions
         if not m.get("cam") and m.get("layout") != "game":   # no facecam only for viral-potential clips (render decides)
             continue
-        if not re.search(game, m.get("category") or "", re.I):
+        if not __import__("hry").is_gaming(m.get("category") or ""):   # 26. 11.: any game, GTA 6 first
             log(f"  not published (category '{m.get('category') or '?'}' is not {game}): {m.get('id')}")
             continue
         age_h = (now - m["created"]) / 3600 if m.get("created") else 24      # unknown age = not fresh
@@ -565,6 +565,8 @@ def candidates(znacka=None):
             m["crossover"] = True
         # Aleš 18. 11.: the quota goes to the famous streamers first, never burnt on no-names:
         # Kai Cenat / IShowSpeed / xQc x 2, other star streamers x 1.5
+        if __import__("hry").is_primary(m.get("category")):    # 26. 11.: every game is clipped, GTA 6 first
+            m["score"] *= float(src_c.get("primary_boost", 1.5))
         ch_c = str(m.get("channel") or "").lower()
         if ch_c in {x.lower() for x in src_c.get("star_tier1", [])}:
             m["score"] *= 2.0
@@ -898,6 +900,29 @@ def title_core(m):
             return f"{name} {ph}"
     return f"{name} {phrases[0]}"
 
+GTA_TAGS = {"#gta6clips": "#gamingclips", "#gta6gameplay": "#gameplay", "#gta6reaction": "#streamerclips"}
+
+def gameify(text, m):
+    """26. 11. (the account clips every game, GTA 6 first): a clip from another game gets that game's name and
+    hashtag wherever the GTA 6 wording is ('... In GTA 6!' -> '... In Fortnite!', '#gta6' -> '#fortnite'); the
+    brands' own hashtags stay. A GTA 6 clip (or unknown category) is left as it is."""
+    import hry
+    cat = m.get("category") or ""
+    if not cat or hry.is_primary(cat):
+        return text
+    name, tag = hry.label(cat), hry.hashtag(cat)
+    keep = {"#gta6bananaclips": "@@B1@@", "#gta6fanpageclip": "@@B2@@"}
+    for k, v in keep.items():
+        text = re.sub(re.escape(k), v, text, flags=re.I)
+    for k, v in GTA_TAGS.items():
+        text = re.sub(re.escape(k) + r"\b", v, text, flags=re.I)
+    text = re.sub(r"#(gta6|gtavi|gtav|vicecity|gta)\b", tag, text, flags=re.I)
+    text = re.sub(r"\bGTA ?(6|VI)\b|\bGrand Theft Auto VI\b", name, text, flags=re.I)
+    text = re.sub(r"\bVice City\b", name, text)
+    for k, v in keep.items():
+        text = text.replace(v, k)
+    return text
+
 def title_line(m):
     """'Kai Cenat Crashes Hard In GTA 6! 😭' (no hashtags; brands differ in phrase and emoji). Fixed per clip
     within a run (captions of every network and the record share it)."""
@@ -907,7 +932,7 @@ def title_line(m):
     if ck not in cache:
         k = int(hashlib.md5(str(m.get("id")).encode()).hexdigest(), 16) + (1 if ZNACKA == "fanpage" else 0)
         core = title_core(m)
-        cache[ck] = f"{core.rstrip('.!?')}! {['😭', '💀'][k % 2]}".replace("@", "")
+        cache[ck] = gameify(f"{core.rstrip('.!?')}! {['😭', '💀'][k % 2]}".replace("@", ""), m)
         recent_titles().add(re.sub(r"[^a-z0-9 ]", "", core.lower()).strip())
     return cache[ck]
 
@@ -969,7 +994,7 @@ def caption(m, service):
     from cenzura import cenzura, tag_ok              # 18. 11.: swears / sexual words starred ("str** club")
     text = " ".join(w for w in _caption(m, service).replace("@", "").split(" ")
                     if not w.startswith("#") or tag_ok(w))           # a starred hashtag finds nothing: dropped
-    text = cenzura(text)
+    text = gameify(cenzura(text), m)
     if service == "tiktok":                          # 18. 11.: 0 views on every TikTok - no outbound links there
         text = re.sub(r"(?:https?://)?(?:www\.)?(twitch\.tv|kick\.com|youtube\.com)/([\w.-]+)",
                       lambda mm: f"{mm.group(2)} on {'Twitch' if 'twitch' in mm.group(1) else 'Kick' if 'kick' in mm.group(1) else 'YouTube'}",
@@ -1028,7 +1053,7 @@ def youtube_title(m):
         who = ", ".join(dict.fromkeys(display_name(x) for x in reversed(m.get("items") or []) if x.get("channel")))
         t = f"Top 4 Funniest GTA 6 Moments Today | {who}"
         from cenzura import cenzura
-        return cenzura(t)[: 100 - len(" #shorts")] + " #shorts"
+        return gameify(cenzura(t), m)[: 100 - len(" #shorts")] + " #shorts"
     if m.get("platform") == "exp":
         items = m.get("items") or [{"channel": "streamers"}]
         t = EXP_TITLES.get(m.get("concept"), "GTA 6 moments").format(s=items[0]["channel"], k=len(items))
@@ -1039,7 +1064,7 @@ def youtube_title(m):
     if len(t) + len(tail) + len(" #shorts") <= 100:
         t += tail
     from cenzura import cenzura
-    t = cenzura(t)
+    t = gameify(cenzura(t), m)
     return t[: 100 - len(" #shorts")] + " #shorts"
 
 def in_day(rec, day):
@@ -1694,7 +1719,8 @@ def cmd_den(a):
                "video_id": m.get("video_id"), "vod_offset": m.get("vod_offset"), "created": m.get("created"),
                "payoff": f"{base}/{m['_payoff_rel']}" if m.get("_payoff_rel") else m.get("_payoff_url"),
                "funny": (m.get("tag_scores") or {}).get("funny"), "tags": m.get("tags"),
-               "quote": (m.get("quote") or "")[:160], "nudity": m.get("nudity")}
+               "quote": (m.get("quote") or "")[:160], "nudity": m.get("nudity"),
+               "category": m.get("category")}
         if is_live(m):                                     # live: the stream's audience is not clip views
             rec.update(live=True, viewers=m.get("viewers"), spike_z=m.get("spike_z"))
         if slot_of.get(m["id"]):
@@ -1751,7 +1777,7 @@ def exp_post(a, day, now):
         if n_today >= E.per_day(ZNACKA, m["concept"]) or not E.enabled(ZNACKA, m["concept"]):
             return                                     # limit reached, or switched off since it was rendered
         game = load_json(HERE / "sources.json", {}).get("game", "Grand Theft Auto VI|GTA ?VI|GTA ?6")
-        if not re.search(game, m.get("category") or "", re.I):
+        if not __import__("hry").is_gaming(m.get("category") or ""):   # 26. 11.: any game, GTA 6 first
             log(f"exp: not published (category '{m.get('category')}' is not {game})")
             return
         taken = {rec.get("slot") for k, rec in done.items() if k.startswith("exp_")}
@@ -2136,7 +2162,8 @@ def top4_post(a, day, now):
             items.append((TOP4_N - i, top4_label(r, files[k], [x[1] for x in items]), files[k]))
         out, cover = make_top4(items, stage / f"{key}.mp4")
         due = off_grid(max(slot, (now_tz() + timedelta(minutes=20)).replace(second=0, microsecond=0)))
-        m = {"id": key, "platform": "top4", "channel": "top4", "category": "Grand Theft Auto VI", "peak": cover,
+        allgta = all(__import__("hry").is_primary(r.get("category")) for _, r in chosen)
+        m = {"id": key, "platform": "top4", "channel": "top4", "category": "Grand Theft Auto VI" if allgta else "Gaming", "peak": cover,
              "items": [{"channel": r.get("channel"), "platform": r.get("platform"), "label": lab}
                        for (k, r), (_, lab, _) in zip(reversed(chosen), reversed(items))]}
         names = " | ".join(f"{rk}. {lab} ({r.get('channel')})" for (rk, lab, _), (k, r) in zip(items, chosen))
@@ -2365,7 +2392,7 @@ def cmd_schranka(a):
             continue
         m = load_json(meta_file, {})
         keep = m.get("id", "").startswith(a.prefix) if a.prefix else m.get("platform") == "youtube"
-        if not keep or not re.search(game, m.get("category") or "", re.I):
+        if not keep or not __import__("hry").is_gaming(m.get("category") or ""):
             continue
         # every brand version of the clip that its brand has not published yet (`file` = bananas,
         # `file_fanpage` = fanpage); the clip drops out once all its brands have published it

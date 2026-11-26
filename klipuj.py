@@ -290,11 +290,31 @@ def list_twitch_game(days, pages=3):
             if c["id"] not in seen:
                 seen.add(c["id"])
                 out.append(c)
+    # 26. 11. (owner: "not only GTA 6 - streamers who play games"): the most watched other games on Twitch right
+    # now (games/top, non-game categories out - hry.is_gaming), one page of their best clips each
+    import hry
+    n_other = int(load_json(SOURCES, {}).get("other_games", 12))
+    if n_other > 0:
+        try:
+            top = [g for g in helix("games/top", {"first": 40}).get("data") or []
+                   if hry.is_gaming(g.get("name")) and not hry.is_primary(g.get("name"))][:n_other]
+        except Exception as e:
+            log(f"twitch api: top games unavailable ({str(e)[-80:]})")
+            top = []
+        for g in top:
+            try:
+                for c in _game_clips(days, 1, game=g):
+                    if c["id"] not in seen:
+                        seen.add(c["id"])
+                        out.append(c)
+            except Exception as e:
+                log(f"twitch api: {g.get('name')}: {str(e)[-80:]}")
     return out
 
-def _game_clips(days, pages):
-    name = load_json(SOURCES, {}).get("twitch_game", "Grand Theft Auto VI")
-    games = helix("games", {"name": name}).get("data") or []
+def _game_clips(days, pages, game=None):
+    """Best English clips of one category (default: twitch_game = GTA VI; game = a {'id', 'name'} from games/top)."""
+    name = (game or {}).get("name") or load_json(SOURCES, {}).get("twitch_game", "Grand Theft Auto VI")
+    games = [game] if game else helix("games", {"name": name}).get("data") or []
     if not games:
         log(f"twitch api: category '{name}' not found")
         return []
@@ -405,8 +425,8 @@ AI_VIDEOS = int(os.environ.get("KLIPY_AI_VIDEOS", "2"))   # transcripts read by 
 AI_MAX_S = 5400                                           # longer videos: too much to download and transcribe
 AI_MIN_VIEWS = 30000
 
-HYPE_RE = re.compile(r"(oh my god|omg|no way|what the|wtf|holy|bro+|yo+|let'?s go+|bruh|run+|cops?|police|"
-                     r"crash(ed)?|dead|died|insane|crazy|nah+|stop|help|why|hahaha+|lmao+|lol+|ayo+|what+)", re.I)
+HYPE_RE = re.compile(r"\b(oh my god|omg|no way|what the|wtf|holy|bro+|yo+|let'?s go+|bruh|run+|cops?|police|"
+                     r"crash(ed)?|dead|died|insane|crazy|nah+|stop|help|why|hahaha+|lmao+|lol+|ayo+|what+)\b", re.I)
 
 def transcript_highlights(segs, audio, max_n=3):
     """The shareable moments of a long video without AI (21. 11., replaces the Cloudflare text model): every
@@ -426,7 +446,7 @@ def transcript_highlights(segs, audio, max_n=3):
             continue
         loud = (float(np.percentile(db[i0:i1], 90)) - med) / mad
         text = seg.get("text") or ""
-        hype = len(HYPE_RE.findall(text)) + text.count("!") + len(re.findall(r"([a-z]){3,}", text, re.I))
+        hype = len(HYPE_RE.findall(text)) + text.count("!") + len(re.findall(r"([a-z])\1{3,}", text, re.I))
         if loud >= 2.5 and hype >= 1:
             peak = float(ts[i0 + int(np.argmax(db[i0:i1]))])
             scored.append((min(1.0, 0.12 * loud + 0.08 * hype), peak))
@@ -1825,7 +1845,7 @@ def captions_ass(words, path, y, cap=None, per=2, anim="pop"):
 HOOK_Q = {"crash": ["DID {n} JUST WRECK EVERYTHING?", "HOW DID {n} CRASH THAT HARD?"],
           "chase": ["CAN {n} GET AWAY?", "WILL {n} ESCAPE THIS?"],
           "funny": ["WHY IS {n} CRYING LAUGHING?", "WHAT MADE {n} LOSE IT?"],
-          "glitch": ["WHAT IS THIS GTA 6 GLITCH?", "DID GTA 6 JUST BREAK?"],
+          "glitch": ["WHAT IS THIS {g} GLITCH?", "DID {g} JUST BREAK?"],
           "rage": ["WHY IS {n} SO MAD?", "WHAT MADE {n} RAGE?"]}
 HOOK_ELSE = ["DID {n} REALLY DO THAT?", "WAIT FOR {n}'S REACTION"]
 HOOK_DUR = 2.0
@@ -1833,6 +1853,7 @@ HOOK_DUR = 2.0
 def hook_text(clip, mtags, words, src, peak):
     """The question for the first HOOK_DUR s: the moment's strongest action tag + the streamer's name."""
     import publikuj as P
+    import hry
     tags = mtags.get("tags")
     if tags is None:
         tags = moment_tags(words, src, peak, clip.get("title"), clip.get("created") or 0)[0]
@@ -1841,14 +1862,14 @@ def hook_text(clip, mtags, words, src, peak):
     try:                                             # 19. 11.: from what he really says (Cloudflare text model)
         import nahled_ai
         near = [w[2] for w in words if peak is None or peak - 12 <= w[0] <= peak + 4]
-        q = nahled_ai.hook_question(name, list(tags), " ".join(near))
+        q = nahled_ai.hook_question(name, list(tags), " ".join(near), game=hry.label(clip.get("category")))
         if q:
             return q
     except Exception as e:
         log(f"  hook question (AI) failed ({str(e)[-80:]}), template")
     pool = next((HOOK_Q[t] for t in tags if t in HOOK_Q), HOOK_ELSE)
     k = int(hashlib.md5(str(clip.get("id")).encode()).hexdigest(), 16)
-    q = pool[k % len(pool)].format(n=name)
+    q = pool[k % len(pool)].format(n=name, g=hry.label(clip.get("category")).upper())
     from cenzura import cenzura
     return cenzura(q)
 
@@ -5030,8 +5051,11 @@ def is_game(clip):
     publikuj.py checks the saved category again before anything goes out).
     YouTube windows were already filtered by video title.
     """
-    if clip.get("platform") == "youtube" or clip.get("category"):   # YouTube title / Twitch API category
+    import hry
+    if clip.get("platform") == "youtube":             # YouTube windows: found by GTA 6 titles
         return bool(re.search(game_re(), clip.get("category", ""), re.I))
+    if clip.get("category"):                          # Twitch API category: any game (26. 11.), not talk / casino
+        return hry.is_gaming(clip["category"])
     if clip.get("platform") not in ("twitch", "kick"):
         return False
     try:
@@ -5040,7 +5064,7 @@ def is_game(clip):
         log(f"  skip {clip['channel']} {clip['id']}: category unknown ({str(e)[-80:]})")
         return False
     clip["category"] = " ".join(cats)
-    if re.search(game_re(), clip["category"], re.I):
+    if hry.is_gaming(clip["category"]):
         return True
     state = load_json(STATE, {"done": {}, "failed": {}})
     state.setdefault("other_game", {})[clip["id"]] = " ".join(cats)
@@ -5289,7 +5313,7 @@ def cmd_batch(a):
     min_pool = load_json(SOURCES, {}).get("long_pool_min_views", 300)
     for c in live:                                     # missed the shorts quota: long-form may still use it
         try:
-            if c.get("views", 0) >= min_pool and not skip(c["id"]) and re.search(game_re(), c.get("category") or "", re.I):
+            if c.get("views", 0) >= min_pool and not skip(c["id"]) and __import__("hry").is_gaming(c.get("category") or ""):
                 pool_add(pool_row(c))
         except Exception as e:                         # long-form pool must never break the shorts run
             log(f"pool: {e}")
