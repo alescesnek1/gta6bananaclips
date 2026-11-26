@@ -1941,6 +1941,249 @@
           "clicks": 3
         }
       }
+    },
+    "bananas:live_hasanabi_1795055848": {
+      "brand": "bananas",
+      "concept": "classic",
+      "due": "2026-11-19T03:45:00+01:00",
+      "due_ts": 1795056300.0,
+      "age_h": 180.4,
+      "views": 153.0,
+      "eng": 0.0,
+      "nets": {
+        "instagram": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 149,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 13.39,
+          "averageTimeWatched": 7.05,
+          "reach": 115
+        },
+        "facebook": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "impressions": 4,
+          "reach": 4,
+          "shares": 0,
+          "clicks": 0
+        }
+      }
+    },
+    "bananas:live_xqc_1795137542": {
+      "brand": "bananas",
+      "concept": "classic",
+      "due": "2026-11-20T02:35:00+01:00",
+      "due_ts": 1795138500.0,
+      "age_h": 157.6,
+      "views": 11.0,
+      "eng": 0.0,
+      "nets": {
+        "instagram": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 1,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 0.09,
+          "averageTimeWatched": 5.18,
+          "reach": 1
+        },
+        "facebook": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "impressions": 10,
+          "reach": 8,
+          "shares": 0,
+          "clicks": 0
+        }
+      }
+    },
+    "bananas:live_kaicenat_1795157992": {
+      "brand": "bananas",
+      "concept": "classic",
+      "due": "2026-11-20T08:15:00+01:00",
+      "due_ts": 1795158900.0,
+      "age_h": 151.9,
+      "views": 15.0,
+      "eng": 1.0,
+      "nets": {
+        "instagram": {
+          "reactions": 1,
+          "comments": 0,
+          "engagementRate": 50,
+          "views": 2,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 0.2,
+          "averageTimeWatched": 6.08,
+          "reach": 2
+        },
+        "facebook": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "impressions": 13,
+          "reach": 9,
+          "shares": 0,
+          "clicks": 0
+        }
+      }
+    },
+    "bananas:kick_clip_01M7QB1PQ1JTDEBN7AFG5XVDKX": {
+      "brand": "bananas",
+      "concept": "classic",
+      "due": "2026-11-18T16:46:00+01:00",
+      "due_ts": 1795016760.0,
+      "age_h": 191.4,
+      "views": 459.0,
+      "eng": 0.0,
+      "nets": {
+        "instagram": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 190,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 16.44,
+          "averageTimeWatched": 7.36,
+          "reach": 132
+        },
+        "facebook": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "impressions": 269,
+          "reach": 212,
+          "shares": 0,
+          "clicks": 0
+        }
+      }
+    },
+    "bananas:twitch_PeacefulGlutenFreeVultureShazBotstix-KgHnVnwwgZOeO6Xs": {
+      "brand": "bananas",
+      "concept": "classic",
+      "due": "2026-11-18T19:42:00+01:00",
+      "due_ts": 1795027320.0,
+      "age_h": 188.4,
+      "views": 0.0,
+      "eng": 0.0,
+      "nets": {
+        "instagram": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 0,
+          "averageTimeWatched": 0,
+          "reach": 0
+        },
+        "facebook": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "impressions": 0,
+          "reach": 0,
+          "shares": 0,
+          "clicks": 0
+        }
+      }
+    },
+    "bananas:twitch_AdventurousHonestTapirKeyboardCat-9Eii4tkWb1VjxGqf": {
+      "brand": "bananas",
+      "concept": "classic",
+      "due": "2026-11-19T03:34:00+01:00",
+      "due_ts": 1795055640.0,
+      "age_h": 180.6,
+      "views": 407.0,
+      "eng": 3.0,
+      "nets": {
+        "instagram": {
+          "reactions": 1,
+          "comments": 0,
+          "engagementRate": 1.9,
+          "views": 125,
+          "shares": 1,
+          "saves": 0,
+          "totalTimeWatched": 9.1,
+          "averageTimeWatched": 5.2,
+          "reach": 105
+        },
+        "facebook": {
+          "reactions": 1,
+          "comments": 0,
+          "engagementRate": 0.35,
+          "impressions": 282,
+          "reach": 228,
+          "shares": 0,
+          "clicks": 0
+        }
+      }
+    },
+    "fanpage:live_hasanabi_1795137527": {
+      "brand": "fanpage",
+      "concept": "classic",
+      "due": "2026-11-20T02:25:00+01:00",
+      "due_ts": 1795137900.0,
+      "age_h": 157.7,
+      "views": 325.0,
+      "eng": 0.0,
+      "nets": {
+        "twitter": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "reposts": 0,
+          "impressions": 0,
+          "clicks": 0
+        },
+        "instagram": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 153,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 19.44,
+          "averageTimeWatched": 10.51,
+          "reach": 112
+        },
+        "threads": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "quotes": 0,
+          "reposts": 0
+        },
+        "tiktok": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "shares": 0,
+          "reach": 0,
+          "totalTimeWatched": 0,
+          "averageTimeWatched": 0
+        },
+        "facebook": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "impressions": 172,
+          "reach": 125,
+          "shares": 0,
+          "clicks": 0
+        }
+      }
     }
   },
   "concepts": {},
@@ -1951,6 +2194,6 @@
       "last": 1795640150.027555
     }
   },
-  "measured_ts": 1795606754.0259867,
-  "measured_at": "2026-11-25T11:39:14+00:00"
+  "measured_ts": 1795705737.7695282,
+  "measured_at": "2026-11-26T15:08:57+00:00"
 }

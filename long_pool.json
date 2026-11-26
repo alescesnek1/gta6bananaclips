@@ -39899,11 +39899,80 @@
     "channel": "vinesauce",
     "platform": "twitch",
     "title": "VAPORIZED",
-    "views": 1392,
+    "views": 6738,
     "created": 1795501337,
     "category": "Grand Theft Auto VI",
     "cluster": 1,
-    "added": 1795533339
+    "added": 1795702820,
+    "video_id": "2938958441",
+    "vod_offset": 16855,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/vinesauce/20261124_twitch_AuspiciousBrainyOrcaPupper-5eiY5qb-FEoyrOU4/source.mp4",
+    "peak": 39.550000000000004,
+    "cut": [
+      30.5,
+      42.57
+    ],
+    "dur": 47.4,
+    "tags": [
+      "wow",
+      "rage"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.2,
+      "crash": 0.0,
+      "rage": 0.96,
+      "first-reaction": 0.0,
+      "wow": 1.0,
+      "_loud": 3.0,
+      "_motion": 25.1
+    },
+    "quote": "Is it even worth looking for her?",
+    "rendered": [
+      "fanpage"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.0,
+      "wow": 0.0
+    },
+    "proven": [],
+    "evidence": {
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ]
+    },
+    "fun": 0.49,
+    "signals": {
+      "siren": 0.0,
+      "impact": 9.4,
+      "loud": 3.5,
+      "motion": 18.8,
+      "sustained": 0.65,
+      "spike": 2.1,
+      "laugh": 0,
+      "static": 0.0,
+      "letterbox": 0.0,
+      "luma": 109.2,
+      "dark": 0.0
+    }
   },
   "twitch_DarlingGiftedCheeseWoofer-AYlHEKGmN_awQ6yz": {
     "id": "twitch_DarlingGiftedCheeseWoofer-AYlHEKGmN_awQ6yz",
@@ -40328,13 +40397,13 @@
     "channel": "aryssa614",
     "platform": "twitch",
     "title": "typical man",
-    "views": 520,
+    "views": 991,
     "created": 1795450066,
     "category": "Grand Theft Auto VI",
     "video_id": "2938311963",
     "vod_offset": 12149,
     "cluster": 1,
-    "added": 1795533339
+    "added": 1795705684
   },
   "twitch_SoftCorrectPelicanWTRuck-kb9MC2L943Swag5P": {
     "id": "twitch_SoftCorrectPelicanWTRuck-kb9MC2L943Swag5P",
@@ -41216,13 +41285,13 @@
     "channel": "angryginge13",
     "platform": "twitch",
     "title": "ginge phone call",
-    "views": 651,
+    "views": 1329,
     "created": 1795530382,
     "category": "Grand Theft Auto VI",
     "video_id": "2935060719",
     "vod_offset": 12472,
     "cluster": 1,
-    "added": 1795569114
+    "added": 1795705684
   },
   "twitch_FineHelplessSwordFloof-ZljlVQd7GopiyUDf": {
     "id": "twitch_FineHelplessSwordFloof-ZljlVQd7GopiyUDf",
@@ -41493,13 +41562,13 @@
     "channel": "theburntpeanut",
     "platform": "twitch",
     "title": "That's a whole lot of ASS!!!!",
-    "views": 681,
+    "views": 1140,
     "created": 1795491255,
     "category": "Grand Theft Auto VI",
     "video_id": "2938886234",
     "vod_offset": 11571,
     "cluster": 2,
-    "added": 1795569114
+    "added": 1795705684
   },
   "twitch_VictoriousFineMochaPipeHype-CLBGE7MJJVbPRXRI": {
     "id": "twitch_VictoriousFineMochaPipeHype-CLBGE7MJJVbPRXRI",
@@ -45016,13 +45085,84 @@
     "channel": "symfuhny",
     "platform": "twitch",
     "title": "W",
-    "views": 901,
+    "views": 2142,
     "created": 1795538504,
     "category": "Grand Theft Auto VI",
     "video_id": "2939290232",
     "vod_offset": 15464,
     "cluster": 1,
-    "added": 1795606713
+    "added": 1795705683,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/symfuhny/20261124_twitch_TrustworthyWrongSkirretHeyGuys-DMt2o7edaEgPSvMx/source.mp4",
+    "peak": 24.150000000000002,
+    "cut": [
+      12.53,
+      28.8
+    ],
+    "dur": 35.48,
+    "tags": [
+      "rage",
+      "wow"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 1.0,
+      "first-reaction": 0.0,
+      "wow": 0.52,
+      "_loud": 1.4,
+      "_motion": 13.5
+    },
+    "quote": "And honestly I might F*** replay the whole thing on",
+    "rendered": [
+      "fanpage"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 1.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.0,
+      "wow": 0.0
+    },
+    "primary": "rage",
+    "proven": [],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ]
+    },
+    "fun": 0.54,
+    "signals": {
+      "siren": 0.0,
+      "impact": 8.0,
+      "loud": 1.3,
+      "motion": 18.7,
+      "sustained": 0.74,
+      "spike": 2.4,
+      "laugh": 0,
+      "static": 0.03,
+      "letterbox": 0.0,
+      "luma": 76.5,
+      "dark": 0.0
+    }
   },
   "youtube_88TNr9C8oEE_423": {
     "id": "youtube_88TNr9C8oEE_423",
@@ -57213,5 +57353,798 @@
     "src_mb": 8.4,
     "source": "https://6b078909833aed298c6d67b9--gta6bananaclips-media.netlify.app/yt/youtube_umDq3LY7sFA_3_16x9.mp4",
     "yt_url": "https://www.youtube.com/watch?v=umDq3LY7sFA"
+  },
+  "twitch_AmorphousDeadYamChefFrank-WShNWBEpt8J4LoLr": {
+    "id": "twitch_AmorphousDeadYamChefFrank-WShNWBEpt8J4LoLr",
+    "url": "https://www.twitch.tv/exotronixx/clip/AmorphousDeadYamChefFrank-WShNWBEpt8J4LoLr",
+    "channel": "exotronixx",
+    "platform": "twitch",
+    "title": "4k",
+    "views": 1892,
+    "created": 1795465610,
+    "category": "Counter-Strike",
+    "video_id": "2938562193",
+    "vod_offset": 5306,
+    "cluster": 1,
+    "added": 1795705684
+  },
+  "twitch_AssiduousDullMuleKappaPride-1QyqrOacunGQQGmT": {
+    "id": "twitch_AssiduousDullMuleKappaPride-1QyqrOacunGQQGmT",
+    "url": "https://www.twitch.tv/ozzyxy/clip/AssiduousDullMuleKappaPride-1QyqrOacunGQQGmT",
+    "channel": "ozzyxy",
+    "platform": "twitch",
+    "title": "State of PvP",
+    "views": 5348,
+    "created": 1795448887,
+    "category": "World of Warcraft",
+    "video_id": "2937796961",
+    "vod_offset": 17896,
+    "cluster": 1,
+    "added": 1795705683
+  },
+  "twitch_AthleticStylishWasabiBrainSlug-vgKp_xy912n5alGf": {
+    "id": "twitch_AthleticStylishWasabiBrainSlug-vgKp_xy912n5alGf",
+    "url": "https://www.twitch.tv/typicalgamer/clip/AthleticStylishWasabiBrainSlug-vgKp_xy912n5alGf",
+    "channel": "typicalgamer",
+    "platform": "twitch",
+    "title": "pirate token in gta 6",
+    "views": 1420,
+    "created": 1795481938,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2938912600",
+    "vod_offset": 461,
+    "cluster": 1,
+    "added": 1795705684
+  },
+  "twitch_BetterLittleMonitorTakeNRG-82UmBkTPoit8d_Q8": {
+    "id": "twitch_BetterLittleMonitorTakeNRG-82UmBkTPoit8d_Q8",
+    "url": "https://www.twitch.tv/swifty/clip/BetterLittleMonitorTakeNRG-82UmBkTPoit8d_Q8",
+    "channel": "swifty",
+    "platform": "twitch",
+    "title": "Look at that. Look at that. What? Sylvie.",
+    "views": 1028,
+    "created": 1795501268,
+    "category": "World of Warcraft",
+    "video_id": "2938774056",
+    "vod_offset": 2016,
+    "cluster": 1,
+    "added": 1795705684
+  },
+  "twitch_BovineGrossLaptopKevinTurtle-9hLBiACZ68TRlXz-": {
+    "id": "twitch_BovineGrossLaptopKevinTurtle-9hLBiACZ68TRlXz-",
+    "url": "https://www.twitch.tv/riley/clip/BovineGrossLaptopKevinTurtle-9hLBiACZ68TRlXz-",
+    "channel": "riley",
+    "platform": "twitch",
+    "title": "Deleting her character",
+    "views": 990,
+    "created": 1795500224,
+    "category": "World of Warcraft",
+    "video_id": "2939027732",
+    "vod_offset": 10792,
+    "cluster": 1,
+    "added": 1795705684
+  },
+  "twitch_BumblingHungryDurianFloof-vyTaSOoOj78yjMPy": {
+    "id": "twitch_BumblingHungryDurianFloof-vyTaSOoOj78yjMPy",
+    "url": "https://www.twitch.tv/jlcs2/clip/BumblingHungryDurianFloof-vyTaSOoOj78yjMPy",
+    "channel": "jlcs2",
+    "platform": "twitch",
+    "title": "joker laugh",
+    "views": 1093,
+    "created": 1795456918,
+    "category": "Counter-Strike",
+    "video_id": "2938487363",
+    "vod_offset": 3522,
+    "cluster": 1,
+    "added": 1795705684
+  },
+  "twitch_ClearSoftTomatoWoofer-zc57HlMD7cfMK2Fb": {
+    "id": "twitch_ClearSoftTomatoWoofer-zc57HlMD7cfMK2Fb",
+    "url": "https://www.twitch.tv/syndicate/clip/ClearSoftTomatoWoofer-zc57HlMD7cfMK2Fb",
+    "channel": "syndicate",
+    "platform": "twitch",
+    "title": "🚨GTA 6 100% COMPLETED - TIME FOR FUN!🚨",
+    "views": 1019,
+    "created": 1795467223,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2938643974",
+    "vod_offset": 3758,
+    "cluster": 2,
+    "added": 1795705684
+  },
+  "twitch_ClearTameMarrowKevinTurtle-MedgUZKJ5BLzb3Oh": {
+    "id": "twitch_ClearTameMarrowKevinTurtle-MedgUZKJ5BLzb3Oh",
+    "url": "https://www.twitch.tv/pgl/clip/ClearTameMarrowKevinTurtle-MedgUZKJ5BLzb3Oh",
+    "channel": "pgl",
+    "platform": "twitch",
+    "title": "O my Gosh",
+    "views": 3757,
+    "created": 1795524263,
+    "category": "Counter-Strike",
+    "video_id": "2939040599",
+    "vod_offset": 33977,
+    "cluster": 1,
+    "added": 1795705683
+  },
+  "twitch_CourageousRudeMosquitoHassanChop-nQg_tGLsPhKdsQiV": {
+    "id": "twitch_CourageousRudeMosquitoHassanChop-nQg_tGLsPhKdsQiV",
+    "url": "https://www.twitch.tv/psp1g/clip/CourageousRudeMosquitoHassanChop-nQg_tGLsPhKdsQiV",
+    "channel": "psp1g",
+    "platform": "twitch",
+    "title": "GTA tech irl",
+    "views": 1162,
+    "created": 1795494768,
+    "category": "Counter-Strike",
+    "video_id": "2939071508",
+    "vod_offset": 1779,
+    "cluster": 1,
+    "added": 1795705684
+  },
+  "twitch_DaintyImpartialRutabagaTTours--fOLGhHKAiQAHTQn": {
+    "id": "twitch_DaintyImpartialRutabagaTTours--fOLGhHKAiQAHTQn",
+    "url": "https://www.twitch.tv/charlyne/clip/DaintyImpartialRutabagaTTours--fOLGhHKAiQAHTQn",
+    "channel": "charlyne",
+    "platform": "twitch",
+    "title": "I'm an AI learning the game so I do everything perfectly",
+    "views": 1599,
+    "created": 1795472914,
+    "category": "World of Warcraft",
+    "video_id": "2938496212",
+    "vod_offset": 1688,
+    "cluster": 1,
+    "added": 1795705684
+  },
+  "twitch_DarkAntsyPeachDBstyle-WvxXVrIRLtUpxDeT": {
+    "id": "twitch_DarkAntsyPeachDBstyle-WvxXVrIRLtUpxDeT",
+    "url": "https://www.twitch.tv/lululuvely/clip/DarkAntsyPeachDBstyle-WvxXVrIRLtUpxDeT",
+    "channel": "lululuvely",
+    "platform": "twitch",
+    "title": "preparing for GTA time",
+    "views": 978,
+    "created": 1795472857,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2938590628",
+    "vod_offset": 942,
+    "cluster": 1,
+    "added": 1795705684
+  },
+  "twitch_ExpensiveSteamyTitanNononoCat-srKjotDq421zeLPK": {
+    "id": "twitch_ExpensiveSteamyTitanNononoCat-srKjotDq421zeLPK",
+    "url": "https://www.twitch.tv/pikabooirl/clip/ExpensiveSteamyTitanNononoCat-srKjotDq421zeLPK",
+    "channel": "pikabooirl",
+    "platform": "twitch",
+    "title": "Parking in Expecting Mother's Spot",
+    "views": 1820,
+    "created": 1795474643,
+    "category": "World of Warcraft",
+    "video_id": "2938787084",
+    "vod_offset": 1589,
+    "cluster": 1,
+    "added": 1795705684
+  },
+  "twitch_FaithfulSpunkyGalagoCopyThis-YdoAL82JGo8W4yjn": {
+    "id": "twitch_FaithfulSpunkyGalagoCopyThis-YdoAL82JGo8W4yjn",
+    "url": "https://www.twitch.tv/bagginstv/clip/FaithfulSpunkyGalagoCopyThis-YdoAL82JGo8W4yjn",
+    "channel": "bagginstv",
+    "platform": "twitch",
+    "title": "BREAKING NEWS",
+    "views": 985,
+    "created": 1795453864,
+    "category": "AION 2",
+    "video_id": "2938298505",
+    "vod_offset": 17462,
+    "cluster": 1,
+    "added": 1795705684
+  },
+  "twitch_FamousConfidentOwlAMPEnergyCherry-k25RB43QMC9QHJ_t": {
+    "id": "twitch_FamousConfidentOwlAMPEnergyCherry-k25RB43QMC9QHJ_t",
+    "url": "https://www.twitch.tv/kiilanie/clip/FamousConfidentOwlAMPEnergyCherry-k25RB43QMC9QHJ_t",
+    "channel": "kiilanie",
+    "platform": "twitch",
+    "title": "DROPS🌴 PS5 🌴 DAY 5 Chap. 2 🌴Florida Man 🌴 Crime in 30FPS🦩 5 SUBS = TEMP TATTOO ON ME 🦩 @kiilanie !socials",
+    "views": 1055,
+    "created": 1795612768,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2940206210",
+    "vod_offset": 13882,
+    "cluster": 1,
+    "added": 1795705684
+  },
+  "twitch_FlirtyWimpyDolphinTebowing-hOqSpBzFngIFKJQs": {
+    "id": "twitch_FlirtyWimpyDolphinTebowing-hOqSpBzFngIFKJQs",
+    "url": "https://www.twitch.tv/itsclapwow/clip/FlirtyWimpyDolphinTebowing-hOqSpBzFngIFKJQs",
+    "channel": "itsclapwow",
+    "platform": "twitch",
+    "title": "Lionheart Helm drop in Scholo!",
+    "views": 2079,
+    "created": 1795456749,
+    "category": "World of Warcraft",
+    "video_id": "2938237191",
+    "vod_offset": 28936,
+    "cluster": 1,
+    "added": 1795705684
+  },
+  "twitch_FriendlyClearChamoisShadyLulu-QM68GeT4jG_wM0Ck": {
+    "id": "twitch_FriendlyClearChamoisShadyLulu-QM68GeT4jG_wM0Ck",
+    "url": "https://www.twitch.tv/arthars/clip/FriendlyClearChamoisShadyLulu-QM68GeT4jG_wM0Ck",
+    "channel": "arthars",
+    "platform": "twitch",
+    "title": "soyjakking",
+    "views": 1458,
+    "created": 1795461110,
+    "category": "AION 2",
+    "video_id": "2938247472",
+    "vod_offset": 31729,
+    "cluster": 1,
+    "added": 1795705684
+  },
+  "twitch_FunnyLaconicMooseTriHard-cgT-muBYSEUJm0u7": {
+    "id": "twitch_FunnyLaconicMooseTriHard-cgT-muBYSEUJm0u7",
+    "url": "https://www.twitch.tv/cinna/clip/FunnyLaconicMooseTriHard-cgT-muBYSEUJm0u7",
+    "channel": "cinna",
+    "platform": "twitch",
+    "title": "Not Even Hiding It Anymore",
+    "views": 1168,
+    "created": 1795476615,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2938693218",
+    "vod_offset": 9924,
+    "cluster": 1,
+    "added": 1795705684
+  },
+  "twitch_GrotesqueBelovedGaurDBstyle-ym3i9wb_uX_ustyi": {
+    "id": "twitch_GrotesqueBelovedGaurDBstyle-ym3i9wb_uX_ustyi",
+    "url": "https://www.twitch.tv/dahlia/clip/GrotesqueBelovedGaurDBstyle-ym3i9wb_uX_ustyi",
+    "channel": "dahlia",
+    "platform": "twitch",
+    "title": "Crazy Drivers",
+    "views": 1528,
+    "created": 1795466690,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2938462320",
+    "vod_offset": 15071,
+    "cluster": 1,
+    "added": 1795705684
+  },
+  "twitch_InnocentMoistBurritoTinyFace-DNCfceGcw4prKHcB": {
+    "id": "twitch_InnocentMoistBurritoTinyFace-DNCfceGcw4prKHcB",
+    "url": "https://www.twitch.tv/missmikkaa/clip/InnocentMoistBurritoTinyFace-DNCfceGcw4prKHcB",
+    "channel": "missmikkaa",
+    "platform": "twitch",
+    "title": "Mikkaa's EPIC ramp stunt",
+    "views": 1537,
+    "created": 1795468931,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2938373303",
+    "vod_offset": 24730,
+    "cluster": 1,
+    "added": 1795705684
+  },
+  "twitch_KawaiiDeliciousChamoisItsBoshyTime-Um77cZBCJhjtT4-D": {
+    "id": "twitch_KawaiiDeliciousChamoisItsBoshyTime-Um77cZBCJhjtT4-D",
+    "url": "https://www.twitch.tv/loya/clip/KawaiiDeliciousChamoisItsBoshyTime-Um77cZBCJhjtT4-D",
+    "channel": "loya",
+    "platform": "twitch",
+    "title": "HIS D**G IS TOUCHING ME",
+    "views": 1139,
+    "created": 1795549472,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2939185136",
+    "vod_offset": 13144,
+    "cluster": 1,
+    "added": 1795705684
+  },
+  "twitch_PeppyPeacefulStarlingShadyLulu-FbkcX75x7KrIFXKR": {
+    "id": "twitch_PeppyPeacefulStarlingShadyLulu-FbkcX75x7KrIFXKR",
+    "url": "https://www.twitch.tv/acie/clip/PeppyPeacefulStarlingShadyLulu-FbkcX75x7KrIFXKR",
+    "channel": "acie",
+    "platform": "twitch",
+    "title": "Taking a shower",
+    "views": 1022,
+    "created": 1795556448,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2939589835",
+    "vod_offset": 9124,
+    "cluster": 1,
+    "added": 1795705684
+  },
+  "twitch_PhilanthropicConfidentHerbsHumbleLife-jug6kGmeYU2PEuN7": {
+    "id": "twitch_PhilanthropicConfidentHerbsHumbleLife-jug6kGmeYU2PEuN7",
+    "url": "https://www.twitch.tv/psherotv/clip/PhilanthropicConfidentHerbsHumbleLife-jug6kGmeYU2PEuN7",
+    "channel": "psherotv",
+    "platform": "twitch",
+    "title": "Happy Thanksgiving chat",
+    "views": 928,
+    "created": 1795449777,
+    "category": "World of Warcraft",
+    "video_id": "2938164091",
+    "vod_offset": 7938,
+    "cluster": 1,
+    "added": 1795705685
+  },
+  "twitch_PoisedPreciousTrianglePunchTrees-e25nmG-F6rv7aR2_": {
+    "id": "twitch_PoisedPreciousTrianglePunchTrees-e25nmG-F6rv7aR2_",
+    "url": "https://www.twitch.tv/sco/clip/PoisedPreciousTrianglePunchTrees-e25nmG-F6rv7aR2_",
+    "channel": "sco",
+    "platform": "twitch",
+    "title": "<Method> LBRS & Ony attunement !recruitment !Card !VPN !Holy !GUIDES",
+    "views": 1014,
+    "created": 1795540787,
+    "category": "World of Warcraft",
+    "video_id": "2939396586",
+    "vod_offset": 7182,
+    "cluster": 1,
+    "added": 1795705684
+  },
+  "twitch_ProductiveEagerCroquetteBudStar-2bW-wUfw5WT79qTp": {
+    "id": "twitch_ProductiveEagerCroquetteBudStar-2bW-wUfw5WT79qTp",
+    "url": "https://www.twitch.tv/xaryu/clip/ProductiveEagerCroquetteBudStar-2bW-wUfw5WT79qTp",
+    "channel": "xaryu",
+    "platform": "twitch",
+    "title": "AFK kill",
+    "views": 965,
+    "created": 1795466896,
+    "category": "World of Warcraft",
+    "video_id": "2938400588",
+    "vod_offset": 20274,
+    "cluster": 1,
+    "added": 1795705684
+  },
+  "twitch_ProductiveKathishChimpanzeeTheThing-7N-DcQi8o3v6fffj": {
+    "id": "twitch_ProductiveKathishChimpanzeeTheThing-7N-DcQi8o3v6fffj",
+    "url": "https://www.twitch.tv/ohnepixel/clip/ProductiveKathishChimpanzeeTheThing-7N-DcQi8o3v6fffj",
+    "channel": "ohnepixel",
+    "platform": "twitch",
+    "title": "Lucia tripped",
+    "views": 3861,
+    "created": 1795443442,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2938342600",
+    "vod_offset": 2264,
+    "cluster": 1,
+    "added": 1795705683
+  },
+  "twitch_RelievedBitterDragonfruitShazBotstix-ZOVWk_89Qp1Pf1KL": {
+    "id": "twitch_RelievedBitterDragonfruitShazBotstix-ZOVWk_89Qp1Pf1KL",
+    "url": "https://www.twitch.tv/elige/clip/RelievedBitterDragonfruitShazBotstix-ZOVWk_89Qp1Pf1KL",
+    "channel": "elige",
+    "platform": "twitch",
+    "title": "elige new glasspad",
+    "views": 2066,
+    "created": 1795457804,
+    "category": "Counter-Strike",
+    "video_id": "2935163547",
+    "vod_offset": 2322,
+    "cluster": 1,
+    "added": 1795705684
+  },
+  "twitch_RoundHumbleSageUncleNox-s1ukpMG90fYwUuC1": {
+    "id": "twitch_RoundHumbleSageUncleNox-s1ukpMG90fYwUuC1",
+    "url": "https://www.twitch.tv/ytlobosgoloco/clip/RoundHumbleSageUncleNox-s1ukpMG90fYwUuC1",
+    "channel": "ytlobosgoloco",
+    "platform": "twitch",
+    "title": "instant karma",
+    "views": 1006,
+    "created": 1795527830,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2939170204",
+    "vod_offset": 22952,
+    "cluster": 1,
+    "added": 1795705684
+  },
+  "twitch_SilkyRelievedThymeStrawBeary-eOJEGX-GGDI30vpf": {
+    "id": "twitch_SilkyRelievedThymeStrawBeary-eOJEGX-GGDI30vpf",
+    "url": "https://www.twitch.tv/kzapex/clip/SilkyRelievedThymeStrawBeary-eOJEGX-GGDI30vpf",
+    "channel": "kzapex",
+    "platform": "twitch",
+    "title": "Practice Patients Training slapping rob run is that game 2026",
+    "views": 2124,
+    "created": 1795516374,
+    "category": "ROB RUN",
+    "video_id": "2938944803",
+    "vod_offset": 32468,
+    "cluster": 1,
+    "added": 1795705683
+  },
+  "twitch_SincereFrailMouseBIRB-gLrMoRQwB84DNINj": {
+    "id": "twitch_SincereFrailMouseBIRB-gLrMoRQwB84DNINj",
+    "url": "https://www.twitch.tv/pgl/clip/SincereFrailMouseBIRB-gLrMoRQwB84DNINj",
+    "channel": "pgl",
+    "platform": "twitch",
+    "title": "s1mple GG",
+    "views": 2948,
+    "created": 1795616829,
+    "category": "Counter-Strike",
+    "video_id": "2940110542",
+    "vod_offset": 27519,
+    "cluster": 1,
+    "added": 1795705683
+  },
+  "twitch_SmellyLongBaguetteRuleFive-skH4XmZWIlS-zEbw": {
+    "id": "twitch_SmellyLongBaguetteRuleFive-skH4XmZWIlS-zEbw",
+    "url": "https://www.twitch.tv/charlyne/clip/SmellyLongBaguetteRuleFive-skH4XmZWIlS-zEbw",
+    "channel": "charlyne",
+    "platform": "twitch",
+    "title": "I love the cockroach so much",
+    "views": 2473,
+    "created": 1795472924,
+    "category": "World of Warcraft",
+    "video_id": "2938496212",
+    "vod_offset": 1642,
+    "cluster": 1,
+    "added": 1795705683
+  },
+  "twitch_SmokyBenevolentMeatloafOMGScoots-HnpmBw8Odqv2oU1U": {
+    "id": "twitch_SmokyBenevolentMeatloafOMGScoots-HnpmBw8Odqv2oU1U",
+    "url": "https://www.twitch.tv/ohnepixel/clip/SmokyBenevolentMeatloafOMGScoots-HnpmBw8Odqv2oU1U",
+    "channel": "ohnepixel",
+    "platform": "twitch",
+    "title": "Ohnepixel tried to catch fly hilarious",
+    "views": 12465,
+    "created": 1795445687,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2938342600",
+    "vod_offset": 4512,
+    "cluster": 1,
+    "added": 1795701802,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/ohnepixel/20261123_twitch_SmokyBenevolentMeatloafOMGScoots-HnpmBw8Odqv2oU1U/source.mp4",
+    "peak": 34.550000000000004,
+    "cut": [
+      25.57,
+      37.63
+    ],
+    "dur": 60.01,
+    "tags": [
+      "funny",
+      "rage",
+      "wow"
+    ],
+    "tag_scores": {
+      "funny": 0.59,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.29,
+      "rage": 0.54,
+      "first-reaction": 0.0,
+      "wow": 0.49,
+      "_loud": 3.6,
+      "_motion": 0.1
+    },
+    "quote": "Oh my god, I don't understand.",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.95,
+      "rage": 0.25,
+      "fail": 0.25,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.0,
+      "wow": 0.6
+    },
+    "primary": "funny",
+    "proven": [
+      "funny",
+      "wow"
+    ],
+    "evidence": {
+      "funny": [
+        "loud",
+        "text"
+      ],
+      "rage": [
+        "loud"
+      ],
+      "fail": [
+        "loud"
+      ],
+      "wow": [
+        "loud",
+        "text"
+      ]
+    },
+    "fun": 0.0,
+    "signals": {
+      "siren": 0.0,
+      "impact": 37.0,
+      "loud": 7.1,
+      "motion": 0.0,
+      "sustained": 0.0,
+      "spike": 0.3,
+      "laugh": 0,
+      "static": 1.0,
+      "letterbox": 0.0,
+      "luma": 56.4,
+      "dark": 0.0
+    }
+  },
+  "twitch_SpicyResourcefulInternTBTacoLeft-7894osLVrSzAswjm": {
+    "id": "twitch_SpicyResourcefulInternTBTacoLeft-7894osLVrSzAswjm",
+    "url": "https://www.twitch.tv/dunc/clip/SpicyResourcefulInternTBTacoLeft-7894osLVrSzAswjm",
+    "channel": "dunc",
+    "platform": "twitch",
+    "title": "Can't believe Dunc would do this to us",
+    "views": 7572,
+    "created": 1795513570,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2939073342",
+    "vod_offset": 20486,
+    "cluster": 1,
+    "added": 1795705683
+  },
+  "twitch_SwissAstuteSproutMikeHogu-JBv2dlzL5poYDyUx": {
+    "id": "twitch_SwissAstuteSproutMikeHogu-JBv2dlzL5poYDyUx",
+    "url": "https://www.twitch.tv/lftoxy_val/clip/SwissAstuteSproutMikeHogu-JBv2dlzL5poYDyUx",
+    "channel": "lftoxy_val",
+    "platform": "twitch",
+    "title": "SEN OXY | Moral of the Story.",
+    "views": 1080,
+    "created": 1795448539,
+    "category": "VALORANT",
+    "video_id": "2938048385",
+    "vod_offset": 9580,
+    "cluster": 1,
+    "added": 1795705684
+  },
+  "twitch_SwissNimbleDragonCeilingCat-qzMfJRh_3a7WFids": {
+    "id": "twitch_SwissNimbleDragonCeilingCat-qzMfJRh_3a7WFids",
+    "url": "https://www.twitch.tv/nien/clip/SwissNimbleDragonCeilingCat-qzMfJRh_3a7WFids",
+    "channel": "nien",
+    "platform": "twitch",
+    "title": "lock spec",
+    "views": 1158,
+    "created": 1795495789,
+    "category": "World of Warcraft",
+    "video_id": "2939056184",
+    "vod_offset": 4099,
+    "cluster": 1,
+    "added": 1795705684
+  },
+  "twitch_TalentedVictoriousKimchiChocolateRain-hw9JR9tCJgKa2cDs": {
+    "id": "twitch_TalentedVictoriousKimchiChocolateRain-hw9JR9tCJgKa2cDs",
+    "url": "https://www.twitch.tv/isthisemmiep/clip/TalentedVictoriousKimchiChocolateRain-hw9JR9tCJgKa2cDs",
+    "channel": "isthisemmiep",
+    "platform": "twitch",
+    "title": "pitewctsv",
+    "views": 1250,
+    "created": 1795472692,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2938575062",
+    "vod_offset": 530,
+    "cluster": 1,
+    "added": 1795705684
+  },
+  "twitch_TameTacitDogePipeHype-QK4r1WScdmPwIr5p": {
+    "id": "twitch_TameTacitDogePipeHype-QK4r1WScdmPwIr5p",
+    "url": "https://www.twitch.tv/snupy/clip/TameTacitDogePipeHype-QK4r1WScdmPwIr5p",
+    "channel": "snupy",
+    "platform": "twitch",
+    "title": "what even is paladin damage? 💀",
+    "views": 1257,
+    "created": 1795467720,
+    "category": "World of Warcraft",
+    "video_id": "2938231704",
+    "vod_offset": 15551,
+    "cluster": 1,
+    "added": 1795705684
+  },
+  "twitch_TiredPlacidBarracudaTooSpicy-ZdpLKF9wXKw7B8Z7": {
+    "id": "twitch_TiredPlacidBarracudaTooSpicy-ZdpLKF9wXKw7B8Z7",
+    "url": "https://www.twitch.tv/monktavious/clip/TiredPlacidBarracudaTooSpicy-ZdpLKF9wXKw7B8Z7",
+    "channel": "monktavious",
+    "platform": "twitch",
+    "title": "monk said hes getting Adderall and Cheats to destroy prod",
+    "views": 999,
+    "created": 1795482401,
+    "category": "ROB RUN",
+    "cluster": 1,
+    "added": 1795705684
+  },
+  "twitch_TransparentImportantYamSquadGoals-bXezQtcGwuj-esuF": {
+    "id": "twitch_TransparentImportantYamSquadGoals-bXezQtcGwuj-esuF",
+    "url": "https://www.twitch.tv/pikabooirl/clip/TransparentImportantYamSquadGoals-bXezQtcGwuj-esuF",
+    "channel": "pikabooirl",
+    "platform": "twitch",
+    "title": "how lost are some of these alliance players",
+    "views": 3914,
+    "created": 1795571128,
+    "category": "World of Warcraft",
+    "video_id": "2939775898",
+    "vod_offset": 11378,
+    "cluster": 1,
+    "added": 1795703125,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/pikabooirl/20261125_twitch_TransparentImportantYamSquadGoals-bXezQtcGwuj-esuF/source.mp4",
+    "peak": 17.95,
+    "cut": [
+      9.93,
+      21.97
+    ],
+    "dur": 30.02,
+    "tags": [
+      "rage"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.79,
+      "first-reaction": 0.0,
+      "wow": 0.16,
+      "_loud": 16.2,
+      "_motion": 13.3
+    },
+    "quote": "Yep, I've got alliance players S*** talking to me, calling me vegan.",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.35,
+      "fail": 0.25,
+      "physics": 0.25,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.0,
+      "wow": 0.0
+    },
+    "primary": "rage",
+    "proven": [],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "fail": [
+        "impact"
+      ],
+      "physics": [
+        "impact"
+      ],
+      "crash": [
+        "impact"
+      ],
+      "stunt": [
+        "impact"
+      ]
+    },
+    "fun": 0.41,
+    "signals": {
+      "siren": 0.0,
+      "impact": 170.8,
+      "loud": 3.2,
+      "motion": 10.1,
+      "sustained": 0.25,
+      "spike": 2.5,
+      "laugh": 0,
+      "static": 0.16,
+      "letterbox": 0.0,
+      "luma": 77.1,
+      "dark": 0.0
+    }
+  },
+  "twitch_WimpyRelentlessSangGrammarKing-T9oDAczzHYoPov1m": {
+    "id": "twitch_WimpyRelentlessSangGrammarKing-T9oDAczzHYoPov1m",
+    "url": "https://www.twitch.tv/ziqoftw/clip/WimpyRelentlessSangGrammarKing-T9oDAczzHYoPov1m",
+    "channel": "ziqoftw",
+    "platform": "twitch",
+    "title": "Z logs in after ban",
+    "views": 928,
+    "created": 1795555104,
+    "category": "World of Warcraft",
+    "video_id": "2939690242",
+    "vod_offset": 1246,
+    "cluster": 1,
+    "added": 1795705684
+  },
+  "twitch_ZanyImpossibleFennelOpieOP-PrBaVT0qZ9RepO9n": {
+    "id": "twitch_ZanyImpossibleFennelOpieOP-PrBaVT0qZ9RepO9n",
+    "url": "https://www.twitch.tv/loserfruit/clip/ZanyImpossibleFennelOpieOP-PrBaVT0qZ9RepO9n",
+    "channel": "loserfruit",
+    "platform": "twitch",
+    "title": "after gym workout (NSFW)",
+    "views": 936,
+    "created": 1795523940,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2939262621",
+    "vod_offset": 4354,
+    "cluster": 1,
+    "added": 1795705684
+  },
+  "youtube_4t6I6S0JNDo_4754": {
+    "id": "youtube_4t6I6S0JNDo_4754",
+    "url": "https://6b0803392284808290716e70--gta6bananaclips-media.netlify.app/yt/youtube_4t6I6S0JNDo_4754_16x9.mp4",
+    "channel": "gtaseriesvideos",
+    "platform": "youtube",
+    "title": "GTA 6 - 100% Walkthrough Part 8 | 4K Livestream [No Commentary]",
+    "views": 128758,
+    "created": 1795640925,
+    "category": "GTA 6 - 100% Walkthrough Part 8 | 4K Livestream [No Commentary] GTA VI GTA 6 Grand Theft Auto VI Grand Theft Auto 6 GTA VI live GTA 6 live GTA VI livestream GTA 6 livestream GTA VI walkthrough GTA 6 walkthrough GTA VI gameplay GTA 6 gameplay GTA VI Part 1 GTA 6 Part 1 GTA VI 100% walkthrough GTA 6 100% walkthrough GTA VI no commentary GTA 6 no commentary GTA 6 4K GTA VI story mode GTA 6 story mode Jason Duval Lucia Caminos Vice City Leonida 100% completion full game livestream no commentary live",
+    "signal_score": 1.0,
+    "added": 1795705689,
+    "peak": 26.85,
+    "cut": [
+      0.0,
+      35.0
+    ],
+    "dur": 35.0,
+    "tags": [
+      "first-reaction"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.0,
+      "rage": 0.0,
+      "first-reaction": 0.96,
+      "wow": 0.0,
+      "_loud": 1.8,
+      "_motion": 17.5
+    },
+    "quote": "Dumbass! Watch yourself!",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.7,
+      "wow": 0.0
+    },
+    "primary": "first-reaction",
+    "proven": [],
+    "evidence": {
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ],
+      "first-reaction": [
+        "text"
+      ]
+    },
+    "fun": 0.36,
+    "signals": {
+      "siren": 0.0,
+      "impact": 6.0,
+      "loud": 1.9,
+      "motion": 12.1,
+      "sustained": 0.42,
+      "spike": 2.9,
+      "laugh": 0,
+      "static": 0.04,
+      "letterbox": 0.0,
+      "luma": 32.1,
+      "dark": 0.03
+    },
+    "seg_from": 0.0,
+    "src_mb": 11.3,
+    "source": "https://6b0803392284808290716e70--gta6bananaclips-media.netlify.app/yt/youtube_4t6I6S0JNDo_4754_16x9.mp4",
+    "yt_url": "https://www.youtube.com/watch?v=4t6I6S0JNDo"
   }
 }
