@@ -1032,5 +1032,39 @@
     "quote": "Well Now I'm up now.",
     "nudity": false,
     "slot": "2026-11-26T08:00:00+01:00"
+  },
+  "twitch_TransparentImportantYamSquadGoals-bXezQtcGwuj-esuF": {
+    "url": "https://6b084b5ae482fad340bc2cc3--gta6bananaclips-media.netlify.app/20261126/twitch_TransparentImportantYamSquadGoals-bXezQtcGwuj-esuF.mp4",
+    "path": "20261126/twitch_TransparentImportantYamSquadGoals-bXezQtcGwuj-esuF.mp4",
+    "due": "2026-11-26T17:12:00+01:00",
+    "draft": false,
+    "posts": {
+      "6af7142262b70b94b01ac608": "6b084b664a47eaba73201aac",
+      "6af713b962b70b94b01ac27e": "6b084b67404f3f41a3dcbbca",
+      "6af7155e62b70b94b01ad06f": "6b084b68404f3f41a3dcbc03",
+      "6af714e862b70b94b01acc7f": "6b084b68dbe7056dfe61b3fe",
+      "6af714d062b70b94b01acbbc": "6b084b694a47eaba73201e94"
+    },
+    "mb": 8.6,
+    "channel": "pikabooirl",
+    "platform": "twitch",
+    "score": 631.8,
+    "hot": false,
+    "rating": 5,
+    "views": 3914,
+    "golden": false,
+    "title": "Pikabooirl: How lost are some of these alliance players in World of Warcraft! 💀",
+    "video_id": "2939775898",
+    "vod_offset": 11378,
+    "created": 1795571128,
+    "payoff": "https://6b084b5ae482fad340bc2cc3--gta6bananaclips-media.netlify.app/20261126/twitch_TransparentImportantYamSquadGoals-bXezQtcGwuj-esuF_payoff.mp4",
+    "funny": 0.0,
+    "tags": [
+      "rage"
+    ],
+    "quote": "Yep, I've got alliance players S*** talking to me, calling me vegan.",
+    "nudity": false,
+    "category": "World of Warcraft",
+    "slot": "2026-11-26T17:00:00+01:00"
   }
 }
