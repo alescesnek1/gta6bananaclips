@@ -396,6 +396,31 @@
           }
         },
         "built": "2026-11-25T12:38+01:00"
+      },
+      "2026-11-26": {
+        "items": {
+          "stories/20261126/bananas_0_pool.jpg": {
+            "kind": "pool",
+            "due": "2026-11-26T22:46:00+01:00",
+            "url": "https://6b084b80c51ce3860d783bed--gta6bananaclips-media.netlify.app/stories/20261126/bananas_0_pool.jpg",
+            "alt": "GTA 6 story",
+            "posts": {
+              "6af7142262b70b94b01ac608": "6b084b87705769fe293f1393"
+            },
+            "draft": false
+          },
+          "stories/20261126/bananas_1_question.jpg": {
+            "kind": "question",
+            "due": "2026-11-27T07:31:00+01:00",
+            "url": "https://6b084b80c51ce3860d783bed--gta6bananaclips-media.netlify.app/stories/20261126/bananas_1_question.jpg",
+            "alt": "Who was funnier yesterday? IShowSpeed or Tminnzy Reply with a name",
+            "posts": {
+              "6af7142262b70b94b01ac608": "6b084b87705769fe293f13e5"
+            },
+            "draft": false
+          }
+        },
+        "built": "2026-11-26T16:08+01:00"
       }
     },
     "pool": {
@@ -404,7 +429,8 @@
       "bananas_15.jpg": "2026-11-20",
       "bananas_11.jpg": "2026-11-21",
       "bananas_19.jpg": "2026-11-24",
-      "bananas_09.jpg": "2026-11-25"
+      "bananas_09.jpg": "2026-11-25",
+      "bananas_01.jpg": "2026-11-26"
     },
     "long": {
       "funny-day#1@202611181907": {
@@ -716,6 +742,21 @@
           }
         },
         "built": "2026-11-25T12:38+01:00"
+      },
+      "2026-11-26": {
+        "items": {
+          "stories/20261126/fanpage_0_pool.jpg": {
+            "kind": "pool",
+            "due": "2026-11-26T18:26:00+01:00",
+            "url": "https://6b084b80c51ce3860d783bed--gta6bananaclips-media.netlify.app/stories/20261126/fanpage_0_pool.jpg",
+            "alt": "GTA 6 story",
+            "posts": {
+              "6afc42e6ece6dfde5ff66dca": "6b084b87accbab000db261f5"
+            },
+            "draft": false
+          }
+        },
+        "built": "2026-11-26T16:08+01:00"
       }
     },
     "pool": {
@@ -724,7 +765,8 @@
       "fanpage_15.jpg": "2026-11-20",
       "fanpage_17.jpg": "2026-11-21",
       "fanpage_01.jpg": "2026-11-24",
-      "fanpage_19.jpg": "2026-11-25"
+      "fanpage_19.jpg": "2026-11-25",
+      "fanpage_20.jpg": "2026-11-26"
     },
     "long": {}
   }
