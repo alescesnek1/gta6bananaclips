@@ -39925,13 +39925,91 @@
     "channel": "avoidingthepuddle",
     "platform": "twitch",
     "title": "god damnnn",
-    "views": 7928,
+    "views": 53344,
     "created": 1795476394,
     "category": "Grand Theft Auto VI",
     "video_id": "2938781725",
     "vod_offset": 3738,
     "cluster": 1,
-    "added": 1795533339
+    "added": 1795665603,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/avoidingthepuddle/20261123_twitch_EmpathicLitigiousTurtleShadyLulu-kKjUS1498zVbxMOw/source.mp4",
+    "peak": 11.65,
+    "cut": [
+      3.4,
+      17.13
+    ],
+    "dur": 21.47,
+    "tags": [
+      "rage",
+      "wow",
+      "crash"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.3,
+      "rage": 1.0,
+      "first-reaction": 0.0,
+      "wow": 0.49,
+      "_loud": 5.5,
+      "_motion": 20.3
+    },
+    "quote": "Holy moly, I just noticed the F*** dump truck.",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 1.0,
+      "fail": 0.0,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.0,
+      "wow": 0.35
+    },
+    "primary": "rage",
+    "proven": [],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "crash": [
+        "motion-spike"
+      ],
+      "stunt": [
+        "motion-spike"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.74,
+    "signals": {
+      "siren": 0.0,
+      "impact": 24.6,
+      "loud": 4.7,
+      "motion": 13.8,
+      "sustained": 0.38,
+      "spike": 6.3,
+      "laugh": 0,
+      "static": 0.05,
+      "letterbox": 0.0,
+      "luma": 89.9,
+      "dark": 0.0
+    }
   },
   "twitch_HomelyHotAnacondaCeilingCat-JfA-75nxoOeNl1lj": {
     "id": "twitch_HomelyHotAnacondaCeilingCat-JfA-75nxoOeNl1lj",
@@ -56776,5 +56854,364 @@
     "src_mb": 8.4,
     "source": "https://6b06f2dbf45b9d7ff0758193--gta6bananaclips-media.netlify.app/yt/youtube_88TNr9C8oEE_603_16x9.mp4",
     "yt_url": "https://www.youtube.com/watch?v=88TNr9C8oEE"
+  },
+  "twitch_HardVictoriousPeafowlTwitchRPG-j8Q8j8GsgrudaSJH": {
+    "id": "twitch_HardVictoriousPeafowlTwitchRPG-j8Q8j8GsgrudaSJH",
+    "url": "https://www.twitch.tv/tminnzy/clip/HardVictoriousPeafowlTwitchRPG-j8Q8j8GsgrudaSJH",
+    "channel": "tminnzy",
+    "platform": "twitch",
+    "title": "I STOLE THEIR LAMBO AND TOLD THEM TO BUY ANOTHER ONE 🤣🏎️",
+    "views": 62456,
+    "created": 1795605581,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2940095593",
+    "vod_offset": 8036,
+    "cluster": 1,
+    "added": 1795665361,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/tminnzy/20261125_twitch_HardVictoriousPeafowlTwitchRPG-j8Q8j8GsgrudaSJH/source.mp4",
+    "peak": 24.0,
+    "cut": [
+      14.47,
+      28.43
+    ],
+    "dur": 33.86,
+    "tags": [
+      "rage",
+      "funny",
+      "crash"
+    ],
+    "tag_scores": {
+      "funny": 0.66,
+      "glitch": 0.0,
+      "chase": 0.2,
+      "crash": 0.3,
+      "rage": 0.76,
+      "first-reaction": 0.0,
+      "wow": 0.08,
+      "_loud": 5.0,
+      "_motion": 28.4
+    },
+    "quote": "Well Now I'm up now.",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.7,
+      "rage": 0.0,
+      "fail": 0.0,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.25,
+      "crash": 0.0,
+      "stunt": 0.25,
+      "escape": 0.25,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.0,
+      "wow": 0.0
+    },
+    "primary": "funny",
+    "proven": [],
+    "evidence": {
+      "funny": [
+        "text"
+      ],
+      "chase": [
+        "motion"
+      ],
+      "stunt": [
+        "motion"
+      ],
+      "escape": [
+        "motion"
+      ]
+    },
+    "fun": 0.51,
+    "signals": {
+      "siren": 0.0,
+      "impact": 33.2,
+      "loud": 3.2,
+      "motion": 20.6,
+      "sustained": 0.86,
+      "spike": 3.2,
+      "laugh": 0,
+      "static": 0.0,
+      "letterbox": 0.0,
+      "luma": 109.2,
+      "dark": 0.0
+    }
+  },
+  "twitch_SneakyShortClamAMPEnergy-TuOkNEidcTQjMRyd": {
+    "id": "twitch_SneakyShortClamAMPEnergy-TuOkNEidcTQjMRyd",
+    "url": "https://www.twitch.tv/chloeyummyyy/clip/SneakyShortClamAMPEnergy-TuOkNEidcTQjMRyd",
+    "channel": "chloeyummyyy",
+    "platform": "twitch",
+    "title": "fit check",
+    "views": 9733,
+    "created": 1795426640,
+    "category": "Grand Theft Auto VI",
+    "video_id": "2938227714",
+    "vod_offset": 395,
+    "cluster": 1,
+    "added": 1795666918,
+    "source": "/home/runner/work/gta6bananaclips/gta6bananaclips/out/chloeyummyyy/20261123_twitch_SneakyShortClamAMPEnergy-TuOkNEidcTQjMRyd/source.mp4",
+    "peak": 24.0,
+    "cut": [
+      13.83,
+      27.0
+    ],
+    "dur": 33.2,
+    "tags": [],
+    "tag_scores": {
+      "funny": 0.08,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.0,
+      "rage": 0.25,
+      "first-reaction": 0.0,
+      "wow": 0.04,
+      "_loud": 9.5,
+      "_motion": 12.4
+    },
+    "quote": "Thank you. Okay. Say hi. Say hello. Um, W.",
+    "rendered": [
+      "fanpage"
+    ],
+    "cats": {
+      "funny": 0.25,
+      "rage": 0.25,
+      "fail": 0.25,
+      "physics": 0.25,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.25,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.0,
+      "wow": 0.25
+    },
+    "proven": [],
+    "evidence": {
+      "funny": [
+        "loud"
+      ],
+      "rage": [
+        "loud"
+      ],
+      "fail": [
+        "impact",
+        "loud"
+      ],
+      "physics": [
+        "impact"
+      ],
+      "crash": [
+        "impact"
+      ],
+      "stunt": [
+        "impact"
+      ],
+      "wow": [
+        "loud"
+      ]
+    },
+    "fun": 0.0,
+    "signals": {
+      "siren": 0.0,
+      "impact": 109.1,
+      "loud": 6.0,
+      "motion": 3.8,
+      "sustained": 0.0,
+      "spike": 1.9,
+      "laugh": 0,
+      "static": 0.58,
+      "letterbox": 0.0,
+      "luma": 78.1,
+      "dark": 0.0
+    }
+  },
+  "youtube_umDq3LY7sFA_1263": {
+    "id": "youtube_umDq3LY7sFA_1263",
+    "url": "https://6b078909833aed298c6d67b9--gta6bananaclips-media.netlify.app/yt/youtube_umDq3LY7sFA_1263_16x9.mp4",
+    "channel": "coryxkenshin",
+    "platform": "youtube",
+    "title": "GTA 6 #2",
+    "views": 3832962,
+    "created": 1795556807,
+    "category": "GTA 6 #2 grand theft auto 6 gta 6 grand theft auto vi gameplay playthrough walkthrough ps5 ps5 pro chapter 1 lucia how to fix house repair cal donnie navy fight coryxkenshin cory kenshin funny hilarious moments edits music part 1 part 2",
+    "signal_score": 1.0,
+    "added": 1795666923,
+    "peak": 13.95,
+    "cut": [
+      0.0,
+      28.3
+    ],
+    "dur": 28.3,
+    "tags": [
+      "first-reaction",
+      "wow",
+      "rage"
+    ],
+    "tag_scores": {
+      "funny": 0.16,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 0.22,
+      "rage": 0.32,
+      "first-reaction": 0.44,
+      "wow": 0.38,
+      "_loud": 1.8,
+      "_motion": 3.8
+    },
+    "quote": "Cool, can we play?",
+    "rendered": [
+      "bananas"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.27,
+      "fail": 0.0,
+      "physics": 0.25,
+      "glitch": 0.25,
+      "chase": 0.0,
+      "crash": 0.6,
+      "stunt": 0.25,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.54,
+      "wow": 0.27
+    },
+    "primary": "crash",
+    "proven": [
+      "crash"
+    ],
+    "evidence": {
+      "rage": [
+        "text"
+      ],
+      "physics": [
+        "motion-spike"
+      ],
+      "glitch": [
+        "motion-spike"
+      ],
+      "crash": [
+        "motion-spike",
+        "text"
+      ],
+      "stunt": [
+        "motion-spike"
+      ],
+      "first-reaction": [
+        "text"
+      ],
+      "wow": [
+        "text"
+      ]
+    },
+    "fun": 0.15,
+    "signals": {
+      "siren": 0.0,
+      "impact": 11.9,
+      "loud": 1.9,
+      "motion": 2.6,
+      "sustained": 0.05,
+      "spike": 7.9,
+      "laugh": 0,
+      "static": 0.21,
+      "letterbox": 0.0,
+      "luma": 29.6,
+      "dark": 0.0
+    },
+    "seg_from": 0.0,
+    "src_mb": 8.5,
+    "source": "https://6b078909833aed298c6d67b9--gta6bananaclips-media.netlify.app/yt/youtube_umDq3LY7sFA_1263_16x9.mp4",
+    "yt_url": "https://www.youtube.com/watch?v=umDq3LY7sFA"
+  },
+  "youtube_umDq3LY7sFA_3": {
+    "id": "youtube_umDq3LY7sFA_3",
+    "url": "https://6b078909833aed298c6d67b9--gta6bananaclips-media.netlify.app/yt/youtube_umDq3LY7sFA_3_16x9.mp4",
+    "channel": "coryxkenshin",
+    "platform": "youtube",
+    "title": "GTA 6 #2",
+    "views": 3832962,
+    "created": 1795556807,
+    "category": "GTA 6 #2 grand theft auto 6 gta 6 grand theft auto vi gameplay playthrough walkthrough ps5 ps5 pro chapter 1 lucia how to fix house repair cal donnie navy fight coryxkenshin cory kenshin funny hilarious moments edits music part 1 part 2",
+    "signal_score": 0.79,
+    "added": 1795666923,
+    "peak": 19.85,
+    "cut": [
+      0.0,
+      27.55
+    ],
+    "dur": 27.55,
+    "tags": [
+      "crash",
+      "first-reaction"
+    ],
+    "tag_scores": {
+      "funny": 0.0,
+      "glitch": 0.0,
+      "chase": 0.1,
+      "crash": 0.83,
+      "rage": 0.05,
+      "first-reaction": 0.56,
+      "wow": 0.04,
+      "_loud": 1.7,
+      "_motion": 16.3
+    },
+    "quote": "put it in the cart, click by.",
+    "rendered": [
+      "fanpage"
+    ],
+    "cats": {
+      "funny": 0.0,
+      "rage": 0.0,
+      "fail": 0.34,
+      "physics": 0.0,
+      "glitch": 0.0,
+      "chase": 0.0,
+      "crash": 1.0,
+      "stunt": 0.0,
+      "escape": 0.0,
+      "easter-egg": 0.0,
+      "mission": 0.0,
+      "first-reaction": 0.68,
+      "wow": 0.0
+    },
+    "primary": "crash",
+    "proven": [],
+    "evidence": {
+      "fail": [
+        "text"
+      ],
+      "crash": [
+        "text"
+      ],
+      "first-reaction": [
+        "text"
+      ]
+    },
+    "fun": 0.36,
+    "signals": {
+      "siren": 0.0,
+      "impact": 7.9,
+      "loud": 1.8,
+      "motion": 12.5,
+      "sustained": 0.39,
+      "spike": 5.5,
+      "laugh": 0,
+      "static": 0.0,
+      "letterbox": 0.0,
+      "luma": 48.7,
+      "dark": 0.0
+    },
+    "seg_from": 0.0,
+    "src_mb": 8.4,
+    "source": "https://6b078909833aed298c6d67b9--gta6bananaclips-media.netlify.app/yt/youtube_umDq3LY7sFA_3_16x9.mp4",
+    "yt_url": "https://www.youtube.com/watch?v=umDq3LY7sFA"
   }
 }
