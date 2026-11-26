@@ -454,5 +454,40 @@
     "quote": "in this game?",
     "nudity": false,
     "slot": "2026-11-25T03:30:00+01:00"
+  },
+  "twitch_AuspiciousBrainyOrcaPupper-5eiY5qb-FEoyrOU4": {
+    "url": "https://6b084b6d6af1fd80e5fe28e1--gta6bananaclips-media.netlify.app/20261126/twitch_AuspiciousBrainyOrcaPupper-5eiY5qb-FEoyrOU4.mp4",
+    "path": "20261126/twitch_AuspiciousBrainyOrcaPupper-5eiY5qb-FEoyrOU4.mp4",
+    "due": "2026-11-26T16:45:00+01:00",
+    "draft": false,
+    "posts": {
+      "6afc433aece6dfde5ff6749b": "6b084b75dbe7056dfe61b7a2",
+      "6afc42e6ece6dfde5ff66dca": "6b084b766bd1cb83ea079dfc",
+      "6afc4429ece6dfde5ff683db": "6b084b776bd1cb83ea079e2c",
+      "6afc4413ece6dfde5ff68286": "6b084b77c5e15da60dcce871",
+      "6afc43ffece6dfde5ff68162": "6b084b78705769fe293f0dbe"
+    },
+    "mb": 10.3,
+    "channel": "vinesauce",
+    "platform": "twitch",
+    "score": 1329.8,
+    "hot": false,
+    "rating": 6,
+    "views": 6738,
+    "golden": false,
+    "title": "Vinesauce Gets SO MAD In GTA 6! 😭",
+    "video_id": "2938958441",
+    "vod_offset": 16855,
+    "created": 1795501337,
+    "payoff": "https://6b084b6d6af1fd80e5fe28e1--gta6bananaclips-media.netlify.app/20261126/twitch_AuspiciousBrainyOrcaPupper-5eiY5qb-FEoyrOU4_payoff.mp4",
+    "funny": 0.0,
+    "tags": [
+      "wow",
+      "rage"
+    ],
+    "quote": "Is it even worth looking for her?",
+    "nudity": false,
+    "category": "Grand Theft Auto VI",
+    "slot": "2026-11-26T17:00:00+01:00"
   }
 }
