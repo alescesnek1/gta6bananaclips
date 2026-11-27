@@ -2184,6 +2184,281 @@
           "clicks": 0
         }
       }
+    },
+    "bananas:twitch_PlainDiligentOstrichPartyTime-PnISl-0Z9sTNCexW": {
+      "brand": "bananas",
+      "concept": "classic",
+      "due": "2026-11-24T17:23:00+01:00",
+      "due_ts": 1795537380.0,
+      "age_h": 75.4,
+      "views": 348.0,
+      "eng": 0.0,
+      "nets": {
+        "instagram": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 90,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 5.67,
+          "averageTimeWatched": 4.36,
+          "reach": 77
+        },
+        "twitter": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "reposts": 0,
+          "impressions": 0,
+          "clicks": 0
+        },
+        "facebook": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "impressions": 256,
+          "reach": 199,
+          "shares": 0,
+          "clicks": 0
+        },
+        "tiktok": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "shares": 0,
+          "reach": 0,
+          "totalTimeWatched": 0,
+          "averageTimeWatched": 0
+        },
+        "threads": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 2,
+          "quotes": 0,
+          "reposts": 0
+        }
+      }
+    },
+    "bananas:live_hasanabi_1795321278": {
+      "brand": "bananas",
+      "concept": "classic",
+      "due": "2026-11-24T18:09:00+01:00",
+      "due_ts": 1795540140.0,
+      "age_h": 74.6,
+      "views": 274.0,
+      "eng": 0.0,
+      "nets": {
+        "instagram": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 1,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 0.1,
+          "averageTimeWatched": 5.93,
+          "reach": 1
+        },
+        "twitter": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "reposts": 0,
+          "impressions": 0,
+          "clicks": 0
+        },
+        "facebook": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "impressions": 273,
+          "reach": 211,
+          "shares": 0,
+          "clicks": 0
+        },
+        "threads": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "quotes": 0,
+          "reposts": 0
+        }
+      }
+    },
+    "bananas:youtube_izXcd-bU72k_4603": {
+      "brand": "bananas",
+      "concept": "classic",
+      "due": "2026-11-24T20:25:00+01:00",
+      "due_ts": 1795548300.0,
+      "age_h": 72.4,
+      "views": 81.0,
+      "eng": 0.0,
+      "nets": {
+        "instagram": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 78,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 8.11,
+          "averageTimeWatched": 6.86,
+          "reach": 69
+        },
+        "twitter": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "reposts": 0,
+          "impressions": 1,
+          "clicks": 0
+        },
+        "facebook": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "impressions": 1,
+          "reach": 1,
+          "shares": 0,
+          "clicks": 0
+        },
+        "tiktok": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "shares": 0,
+          "reach": 0,
+          "totalTimeWatched": 0,
+          "averageTimeWatched": 0
+        },
+        "threads": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 1,
+          "quotes": 0,
+          "reposts": 0
+        }
+      }
+    },
+    "bananas:youtube_91c96JtcIFg_13794": {
+      "brand": "bananas",
+      "concept": "classic",
+      "due": "2026-11-25T14:02:00+01:00",
+      "due_ts": 1795611720.0,
+      "age_h": 54.8,
+      "views": 381.0,
+      "eng": 1.0,
+      "nets": {
+        "instagram": {
+          "reactions": 1,
+          "comments": 0,
+          "engagementRate": 0.99,
+          "views": 111,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 13.22,
+          "averageTimeWatched": 7.85,
+          "reach": 101
+        },
+        "twitter": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "reposts": 0,
+          "impressions": 0,
+          "clicks": 0
+        },
+        "facebook": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "impressions": 270,
+          "reach": 241,
+          "shares": 0,
+          "clicks": 0
+        },
+        "tiktok": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "shares": 0,
+          "reach": 0,
+          "totalTimeWatched": 0,
+          "averageTimeWatched": 0
+        },
+        "threads": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "quotes": 0,
+          "reposts": 0
+        }
+      }
+    },
+    "fanpage:twitch_PrettiestFastHamJebaited-dmfYeM9YNFLNsFxB": {
+      "brand": "fanpage",
+      "concept": "classic",
+      "due": "2026-11-25T03:41:00+01:00",
+      "due_ts": 1795574460.0,
+      "age_h": 65.1,
+      "views": 629.0,
+      "eng": 1.0,
+      "nets": {
+        "twitter": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "reposts": 0,
+          "impressions": 1,
+          "clicks": 0
+        },
+        "instagram": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 119,
+          "shares": 0,
+          "saves": 0,
+          "totalTimeWatched": 10.02,
+          "averageTimeWatched": 6.01,
+          "reach": 100
+        },
+        "threads": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "quotes": 0,
+          "reposts": 0
+        },
+        "tiktok": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "shares": 0,
+          "reach": 0,
+          "totalTimeWatched": 0,
+          "averageTimeWatched": 0
+        },
+        "facebook": {
+          "reactions": 1,
+          "comments": 0,
+          "engagementRate": 1.18,
+          "impressions": 509,
+          "reach": 403,
+          "shares": 0,
+          "clicks": 5
+        }
+      }
     }
   },
   "concepts": {},
@@ -2194,6 +2469,6 @@
       "last": 1795640150.027555
     }
   },
-  "measured_ts": 1795705737.7695282,
-  "measured_at": "2026-11-26T15:08:57+00:00"
+  "measured_ts": 1795808837.5351303,
+  "measured_at": "2026-11-27T19:47:17+00:00"
 }
