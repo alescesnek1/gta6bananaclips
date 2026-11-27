@@ -1,10 +1,10 @@
 {
-  "cas": "2026-11-27T03:23:48+01:00",
+  "cas": "2026-11-27T18:38:29+01:00",
   "chyby": [],
   "zdravi": {
     "workflows": {
       "denne-klipy": {
-        "success": 1,
+        "success": 0,
         "failure": 0,
         "cancelled": 0,
         "bezi": 0,
@@ -26,17 +26,17 @@
       }
     },
     "posledni_chyba": null,
-    "denne_posledni_uspech": "2026-11-27T01:22:38+00:00",
-    "denne_uspech_pred_min": 61,
+    "denne_posledni_uspech": "2026-11-27T10:10:09+00:00",
+    "denne_uspech_pred_min": 448,
     "live_bezi": false,
     "live_konec_pred_min": null
   },
   "publikace": {
-    "okno": "26.11. 12:00 – 27.11. 12:00",
-    "den": "2026-11-26",
+    "okno": "27.11. 12:00 – 28.11. 12:00",
+    "den": "2026-11-27",
     "znacky": {
       "bananas": {
-        "postu": 1,
+        "postu": 0,
         "navic": 0,
         "minimum": 10,
         "maximum": 12,
@@ -48,7 +48,7 @@
         "dalsi": null
       },
       "fanpage": {
-        "postu": 3,
+        "postu": 0,
         "navic": 0,
         "minimum": 10,
         "maximum": 12,
@@ -56,25 +56,25 @@
         "star": 0,
         "live": 0,
         "drafty": 0,
-        "posledni": "2026-11-27T00:49:00+01:00",
+        "posledni": "2026-11-27T10:14:00+01:00",
         "dalsi": null
       }
     }
   },
   "vykon": {
-    "zmereno": 35,
+    "zmereno": 30,
     "top5": [
       {
         "znacka": "fanpage",
-        "klip": "twitch_PrettiestFastHamJebaited-dmfYeM9YNFLNsFxB",
-        "streamer": "caseoh_",
-        "sit": "facebook",
+        "klip": "twitch_TrustworthyWrongSkirretHeyGuys-DMt2o7edaEgPSvMx",
+        "streamer": "symfuhny",
+        "sit": "instagram",
         "hot": false,
         "live": false,
-        "due": "2026-11-25T03:41:00+01:00",
-        "stari_h": 47.7,
-        "views": 509,
-        "likes": 1,
+        "due": "2026-11-26T18:21:00+01:00",
+        "stari_h": 24.3,
+        "views": 335,
+        "likes": 0,
         "comments": 0,
         "shares": 0,
         "saves": 0
@@ -87,23 +87,8 @@
         "hot": false,
         "live": false,
         "due": "2026-11-26T18:21:00+01:00",
-        "stari_h": 9.0,
+        "stari_h": 24.3,
         "views": 312,
-        "likes": 0,
-        "comments": 0,
-        "shares": 0,
-        "saves": 0
-      },
-      {
-        "znacka": "bananas",
-        "klip": "youtube_91c96JtcIFg_13794",
-        "streamer": "ishowspeed",
-        "sit": "facebook",
-        "hot": false,
-        "live": false,
-        "due": "2026-11-25T14:02:00+01:00",
-        "stari_h": 37.4,
-        "views": 270,
         "likes": 0,
         "comments": 0,
         "shares": 0,
@@ -117,7 +102,7 @@
         "hot": false,
         "live": false,
         "due": "2026-11-26T16:45:00+01:00",
-        "stari_h": 10.6,
+        "stari_h": 25.9,
         "views": 260,
         "likes": 0,
         "comments": 0,
@@ -132,9 +117,24 @@
         "hot": false,
         "live": false,
         "due": "2026-11-26T17:12:00+01:00",
-        "stari_h": 10.2,
+        "stari_h": 25.4,
         "views": 234,
         "likes": 0,
+        "comments": 0,
+        "shares": 0,
+        "saves": 0
+      },
+      {
+        "znacka": "bananas",
+        "klip": "twitch_HardVictoriousPeafowlTwitchRPG-j8Q8j8GsgrudaSJH",
+        "streamer": "tminnzy",
+        "sit": "facebook",
+        "hot": false,
+        "live": false,
+        "due": "2026-11-26T07:36:00+01:00",
+        "stari_h": 35.0,
+        "views": 213,
+        "likes": 1,
         "comments": 0,
         "shares": 0,
         "saves": 0
@@ -143,27 +143,27 @@
     "prumer": {
       "bananas": {
         "instagram": {
-          "n": 3,
-          "views": 94,
-          "likes": 1
+          "n": 2,
+          "views": 86,
+          "likes": 0
         },
         "twitter": {
-          "n": 3,
+          "n": 2,
           "views": 0,
           "likes": 0
         },
         "facebook": {
-          "n": 3,
-          "views": 239,
+          "n": 2,
+          "views": 224,
           "likes": 0
         },
         "tiktok": {
-          "n": 3,
+          "n": 2,
           "views": 0,
           "likes": 0
         },
         "threads": {
-          "n": 3,
+          "n": 2,
           "views": 0,
           "likes": 0
         }
@@ -176,7 +176,7 @@
         },
         "instagram": {
           "n": 4,
-          "views": 112,
+          "views": 189,
           "likes": 0
         },
         "threads": {
@@ -191,7 +191,7 @@
         },
         "facebook": {
           "n": 4,
-          "views": 275,
+          "views": 148,
           "likes": 0
         }
       }
@@ -199,70 +199,86 @@
     "nejnovejsi": [
       {
         "znacka": "fanpage",
+        "klip": "twitch_ArtsyNeighborlyMarrowJonCarnage-MWIXsfykGLE9nlGt",
+        "streamer": "sypherpk",
+        "stari_h": 8.4,
+        "views": 158,
+        "views_za_h": 19
+      },
+      {
+        "znacka": "fanpage",
         "klip": "twitch_CloudyBeautifulSageAliens-lPvnP92e3db1_lR1",
         "streamer": "joe_bartolozzi",
-        "stari_h": 2.6,
-        "views": 147,
-        "views_za_h": 57
+        "stari_h": 17.8,
+        "views": 149,
+        "views_za_h": 8
       },
       {
         "znacka": "fanpage",
         "klip": "twitch_TrustworthyWrongSkirretHeyGuys-DMt2o7edaEgPSvMx",
         "streamer": "symfuhny",
-        "stari_h": 9.0,
-        "views": 502,
-        "views_za_h": 56
+        "stari_h": 24.3,
+        "views": 647,
+        "views_za_h": 27
       },
       {
         "znacka": "bananas",
         "klip": "twitch_TransparentImportantYamSquadGoals-bXezQtcGwuj-esuF",
         "streamer": "pikabooirl",
-        "stari_h": 10.2,
+        "stari_h": 25.4,
         "views": 372,
-        "views_za_h": 36
+        "views_za_h": 15
       },
       {
         "znacka": "fanpage",
         "klip": "twitch_AuspiciousBrainyOrcaPupper-5eiY5qb-FEoyrOU4",
         "streamer": "vinesauce",
-        "stari_h": 10.6,
-        "views": 272,
-        "views_za_h": 26
-      },
-      {
-        "znacka": "bananas",
-        "klip": "twitch_HardVictoriousPeafowlTwitchRPG-j8Q8j8GsgrudaSJH",
-        "streamer": "tminnzy",
-        "stari_h": 19.8,
-        "views": 246,
-        "views_za_h": 12
+        "stari_h": 25.9,
+        "views": 395,
+        "views_za_h": 15
       }
     ],
     "chybi_klice": 0,
     "chyby": [],
-    "postu_celkem": 35,
+    "postu_celkem": 30,
     "nenalezeno": 0
   },
   "netlify": {
-    "gb_mesic": 5.7,
+    "gb_mesic": 5.8,
     "gb_soft": 85,
     "gb_hard": 100,
     "gb_rozpocet": 100,
-    "deploye_24h": 10
+    "deploye_24h": 3
   },
   "sit_data": null,
   "alerty": [
     {
+      "klic": "denne_stary",
+      "text": "denne-klipy: poslední úspěšný běh před 448 min (limit 150 min)"
+    },
+    {
       "klic": "ticho:bananas",
       "text": "bananas: nic nepublikováno 4+ h (poslední post 26.11. 17:12)"
+    },
+    {
+      "klic": "ticho:fanpage",
+      "text": "fanpage: nic nepublikováno 4+ h (poslední post 27.11. 10:14)"
     }
   ],
   "denni_odeslano": "2026-11-21",
   "alerty_stav": {
+    "denne_stary": {
+      "od": "2026-11-27T18:38:29.727797+01:00",
+      "poslano": "2026-11-27T18:38:29+01:00"
+    },
     "ticho:bananas": {
       "od": "2026-11-27T03:23:48.994385+01:00",
-      "poslano": "2026-11-27T03:23:48+01:00"
+      "poslano": "2026-11-27T18:38:29+01:00"
+    },
+    "ticho:fanpage": {
+      "od": "2026-11-27T18:38:29.727797+01:00",
+      "poslano": "2026-11-27T18:38:29+01:00"
     }
   },
-  "podpis": "ticho:bananas"
+  "podpis": "denne_stary|ticho:bananas|ticho:fanpage"
 }
