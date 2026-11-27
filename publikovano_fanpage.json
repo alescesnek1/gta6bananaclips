@@ -559,5 +559,40 @@
     "nudity": false,
     "category": "Grand Theft Auto VI",
     "slot": "2026-11-27T00:30:00+01:00"
+  },
+  "twitch_ArtsyNeighborlyMarrowJonCarnage-MWIXsfykGLE9nlGt": {
+    "url": "https://6b094485b1542efce47f58d4--gta6bananaclips-media.netlify.app/20261126/twitch_ArtsyNeighborlyMarrowJonCarnage-MWIXsfykGLE9nlGt.mp4",
+    "path": "20261126/twitch_ArtsyNeighborlyMarrowJonCarnage-MWIXsfykGLE9nlGt.mp4",
+    "due": "2026-11-27T10:14:00+01:00",
+    "draft": false,
+    "posts": {
+      "6afc433aece6dfde5ff6749b": "6b094493e94385a8fd8b93b0",
+      "6afc42e6ece6dfde5ff66dca": "6b094493062ed764a8fbe819",
+      "6afc4429ece6dfde5ff683db": "6b094494658222306cf9268b",
+      "6afc4413ece6dfde5ff68286": "6b094494658222306cf926cb",
+      "6afc43ffece6dfde5ff68162": "6b094495658222306cf926fd"
+    },
+    "mb": 10.4,
+    "channel": "sypherpk",
+    "platform": "twitch",
+    "score": 784.8,
+    "hot": false,
+    "rating": 5,
+    "views": 2071,
+    "golden": false,
+    "title": "SypherPK Reacts To This GTA 6 Moment! 😭",
+    "video_id": "2940627025",
+    "vod_offset": 9590,
+    "created": 1795646169,
+    "payoff": "https://6b094485b1542efce47f58d4--gta6bananaclips-media.netlify.app/20261126/twitch_ArtsyNeighborlyMarrowJonCarnage-MWIXsfykGLE9nlGt_payoff.mp4",
+    "funny": 0.0,
+    "tags": [
+      "rage",
+      "wow"
+    ],
+    "quote": "No I Need to straighten the F*** out S*** oh",
+    "nudity": false,
+    "category": "Grand Theft Auto VI",
+    "slot": "2026-11-27T10:00:00+01:00"
   }
 }
