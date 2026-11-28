@@ -628,5 +628,39 @@
     "nudity": false,
     "category": "Grand Theft Auto VI",
     "slot": "2026-11-28T05:00:00+01:00"
+  },
+  "twitch_RepleteTransparentBillPupper-Rxnnc1lw8SFVxZds": {
+    "url": "https://6b0ace4d4f6395c0a432b228--gta6bananaclips-media.netlify.app/20261128/twitch_RepleteTransparentBillPupper-Rxnnc1lw8SFVxZds.mp4",
+    "path": "20261128/twitch_RepleteTransparentBillPupper-Rxnnc1lw8SFVxZds.mp4",
+    "due": "2026-11-28T16:51:00+01:00",
+    "draft": false,
+    "posts": {
+      "6afc433aece6dfde5ff6749b": "6b0ace540f9559e0ce118c88",
+      "6afc42e6ece6dfde5ff66dca": "6b0ace54c6d7f1e72241ef3e",
+      "6afc4429ece6dfde5ff683db": "6b0ace550f9559e0ce118d0a",
+      "6afc4413ece6dfde5ff68286": "6b0ace55b793a21e71e38159",
+      "6afc43ffece6dfde5ff68162": "6b0ace56be536564e42d2d54"
+    },
+    "mb": 7.5,
+    "channel": "ludwig",
+    "platform": "twitch",
+    "score": 319.4,
+    "hot": false,
+    "rating": 4,
+    "views": 884,
+    "golden": false,
+    "title": "Ludwig RAGES OUT In GTA 5! 💀",
+    "video_id": null,
+    "vod_offset": null,
+    "created": 1795846312,
+    "payoff": "https://6b0ace4d4f6395c0a432b228--gta6bananaclips-media.netlify.app/20261128/twitch_RepleteTransparentBillPupper-Rxnnc1lw8SFVxZds_payoff.mp4",
+    "funny": 0.0,
+    "tags": [
+      "rage"
+    ],
+    "quote": "Why are you trying to get in the car?",
+    "nudity": false,
+    "category": "Grand Theft Auto V",
+    "slot": "2026-11-28T17:00:00+01:00"
   }
 }
