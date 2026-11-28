@@ -1,5 +1,5 @@
 {
-  "cas": "2026-11-27T18:38:29+01:00",
+  "cas": "2026-11-28T03:09:10+01:00",
   "chyby": [],
   "zdravi": {
     "workflows": {
@@ -26,8 +26,8 @@
       }
     },
     "posledni_chyba": null,
-    "denne_posledni_uspech": "2026-11-27T10:10:09+00:00",
-    "denne_uspech_pred_min": 448,
+    "denne_posledni_uspech": "2026-11-27T20:20:49+00:00",
+    "denne_uspech_pred_min": 348,
     "live_bezi": false,
     "live_konec_pred_min": null
   },
@@ -72,9 +72,24 @@
         "hot": false,
         "live": false,
         "due": "2026-11-26T18:21:00+01:00",
-        "stari_h": 24.3,
-        "views": 335,
-        "likes": 0,
+        "stari_h": 32.8,
+        "views": 650,
+        "likes": 1,
+        "comments": 0,
+        "shares": 0,
+        "saves": 0
+      },
+      {
+        "znacka": "fanpage",
+        "klip": "twitch_ArtsyNeighborlyMarrowJonCarnage-MWIXsfykGLE9nlGt",
+        "streamer": "sypherpk",
+        "sit": "facebook",
+        "hot": false,
+        "live": false,
+        "due": "2026-11-27T10:14:00+01:00",
+        "stari_h": 16.9,
+        "views": 376,
+        "likes": 2,
         "comments": 0,
         "shares": 0,
         "saves": 0
@@ -87,8 +102,8 @@
         "hot": false,
         "live": false,
         "due": "2026-11-26T18:21:00+01:00",
-        "stari_h": 24.3,
-        "views": 312,
+        "stari_h": 32.8,
+        "views": 322,
         "likes": 0,
         "comments": 0,
         "shares": 0,
@@ -102,8 +117,8 @@
         "hot": false,
         "live": false,
         "due": "2026-11-26T16:45:00+01:00",
-        "stari_h": 25.9,
-        "views": 260,
+        "stari_h": 34.4,
+        "views": 277,
         "likes": 0,
         "comments": 0,
         "shares": 0,
@@ -117,24 +132,9 @@
         "hot": false,
         "live": false,
         "due": "2026-11-26T17:12:00+01:00",
-        "stari_h": 25.4,
+        "stari_h": 34.0,
         "views": 234,
         "likes": 0,
-        "comments": 0,
-        "shares": 0,
-        "saves": 0
-      },
-      {
-        "znacka": "bananas",
-        "klip": "twitch_HardVictoriousPeafowlTwitchRPG-j8Q8j8GsgrudaSJH",
-        "streamer": "tminnzy",
-        "sit": "facebook",
-        "hot": false,
-        "live": false,
-        "due": "2026-11-26T07:36:00+01:00",
-        "stari_h": 35.0,
-        "views": 213,
-        "likes": 1,
         "comments": 0,
         "shares": 0,
         "saves": 0
@@ -154,7 +154,7 @@
         },
         "facebook": {
           "n": 2,
-          "views": 224,
+          "views": 225,
           "likes": 0
         },
         "tiktok": {
@@ -176,7 +176,7 @@
         },
         "instagram": {
           "n": 4,
-          "views": 189,
+          "views": 268,
           "likes": 0
         },
         "threads": {
@@ -191,7 +191,7 @@
         },
         "facebook": {
           "n": 4,
-          "views": 148,
+          "views": 254,
           "likes": 0
         }
       }
@@ -201,41 +201,41 @@
         "znacka": "fanpage",
         "klip": "twitch_ArtsyNeighborlyMarrowJonCarnage-MWIXsfykGLE9nlGt",
         "streamer": "sypherpk",
-        "stari_h": 8.4,
-        "views": 158,
-        "views_za_h": 19
+        "stari_h": 16.9,
+        "views": 534,
+        "views_za_h": 32
       },
       {
         "znacka": "fanpage",
         "klip": "twitch_CloudyBeautifulSageAliens-lPvnP92e3db1_lR1",
         "streamer": "joe_bartolozzi",
-        "stari_h": 17.8,
-        "views": 149,
-        "views_za_h": 8
+        "stari_h": 26.3,
+        "views": 170,
+        "views_za_h": 6
       },
       {
         "znacka": "fanpage",
         "klip": "twitch_TrustworthyWrongSkirretHeyGuys-DMt2o7edaEgPSvMx",
         "streamer": "symfuhny",
-        "stari_h": 24.3,
-        "views": 647,
-        "views_za_h": 27
+        "stari_h": 32.8,
+        "views": 973,
+        "views_za_h": 30
       },
       {
         "znacka": "bananas",
         "klip": "twitch_TransparentImportantYamSquadGoals-bXezQtcGwuj-esuF",
         "streamer": "pikabooirl",
-        "stari_h": 25.4,
+        "stari_h": 34.0,
         "views": 372,
-        "views_za_h": 15
+        "views_za_h": 11
       },
       {
         "znacka": "fanpage",
         "klip": "twitch_AuspiciousBrainyOrcaPupper-5eiY5qb-FEoyrOU4",
         "streamer": "vinesauce",
-        "stari_h": 25.9,
-        "views": 395,
-        "views_za_h": 15
+        "stari_h": 34.4,
+        "views": 413,
+        "views_za_h": 12
       }
     ],
     "chybi_klice": 0,
@@ -248,13 +248,13 @@
     "gb_soft": 85,
     "gb_hard": 100,
     "gb_rozpocet": 100,
-    "deploye_24h": 3
+    "deploye_24h": 2
   },
   "sit_data": null,
   "alerty": [
     {
       "klic": "denne_stary",
-      "text": "denne-klipy: poslední úspěšný běh před 448 min (limit 150 min)"
+      "text": "denne-klipy: poslední úspěšný běh před 348 min (limit 150 min)"
     },
     {
       "klic": "ticho:bananas",
@@ -269,15 +269,15 @@
   "alerty_stav": {
     "denne_stary": {
       "od": "2026-11-27T18:38:29.727797+01:00",
-      "poslano": "2026-11-27T18:38:29+01:00"
+      "poslano": "2026-11-28T03:09:10+01:00"
     },
     "ticho:bananas": {
       "od": "2026-11-27T03:23:48.994385+01:00",
-      "poslano": "2026-11-27T18:38:29+01:00"
+      "poslano": "2026-11-28T03:09:10+01:00"
     },
     "ticho:fanpage": {
       "od": "2026-11-27T18:38:29.727797+01:00",
-      "poslano": "2026-11-27T18:38:29+01:00"
+      "poslano": "2026-11-28T03:09:10+01:00"
     }
   },
   "podpis": "denne_stary|ticho:bananas|ticho:fanpage"
